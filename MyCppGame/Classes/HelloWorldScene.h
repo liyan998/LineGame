@@ -1,7 +1,7 @@
 #ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
 
-#include "framework//ui/AGameScene.h"
+#include "framework/ui/AGameScene.h"
 
 class HelloWorld : public liyan998::CAGameScene
 {

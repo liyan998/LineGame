@@ -10,6 +10,21 @@
     <Filter Include="resource">
       <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\framework">
+      <UniqueIdentifier>{025adb92-c78a-49e6-8eae-22aa9064f858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\framework\ui">
+      <UniqueIdentifier>{0a169dbe-ce57-467d-a2b5-4653d35f6041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\ui">
+      <UniqueIdentifier>{ca426355-1dce-4edc-91ed-d763f60d33ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\game">
+      <UniqueIdentifier>{9c48bc6a-a9a3-40f1-9c64-ae75beb22b6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\framework\util">
+      <UniqueIdentifier>{c8c4792b-77f1-4139-8dc6-65ddf0c64787}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -21,6 +36,45 @@
     <ClCompile Include="..\Classes\HelloWorldScene.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\ui\GameScreen.cpp">
+      <Filter>Classes\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ui\Panel.cpp">
+      <Filter>Classes\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ui\UIElement.cpp">
+      <Filter>Classes\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ui\UiFrom.cpp">
+      <Filter>Classes\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\framework\ui\AAlert.cpp">
+      <Filter>Classes\framework\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\framework\ui\AGameScreen.cpp">
+      <Filter>Classes\framework\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\GameView.cpp">
+      <Filter>Classes\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\Margin.cpp">
+      <Filter>Classes\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\MySprite.cpp">
+      <Filter>Classes\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\ShowArea.cpp">
+      <Filter>Classes\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\framework\util\DateTime.cpp">
+      <Filter>Classes\framework\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\framework\util\Math.cpp">
+      <Filter>Classes\framework\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MyGame.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -30,6 +84,69 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\HelloWorldScene.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\AGameScreen.h">
+      <Filter>Classes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\GameScreen.h">
+      <Filter>Classes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\Panel.h">
+      <Filter>Classes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\UIElement.h">
+      <Filter>Classes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\UIframework.h">
+      <Filter>Classes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\UiFrom.h">
+      <Filter>Classes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\UITables.h">
+      <Filter>Classes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\ui\AAlert.h">
+      <Filter>Classes\framework\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\ui\AGameScene.h">
+      <Filter>Classes\framework\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\ui\AGameScreen.h">
+      <Filter>Classes\framework\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\ui\Panel.h">
+      <Filter>Classes\framework\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\ui\UIFrameWork.h">
+      <Filter>Classes\framework\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\GameView.h">
+      <Filter>Classes\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\Margin.h">
+      <Filter>Classes\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\MySprite.h">
+      <Filter>Classes\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\ShowArea.h">
+      <Filter>Classes\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\util\DateTime.h">
+      <Filter>Classes\framework\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\util\Math.h">
+      <Filter>Classes\framework\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\AGame.h">
+      <Filter>Classes\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\System.h">
+      <Filter>Classes\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MyGame.h">
       <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
