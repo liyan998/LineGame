@@ -7,6 +7,8 @@ bool CShowArea::init()
 {
     Sprite::init();   
 
+    m_pPlayer = NULL;
+
     log("CShowArea::init...");
 
     m_pDrawNode = DrawNode::create();   
@@ -35,6 +37,7 @@ bool CShowArea::init()
         addChild(pMarg);
         m_oAllMargin.push_back(pMarg);
     }
+
     flush();
 
     setState(STATE_CLOSE);
@@ -49,19 +52,21 @@ void CShowArea::flush()
     m_pDrawNode->clear();   
     m_pDrawNode->drawPolygon(&m_oAllPoint[0], m_oAllPoint.size(), Color4F(1, 0, 0, 0.5), 4, Color4F(0, 0, 1, 1));
 
+   
+    for (int i = 0; i < m_oTempPoint.size(); i++)
+    {
+        if (i + 1 < m_oTempPoint.size())
+        {
+            m_pDrawNode->drawSegment(m_oTempPoint[i], m_oTempPoint[i + 1], 2, Color4F(1, .5F, .5F, .5F));
+        }
+       
+    }
     switch (m_State)
     {
     case STATE_DRAWLINE:        
-        for (int i = 0; i < m_oTempPoint.size();i++)
-        {
-            if (i + 1 < m_oTempPoint.size())
-            {
-                m_pDrawNode->drawSegment(m_oTempPoint[i], m_oTempPoint[i + 1], 2, Color4F(1, .5F, .5F, .5F));
-            }else{
-                m_pDrawNode->drawSegment(m_oTempPoint[i], m_oMovePointer, 2, Color4F(1, .5F, .5F, .5F));
-            }            
-        }
         
+        
+        m_pDrawNode->drawSegment(m_oStartPointer, m_oMovePointer, 3, Color4F(1, 1, 1, 1));
         break;
     }
    
@@ -74,19 +79,29 @@ void CShowArea::setPointer(const Vec2& pos)
 
     if (getState() != STATE_DRAWLINE)
     {
-        m_oTempPoint.push_back( pos );
+        m_oTempPoint.push_back(m_pPlayer->getPosition());
+        m_oStartPointer = pos;
         setState(STATE_DRAWLINE);
     }
+
+    //----------------------------------------------
     //取法向量
-    log("normal vector = index %d", m_CurrentIndex);
-    //log("vector:",m_oAllMargin[i].);
+
+    log("normal vector = index %d", m_CurrentIndex);  
     m_oMovePointer = pos;
+
+    //---------------------------------------------
+    float radina = CMath::getRadian(m_oStartPointer, m_oMovePointer);
+
+    log("Angle:%f", CMath::radianToAngle(radina));
+    m_pPlayer->move(radina);
+
+
     flush();
 }
 
 int CShowArea::getTargetIndex(const Vec2& rec)
-{
-    
+{    
     for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         CMargin* tpMagin = m_oAllMargin[i];//
@@ -123,8 +138,13 @@ void CShowArea::setState(State sta)
     switch (sta)
     {
     case STATE_CLOSE:
-
         m_oTempPoint.clear();
+//         if (m_pPlayer)
+//         {
+//             m_oTempPoint.push_back(m_pPlayer->getPosition());
+//         }
+        
+        
         flush();
         break;
     }
@@ -147,16 +167,26 @@ void CShowArea::setPlayerPosiztion(Sprite* pSp)
     pSp->setPosition(ps);
 
     log("sprite setPostion:%f, %f", pSp->getPosition().x  , pSp->getPosition().y);
-
-
 }
 
-void CShowArea::setPlayer(Sprite* sp)
+void CShowArea::setPlayer(CMySprite* sp)
 {
     this->m_pPlayer = sp;
 }
 
 
+void CShowArea::runMove(float inv)
+{
+    
+}
+
+void CShowArea::addTempPoint(const Vec2& vec)
+{
+    m_oTempPoint.push_back(vec);
+
+    log("Add Point Size:%d",m_oTempPoint.size());
+    flush();
+}
 // bool CShowArea::onTouchBegan(Touch* touches, Event *event)
 // {
 //     log("CGameView::onTouchBegan<<<<<<<<<<");

@@ -3,8 +3,10 @@
 
 #include "framework/System.h"
 #include "Margin.h"
+#include "MySprite.h"
 
 #define SELECTID_NULL -1
+
 
 class CShowArea : public Sprite
 {
@@ -30,17 +32,21 @@ public:
 
     void setPlayerPosiztion(Sprite*);
 
-    void setPlayer(Sprite*);
+    void setPlayer(CMySprite*);
 
     void setState(State);                          //
 
     State getState();
 
-    int getTargetIndex(const  Vec2&);
+    int getTargetIndex(const  Vec2&);           //得到当前点位置的边界
 
     void setPointer(const Vec2&);               //设置划线指针位置
 
-    bool isCloseArea();
+    bool isCloseArea();                         //区域是否闭合
+
+    void runMove(float inv);                    //执行运动
+
+    void addTempPoint(const Vec2&);                     //添加临时节点
 
     void flush();
 
@@ -58,9 +64,10 @@ private:
 
     State                       m_State;        //
 
-    Vec2                        m_oMovePointer; //
+    Vec2                        m_oMovePointer; //移动点
+    Vec2                        m_oStartPointer;//起始移动点
 
-    Sprite*                     m_pPlayer;
+    CMySprite*                  m_pPlayer;
     
 };
 

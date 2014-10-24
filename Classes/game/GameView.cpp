@@ -31,7 +31,7 @@ void CGameView::onEnter()
 
     //---------------------------------------------------------------
 
-    m_pSp = CMySprite::create();
+    m_pSp               = CMySprite::create();
     addChild(m_pSp);
 
     m_pShowArea         = CShowArea::create(); 
@@ -42,7 +42,6 @@ void CGameView::onEnter()
     //------------------------------------
 
     setState(STATE_INIT);
-
 
     //------------------------------------------
 
@@ -65,18 +64,34 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
         unschedule(schedule_selector(CGameView::initGame));
         log("init position random rect Size");
         m_pShowArea->setPlayerPosiztion(m_pSp);
-        setState(STATE_WAIT);
-    }
-        break;
+        setState(STATE_WAIT);    
+    } 
+    break;
     case STATE_WAIT:
+    {
         if (selectindex != SELECTID_NULL)
         {
             //
             log("location position");
             m_pSp->setPosition(local.x, local.y);
         }
-
-        break;
+        else{
+            m_pShowArea->addTempPoint(m_pSp->getPosition());
+            m_pShowArea->addTempPoint(local);
+            setState(STATE_DRAW);
+        }
+        log("Selectindex :%d",selectindex);    
+    }  
+    break;
+    case STATE_DRAW:
+    {
+        m_pShowArea->addTempPoint(local);
+        if (selectindex != SELECTID_NULL)
+        {
+            setState(STATE_RUN);
+        }        
+    } 
+    break;
     }
     
     return true;
@@ -94,10 +109,10 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
     case STATE_WAIT:
         break;
     case STATE_DRAW:
-        if (m_pShowArea->isCloseArea())
-        {
-            setState(STATE_RUN);
-        }        
+//         if (m_pShowArea->isCloseArea())
+//         {
+//             setState(STATE_RUN);
+//         }        
         break;
     case STATE_RUN:
         break;
@@ -116,11 +131,11 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
     switch (m_state)    
     {
     case STATE_WAIT:
-        setState(STATE_DRAW);
+        
         break;
     case STATE_DRAW:
         auto local = touches->getLocation();
-        m_pShowArea->setPointer(local);
+        //m_pShowArea->setPointer(local);
         break;
     }   
 }

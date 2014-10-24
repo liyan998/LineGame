@@ -14,6 +14,12 @@ public:
 
     virtual bool init();
 
+    void move(float radian);
+
+private:
+
+    float m_fStep;  //²½³¤
+
 
 };
 
