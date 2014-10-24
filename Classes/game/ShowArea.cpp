@@ -71,11 +71,30 @@ bool CShowArea::init()
 }
 
 
-void CShowArea::draw(Renderer *renderer, const kmMat4& transform, bool transformUpdated)
+void CShowArea::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 {
-
+    _customCommand.init(_globalZOrder);
+    _customCommand.func = CC_CALLBACK_2(CShowArea::onDraw, this, transform, flags);
+    renderer->addCommand(&_customCommand);
 }
 
+
+void CShowArea::onDraw(const Mat4 &transform, uint32_t flags)
+{
+    Director* director = Director::getInstance();
+    director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+    director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
+
+    CHECK_GL_ERROR_DEBUG();
+
+    // open yellow poly
+    DrawPrimitives::setDrawColor4B(255, 255, 0, 255);
+    glLineWidth(10);
+    //Vec2 vertices[] = { Vec2(0,0), Vec2(50,50), Vec2(100,50), Vec2(100,100), Vec2(50,100) };
+    // DrawPrimitives::drawPoly( vertices, 5, false);
+
+    DrawPrimitives::drawPoly(&m_oAllPoint[0], m_oAllPoint.size(), false);
+}
 void CShowArea::flushMargin()
 {
 

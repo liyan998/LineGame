@@ -58,8 +58,9 @@ public:
 
     void flush();
 
-    virtual void draw(Renderer *renderer, const kmMat4& transform, bool transformUpdated);
-
+    virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags);
+    void onDraw(const Mat4 &transform, uint32_t flags);
+    CustomCommand _customCommand;
 private:
 
     DrawNode*                   m_pDrawNode;    //
