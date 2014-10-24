@@ -33,7 +33,7 @@ void CMargin::onDraw()
     float fRadian           = CMath::getRadian(m_oStart, m_oTaget);
     int iangle              = static_cast<int>(CMath::radianToAngle(fRadian));
 
-    log("angle :%d", iangle);
+    //log("angle :%d", iangle);
 
     setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
     setContentSize(Size(dis, RECTHEIGHT));

@@ -10,7 +10,7 @@ Scene* HelloWorld::createScene()
     auto scene = Scene::create();
     
     // 'layer' is an autorelease object
-    auto layer = CUIFrom::create();
+    auto layer = HelloWorld::create();
 
     // add layer as a child to scene
     scene->addChild(layer);
@@ -55,24 +55,43 @@ bool HelloWorld::init()
 
     // add a label shows "Hello World"
     // create and initialize a label
-    
+
+    auto lisnter = EventListenerTouchOneByOne::create();    
     auto label = LabelTTF::create("Hello World", "Arial", 24);
+    
+    lisnter->onTouchBegan = [=](Touch* touch, Event* event){
+
+
+        LabelTTF* ttf = static_cast<LabelTTF*>(event->getCurrentTarget());
+        Vec2 locationInNode = ttf->convertToNodeSpace(touch->getLocation());
+       Size s = ttf->getContentSize();
+      Rect rect = Rect(0, 0, s.width, s.height);
+
+    if (rect.containsPoint(locationInNode))
+         {
+        log("ddddddddddddddddddddddd");
+             return true;
+        }
+        return false;
+    };
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(lisnter, label);
+   
     
     // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - label->getContentSize().height));
+                            origin.y + visibleSize.height / 2));
 
     // add the label as a child to this layer
     this->addChild(label, 1);
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
+    //auto sprite = Sprite::create("HelloWorld.png");
 
     // position the sprite on the center of the screen
-    sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+    //sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
 
     // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
+    //this->addChild(sprite, 0);
     
     return true;
 }

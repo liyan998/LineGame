@@ -5,7 +5,9 @@
 #include "Margin.h"
 #include "MySprite.h"
 
-#define SELECTID_NULL -1
+#define SELECTID_NULL   -1
+
+#define MAX_INDEX       2
 
 
 class CShowArea : public Sprite
@@ -14,8 +16,8 @@ public:
 
     enum State
     {
-        STATE_DRAWLINE,             //划线
-        STATE_CLOSE                 //闭合状态
+        STATE_DRAWLINE,                         //划线
+        STATE_CLOSE                             //闭合状态
     };
 
     typedef std::vector< Vec2 >::iterator Vec2Iter;
@@ -34,7 +36,7 @@ public:
 
     void setPlayer(CMySprite*);
 
-    void setState(State);                          //
+    void setState(State);                       //
 
     State getState();
 
@@ -46,30 +48,34 @@ public:
 
     void runMove(float inv);                    //执行运动
 
-    void addTempPoint(const Vec2&);                     //添加临时节点
+    void addTempPoint(const Vec2&);             //添加临时节点
+
+    void clearAreaIndex();                      //清除区间
+
+    void setAreaIndex(int index, int areaIndex);//设置区间索引
+
+    void flushMargin();
 
     void flush();
+
+    virtual void draw(Renderer *renderer, const kmMat4& transform, bool transformUpdated);
 
 private:
 
     DrawNode*                   m_pDrawNode;    //
 
     std::vector< Vec2 >         m_oAllPoint;    //
-
     std::vector< Vec2 >         m_oTempPoint;   //
-
-    std::vector< CMargin* >     m_oAllMargin;   //
-
-    int                         m_CurrentIndex; //
-
+    std::vector< int >          m_oAllMargin;   //
+   
     State                       m_State;        //
-
     Vec2                        m_oMovePointer; //移动点
     Vec2                        m_oStartPointer;//起始移动点
 
-    CMySprite*                  m_pPlayer;
+    CMySprite*                  m_pPlayer;      //
+    ClippingNode*               m_pClip;        //
 
-    ClippingNode*               m_pClip;
+    int                         m_Area[MAX_INDEX];
     
 };
 

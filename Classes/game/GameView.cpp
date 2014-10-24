@@ -52,7 +52,7 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
 {
     log("CGameView::onTouchBegan<<<<<<<<<<");
     auto local          = touches->getLocation();   
-    int selectindex     = m_pShowArea->getTargetIndex(local);
+    
 
     switch (m_state)
     {
@@ -66,27 +66,32 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
     break;
     case STATE_WAIT:
     {
+        int selectindex = m_pShowArea->getTargetIndex(local);
         if (selectindex != SELECTID_NULL)
         {
             //
             log("location position");
+            m_pShowArea->setAreaIndex(0, selectindex);
             m_pSp->setPosition(local.x, local.y);
-        }
-        else{
+        }else{
             m_pShowArea->addTempPoint(m_pSp->getPosition());
             m_pShowArea->addTempPoint(local);
+            
             setState(STATE_DRAW);
         }
-        log("Selectindex :%d",selectindex);    
+        log("Selectindex :%d", selectindex);
     }  
     break;
     case STATE_DRAW:
     {
+        int selectindex = m_pShowArea->getTargetIndex(local);
         m_pShowArea->addTempPoint(local);
         if (selectindex != SELECTID_NULL)
         {
+            m_pShowArea->setAreaIndex(1, selectindex);
             setState(STATE_RUN);
-        }        
+        }   
+        log("Selectindex :%d", selectindex);
     } 
     break;
     }
@@ -176,6 +181,9 @@ void CGameView::spriteRun(float t)
     {
         count = 0;
         m_pShowArea->setState(CShowArea::State::STATE_CLOSE);
+
+        
+
         unschedule(schedule_selector(CGameView::spriteRun));
         setState(STATE_WAIT);            
     }
