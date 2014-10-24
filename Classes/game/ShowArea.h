@@ -68,6 +68,8 @@ private:
     Vec2                        m_oStartPointer;//起始移动点
 
     CMySprite*                  m_pPlayer;
+
+    ClippingNode*               m_pClip;
     
 };
 

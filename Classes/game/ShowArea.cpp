@@ -11,8 +11,30 @@ bool CShowArea::init()
 
     log("CShowArea::init...");
 
-    m_pDrawNode = DrawNode::create();   
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    auto pSprite = Sprite::create("HelloWorld.png");
+    pSprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+    addChild(pSprite);
+
+    //--------------------------------------------------------------
+
+    m_pClip = ClippingNode::create();
+    m_pClip->setInverted(true);
+    m_pClip->setAlphaThreshold(0.f);
+   // addChild(m_pClip);
+
+
+    LayerColor* pLc = LayerColor::create(Color4B(0,0,0,200));
+    m_pClip->addChild(pLc);
+    //----------------------------------------------
+
+    m_pDrawNode = DrawNode::create();  
+   // m_pClip->setStencil(m_pDrawNode);
     addChild(m_pDrawNode);
+
+    //----------------------------------------
+
+    
 
     m_oAllPoint.push_back(Vec2(70,      592.));
     m_oAllPoint.push_back(Vec2(261,     592));
@@ -50,7 +72,7 @@ bool CShowArea::init()
 void CShowArea::flush()
 {  
     m_pDrawNode->clear();   
-    m_pDrawNode->drawPolygon(&m_oAllPoint[0], m_oAllPoint.size(), Color4F(1, 0, 0, 0.5), 4, Color4F(0, 0, 1, 1));
+    m_pDrawNode->drawPolygon(&m_oAllPoint[0], m_oAllPoint.size(), Color4F(1, 0, 1, .5f), 5, Color4F(0, 0, 1, 1));
 
    
     for (int i = 0; i < m_oTempPoint.size(); i++)
@@ -58,8 +80,7 @@ void CShowArea::flush()
         if (i + 1 < m_oTempPoint.size())
         {
             m_pDrawNode->drawSegment(m_oTempPoint[i], m_oTempPoint[i + 1], 2, Color4F(1, .5F, .5F, .5F));
-        }
-       
+        }       
     }
     switch (m_State)
     {
@@ -69,7 +90,7 @@ void CShowArea::flush()
         m_pDrawNode->drawSegment(m_oStartPointer, m_oMovePointer, 3, Color4F(1, 1, 1, 1));
         break;
     }
-   
+    //m_pClip->setStencil(m_pDrawNode);
 }
 
 
@@ -139,34 +160,28 @@ void CShowArea::setState(State sta)
     {
     case STATE_CLOSE:
         m_oTempPoint.clear();
-//         if (m_pPlayer)
-//         {
-//             m_oTempPoint.push_back(m_pPlayer->getPosition());
-//         }
-        
-        
         flush();
         break;
     }
     
 }
 
+//
 void CShowArea::setPlayerPosiztion(Sprite* pSp)
 {
     int setLine = CMath::getRandom(0, m_oAllMargin.size() - 1);
 
-    CMargin* margin = m_oAllMargin[setLine];
+    CMargin* margin     = m_oAllMargin[setLine];
 
-    float rad = CMath::getRadian(margin->m_oStart, margin->m_oTaget);
+    float rad           = CMath::getRadian(margin->m_oStart, margin->m_oTaget);
+    float dis           = ccpDistance(margin->m_oStart, margin->m_oTaget);
+    int ranint          = CMath::getRandom(0, dis);
 
-    float dis = ccpDistance(margin->m_oStart, margin->m_oTaget);
-
-    int ranint = CMath::getRandom(0, dis);
-    Vec2& ps = CMath::getVec2(margin->m_oStart, ranint, rad);
+    Vec2& ps            = CMath::getVec2(margin->m_oStart, ranint, rad);
 
     pSp->setPosition(ps);
 
-    log("sprite setPostion:%f, %f", pSp->getPosition().x  , pSp->getPosition().y);
+    log("sprite setPostion:%f, %f, %d", pSp->getPosition().x  , pSp->getPosition().y, ranint);
 }
 
 void CShowArea::setPlayer(CMySprite* sp)

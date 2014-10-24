@@ -24,10 +24,7 @@ void CGameView::onEnter()
 
     //--------------------------------------------------------------------
 
-    Size visibleSize    = Director::getInstance()->getVisibleSize();
-    auto pSprite             = Sprite::create("HelloWorld.png");
-    pSprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-    addChild(pSprite);
+   
 
     //---------------------------------------------------------------
 
