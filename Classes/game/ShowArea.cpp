@@ -151,6 +151,11 @@ void CShowArea::setPlayerPosiztion(Sprite* pSp)
 
 }
 
+void CShowArea::setPlayer(Sprite* sp)
+{
+    this->m_pPlayer = sp;
+}
+
 
 // bool CShowArea::onTouchBegan(Touch* touches, Event *event)
 // {

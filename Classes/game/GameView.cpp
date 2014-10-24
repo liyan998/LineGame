@@ -31,13 +31,13 @@ void CGameView::onEnter()
 
     //---------------------------------------------------------------
 
-    m_pShowArea         = CShowArea::create(); 
-    addChild(m_pShowArea);
-
-    m_pSp               = CMySprite::create();
+    m_pSp = CMySprite::create();
     addChild(m_pSp);
 
-       
+    m_pShowArea         = CShowArea::create(); 
+    addChild(m_pShowArea);
+    
+    m_pShowArea->setPlayer(m_pSp);
     
     //------------------------------------
 
@@ -159,7 +159,7 @@ CGameView::State CGameView::getState()
 
 void CGameView::spriteRun(float t)
 {
-    log("spriteRun....%d", count);
+    //log("spriteRun....%d", count);
     if (count++ > 100)
     {
         count = 0;

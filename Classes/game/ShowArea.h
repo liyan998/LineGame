@@ -30,6 +30,8 @@ public:
 
     void setPlayerPosiztion(Sprite*);
 
+    void setPlayer(Sprite*);
+
     void setState(State);                          //
 
     State getState();
@@ -57,6 +59,8 @@ private:
     State                       m_State;        //
 
     Vec2                        m_oMovePointer; //
+
+    Sprite*                     m_pPlayer;
     
 };
 
