@@ -4,6 +4,9 @@
 #include "framework/System.h"
 #include "Margin.h"
 #include "MySprite.h"
+#include "Shape.h"
+
+
 
 #define SELECTID_NULL   -1
 
@@ -58,16 +61,14 @@ public:
 
     void flush();
 
-    virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags);
-    void onDraw(const Mat4 &transform, uint32_t flags);
-    CustomCommand _customCommand;
+
 private:
 
     DrawNode*                   m_pDrawNode;    //
-
     std::vector< Vec2 >         m_oAllPoint;    //
     std::vector< Vec2 >         m_oTempPoint;   //
     std::vector< int >          m_oAllMargin;   //
+	std::vector< CShape* >		m_oAllShape;	//Í¼ÐÎ
    
     State                       m_State;        //
     Vec2                        m_oMovePointer; //ÒÆ¶¯µã

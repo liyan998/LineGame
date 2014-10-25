@@ -50,6 +50,10 @@ bool CShowArea::init()
     m_oAllPoint.push_back(Vec2(261,     400.));
     m_oAllPoint.push_back(Vec2(70.,     400.));
 
+	CShape* shape = new CShape();
+	shape->setShape(m_oAllPoint);
+	m_oAllShape.push_back(shape);
+
 //     m_oAllPoint.push_back(Vec2(70.000000, 592.000000));
 //     m_oAllPoint.push_back(Vec2(150.279388, 589.316895));
 //     m_oAllPoint.push_back(Vec2(192.210159, 845.394470));
@@ -60,7 +64,7 @@ bool CShowArea::init()
 //     m_oAllPoint.push_back(Vec2(70.000000, 400.000000));
 
 
-
+	
 
     
     flush();
@@ -71,30 +75,30 @@ bool CShowArea::init()
 }
 
 
-void CShowArea::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
-{
-    _customCommand.init(_globalZOrder);
-    _customCommand.func = CC_CALLBACK_2(CShowArea::onDraw, this, transform, flags);
-    renderer->addCommand(&_customCommand);
-}
+// void CShowArea::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+// {
+//     _customCommand.init(_globalZOrder);
+//     //_customCommand.func = CC_CALLBACK_3(CShowArea::onDraw, this, transform, flags);
+//     renderer->addCommand(&_customCommand);
+// }
 
 
-void CShowArea::onDraw(const Mat4 &transform, uint32_t flags)
-{
-    Director* director = Director::getInstance();
-    director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-    director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
-
-    CHECK_GL_ERROR_DEBUG();
-
-    // open yellow poly
-    DrawPrimitives::setDrawColor4B(255, 255, 0, 255);
-    glLineWidth(10);
-    //Vec2 vertices[] = { Vec2(0,0), Vec2(50,50), Vec2(100,50), Vec2(100,100), Vec2(50,100) };
-    // DrawPrimitives::drawPoly( vertices, 5, false);
-
-    DrawPrimitives::drawPoly(&m_oAllPoint[0], m_oAllPoint.size(), false);
-}
+// void CShowArea::onDraw(const Mat4 &transform, uint32_t flags)
+// {
+//     Director* director = Director::getInstance();
+//     director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+//     director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
+// 
+//     CHECK_GL_ERROR_DEBUG();
+// 
+//     // open yellow poly
+//     DrawPrimitives::setDrawColor4B(255, 255, 0, 255);
+//     glLineWidth(10);
+//     //Vec2 vertices[] = { Vec2(0,0), Vec2(50,50), Vec2(100,50), Vec2(100,100), Vec2(50,100) };
+//     // DrawPrimitives::drawPoly( vertices, 5, false);
+// 
+//     DrawPrimitives::drawPoly(&m_oAllPoint[0], m_oAllPoint.size(), false);
+// }
 void CShowArea::flushMargin()
 {
 
@@ -141,17 +145,20 @@ void CShowArea::flush()
 
     //---------------------------------------------------
 
-    //m_pDrawNode->clear();   
-    //m_pDrawNode->drawPolygon(&m_oAllPoint[0], m_oAllPoint.size(), Color4F(1, 0, 1, .5f), 1, Color4F(0, 0, 1, 1));
+	
+    m_pDrawNode->clear();   
+   // m_pDrawNode->drawPolygon(&m_oAllPoint[0], m_oAllPoint.size(), Color4F(1, 0, 1, .5f), 1, Color4F(0, 0, 1, 1));
 
-    //
-    
-    glLineWidth(10);
-    ccDrawColor4B(240, 225, 100, 130);
-    ccDrawPoly(&m_oAllPoint[0], m_oAllPoint.size(), true);
+	for (int i = 0;i < m_oAllShape.size();i++)
+	{
+		m_oAllShape[i]->draw(m_pDrawNode);
+	}
 
-   // m_pDrawNode->drawPolygon(temppoint,5,Color4F(1, 0, 1, .5f), 1, Color4F(0, 0, 1, 1));
-    
+	for (int i = 0 ;i < m_oAllPoint.size();i++)
+	{		
+		m_pDrawNode->drawDot(m_oAllPoint[i],2,Color4F(1,1,1,1));
+	}
+
     for (int i = 0; i < m_oTempPoint.size(); i++)
     {
         if (i + 1 < m_oTempPoint.size())
@@ -159,18 +166,19 @@ void CShowArea::flush()
             m_pDrawNode->drawSegment(m_oTempPoint[i], m_oTempPoint[i + 1], 2, Color4F(1, .5F, .5F, .5F));
         }       
     }
+for (int i = 0 ;i < m_oTempPoint.size();i++)
+	{
+		m_pDrawNode->drawDot(m_oTempPoint[i],2,Color4F(1,1,1,1));
+	}
+	
     switch (m_State)
     {
-    case STATE_DRAWLINE:        
-        
-        
+    case STATE_DRAWLINE:
+		
         m_pDrawNode->drawSegment(m_oStartPointer, m_oMovePointer, 3, Color4F(1, 1, 1, 1));
         break;
     }
-    log("allPoint-------------------------------------------------");
-    printVector(m_oAllPoint);
-    log("m_oTempPoint-------------------------------------------------");
-    printVector(m_oTempPoint);
+   
 
 
     //m_pClip->setStencil(m_pDrawNode);
@@ -301,13 +309,19 @@ void CShowArea::clearAreaIndex()
     log("close solution :%d, %d", m_Area[0], m_Area[1]);
     log("remove point num:%d", delNum);
     log("direct:%d", direct);
-    
-    Vec2Iter it = m_oAllPoint.begin() + 1;
-    m_oAllPoint.erase(it, it + delNum);
-    it = m_oAllPoint.begin() + 1;
-    m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
 
+	CShape* shape = new CShape();
+	shape->setShape(m_oTempPoint);
+	m_oAllShape.push_back(shape);
     
+   // Vec2Iter it = m_oAllPoint.begin() + 1;
+	//log("res Size:%d", m_oAllPoint.size());
+   // m_oAllPoint.erase(it, it + delNum);
+	//log("del Size:%d", m_oAllPoint.size());
+   // it = m_oAllPoint.begin() + 1;
+   // m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
+
+    //log("ins Size:%d", m_oAllPoint.size());
 
 }
 
