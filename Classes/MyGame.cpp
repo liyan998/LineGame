@@ -11,6 +11,7 @@
 #include "HelloWorldScene.h"
 #include "ui/UiFrom.h"
 #include "game/GameView.h"
+#include "game/Test.h"
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -54,7 +55,7 @@ void CMyGame::Init()
     m_pGameScreen->InitScene(ADD_SCENE(31,      CGameView));
     m_pGameScreen->InitScene(ADD_SCENE(11,      HelloWorld ));
     m_pGameScreen->InitScene(ADD_SCENE(12,      CUIFrom    ));
-  
+	m_pGameScreen->InitScene(ADD_SCENE(13,		CTest));
 
     auto director = Director::getInstance();  
     director->runWithScene(m_pGameScreen);

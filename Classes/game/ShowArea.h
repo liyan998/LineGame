@@ -4,7 +4,8 @@
 #include "framework/System.h"
 #include "Margin.h"
 #include "MySprite.h"
-#include "Shape.h"
+#include "triangulate.h"
+
 
 
 
@@ -68,7 +69,7 @@ private:
     std::vector< Vec2 >         m_oAllPoint;    //
     std::vector< Vec2 >         m_oTempPoint;   //
     std::vector< int >          m_oAllMargin;   //
-	std::vector< CShape* >		m_oAllShape;	//Í¼ÐÎ
+
    
     State                       m_State;        //
     Vec2                        m_oMovePointer; //ÒÆ¶¯µã

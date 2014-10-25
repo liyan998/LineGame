@@ -75,7 +75,10 @@
     <ClCompile Include="..\Classes\MyGame.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\Shape.cpp">
+    <ClCompile Include="..\Classes\game\Test.cpp">
+      <Filter>Classes\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\triangulate.cpp">
       <Filter>Classes\game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -152,7 +155,10 @@
     <ClInclude Include="..\Classes\MyGame.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\Shape.h">
+    <ClInclude Include="..\Classes\game\Test.h">
+      <Filter>Classes\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\triangulate.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
   </ItemGroup>
