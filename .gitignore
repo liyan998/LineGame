@@ -1,0 +1,6 @@
+#cat .gitignore
+cocos2d
+.cocos-project.json
+CMakeLists.txt
+proj.win32/
+!proj.win32/MyCppGame.vcxproj.filters

@@ -1,6 +1,6 @@
 #include "Math.h"
 #include <cstdlib>
-
+#include <time.h>
 
 using namespace liyan998;
 
@@ -9,7 +9,7 @@ using namespace liyan998;
 //根据起始点，摸，弧度得到一个向量
 //rStart    起始向量
 //step      向量摸
-//radian     弧度
+//radian    弧度
 //return    向量
 */
 /************************************************************************/
@@ -43,5 +43,6 @@ float CMath::radianToAngle(float r)
 
 int CMath::getRandom(int startI, int endI)
 {
-    return rand() % (endI - startI + 1) + startI;
+	srand (time(NULL));	
+    return (rand() % (endI - startI + 1)) + startI;
 }
