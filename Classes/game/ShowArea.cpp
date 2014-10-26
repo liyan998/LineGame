@@ -295,6 +295,11 @@ void CShowArea::clearAreaIndex()
     log("direct:%d", direct);    
 	//printVector(m_oTempPoint);
 
+	if (direct > 0)
+	{
+		std::reverse(m_oTempPoint.begin(), m_oTempPoint.end());
+	}
+
 	if (m_Area[1] ==0)
 	{
 		log("outer error");
