@@ -52,10 +52,12 @@ bool CShowArea::init()
    
     //----------------------------------------    
 
-    m_oAllPoint.push_back(Vec2(70,      592.));
-    m_oAllPoint.push_back(Vec2(261,     592));
-    m_oAllPoint.push_back(Vec2(261,     400.));
-    m_oAllPoint.push_back(Vec2(70.,     400.));
+	Rect rec(300,592, 200 , 200);
+
+    m_oAllPoint.push_back(rec.origin);
+    m_oAllPoint.push_back(Vec2(rec.origin.x + rec.size.width , rec.origin.y ));
+	m_oAllPoint.push_back(Vec2(rec.origin.x + rec.size.width , rec.origin.y - rec.size.height));
+	m_oAllPoint.push_back(Vec2(rec.origin.x , rec.origin.y - rec.size.height ));
 	
 
     flush();
@@ -293,14 +295,30 @@ void CShowArea::clearAreaIndex()
     log("direct:%d", direct);    
 	//printVector(m_oTempPoint);
 
-	int startMargin = m_Area[0] + 1;
-	Vec2Iter it = m_oAllPoint.begin() + startMargin;
-	log("res Size:%d", m_oAllPoint.size());
-	m_oAllPoint.erase(it, it + delNum);
-	log("del Size:%d", m_oAllPoint.size());
-	it = m_oAllPoint.begin() + startMargin;
-	m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
-    log("ins Size:%d", m_oAllPoint.size());
+	if (m_Area[1] ==0)
+	{
+		log("outer error");
+		//删除头部分
+		Vec2Iter it = m_oAllPoint.begin();
+		//TODO删除个数
+		m_oAllPoint.erase(it);
+		it = m_oAllPoint.begin();
+		m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
+
+	}else{
+		
+
+		int startMargin = m_Area[0] + 1;
+		Vec2Iter it = m_oAllPoint.begin() + startMargin;
+		log("res Size:%d", m_oAllPoint.size());
+		m_oAllPoint.erase(it, it + delNum);
+		log("del Size:%d", m_oAllPoint.size());
+		it = m_oAllPoint.begin() + startMargin;
+		m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
+		log("ins Size:%d", m_oAllPoint.size());
+	}
+
+	
 
 }
 
