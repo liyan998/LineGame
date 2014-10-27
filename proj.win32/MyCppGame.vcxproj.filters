@@ -81,6 +81,12 @@
     <ClCompile Include="..\Classes\game\triangulate.cpp">
       <Filter>Classes\game</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\framework\util\Util.cpp">
+      <Filter>Classes\framework\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\Shape.cpp">
+      <Filter>Classes\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -91,9 +97,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\ui\AGameScreen.h">
-      <Filter>Classes\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\ui\GameScreen.h">
       <Filter>Classes\ui</Filter>
@@ -159,6 +162,12 @@
       <Filter>Classes\game</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\triangulate.h">
+      <Filter>Classes\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\util\Util.h">
+      <Filter>Classes\framework\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\Shape.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
   </ItemGroup>

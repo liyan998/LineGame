@@ -191,7 +191,7 @@ void CGameView::spriteRun(float t)
 
 void CGameView::initGame(float)
 {
-    log("random rect Size");
+    //log("random rect Size");
     //TODO random rect Size
 
 }
