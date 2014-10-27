@@ -381,6 +381,8 @@ void CShowArea::setAreaIndex(int index, int areaIndex)
 /* 
 功能描述:      得到方向
 返回值:        方向值
+                0xff00 00ff 逆序
+                0x00ff ff00 顺序
 
 */
 /************************************************************************/
@@ -416,29 +418,3 @@ unsigned int CShowArea::getDirect()
     return result;
 }
 
-// bool CShowArea::onTouchBegan(Touch* touches, Event *event)
-// {
-//     log("CGameView::onTouchBegan<<<<<<<<<<");
-//     auto local = touches->getLocation();
-// 
-//     log("getTargetIndex %d",getTargetIndex(local.x, local.y));
-//     return true;
-// }
-
-// void CShowArea::onTouchEnded(Touch* touches, Event *event)
-// {
-//     auto local = touches->getLocation();
-//     log("CGameView::onTouchEnded>>>>>>>>>>>%f, %f", local.x, local.y);
-//     Node* node = event->getCurrentTarget();
-// 
-//     log("node tag %d", node->getTag());
-// 
-//    
-// }
-
-// void CShowArea::onTouchMove(Touch* touches, Event *event)
-// {
-//     log("CGameView::onTouchMove-------------");
-//     Sprite* pMargin = static_cast<Sprite*>(event->getCurrentTarget());
-//    
-// }
