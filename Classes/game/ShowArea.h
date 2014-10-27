@@ -5,7 +5,7 @@
 #include "Margin.h"
 #include "MySprite.h"
 #include "triangulate.h"
-
+#include "Shape.h"
 
 
 
@@ -62,6 +62,9 @@ public:
 
     void flush();
 
+    CShape* createShape(std::vector<Vec2>& refAllPoint);
+
+    unsigned int getDirect();
 
 private:
 
@@ -79,6 +82,9 @@ private:
     ClippingNode*               m_pClip;        //
 
     int                         m_Area[MAX_INDEX];
+
+    CShape*                     m_pShape;
+    std::vector<CShape*>        m_oAllShape;
     
 };
 
