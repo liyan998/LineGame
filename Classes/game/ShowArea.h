@@ -42,9 +42,9 @@ public:
 
     void setPlayerPosiztion(const Vec2& vec2, int index);  
 
-    void setState(State);                       //
+    void setState(State);                       //设置状态
 
-    State getState();                           //
+    State getState();                           //得到状态
 
     int getTargetIndex(const  Vec2&);           //得到当前点位置的边界
 
@@ -60,7 +60,7 @@ public:
 
     void setAreaIndex(int index, int areaIndex);//设置区间索引
 
-    void flushMargin();
+    void flushMargin();                          //   
 
     void flush();
 

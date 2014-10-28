@@ -10,10 +10,10 @@ public:
 
     enum State
     {
-
-        STATE_STANDER,
-        STATE_MOVE,
-
+        STATE_STANDER,      //一般模式
+        STATE_MOVE,         //移动 == onTouchBegin  离开区域 => draw
+        STATE_DRAW,         //划线 == onTouchMove   闭合区域 => run
+        STATE_RUN           //运行 == onTouchEnd || closeArea            
     };
 
 public:
@@ -33,9 +33,14 @@ public:
 
 private:
 
+    State m_State;          //状态
+
     float m_fStep;          //步长
 
     Vec2 m_AbPosition;      //相对位置
+
+
+    std::vector<Vec2>       m_oPath;
 
 
 

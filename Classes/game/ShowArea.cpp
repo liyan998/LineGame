@@ -74,6 +74,18 @@ bool CShowArea::init()
 
 
 
+
+
+void printVector(std::vector<Vec2> &v)
+{
+    for (int i = 0; i < v.size();i++)
+    {
+        log("Vec2(%f, %f),", v[i].x , v[i].y);
+    }
+}
+
+
+
 void CShowArea::flushMargin()
 {
 
@@ -83,7 +95,7 @@ void CShowArea::flushMargin()
     }
 
     m_oAllMargin.clear();
-  
+
     int size = m_oAllPoint.size();
 
     for (int i = 0; i < size; i++)
@@ -103,17 +115,11 @@ void CShowArea::flushMargin()
         m_oAllMargin.push_back(pMarg->getTag());
     }
 
-  
+
 }
 
+//////////////////////////////////////////////////////////////////////////
 
-void printVector(std::vector<Vec2> &v)
-{
-    for (int i = 0; i < v.size();i++)
-    {
-        log("Vec2(%f, %f),", v[i].x , v[i].y);
-    }
-}
 
 void CShowArea::flush()
 {  
@@ -123,11 +129,6 @@ void CShowArea::flush()
 	
     m_pDrawNode->clear();   
     m_pShape->draw(m_pDrawNode);
-	//m_pDrawNode->drawPolygon(&m_oAllPoint[0], m_oAllPoint.size(), Color4F(1, 0, 1, .5f), 1, Color4F(0, 0, 1, 1));
-//     for (int i = 0; i < m_oAllShape.size();i++)
-//     {
-//         m_oAllShape[i]->draw(m_pDrawNode);
-//     }	
 
 	for (int i = 0 ;i < m_oAllPoint.size();i++)
 	{		
@@ -162,9 +163,7 @@ void CShowArea::flush()
 // 
 //         m_pDrawNode->drawDot(pMarg->getPosition(), 4, Color4F(1, 0, 0, 1));
 //     }
-
-
-	
+    	
     switch (m_State)
     {
     case STATE_DRAWLINE:		
@@ -195,15 +194,14 @@ void CShowArea::setPointer(const Vec2& pos)
     {
         log("colleWidth Ployon");
     }
-
-
     float   dis           = ccpDistance(m_oStartPointer, m_oMovePointer);
     float   radina        = CMath::getRadian(m_oStartPointer, m_oMovePointer);
     int     angle         = CMath::radianToAngle(radina);
  
     if (angle == 0 || angle == 180 || angle == 90 || angle == -90) // up
     {            
-        m_pPlayer->pointerMove(Vec2(dis, RADINA_TOGAME(radina)));       
+        m_pPlayer->pointerMove(Vec2(dis, RADINA_TOGAME(radina)));    
+
     } else{
 
         log("no direct %d", angle);
