@@ -36,6 +36,7 @@ public:
 
     DrawNode*                   m_pDrawNode;
 
+    int                         m_Angle;
     
 };
 
