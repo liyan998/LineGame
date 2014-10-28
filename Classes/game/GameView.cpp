@@ -24,10 +24,6 @@ void CGameView::onEnter()
 
     //--------------------------------------------------------------------
 
-   
-
-    //---------------------------------------------------------------
-
     m_pSp               = CMySprite::create();
     addChild(m_pSp);
 
@@ -50,7 +46,7 @@ void CGameView::onEnter()
 
 bool CGameView::onTouchBegan(Touch* touches, Event *event)
 {
-    log("CGameView::onTouchBegan<<<<<<<<<<");
+    //log("CGameView::onTouchBegan<<<<<<<<<<");
     auto local          = touches->getLocation();   
     
 
@@ -60,7 +56,7 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
     {   
         unschedule(schedule_selector(CGameView::initGame));
         log("init position random rect Size");
-        m_pShowArea->setPlayerPosiztion(m_pSp);
+        m_pShowArea->setPlayerPosiztion();
         setState(STATE_WAIT);    
     } 
     break;
@@ -72,8 +68,10 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
             //
             log("location position");
             m_pShowArea->setAreaIndex(0, selectindex);
-            m_pSp->setPosition(local.x, local.y);
+            m_pShowArea->setPlayerPosiztion(local, selectindex);
+            m_pSp->setAbsPosition();
         }else{
+
 //             m_pShowArea->addTempPoint(m_pSp->getPosition());
 //             m_pShowArea->addTempPoint(local);
             
@@ -106,7 +104,7 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
 void CGameView::onTouchEnded(Touch* touches, Event *event)
 {
     auto local = touches->getLocation();
-    log("CGameView::onTouchEnded>>>>>>>>>>>%f, %f", local.x, local.y); 
+    //log("CGameView::onTouchEnded>>>>>>>>>>>%f, %f", local.x, local.y); 
     switch (m_state)
     {
     case STATE_INIT:
@@ -136,7 +134,7 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
     switch (m_state)    
     {
     case STATE_WAIT:        
-        
+        m_pShowArea->setPointer(local);
         break;
     case STATE_DRAW:
         m_pShowArea->setPointer(local);

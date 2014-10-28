@@ -180,8 +180,7 @@ void CShowArea::flush()
 
 void CShowArea::setPointer(const Vec2& pos)
 {
-    //log("Pointer: x:%f, y:%f", pos.x, pos.y);
-
+    
     if (getState() != STATE_DRAWLINE)
     {
         log("draw tempPoint start");
@@ -189,35 +188,29 @@ void CShowArea::setPointer(const Vec2& pos)
         m_oStartPointer = pos;
         setState(STATE_DRAWLINE);
     }
-
     //----------------------------------------------
+    m_oMovePointer        = pos;
 
-
-    m_oMovePointer = pos;
-
-    float dis = ccpDistance(m_oStartPointer, m_oMovePointer);
-    float radina = CMath::getRadian(m_oStartPointer, m_oMovePointer);
-
-    int angle = CMath::radianToAngle(radina);
-    //log("angle:%d", angle);
-
-
-    if (angle == 0 || angle == 180 || angle == 90 || angle == -90) // up
+    if (CUtil::hasPointInPloyon(m_oAllPoint, m_oMovePointer))
     {
-
-     
-        m_pPlayer->pointerMove(Vec2(dis, RADINA_TOGAME(radina)));
-
-       
-    } else{
-        log("no direct");
-        m_pPlayer->setAbsPosition();
-        addTempPoint(m_oMovePointer);
-        m_oStartPointer = m_oMovePointer;
+        log("colleWidth Ployon");
     }
 
-   
-    
+
+    float   dis           = ccpDistance(m_oStartPointer, m_oMovePointer);
+    float   radina        = CMath::getRadian(m_oStartPointer, m_oMovePointer);
+    int     angle         = CMath::radianToAngle(radina);
+ 
+    if (angle == 0 || angle == 180 || angle == 90 || angle == -90) // up
+    {            
+        m_pPlayer->pointerMove(Vec2(dis, RADINA_TOGAME(radina)));       
+    } else{
+
+        log("no direct %d", angle);
+        m_pPlayer->setAbsPosition();
+        addTempPoint(m_pPlayer->getPosition());
+        m_oStartPointer = m_oMovePointer;
+    }   
 
     flush();
 }
@@ -263,12 +256,19 @@ void CShowArea::setState(State sta)
         m_oTempPoint.clear();
         flush();
         break;
-    }
-    
+    }    
+}
+
+void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
+{
+    CMargin* tMargin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index]));
+
+    log("Margin : %f, %f, %f, %f", tMargin->m_oStart.x, tMargin->m_oStart.y, tMargin->m_oTaget.x, tMargin->m_oTaget.y);
+    log("local : %f, %f", vec2.x, vec2.y);
 }
 
 // 
-void CShowArea::setPlayerPosiztion(Sprite* pSp)
+void CShowArea::setPlayerPosiztion()
 {
     int setLine         = CMath::getRandom(0, m_oAllMargin.size() - 1);
 
@@ -278,13 +278,13 @@ void CShowArea::setPlayerPosiztion(Sprite* pSp)
     float dis           = ccpDistance(margin->m_oStart, margin->m_oTaget);
     int ranint          = CMath::getRandom(0, dis);
 
-    Vec2& ps            = CMath::getVec2(margin->m_oStart, ranint, rad);
+    Vec2& ps            = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
 
-    pSp->setPosition(ps);
+    m_pPlayer->setPosition(ps);
 
     setAreaIndex(0, setLine);
 
-    log("sprite setPostion:%f, %f, %d", pSp->getPosition().x  , pSp->getPosition().y, ranint);
+    log("sprite setPostion:%f, %f, %d", m_pPlayer->getPosition().x, m_pPlayer->getPosition().y, ranint);
 }
 
 void CShowArea::setPlayer(CMySprite* sp)

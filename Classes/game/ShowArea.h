@@ -36,13 +36,15 @@ public:
 
     //---------------------------------------------------
 
-    void setPlayerPosiztion(Sprite*);
-
     void setPlayer(CMySprite*);
+
+    void setPlayerPosiztion();
+
+    void setPlayerPosiztion(const Vec2& vec2, int index);  
 
     void setState(State);                       //
 
-    State getState();
+    State getState();                           //
 
     int getTargetIndex(const  Vec2&);           //得到当前点位置的边界
 
