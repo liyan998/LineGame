@@ -29,9 +29,12 @@ void CMySprite::move(const Vec2& point)
     //Vec2& nextPos = CMath::getVec2(this->getPosition(), m_fStep, radina - PI / 2);
     //setPosition(nextPos);
 
+
+    log("startPoint: %f, %f", m_oPointerStart.x, m_oPointerStart.y);
+
 }
 
-void CMySprite::pointerMove(Vec2& pointerVec)
+void CMySprite::pointerMove(const Vec2& pointerVec)
 {
     Vec2 pos = CMath::getVec2(m_AbPosition, pointerVec.x, pointerVec.y);
 
