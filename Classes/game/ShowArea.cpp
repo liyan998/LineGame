@@ -170,7 +170,7 @@ void CShowArea::flush()
     case STATE_DRAWLINE:		
         if (m_oTempPoint.size() > 0)
         {
-            m_pDrawNode->drawSegment(m_oTempPoint[m_oTempPoint.size() - 1], m_oMovePointer, 3, Color4F(1, 1, 1, 1));
+            m_pDrawNode->drawSegment(m_oTempPoint[m_oTempPoint.size() - 1], m_pPlayer->getPosition(), 3, Color4F(1, 1, 1, 1));
         }        
         break;
     }
@@ -202,30 +202,22 @@ void CShowArea::setPointer(const Vec2& pos)
     //log("angle:%d", angle);
 
 
-    if (angle == 0) // up
+    if (angle == 0 || angle == 180 || angle == 90 || angle == -90) // up
     {
-        log("up");
-    }
-    else if (angle == 180)//down
-    {
-        log("down");
-    }
-    else if (angle == 90)// right
-    {
-        log("right");
-    }
-    else if (angle == -90) // left
-    {
-        log("left");
-    }
-    else{
+
+     
+        m_pPlayer->pointerMove(Vec2(dis, RADINA_TOGAME(radina)));
+
+       
+    } else{
         log("no direct");
+        m_pPlayer->setAbsPosition();
         addTempPoint(m_oMovePointer);
         m_oStartPointer = m_oMovePointer;
     }
 
-
-    //m_pPlayer->pointerMove(Vec2(dis, RADINA_TOGAME(radina)));
+   
+    
 
     flush();
 }
