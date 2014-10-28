@@ -14,8 +14,6 @@ void CGameView::onEnter()
 
     auto lisnter = EventListenerTouchOneByOne::create();
 
-    //git test
-
     lisnter->onTouchBegan = CC_CALLBACK_2(CGameView::onTouchBegan, this);
     lisnter->onTouchEnded = CC_CALLBACK_2(CGameView::onTouchEnded, this);
     lisnter->onTouchMoved = CC_CALLBACK_2(CGameView::onTouchMove, this);
@@ -36,9 +34,7 @@ void CGameView::onEnter()
 
     setState(STATE_INIT);
 
-    //------------------------------------------
-
-      
+    //------------------------------------------      
 }
 
 
@@ -50,7 +46,7 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
     auto local          = touches->getLocation();   
     
 
-    switch (m_state)
+    switch (m_State)
     {
     case STATE_INIT:
     {   
@@ -69,16 +65,14 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
             log("location position");
             m_pShowArea->setAreaIndex(0, selectindex);
             m_pShowArea->setPlayerPosiztion(local, selectindex);
-            m_pSp->setAbsPosition();
+           
         }else{
-
 //             m_pShowArea->addTempPoint(m_pSp->getPosition());
-//             m_pShowArea->addTempPoint(local);
-            
-            m_pSp->setAbsPosition();
-
-            setState(STATE_DRAW);
-        }
+//             m_pShowArea->addTempPoint(local);            
+            //m_pSp->setAbsPosition();
+            //setState(STATE_DRAW);
+        } 
+        m_pSp->setAbsPosition();
         log("Selectindex :%d", selectindex);
     }  
     break;
@@ -105,7 +99,7 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
 {
     auto local = touches->getLocation();
     //log("CGameView::onTouchEnded>>>>>>>>>>>%f, %f", local.x, local.y); 
-    switch (m_state)
+    switch (m_State)
     {
     case STATE_INIT:
         break;
@@ -131,13 +125,15 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
 {
     //log("CGameView::onTouchMove-------------");
     auto local = touches->getLocation();
-    switch (m_state)    
+    switch (m_State)
     {
     case STATE_WAIT:        
-        m_pShowArea->setPointer(local);
+       // m_pShowArea->setPointer(local);
+
+        
         break;
     case STATE_DRAW:
-        m_pShowArea->setPointer(local);
+        //m_pShowArea->setPointer(local);
         //auto local = touches->getLocation();
         //m_pShowArea->setPointer(local);
         
@@ -147,7 +143,7 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
 
 
 
-void CGameView::setState(State stata)
+void CGameView::setState(int stata)
 {
     switch (stata)
     {
@@ -167,14 +163,9 @@ void CGameView::setState(State stata)
         break;
     }
 
-    this->m_state = stata;
+    this->m_State = stata;
 }
 
-
-CGameView::State CGameView::getState()
-{
-    return this->m_state;
-}
 
 
 void CGameView::spriteRun(float t)

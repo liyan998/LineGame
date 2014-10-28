@@ -43,5 +43,11 @@ void CMySprite::setAbsPosition()
 {
     log("Ready to Move");
     this->m_AbPosition = this->getPosition();
+}
+
+
+
+void CMySprite::setState(int state)
+{
 
 }

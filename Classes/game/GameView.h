@@ -4,12 +4,12 @@
 #include "framework/ui/AGameScene.h"
 #include "game/ShowArea.h"
 #include "game/MySprite.h"
+#include "framework/State.h"
 
 
 
 
-
-class CGameView : public liyan998::CAGameScene
+class CGameView : public liyan998::CAGameScene ,public CState
 {
 public:
 
@@ -37,15 +37,15 @@ public:
 
     //---------------------------------------------
 
-    void setState(State);
-
-    State getState();
+    virtual void setState(int state);
 
     void initGame(float);
 
     void drawLine();
 
     void spriteRun(float);
+
+
     
     //-----------------------------------------------------
 
@@ -59,7 +59,7 @@ private:
 
     CMySprite*                  m_pSp;              //Íæ¼Ò¾«Áé    
 
-    State                       m_state;            //ÓÎÏ·×´Ì¬
+
 
     //FIXME--------------------------------
     int count;

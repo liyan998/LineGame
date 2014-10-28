@@ -322,7 +322,8 @@ void CShowArea::clearAreaIndex()
 
     log("direct 0x%x", direct);
 
-    if ((nodeCount < 0 && direct == 0xff0000ff) || (nodeCount > 0 && direct == 0x00ffff00))                                   //包含起始点
+    //包含起始点
+    if ((nodeCount < 0 && direct == 0xff0000ff) || (nodeCount > 0 && direct == 0x00ffff00)) 
     {
         log("include first!!!!!!!!");
              

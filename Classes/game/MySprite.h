@@ -2,8 +2,9 @@
 #define __MYSPRITE_H__
 
 #include "framework/System.h"
+#include "framework/State.h"
 
-class CMySprite : public Sprite
+class CMySprite : public Sprite , public CState
 {
 
 public:
@@ -24,6 +25,10 @@ public:
 
     virtual bool init();
 
+    virtual void setState(int state);
+
+
+
     void move(float radian);
 
     void pointerMove(Vec2& pointerVec);
@@ -33,14 +38,13 @@ public:
 
 private:
 
-    State m_State;          //状态
+    State m_State;                      //状态
 
-    float m_fStep;          //步长
+    float m_fStep;                      //步长
 
-    Vec2 m_AbPosition;      //相对位置
+    Vec2 m_AbPosition;                  //相对位置
 
-
-    std::vector<Vec2>       m_oPath;
+    std::vector<Vec2>       m_oPath;    //路径节点
 
 
 

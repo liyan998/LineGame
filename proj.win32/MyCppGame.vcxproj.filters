@@ -164,12 +164,14 @@
     <ClInclude Include="..\Classes\game\triangulate.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\ui\AGameScreen.h" />
     <ClInclude Include="..\Classes\framework\util\Util.h">
       <Filter>Classes\framework\util</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Shape.h">
       <Filter>Classes\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\framework\State.h">
+      <Filter>Classes\framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

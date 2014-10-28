@@ -80,7 +80,9 @@ Vec2 CMath::getFootPoint(const Vec2& lineP1, const Vec2& lineP2, const Vec2& lin
 
 /************************************************************************/
 /* 
+
 点到直线的距离
+
 pt1 直线上一点
 pt2 直线上一点
 pt3 直线外点
