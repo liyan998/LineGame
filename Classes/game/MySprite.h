@@ -29,22 +29,24 @@ public:
 
 
 
-    void move(float radian);
+    void move(const Vec2& point);
 
-    void pointerMove(Vec2& pointerVec);
+    void pointerMove(const Vec2& pointerVec);
 
     void setAbsPosition();
+
+    void setPointerStart(const Vec2& point);
 
 
 private:
 
-    State m_State;                      //状态
+    float m_fStep;                              //步长
 
-    float m_fStep;                      //步长
+    Vec2 m_AbPosition;                          //相对位置
 
-    Vec2 m_AbPosition;                  //相对位置
+    std::vector<Vec2>       m_oPath;            //路径节点
 
-    std::vector<Vec2>       m_oPath;    //路径节点
+    Vec2                    m_oPointerStart;
 
 
 

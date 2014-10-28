@@ -24,7 +24,7 @@ bool CMySprite::init()
     return true;
 }
 
-void CMySprite::move(float radina)
+void CMySprite::move(const Vec2& point)
 {
     //Vec2& nextPos = CMath::getVec2(this->getPosition(), m_fStep, radina - PI / 2);
     //setPosition(nextPos);
@@ -50,4 +50,10 @@ void CMySprite::setAbsPosition()
 void CMySprite::setState(int state)
 {
 
+}
+
+
+void CMySprite::setPointerStart(const Vec2& point)
+{
+    this->m_oPointerStart = point;
 }

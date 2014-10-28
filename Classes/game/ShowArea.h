@@ -60,6 +60,8 @@ public:
 
     void setAreaIndex(int index, int areaIndex);//设置区间索引
 
+    bool hasPointInArea(const Vec2& point);     //点是否在区域内
+
     void flushMargin();                          //   
 
     void flush();

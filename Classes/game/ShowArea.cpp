@@ -452,3 +452,15 @@ unsigned int CShowArea::getDirect()
     return result;
 }
 
+
+bool CShowArea::hasPointInArea(const Vec2& point)
+{
+
+    if (CUtil::hasPointInPloyon(m_oAllPoint, point))
+    {
+        return true;
+    }
+
+    return false;
+}
+

@@ -72,6 +72,7 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
             //m_pSp->setAbsPosition();
             //setState(STATE_DRAW);
         } 
+        m_pSp->setPointerStart(local);
         m_pSp->setAbsPosition();
         log("Selectindex :%d", selectindex);
     }  
@@ -129,13 +130,16 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
     {
     case STATE_WAIT:        
        // m_pShowArea->setPointer(local);
+        //移动精灵、如果不在区域内 draw
+        m_pSp->move(local);
 
-        
         break;
     case STATE_DRAW:
         //m_pShowArea->setPointer(local);
         //auto local = touches->getLocation();
         //m_pShowArea->setPointer(local);
+
+        //收集节点
         
         break;
     }   
