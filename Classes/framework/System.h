@@ -11,5 +11,9 @@
 
 using namespace cocos2d;
 
+#define RADINA_TOGAME( radina ) PI / 2 - radina
+
+
+
 
 #endif

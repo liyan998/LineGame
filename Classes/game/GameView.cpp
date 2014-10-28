@@ -74,9 +74,11 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
             m_pShowArea->setAreaIndex(0, selectindex);
             m_pSp->setPosition(local.x, local.y);
         }else{
-            m_pShowArea->addTempPoint(m_pSp->getPosition());
-            m_pShowArea->addTempPoint(local);
+//             m_pShowArea->addTempPoint(m_pSp->getPosition());
+//             m_pShowArea->addTempPoint(local);
             
+            m_pSp->setAbsPosition();
+
             setState(STATE_DRAW);
         }
         log("Selectindex :%d", selectindex);
@@ -84,14 +86,15 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
     break;
     case STATE_DRAW:
     {
-        int selectindex = m_pShowArea->getTargetIndex(local);
-        m_pShowArea->addTempPoint(local);
-        if (selectindex != SELECTID_NULL)
-        {
-            m_pShowArea->setAreaIndex(1, selectindex);
-            setState(STATE_RUN);
-        }   
-        log("Selectindex :%d", selectindex);
+        //test area close
+//         int selectindex = m_pShowArea->getTargetIndex(local);
+//         m_pShowArea->addTempPoint(local);
+//         if (selectindex != SELECTID_NULL)
+//         {
+//             m_pShowArea->setAreaIndex(1, selectindex);
+//             setState(STATE_RUN);
+//         }   
+//         log("Selectindex :%d", selectindex);
     } 
     break;
     }
@@ -111,10 +114,10 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
     case STATE_WAIT:
         break;
     case STATE_DRAW:
-//         if (m_pShowArea->isCloseArea())
-//         {
-//             setState(STATE_RUN);
-//         }        
+        if (m_pShowArea->isCloseArea())
+        {
+            setState(STATE_RUN);
+        }        
         break;
     case STATE_RUN:
         break;
@@ -129,15 +132,17 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
 void CGameView::onTouchMove(Touch* touches, Event *event)
 {
     //log("CGameView::onTouchMove-------------");
-    
+    auto local = touches->getLocation();
     switch (m_state)    
     {
-    case STATE_WAIT:
+    case STATE_WAIT:        
         
         break;
     case STATE_DRAW:
-        auto local = touches->getLocation();
+        m_pShowArea->setPointer(local);
+        //auto local = touches->getLocation();
         //m_pShowArea->setPointer(local);
+        
         break;
     }   
 }
@@ -180,9 +185,7 @@ void CGameView::spriteRun(float t)
     if (count++ > 100)
     {
         count = 0;
-        m_pShowArea->setState(CShowArea::State::STATE_CLOSE);
-
-        
+        m_pShowArea->setState(CShowArea::State::STATE_CLOSE);        
 
         unschedule(schedule_selector(CGameView::spriteRun));
         setState(STATE_WAIT);            

@@ -30,3 +30,18 @@ void CMySprite::move(float radina)
     //setPosition(nextPos);
 
 }
+
+void CMySprite::pointerMove(Vec2& pointerVec)
+{
+    Vec2 pos = CMath::getVec2(m_AbPosition, pointerVec.x, pointerVec.y);
+
+    setPosition(pos);
+}
+
+
+void CMySprite::setAbsPosition()
+{
+    log("Ready to Move");
+    this->m_AbPosition = this->getPosition();
+
+}

@@ -7,6 +7,8 @@
 
 
 
+
+
 class CGameView : public liyan998::CAGameScene
 {
 public:

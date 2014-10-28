@@ -8,6 +8,16 @@ class CMySprite : public Sprite
 
 public:
 
+    enum State
+    {
+
+        STATE_STANDER,
+        STATE_MOVE,
+
+    };
+
+public:
+
     CREATE_FUNC( CMySprite )
 
 public:
@@ -16,9 +26,17 @@ public:
 
     void move(float radian);
 
+    void pointerMove(Vec2& pointerVec);
+
+    void setAbsPosition();
+
+
 private:
 
-    float m_fStep;  //步长
+    float m_fStep;          //步长
+
+    Vec2 m_AbPosition;      //相对位置
+
 
 
 };

@@ -147,28 +147,31 @@ void CShowArea::flush()
 	}
 
 
-    for (int i = 0; i < m_oAllMargin.size(); i++)
-    {
-        CMargin* pMarg = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));
-
-        log("pMarg->m_Angle :%d", pMarg->m_Angle);
-        Vec2 endP1 = CMath::getVec2(pMarg->getPosition(), 100, CMath::angleToRadian(90 + pMarg->m_Angle));
-        Vec2 endP2 = CMath::getVec2(pMarg->getPosition(), 100, CMath::angleToRadian(pMarg->m_Angle));
-        Vec2 endP3 = CMath::getVec2(pMarg->getPosition(), 100, CMath::angleToRadian(180 + pMarg->m_Angle));
-
-        m_pDrawNode->drawSegment(pMarg->getPosition(), endP1, 1, Color4F(1, 1, 0, 1));
-        m_pDrawNode->drawSegment(pMarg->getPosition(), endP2, 1, Color4F(1, 0, 1, 1));
-        m_pDrawNode->drawSegment(pMarg->getPosition(), endP3, 1, Color4F(0, 1, 1, 1));
-
-        m_pDrawNode->drawDot(pMarg->getPosition(), 4, Color4F(1, 0, 0, 1));
-    }
+//     for (int i = 0; i < m_oAllMargin.size(); i++)
+//     {
+//         CMargin* pMarg = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));
+// 
+//         log("pMarg->m_Angle :%d", pMarg->m_Angle);
+//         Vec2 endP1 = CMath::getVec2(pMarg->getPosition(), 100, CMath::angleToRadian(90 + pMarg->m_Angle));
+//         Vec2 endP2 = CMath::getVec2(pMarg->getPosition(), 100, CMath::angleToRadian(pMarg->m_Angle));
+//         Vec2 endP3 = CMath::getVec2(pMarg->getPosition(), 100, CMath::angleToRadian(180 + pMarg->m_Angle));
+// 
+//         m_pDrawNode->drawSegment(pMarg->getPosition(), endP1, 1, Color4F(1, 1, 0, 1));
+//         m_pDrawNode->drawSegment(pMarg->getPosition(), endP2, 1, Color4F(1, 0, 1, 1));
+//         m_pDrawNode->drawSegment(pMarg->getPosition(), endP3, 1, Color4F(0, 1, 1, 1));
+// 
+//         m_pDrawNode->drawDot(pMarg->getPosition(), 4, Color4F(1, 0, 0, 1));
+//     }
 
 
 	
     switch (m_State)
     {
     case STATE_DRAWLINE:		
-        m_pDrawNode->drawSegment(m_oStartPointer, m_oMovePointer, 3, Color4F(1, 1, 1, 1));
+        if (m_oTempPoint.size() > 0)
+        {
+            m_pDrawNode->drawSegment(m_oTempPoint[m_oTempPoint.size() - 1], m_oMovePointer, 3, Color4F(1, 1, 1, 1));
+        }        
         break;
     }
    
@@ -177,19 +180,52 @@ void CShowArea::flush()
 
 void CShowArea::setPointer(const Vec2& pos)
 {
-    log("Pointer: x:%f, y:%f", pos.x, pos.y);
+    //log("Pointer: x:%f, y:%f", pos.x, pos.y);
 
     if (getState() != STATE_DRAWLINE)
     {
+        log("draw tempPoint start");
         m_oTempPoint.push_back(m_pPlayer->getPosition());
         m_oStartPointer = pos;
         setState(STATE_DRAWLINE);
     }
 
     //----------------------------------------------
-    //取法向量
+
 
     m_oMovePointer = pos;
+
+    float dis = ccpDistance(m_oStartPointer, m_oMovePointer);
+    float radina = CMath::getRadian(m_oStartPointer, m_oMovePointer);
+
+    int angle = CMath::radianToAngle(radina);
+    //log("angle:%d", angle);
+
+
+    if (angle == 0) // up
+    {
+        log("up");
+    }
+    else if (angle == 180)//down
+    {
+        log("down");
+    }
+    else if (angle == 90)// right
+    {
+        log("right");
+    }
+    else if (angle == -90) // left
+    {
+        log("left");
+    }
+    else{
+        log("no direct");
+        addTempPoint(m_oMovePointer);
+        m_oStartPointer = m_oMovePointer;
+    }
+
+
+    //m_pPlayer->pointerMove(Vec2(dis, RADINA_TOGAME(radina)));
 
     flush();
 }
@@ -242,7 +278,7 @@ void CShowArea::setState(State sta)
 // 
 void CShowArea::setPlayerPosiztion(Sprite* pSp)
 {
-    int setLine = CMath::getRandom(0, m_oAllMargin.size() - 1);
+    int setLine         = CMath::getRandom(0, m_oAllMargin.size() - 1);
 
     CMargin* margin     = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[setLine]));
 
