@@ -1,7 +1,7 @@
 #include "Util.h"
 
 
-bool CUtil::hasPointInPloyon(std::vector<Vec2>& refVector, Vec2& refPoint)
+bool CUtil::hasPointInPloyon(std::vector<Vec2>& refVector,const Vec2& refPoint)
 { 
     unsigned int count = 0;
     int polySides = refVector.size();
@@ -49,4 +49,14 @@ unsigned int CUtil::getCountPointInPloyon(std::vector<Vec2>& refPloyon, std::vec
         }
     }
     return count;
+}
+
+
+bool CUtil::hasPointInLine(const Vec2& lineP1, const Vec2& lineP2, const Vec2& outPoint)
+{
+
+
+
+
+    return false;
 }

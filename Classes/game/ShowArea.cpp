@@ -191,7 +191,7 @@ void CShowArea::setPointer(const Vec2& pos)
     //----------------------------------------------
     m_oMovePointer        = pos;
 
-    if (CUtil::hasPointInPloyon(m_oAllPoint, m_oMovePointer))
+    if ( CUtil::hasPointInPloyon( m_oAllPoint, m_pPlayer->getPosition() ) )
     {
         log("colleWidth Ployon");
     }
@@ -261,10 +261,9 @@ void CShowArea::setState(State sta)
 
 void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
 {
-    CMargin* tMargin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index]));
-
-    log("Margin : %f, %f, %f, %f", tMargin->m_oStart.x, tMargin->m_oStart.y, tMargin->m_oTaget.x, tMargin->m_oTaget.y);
-    log("local : %f, %f", vec2.x, vec2.y);
+    CMargin* tMargin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
+    Vec2& refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2);
+    m_pPlayer->setPosition(refp);
 }
 
 // 

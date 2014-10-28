@@ -30,6 +30,12 @@ namespace liyan998
         //得到随机数
         static int getRandom(int startI, int endI);
 
+        //得到垂足
+        static Vec2 getFootPoint(const Vec2& lineP1, const Vec2& lineP2, const Vec2& lineOP);
+
+        //点到直线的距离
+        static float getPointToLineDis(const Vec2& pt1, const Vec2& pt2, const Vec2& pt3);
+
     };
 }
 
