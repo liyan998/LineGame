@@ -297,16 +297,14 @@ void CShowArea::clearAreaIndex()
 
     log("direct 0x%x", direct);
 
-    if (nodeCount < 0 && direct == 0xff0000ff)                                   //包含起始点
+    if ((nodeCount < 0 && direct == 0xff0000ff) || (nodeCount > 0 && direct == 0x00ffff00))                                   //包含起始点
     {
         log("include first!!!!!!!!");
-        delNum = m_Area[0] + 1;
-       
-        
+             
         if (direct == 0xff0000ff)
         {            
             log("Left ro");
-
+            
             //删掉target point;
             delNum  = m_Area[1] + 1;
             it      = m_oAllPoint.begin() + delNum;
@@ -317,14 +315,24 @@ void CShowArea::clearAreaIndex()
             delNum  = m_Area[0] + 1;
             m_oAllPoint.erase(it, it + delNum);
 
-            std::reverse(m_oAllPoint.begin(), m_oAllPoint.end());
+            std::reverse(m_oTempPoint.begin(), m_oTempPoint.end());
 
-            it = m_oAllPoint.begin();
+            it = m_oAllPoint.end();
             m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
             
-        }
-        else if (direct == 0xffff00){
+        }else if (direct == 0xffff00){
             log("Right ro");
+            //del body
+            it      = m_oAllPoint.begin() + m_Area[0] + 1;
+            delNum  = m_oAllPoint.size() - 1 - m_Area[0];
+            m_oAllPoint.erase(it, it + delNum);
+            //del head
+            delNum  = m_Area[1] + 1;
+            it      = m_oAllPoint.begin();
+            m_oAllPoint.erase(it, it + delNum);
+
+            it      = m_oAllPoint.end();
+            m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
         }     
     }
     else
@@ -347,10 +355,10 @@ void CShowArea::clearAreaIndex()
         }else{                                          //顺时针
             startMargin = m_Area[0] + 1;
 
-            it = m_oAllPoint.begin() + startMargin;
+            it          = m_oAllPoint.begin() + startMargin;
             m_oAllPoint.erase(it, it + delNum);
 
-            it = m_oAllPoint.begin() + startMargin;           
+            it          = m_oAllPoint.begin() + startMargin;           
             m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
         }       
     }
