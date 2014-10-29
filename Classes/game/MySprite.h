@@ -3,8 +3,13 @@
 
 #include "framework/System.h"
 #include "framework/State.h"
+#include "game/Path.h"
 
-class CMySprite : public Sprite , public CState
+#define MAX_ANGLE 4
+
+
+
+class CMySprite : public Sprite , public CState, public CRander
 {
 
 public:
@@ -28,6 +33,11 @@ public:
     virtual void setState(int state);
 
 
+	virtual void print(DrawNode* dn);
+
+	//----------------------------------------------------
+
+	void setPath(CPath* path);
 
     void move(const Vec2& point);
 
@@ -37,17 +47,26 @@ public:
 
     void setPointerStart(const Vec2& point);
 
+private:
+
+	int getFixAngle(int angle);
+
+
+
 
 private:
 
+	CPath* m_RefPath;
+
     float m_fStep;                              //步长
 
-    Vec2 m_AbPosition;                          //相对位置
-
-    std::vector<Vec2>       m_oPath;            //路径节点
+    Vec2 m_AbPosition;                          //相对位置  
 
     Vec2                    m_oPointerStart;
 
+	int						m_currentAngle;		//当前角度 0 -90 180 90
+
+	int	m_avibleAngle[MAX_ANGLE];
 
 
 };

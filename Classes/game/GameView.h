@@ -5,7 +5,8 @@
 #include "game/ShowArea.h"
 #include "game/MySprite.h"
 #include "framework/State.h"
-
+#include "game/Path.h"
+#include "game/Rander.h"
 
 
 
@@ -45,6 +46,8 @@ public:
 
     void spriteRun(float);
 
+	void run(float time);
+
 
     
     //-----------------------------------------------------
@@ -52,13 +55,18 @@ public:
 
 
 private:
-
-    std::vector< Vec2 >         m_oAllPoint;    
+ 
 
     CShowArea*                  m_pShowArea;        //ÇøÓò    
 
     CMySprite*                  m_pSp;              //Íæ¼Ò¾«Áé    
 
+	CPath*						m_pPath;
+
+	DrawNode*					m_pDrawNode;		//
+
+	std::vector< CRander* >		m_oAllRander;
+		
 
 
     //FIXME--------------------------------

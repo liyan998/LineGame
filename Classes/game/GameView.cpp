@@ -21,20 +21,29 @@ void CGameView::onEnter()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(lisnter, this);
 
     //--------------------------------------------------------------------
+	m_pDrawNode			= DrawNode::create();
 
+	m_pPath				= new CPath();
+	
     m_pSp               = CMySprite::create();
-    addChild(m_pSp);
-
-    m_pShowArea         = CShowArea::create(); 
-    addChild(m_pShowArea);
+    m_pShowArea         = CShowArea::create();    
     
+	m_pSp->setPath(m_pPath);
     m_pShowArea->setPlayer(m_pSp);
-    
+		
+    addChild(m_pShowArea);	
+	addChild(m_pSp);
+	addChild(m_pDrawNode);
     //------------------------------------
+	
+	m_oAllRander.push_back(m_pPath);
+	m_oAllRander.push_back(m_pSp);
 
     setState(STATE_INIT);
+	
+    //------------------------------------------  
 
-    //------------------------------------------      
+	schedule(schedule_selector(CGameView::run));
 }
 
 
@@ -104,13 +113,10 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
     {
     case STATE_INIT:
         break;
-    case STATE_WAIT:
-        break;
-    case STATE_DRAW:
-        if (m_pShowArea->isCloseArea())
-        {
-            setState(STATE_RUN);
-        }        
+    case STATE_WAIT:        
+		break;
+    case STATE_DRAW:       
+        setState(STATE_RUN);            
         break;
     case STATE_RUN:
         break;
@@ -180,6 +186,8 @@ void CGameView::spriteRun(float t)
         count = 0;
         m_pShowArea->setState(CShowArea::State::STATE_CLOSE);        
 
+		m_pPath->clearPoint();
+
         unschedule(schedule_selector(CGameView::spriteRun));
         setState(STATE_WAIT);            
     }
@@ -189,5 +197,16 @@ void CGameView::initGame(float)
 {
     //log("random rect Size");
     //TODO random rect Size
+
+}
+
+void CGameView::run(float time)
+{
+	m_pDrawNode->clear();
+
+	for (int i = 0;i < m_oAllRander.size();i++)
+	{
+		m_oAllRander[i]->print(m_pDrawNode);
+	}
 
 }
