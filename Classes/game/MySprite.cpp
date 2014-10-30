@@ -1,7 +1,7 @@
 
 
 #include "MySprite.h"
-#include <assert.h>
+
 #include "framework/util/Math.h"
 
 using namespace liyan998;
@@ -13,10 +13,6 @@ bool CMySprite::init()
 	m_currentAngle		= -1;
     m_fStep				= 2.f;
 
-	m_avibleAngle[0] = 0;
-	m_avibleAngle[1] = 90;
-	m_avibleAngle[2] = 180;
-	m_avibleAngle[3] = -90;
 
     DrawNode* pDn = DrawNode::create();	
     addChild(pDn);
@@ -34,26 +30,24 @@ bool CMySprite::init()
 
 void CMySprite::move(const Vec2& point)
 {
-	float radian = RADINA_TOGAME( CMath::getRadian( m_oPointerStart, point ) );
-	
-	int angle =  CMath::radianToAngle( radian );	
-	int fixangle = getFixAngle(angle);
+	float radian    = RADINA_TOGAME( CMath::getRadian( m_oPointerStart, point ) );	
+	int angle       = CMath::radianToAngle( radian );	
+	int fixangle    = getFixAngle(angle);
 
     //log("angle:%d , fixangle:%d", (angle), fixangle);	
-    assert(fixangle != ANGLE_ERROR);	
+    //assert(fixangle != ANGLE_ERROR);	
 
 	if (m_currentAngle != fixangle)
 	{
-		log("no direct %d , currentAngle:%d", angle, m_currentAngle);
+		//log("no direct %d , currentAngle:%d", angle, m_currentAngle);
 
 		//记录节点改变方向
 		setAbsPosition();
 		m_RefPath->addPoint(getPosition());
-		m_oPointerStart = point;
-		m_currentAngle = fixangle;
+		m_oPointerStart     = point;
+		m_currentAngle      = fixangle;
         return;
-	}
-		
+	}		
 
 	float dis		= ccpDistance(m_oPointerStart , point);
 	Vec2 position	= CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
@@ -172,7 +166,7 @@ void CMySprite::setAbsPosition()
 
 void CMySprite::setState(int state)
 {
-
+    this->m_State = state;
 }
 
 
@@ -191,6 +185,14 @@ void CMySprite::print(DrawNode* dn)
     {
         Vec2 endP = CMath::getVec2(m_oPointerStart, 100, CMath::angleToRadian(ta[i]));
         dn->drawSegment(m_oPointerStart, endP, 1, Color4F(0, 1, 1, 1));
+    }
+    
+
+    switch (m_State)
+    {
+    case STATE_DRAW:
+        dn->drawSegment(m_AbPosition, getPosition(), 1, Color4F(0, 1, 1, 1));
+        break;
     }
     
 

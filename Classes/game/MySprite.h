@@ -16,6 +16,7 @@ public:
 
     enum State
     {
+        STATE_INIT,         //初始
         STATE_STANDER,      //一般模式
         STATE_MOVE,         //移动 == onTouchBegin  离开区域 => draw
         STATE_DRAW,         //划线 == onTouchMove   闭合区域 => run
@@ -58,15 +59,15 @@ private:
 
 	CPath* m_RefPath;
 
-    float                   m_fStep;                              //步长
+    float                   m_fStep;            //步长
 
-    Vec2                    m_AbPosition;                          //相对位置  
+    Vec2                    m_AbPosition;       //相对位置  
 
     Vec2                    m_oPointerStart;
 
 	int						m_currentAngle;		//当前角度
 
-    std::vector<int>        m_oAvaMove;         //可行走区域
+    int*                    m_pAvaMove;         //可行走区域
 
 };
 

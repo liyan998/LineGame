@@ -14,8 +14,7 @@ public:
 
 	virtual void print(DrawNode* dn);
 
-private:
-
+public:
 	
 	std::vector< Vec2 > m_oAllPoint;
 };

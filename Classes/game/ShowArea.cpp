@@ -10,7 +10,8 @@ bool CShowArea::init()
 {
     Sprite::init();   
 
-    m_pPlayer = NULL;
+    m_pPlayer   = NULL;
+    m_pPath     = NULL;
 
     //--------------------------------------
 
@@ -135,17 +136,17 @@ void CShowArea::flush()
 		m_pDrawNode->drawDot(m_oAllPoint[i],2,Color4F(1,1,1,1));
 	}
 
-    for (int i = 0; i < m_oTempPoint.size(); i++)
-    {
-        if (i + 1 < m_oTempPoint.size())
-        {
-            m_pDrawNode->drawSegment(m_oTempPoint[i], m_oTempPoint[i + 1], 2, Color4F(1, .5F, .5F, .5F));
-        }       
-    }
-	for (int i = 0 ;i < m_oTempPoint.size();i++)
-	{
-		m_pDrawNode->drawDot(m_oTempPoint[i],2,Color4F(1,1,1,1));
-	}
+//     for (int i = 0; i < m_oTempPoint.size(); i++)
+//     {
+//         if (i + 1 < m_oTempPoint.size())
+//         {
+//             m_pDrawNode->drawSegment(m_oTempPoint[i], m_oTempPoint[i + 1], 2, Color4F(1, .5F, .5F, .5F));
+//         }       
+//     }
+// 	for (int i = 0 ;i < m_oTempPoint.size();i++)
+// 	{
+// 		m_pDrawNode->drawDot(m_oTempPoint[i],2,Color4F(1,1,1,1));
+// 	}
 
 
 //     for (int i = 0; i < m_oAllMargin.size(); i++)
@@ -164,15 +165,15 @@ void CShowArea::flush()
 //         m_pDrawNode->drawDot(pMarg->getPosition(), 4, Color4F(1, 0, 0, 1));
 //     }
     	
-    switch (m_State)
-    {
-    case STATE_DRAWLINE:		
-        if (m_oTempPoint.size() > 0)
-        {
-            m_pDrawNode->drawSegment(m_oTempPoint[m_oTempPoint.size() - 1], m_pPlayer->getPosition(), 3, Color4F(1, 1, 1, 1));
-        }        
-        break;
-    }
+//     switch (m_State)
+//     {
+//     case STATE_DRAWLINE:		
+//         if (m_oTempPoint.size() > 0)
+//         {
+//             m_pDrawNode->drawSegment(m_oTempPoint[m_oTempPoint.size() - 1], m_pPlayer->getPosition(), 3, Color4F(1, 1, 1, 1));
+//         }        
+//         break;
+//     }
    
 }
 
@@ -222,13 +223,23 @@ int CShowArea::getTargetIndex(const Vec2& rec)
 
         if (trec.containsPoint(rec))
         {
-            log("CMargin Point:%f,%f", trec.origin.x, trec.origin.y);          
+            //log("CMargin Point:%f,%f", trec.origin.x, trec.origin.y);          
             return i;
         }
     }
 
     return SELECTID_NULL;
 }
+
+CMargin* CShowArea::getMargin(int index)
+{
+    if (index < 0 || index > m_oAllMargin.size() - 1)
+    {
+        return NULL;
+    }
+    return static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index]));
+}
+
 
 //TODO检查划线区域是否闭合
 bool CShowArea::isCloseArea()
@@ -251,7 +262,10 @@ void CShowArea::setState(State sta)
     {
     case STATE_CLOSE:
         clearAreaIndex();
-        m_oTempPoint.clear();
+        if (m_pPath != NULL)
+        {
+            m_pPath->clearPoint();
+        }        
         flush();
         break;
     }    
@@ -277,16 +291,23 @@ void CShowArea::setPlayerPosiztion()
 
     Vec2& ps            = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
 
+    m_pPlayer->setState(CMySprite::STATE_INIT);
     m_pPlayer->setPosition(ps);
 
     setAreaIndex(0, setLine);
 
     log("sprite setPostion:%f, %f, %d", m_pPlayer->getPosition().x, m_pPlayer->getPosition().y, ranint);
+
 }
 
 void CShowArea::setPlayer(CMySprite* sp)
 {
     this->m_pPlayer = sp;
+}
+
+void CShowArea::setPath(CPath* path)
+{
+    this->m_pPath = path;
 }
 
 
@@ -307,20 +328,22 @@ void CShowArea::clearAreaIndex()
 {
     if (m_Area[0] == -1 || m_Area[1] == -1)
     {
-        log("no area");
+        log("no area %d - %d", m_Area[0], m_Area[1]);
         return;
     }
 
     log("-----------------------------------------------------");
     int delNum;
     int nodeCount       = m_Area[0] - m_Area[1];    
-    bool isConllFirst   = CUtil::hasPointInPloyon(m_oTempPoint, m_oAllPoint[0]);
+    bool isConllFirst   = CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, m_oAllPoint[0]);
 
     int         startMargin;
     Vec2Iter    it;
     unsigned int direct = getDirect();
 
     log("direct 0x%x", direct);
+
+    log("Path size:%d", m_pPath->m_oAllPoint.size());
 
     //包含起始点
     if ((nodeCount < 0 && direct == 0xff0000ff) || (nodeCount > 0 && direct == 0x00ffff00)) 
@@ -341,10 +364,10 @@ void CShowArea::clearAreaIndex()
             delNum  = m_Area[0] + 1;
             m_oAllPoint.erase(it, it + delNum);
 
-            std::reverse(m_oTempPoint.begin(), m_oTempPoint.end());
+            std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
 
             it = m_oAllPoint.end();
-            m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
+            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
             
         }else if (direct == 0xffff00){
             log("Right ro");
@@ -358,7 +381,7 @@ void CShowArea::clearAreaIndex()
             m_oAllPoint.erase(it, it + delNum);
 
             it      = m_oAllPoint.end();
-            m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
+            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
         }     
     }
     else
@@ -372,8 +395,8 @@ void CShowArea::clearAreaIndex()
             m_oAllPoint.erase(it, it + delNum);
 
             it = m_oAllPoint.begin() + startMargin;
-            std::reverse(m_oTempPoint.begin(), m_oTempPoint.end()); 
-            m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
+            std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end()); 
+            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
 
         }else if (nodeCount == 0)                       //在同一区域
         {
@@ -385,7 +408,7 @@ void CShowArea::clearAreaIndex()
             m_oAllPoint.erase(it, it + delNum);
 
             it          = m_oAllPoint.begin() + startMargin;           
-            m_oAllPoint.insert(it, m_oTempPoint.begin(), m_oTempPoint.end());
+            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
         }       
     }
 
@@ -427,23 +450,23 @@ unsigned int CShowArea::getDirect()
     CMargin* startMargin    = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[m_Area[0]]));
     CMargin* endMargin      = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[m_Area[1]]));
     
-    if (CUtil::hasPointInPloyon(m_oTempPoint, startMargin->m_oStart))
+    if (CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, startMargin->m_oStart))
     {
         log("content Start - 1 point!");
         result |= 0xff000000;
     }
-    else if (CUtil::hasPointInPloyon(m_oTempPoint, startMargin->m_oTaget)){
+    else if (CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, startMargin->m_oTaget)){
 
         log("content Start - 2 point!");
         result |= 0xff0000;
     }
 
-    if (CUtil::hasPointInPloyon(m_oTempPoint, endMargin->m_oStart))
+    if (CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, endMargin->m_oStart))
     {
         log("content End - 1 point!");
         result |= 0xff00;
     }
-    else if (CUtil::hasPointInPloyon(m_oTempPoint, endMargin->m_oTaget)){
+    else if (CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, endMargin->m_oTaget)){
 
         log("content End - 2 point!");
         result |= 0xff;
@@ -468,6 +491,7 @@ bool CShowArea::hasPointInArea(const Vec2& point)
 
 int* CShowArea::getMoveAble(const Vec2& pos)
 {
+    
     if (getTargetIndex(pos) == SELECTID_NULL)
     {
 
@@ -476,7 +500,5 @@ int* CShowArea::getMoveAble(const Vec2& pos)
     {
 
     }
-
-
     return NULL;
 }
