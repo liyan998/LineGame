@@ -59,7 +59,10 @@ return ´¹×ã×ø±ê
 /************************************************************************/
 Vec2 CMath::getFootPoint(const Vec2& lineP1, const Vec2& lineP2, const Vec2& lineOP)
 {
-    if (lineP1.x - lineP2.x == 0)
+    int x1 = (int)(lineP1.x);
+    int x2 = (int)(lineP2.x);
+
+    if (x1 - x2 == 0)
     {
         return Vec2(lineP2.x, lineOP.y);
     }

@@ -19,7 +19,7 @@ void CShape::draw(DrawNode* pDd)
             Vec2(p2.GetX(), p2.GetY()),
             Vec2(p3.GetX(), p3.GetY())
         };
-        pDd->drawPolygon(tvec1, 3, Color4F(1, 0, 1, .5f), 0, Color4F(0, 0, 0, 0));
+        pDd->drawPolygon(tvec1, 3, Color4F(1, 0, 1, .1f), 0, Color4F(0, 0, 0, 0));
     }
 }
 
