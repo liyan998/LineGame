@@ -14,6 +14,11 @@ using namespace cocos2d;
 #define RADINA_TOGAME( radina ) PI / 2 - radina
 
 
+#define ANGLE_UP        90
+#define ANGLE_LEFT      180
+#define ANGLE_RIGHT     0
+#define ANGLE_DOWN      -90
 
+#define ANGLE_ERROR     1000000
 
 #endif

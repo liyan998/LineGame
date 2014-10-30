@@ -173,7 +173,9 @@
     <ClInclude Include="..\Classes\game\Shape.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\ui\AGameScreen.h" />
+    <ClInclude Include="..\Classes\framework\State.h">
+      <Filter>Classes\framework</Filter>
+    </ClInclude>
     <ClInclude Include="..\Classes\game\Path.h">
       <Filter>Classes\game</Filter>
     </ClInclude>

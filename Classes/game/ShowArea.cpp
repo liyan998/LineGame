@@ -464,3 +464,19 @@ bool CShowArea::hasPointInArea(const Vec2& point)
     return false;
 }
 
+
+
+int* CShowArea::getMoveAble(const Vec2& pos)
+{
+    if (getTargetIndex(pos) == SELECTID_NULL)
+    {
+
+    }
+    else
+    {
+
+    }
+
+
+    return NULL;
+}

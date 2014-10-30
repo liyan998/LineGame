@@ -137,6 +137,11 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
     case STATE_WAIT:        
        // m_pShowArea->setPointer(local);
         //移动精灵、如果不在区域内 draw
+
+        int selectindex = m_pShowArea->getTargetIndex(m_pSp->getPosition());
+
+       
+
         m_pSp->move(local);
 
         break;

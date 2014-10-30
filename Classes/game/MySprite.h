@@ -58,16 +58,15 @@ private:
 
 	CPath* m_RefPath;
 
-    float m_fStep;                              //步长
+    float                   m_fStep;                              //步长
 
-    Vec2 m_AbPosition;                          //相对位置  
+    Vec2                    m_AbPosition;                          //相对位置  
 
     Vec2                    m_oPointerStart;
 
-	int						m_currentAngle;		//当前角度 0 -90 180 90
+	int						m_currentAngle;		//当前角度
 
-	int	m_avibleAngle[MAX_ANGLE];
-
+    std::vector<int>        m_oAvaMove;         //可行走区域
 
 };
 

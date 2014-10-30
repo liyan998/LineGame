@@ -70,6 +70,9 @@ public:
 
     unsigned int getDirect();
 
+
+    int*    getMoveAble(const Vec2& pos);       //返回可行走区域
+
 private:
 
     DrawNode*                   m_pDrawNode;    //
