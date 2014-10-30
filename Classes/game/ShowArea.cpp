@@ -178,6 +178,19 @@ void CShowArea::flush()
 }
 
 
+void CShowArea::print(DrawNode* dn)
+{
+
+
+    for (int i = 0; i < m_oAllMargin.size();i++)
+    {
+        CMargin* pMarg = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));
+        dn->drawSegment(pMarg->m_oStart, pMarg->m_oTaget, 1, Color4F(1,1,1,1));
+
+    }
+}
+
+
 void CShowArea::setPointer(const Vec2& pos)
 {
     

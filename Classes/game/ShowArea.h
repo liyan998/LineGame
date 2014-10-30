@@ -15,7 +15,7 @@
 
 
 
-class CShowArea : public Sprite
+class CShowArea : public Sprite , public CRander
 {
 public:
 
@@ -38,6 +38,8 @@ public:
 public:
 
     virtual bool init() override;
+
+    virtual void print(DrawNode* dn);
 
     //---------------------------------------------------
 
