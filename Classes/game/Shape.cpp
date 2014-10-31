@@ -19,7 +19,7 @@ void CShape::draw(DrawNode* pDd)
             Vec2(p2.GetX(), p2.GetY()),
             Vec2(p3.GetX(), p3.GetY())
         };
-        pDd->drawPolygon(tvec1, 3, Color4F(1, 0, 1, .1f), 0, Color4F(0, 0, 0, 0));
+        pDd->drawPolygon(tvec1, 3, m_fill, 0, m_bd);
     }
 }
 
@@ -30,4 +30,11 @@ void CShape::setShape(std::vector<Vec2>& allPoint)
     {
         m_AllPoint.push_back(Vector2d(allPoint[i].x, allPoint[i].y));
     }
+}
+
+
+void CShape::setColor(Color4F bd, Color4F fill)
+{
+    this->m_bd      = bd;
+    this->m_fill    = fill;
 }

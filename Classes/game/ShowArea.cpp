@@ -4,6 +4,9 @@
 
 using namespace liyan998;
 
+
+
+
 #define DEBUG_LINE
 
 bool CShowArea::init()
@@ -61,10 +64,9 @@ bool CShowArea::init()
 	m_oAllPoint.push_back(Vec2(rec.origin.x + rec.size.width , rec.origin.y - rec.size.height));
 	m_oAllPoint.push_back(Vec2(rec.origin.x , rec.origin.y - rec.size.height ));
 
-    m_pShape = new CShape();
-    m_pShape->setShape(m_oAllPoint);
-	
-    //createShape(m_oAllPoint);
+  
+    createShape(SHAPEID_AREA, m_oAllPoint)->setColor(Color4F(1, 1, 0.5, 1), Color4F(1, 1, 0.5, 1));
+    createShape(SHAPEID_TEMP, m_oTempPoint)->setColor(Color4F(0, 1, 0.5, 1), Color4F(0, 1, 0.5, 1));;
 
     flush();
 
@@ -129,7 +131,9 @@ void CShowArea::flush()
     //---------------------------------------------------
 	
     m_pDrawNode->clear();   
-    m_pShape->draw(m_pDrawNode);
+    getShape(SHAPEID_AREA)->draw(m_pDrawNode);
+    
+ 
 
 	for (int i = 0 ;i < m_oAllPoint.size();i++)
 	{		
@@ -185,6 +189,23 @@ void CShowArea::print(DrawNode* dn)
         CMargin* pMarg = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));
         dn->drawSegment(pMarg->m_oStart, pMarg->m_oTaget, 1, Color4F(1,1,1,1));
     }
+
+//     for (int i = 0; i < m_oTempPoint.size();i++)
+//     {
+// 
+//         if (i + 1 > m_oTempPoint.size() - 1)
+//         {
+//             dn->drawSegment(m_oTempPoint[i], m_oTempPoint[0], 1, Color4F(1, 1, 0, 0.5));
+//         }
+//         else{
+//             dn->drawSegment(m_oTempPoint[i], m_oTempPoint[i + 1], 1, Color4F(1, 1, 0, 0.5));
+//         }
+// 
+//         dn->drawDot(m_oTempPoint[i], 10, Color4F(1,0,1,0.5));
+//     }
+
+    getShape(SHAPEID_TEMP)->draw(dn);
+    
 }
 
 
@@ -353,7 +374,7 @@ void CShowArea::clearAreaIndex()
     log("-----------------------------------------------------");
     int delNum;
     int nodeCount       = m_Area[0] - m_Area[1];    
-    bool isConllFirst   = CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, m_oAllPoint[0]);
+    //bool isConllFirst   = CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, m_oAllPoint[0]);
 
     int         startMargin;
     Vec2Iter    it;
@@ -407,6 +428,7 @@ void CShowArea::clearAreaIndex()
         delNum = static_cast<int>(abs(nodeCount));
         if (nodeCount > 0)                              //ƒÊ ±’Î
         {
+            log("left SSSSSS");
             startMargin = m_Area[1] + 1;
 
             it = m_oAllPoint.begin() + startMargin;
@@ -420,9 +442,25 @@ void CShowArea::clearAreaIndex()
         {
             log("same Line!");
         }else{                                          //À≥ ±’Î
+            log("right SSSSSS");
             startMargin = m_Area[0] + 1;
 
             it          = m_oAllPoint.begin() + startMargin;
+
+            //--------------------------------------------------------------------
+
+
+            std::vector<Vec2> tsubpoint;
+            CUtil::getSubVector(m_oAllPoint, startMargin, m_Area[1], tsubpoint);
+            std::reverse(tsubpoint.begin(), tsubpoint.end());
+
+            m_oTempPoint.insert(m_oTempPoint.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+            m_oTempPoint.insert(m_oTempPoint.end(), tsubpoint.begin(), tsubpoint.end());
+
+            //getShape(SHAPEID_TEMP)->setShape(m_oTempPoint);
+
+            //--------------------------------------------------------
+
             m_oAllPoint.erase(it, it + delNum);
 
             it          = m_oAllPoint.begin() + startMargin;           
@@ -434,17 +472,29 @@ void CShowArea::clearAreaIndex()
     log("close solution :%d, %d", m_Area[0], m_Area[1]);
     log("remove point num:%d", delNum);
     log("direct:%d", nodeCount);
-    m_pShape->setShape(m_oAllPoint);
+
+
+    getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 }
 
-CShape* CShowArea::createShape(std::vector<Vec2>& refAllPoint)
+CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
 {
     CShape* tShape = new CShape();
     tShape->setShape(refAllPoint);
 
-    m_oAllShape.push_back(tShape);
+    m_oAllShape.insert(ShapePair(id, tShape));
 
     return tShape;
+}
+
+CShape* CShowArea::getShape(const int id)
+{
+    ShapeIterator iter = m_oAllShape.find(id);
+    if (iter != m_oAllShape.end())
+    {
+        return iter->second;
+    }
+    return NULL;
 }
 
 void CShowArea::setAreaIndex(int index, int areaIndex)
@@ -465,6 +515,8 @@ unsigned int CShowArea::getDirect()
 {
     unsigned int result = 0;
 
+
+   
     CMargin* startMargin    = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[m_Area[0]]));
     CMargin* endMargin      = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[m_Area[1]]));
     

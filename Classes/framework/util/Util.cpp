@@ -1,5 +1,7 @@
 #include "Util.h"
 
+#include <iterator>
+#include <algorithm> 
 
 bool CUtil::hasPointInPloyon(std::vector<Vec2>& refVector,const Vec2& refPoint)
 { 
@@ -59,4 +61,19 @@ bool CUtil::hasPointInLine(const Vec2& lineP1, const Vec2& lineP2, const Vec2& o
 
 
     return false;
+}
+
+
+void CUtil::getSubVector(const std::vector<Vec2>& resource, int start, int end, std::vector<Vec2>& result)
+{
+    std::vector<Vec2>::const_iterator  it = resource.begin();
+    if (start > end)
+    {
+        std::copy(it + start, resource.end(), std::back_inserter(result));
+        std::copy(it, it + end + 1, std::back_inserter(result));
+    }
+    else
+    {
+        std::copy(it + start, it + end + 1, std::back_inserter(result));
+    }
 }

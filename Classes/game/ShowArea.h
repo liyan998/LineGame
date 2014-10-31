@@ -14,6 +14,9 @@
 
 #define MAX_INDEX       2
 
+#define SHAPEID_AREA    11
+#define SHAPEID_TEMP    12
+
 
 
 class CShowArea : public Sprite , public CRander , public CState
@@ -26,7 +29,11 @@ public:
         STATE_CLOSE                             //闭合状态
     };
 
-    typedef std::vector< Vec2 >::iterator Vec2Iter;
+    typedef std::vector< Vec2 >::iterator       Vec2Iter;
+
+    typedef std::pair<int, CShape*>             ShapePair;
+
+    typedef std::map<int, CShape*>::iterator    ShapeIterator;
 
 public:
 
@@ -40,9 +47,9 @@ public:
 
     virtual bool init() override;
 
-    virtual void print(DrawNode* dn);                       //
+    virtual void print(DrawNode* dn);                               //
 
-    virtual void setState(int state);                       //设置状态
+    virtual void setState(int state);                               //设置状态
 
     //---------------------------------------------------
 
@@ -54,35 +61,36 @@ public:
 
     void setPlayerPosiztion(const Vec2& vec2, int index);  
 
-    void setAreaIndex(int index, int areaIndex);            //设置区间索引     
+    void setAreaIndex(int index, int areaIndex);                    //设置区间索引     
 
-    int getTargetIndex(const  Vec2&);                       //得到当前点位置的边界
+    int getTargetIndex(const  Vec2&);                               //得到当前点位置的边界
 
-    CMargin* getMargin(int index);                          //得到边界对象
+    CMargin* getMargin(int index);                                  //得到边界对象
 
-    void setPointer(const Vec2&);                           //设置划线指针位置
+    void setPointer(const Vec2&);                                   //设置划线指针位置
 
-    bool isCloseArea();                                     //区域是否闭合
+    bool isCloseArea();                                             //区域是否闭合
 
-    void runMove(float inv);                                //执行运动
+    void runMove(float inv);                                        //执行运动
         
-    void addTempPoint(const Vec2&);                         //添加临时节点
+    void addTempPoint(const Vec2&);                                 //添加临时节点
 
-    void clearAreaIndex();                                  //清除区间
-
+    void clearAreaIndex();                                          //清除区间
     
 
-    bool hasPointInArea(const Vec2& point);                 //点是否在区域内
+    bool hasPointInArea(const Vec2& point);                         //点是否在区域内
 
-    void flushMargin();                                     //刷新边界对象集合   
+    void flushMargin();                                             //刷新边界对象集合   
 
     void flush();
 
-    CShape* createShape(std::vector<Vec2>& refAllPoint);    
+    CShape* createShape(int id, std::vector<Vec2>& refAllPoint);    //
 
-    unsigned int getDirect();                               //得到闭合区域方向
+    CShape* getShape(const int id);                                 //得到图形
 
-    int*    getMoveAble(const Vec2& pos);                   //返回可行走区域
+    unsigned int getDirect();                                       //得到闭合区域方向
+
+    int*    getMoveAble(const Vec2& pos);                           //返回可行走区域
 
 private:
 
@@ -101,8 +109,9 @@ private:
 
     int                         m_Area[MAX_INDEX];
 
-    CShape*                     m_pShape;
-    std::vector<CShape*>        m_oAllShape;
+    
+    std::map<int, CShape*>      m_oAllShape;
+          
     
 };
 
