@@ -7,6 +7,7 @@
 #include "triangulate.h"
 #include "Shape.h"
 #include "Path.h"
+#include "framework/State.h"
 
 
 #define SELECTID_NULL   -1
@@ -15,7 +16,7 @@
 
 
 
-class CShowArea : public Sprite , public CRander
+class CShowArea : public Sprite , public CRander , public CState
 {
 public:
 
@@ -39,7 +40,9 @@ public:
 
     virtual bool init() override;
 
-    virtual void print(DrawNode* dn);
+    virtual void print(DrawNode* dn);                       //
+
+    virtual void setState(int state);                       //设置状态
 
     //---------------------------------------------------
 
@@ -51,11 +54,7 @@ public:
 
     void setPlayerPosiztion(const Vec2& vec2, int index);  
 
-    void setAreaIndex(int index, int areaIndex);            //设置区间索引
-
-    void setState(State);                                   //设置状态
-
-    State getState();                                       //得到状态
+    void setAreaIndex(int index, int areaIndex);            //设置区间索引     
 
     int getTargetIndex(const  Vec2&);                       //得到当前点位置的边界
 
@@ -81,8 +80,7 @@ public:
 
     CShape* createShape(std::vector<Vec2>& refAllPoint);    
 
-    unsigned int getDirect();
-
+    unsigned int getDirect();                               //得到闭合区域方向
 
     int*    getMoveAble(const Vec2& pos);                   //返回可行走区域
 
@@ -92,9 +90,8 @@ private:
     std::vector< Vec2 >         m_oAllPoint;                //
     std::vector< Vec2 >         m_oTempPoint;               //
     std::vector< int >          m_oAllMargin;               //
-
-   
-    State                       m_State;                    //
+      
+ 
     Vec2                        m_oMovePointer;             //移动点
     Vec2                        m_oStartPointer;            //起始移动点
 

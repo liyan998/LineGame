@@ -4,7 +4,7 @@
 
 using namespace liyan998;
 
-//#define DEBUG_LINE
+#define DEBUG_LINE
 
 bool CShowArea::init()
 {
@@ -19,7 +19,7 @@ bool CShowArea::init()
     {
         m_Area[i] = SELECTID_NULL;
     }
-	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     //------------------------------------
 
     log("CShowArea::init...");
@@ -180,20 +180,16 @@ void CShowArea::flush()
 
 void CShowArea::print(DrawNode* dn)
 {
-
-
     for (int i = 0; i < m_oAllMargin.size();i++)
     {
         CMargin* pMarg = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));
         dn->drawSegment(pMarg->m_oStart, pMarg->m_oTaget, 1, Color4F(1,1,1,1));
-
     }
 }
 
 
 void CShowArea::setPointer(const Vec2& pos)
-{
-    
+{    
     if (getState() != STATE_DRAWLINE)
     {
         log("draw tempPoint start");
@@ -257,18 +253,13 @@ CMargin* CShowArea::getMargin(int index)
 //TODO检查划线区域是否闭合
 bool CShowArea::isCloseArea()
 {
-
     return true;
 }
 
 
-CShowArea::State CShowArea::getState()
-{
-    return this->m_State;
-}
 
 
-void CShowArea::setState(State sta)
+void CShowArea::setState(int sta)
 {
     this->m_State = sta;
     switch (sta)
@@ -276,7 +267,7 @@ void CShowArea::setState(State sta)
     case STATE_CLOSE:
         clearAreaIndex();
         if (m_pPath != NULL)
-        {
+        {            
             m_pPath->clearPoint();
         }        
         flush();
@@ -290,9 +281,9 @@ void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
     CMargin* tMargin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
     Vec2& refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2);
 
-    log("refp:%f, %f  , %f , %f,  %f, %f ,  %f, %f", tMargin->m_oStart.x, tMargin->m_oStart.y ,
-        tMargin->m_oTaget.x, tMargin->m_oTaget.y
-        ,refp.x, refp.y, vec2.x, vec2.y);
+    //log("refp:%f, %f  , %f , %f,  %f, %f ,  %f, %f", tMargin->m_oStart.x, tMargin->m_oStart.y ,
+    //    tMargin->m_oTaget.x, tMargin->m_oTaget.y
+    //    ,refp.x, refp.y, vec2.x, vec2.y);
     m_pPlayer->setPosition(refp);
 }
 
@@ -496,20 +487,17 @@ unsigned int CShowArea::getDirect()
 
 bool CShowArea::hasPointInArea(const Vec2& point)
 {
-
     if (CUtil::hasPointInPloyon(m_oAllPoint, point))
     {
         return true;
     }
-
     return false;
 }
 
 
 
 int* CShowArea::getMoveAble(const Vec2& pos)
-{
-    
+{    
     if (getTargetIndex(pos) == SELECTID_NULL)
     {
 
