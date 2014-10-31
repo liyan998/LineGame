@@ -9,15 +9,19 @@
 
 
 
-class CMySprite : public Sprite , public CState, public CRander
+
+class CMySprite : 
+public Sprite,
+public CState, 
+public CRander
 {
 
 public:
 
     enum State
     {
-        STATE_INIT,         //初始
-        STATE_STANDER,      //一般模式
+        STATE_INIT,         //
+        STATE_STANDER,      //
         STATE_MOVE,         //移动 == onTouchBegin  离开区域 => draw
         STATE_DRAW,         //划线 == onTouchMove   闭合区域 => run
         STATE_RUN           //运行 == onTouchEnd || closeArea            
@@ -32,7 +36,6 @@ public:
     virtual bool init();
 
     virtual void setState(int state);
-
 
 	virtual void print(DrawNode* dn);
 
@@ -51,9 +54,6 @@ public:
 private:
 
 	int getFixAngle(int angle);
-
-
-
 
 private:
 

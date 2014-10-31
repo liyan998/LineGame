@@ -19,6 +19,8 @@ using namespace cocos2d;
 #define ANGLE_RIGHT     0
 #define ANGLE_DOWN      -90
 
+#define ANGLE_NONE      2000000
+
 #define ANGLE_ERROR     1000000
 
 #endif

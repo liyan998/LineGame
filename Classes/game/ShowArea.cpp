@@ -253,6 +253,11 @@ CMargin* CShowArea::getMargin(int index)
 //TODO检查划线区域是否闭合
 bool CShowArea::isCloseArea()
 {
+    if (m_pPath != NULL && m_pPath->m_oAllPoint.size() < 1)
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -265,7 +270,11 @@ void CShowArea::setState(int sta)
     switch (sta)
     {
     case STATE_CLOSE:
-        clearAreaIndex();
+        if (isCloseArea())
+        {
+            clearAreaIndex();
+        }     
+        
         if (m_pPath != NULL)
         {            
             m_pPath->clearPoint();
@@ -337,7 +346,7 @@ void CShowArea::clearAreaIndex()
 {
     if (m_Area[0] == -1 || m_Area[1] == -1)
     {
-        log("no area %d - %d", m_Area[0], m_Area[1]);
+        log("no area %d | %d", m_Area[0], m_Area[1]);
         return;
     }
 

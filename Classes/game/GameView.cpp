@@ -37,9 +37,10 @@ void CGameView::onEnter()
 	addChild(m_pDrawNode);
     //------------------------------------
 	
-	m_oAllRander.push_back(m_pPath);
+	
 	m_oAllRander.push_back(m_pSp);
     m_oAllRander.push_back(m_pShowArea);
+    m_oAllRander.push_back(m_pPath);
 
     setState(STATE_INIT);
 	
@@ -54,8 +55,7 @@ void CGameView::onEnter()
 bool CGameView::onTouchBegan(Touch* touches, Event *event)
 {
     //log("CGameView::onTouchBegan<<<<<<<<<<");
-    auto local          = touches->getLocation();   
-    
+    auto local          = touches->getLocation();    
 
     switch (m_State)
     {
@@ -75,16 +75,15 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
             //
             log("location position");
             m_pShowArea->setAreaIndex(0, selectindex);
-            m_pShowArea->setPlayerPosiztion(local, selectindex);
-           
+            m_pShowArea->setPlayerPosiztion(local, selectindex);           
         }else{
 //             m_pShowArea->addTempPoint(m_pSp->getPosition());
 //             m_pShowArea->addTempPoint(local);            
             //m_pSp->setAbsPosition();
             //setState(STATE_DRAW);
         } 
-        m_pSp->setAbsPosition();
-        m_pSp->setState(CMySprite::STATE_DRAW);
+        m_pSp->setState(CMySprite::STATE_MOVE);
+        m_pSp->setAbsPosition();       
         m_pSp->setPointerStart(local);
         
         log("Selectindex :%d", selectindex);
@@ -146,20 +145,13 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
     {
     case STATE_WAIT:        
         // m_pShowArea->setPointer(local);
-        //移动精灵、如果不在区域内 draw               
+        //移动精灵、如果不在区域内            
         if (!m_pShowArea->hasPointInArea(pos))
         {            
-
-//             if (margin != NULL)
-//             {
-//                 m_pPath->addPoint(liyan998::CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, pos));
-//             }
-//             else{
-//                 m_pPath->addPoint(pos);
-// 
-//             }           
+            m_pSp->setState(CMySprite::STATE_DRAW);
             m_pShowArea->setAreaIndex(0, selectindex);
             setState(STATE_DRAW);
+            return;
         }
         m_pSp->move(local);
         break;
@@ -170,21 +162,30 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
 
         if (m_pShowArea->hasPointInArea(pos))
         {          
-            assert(margin != NULL);
+            if (margin != NULL)
+            {
+                const Vec2 & v = liyan998::CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_pPath->m_oAllPoint[m_pPath->m_oAllPoint.size() - 1]);
 
-            const Vec2 & v = liyan998::CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_pPath->m_oAllPoint[m_pPath->m_oAllPoint.size() - 1]);
+                selectindex = m_pShowArea->getTargetIndex(v);
 
-            m_pPath->addPoint(v);
-//             if (margin != NULL)
-//             {
-//                 m_pPath->addPoint();
-//             }
-//             else{
-//                 m_pPath->addPoint(pos);
-//             }
-            m_pSp->setState(CMySprite::STATE_MOVE);          
+                log("margin Vec2( %f ,%f)", v.x, v.y);
+                log("Start Vec2( %f ,%f)", margin->m_oStart.x, margin->m_oStart.y);
+                log("End Vec2( %f ,%f)", margin->m_oTaget.x, margin->m_oTaget.y);
+                
+                m_pSp->setPosition(v);
+                m_pPath->addPoint(v);               
+            }
+
+            if (selectindex == SELECTID_NULL)
+            {
+                log("SS %f ,%f", pos.x, pos.y);
+                assert(selectindex != SELECTID_NULL);
+            }
+            
+
             m_pShowArea->setAreaIndex(1, selectindex);
             setState(STATE_RUN);
+            return;
         }
         m_pSp->move(local);        
         break;

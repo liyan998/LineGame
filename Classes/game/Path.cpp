@@ -1,10 +1,8 @@
 #include "Path.h"
-
+#include "framework/util/Math.h"
 
 void CPath::addPoint(const Vec2& vec2 )
 {
-	
-
     int x = static_cast<int>(vec2.x);
     int y = static_cast<int>(vec2.y);
 
@@ -20,8 +18,8 @@ void CPath::addPoint(const Vec2& vec2 )
         }
     }
 
-    log("new Point: %f, %f", vec2.x, vec2.y);
-	m_oAllPoint.push_back(vec2);	
+    log("=====new Point: %d, %d", x, y);
+	m_oAllPoint.push_back(Vec2(x, y));	
 }
 
 
@@ -35,9 +33,15 @@ void CPath::print( DrawNode* dn)
 			dn->drawSegment(m_oAllPoint[i], m_oAllPoint[i + 1], 2, Color4F(0, .5F, .5F, .5F));
 		}       
 	}
+    float rC = liyan998::CMath::getRandom(1, 100) / 100.f;
+    float gC = liyan998::CMath::getRandom(1, 100) / 100.f;
+    float bC = liyan998::CMath::getRandom(1, 100) / 100.f;
+
+
 	for (int i = 0 ;i < m_oAllPoint.size();i++)
-	{		
-		dn->drawDot(m_oAllPoint[i],2,Color4F(1,0,0,1));
+    {
+        dn->drawDot(m_oAllPoint[i], 4, Color4F(1, 0, 0, 1));
+        dn->drawDot(m_oAllPoint[i], 3, Color4F(rC, gC, bC, 1));        
 	}
 }
 

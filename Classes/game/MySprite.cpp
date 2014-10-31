@@ -10,7 +10,7 @@ bool CMySprite::init()
 {
     Sprite::init();
 
-	m_currentAngle		= -1;
+    m_currentAngle = ANGLE_NONE;
     m_fStep				= 2.f;
 
 
@@ -36,14 +36,19 @@ void CMySprite::move(const Vec2& point)
 
     //log("angle:%d , fixangle:%d", (angle), fixangle);	
     //assert(fixangle != ANGLE_ERROR);	
+    if (fixangle == ANGLE_ERROR)
+    {
+        log("angle:%d , fixangle:%d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", (angle), fixangle);
+    }
 
-	if (m_currentAngle != fixangle)
+    if (m_currentAngle == ANGLE_NONE || m_currentAngle != fixangle)
 	{
 		//log("no direct %d , currentAngle:%d", angle, m_currentAngle);
 
-		//记录节点改变方向
+		//
 		setAbsPosition();
 		m_RefPath->addPoint(getPosition());
+
 		m_oPointerStart     = point;
 		m_currentAngle      = fixangle;
         return;
@@ -167,6 +172,13 @@ void CMySprite::setAbsPosition()
 void CMySprite::setState(int state)
 {
     this->m_State = state;
+
+    switch (state)
+    {
+    case STATE_STANDER:
+        m_currentAngle = ANGLE_NONE;
+        break;
+    }
 }
 
 

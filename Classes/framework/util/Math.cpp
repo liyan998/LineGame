@@ -43,7 +43,7 @@ float CMath::radianToAngle(float r)
 
 int CMath::getRandom(int startI, int endI)
 {
-	srand (time(NULL));	
+    srand((unsigned)time(NULL));
     return (rand() % (endI - startI + 1)) + startI;
 }
 
