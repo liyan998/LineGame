@@ -161,27 +161,17 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
         //m_pShowArea->setPointer(local);           
 
         if (m_pShowArea->hasPointInArea(pos))
-        {          
+        {       
             if (margin != NULL)
             {
                 const Vec2 & v = liyan998::CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_pPath->m_oAllPoint[m_pPath->m_oAllPoint.size() - 1]);
 
                 selectindex = m_pShowArea->getTargetIndex(v);
-
-                log("margin Vec2( %f ,%f)", v.x, v.y);
-                log("Start Vec2( %f ,%f)", margin->m_oStart.x, margin->m_oStart.y);
-                log("End Vec2( %f ,%f)", margin->m_oTaget.x, margin->m_oTaget.y);
-                
                 m_pSp->setPosition(v);
                 m_pPath->addPoint(v);               
+            }else{
+                 //FIXME 移动速度过快会造成无法得到边界信息
             }
-
-            if (selectindex == SELECTID_NULL)
-            {
-                log("SS %f ,%f", pos.x, pos.y);
-                assert(selectindex != SELECTID_NULL);
-            }
-            
 
             m_pShowArea->setAreaIndex(1, selectindex);
             setState(STATE_RUN);
