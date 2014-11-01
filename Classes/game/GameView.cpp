@@ -222,3 +222,12 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
 }
 
 
+
+void CGameView::onExit()
+{
+    Layer::onExit();
+
+    this->removeAllChildren();
+  
+    delete m_pPath;
+}

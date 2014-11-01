@@ -3,7 +3,7 @@
 
 #include <math.h>     
 
-#include "game/System.h"
+#include "../System.h"
 
 namespace liyan998
 {

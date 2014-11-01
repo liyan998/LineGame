@@ -18,6 +18,9 @@
 
 #define ADD_SCENE(sid, sclassname) liyan998::MapPair( sid , CREATE_SCENE( ##sclassname## ))
 
+#define MyScene Layer
+//typedef Layer* CAGameScene;
+
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -26,7 +29,7 @@ namespace liyan998
 
     typedef int                                         IntMap_K;           //
     typedef IntMap_K                                    IntSceneID;         //
-    typedef std::function<CAGameScene*()>               FUNMap_V;           //
+    typedef std::function<MyScene*()>                    FUNMap_V;           //
     typedef std::pair< IntMap_K, FUNMap_V >             MapPair;            //
     typedef std::map< IntMap_K, FUNMap_V >::iterator    MapIter;            //
 
@@ -48,7 +51,7 @@ namespace liyan998
 
     protected:
         std::map< IntMap_K, FUNMap_V >                  m_oAllScene;        //
-        CAGameScene*                                    m_pCurrentScene;    //
+        MyScene*                                        m_pCurrentScene;    //
         CAAlert*                                        m_pAlert;           //
     };
 }

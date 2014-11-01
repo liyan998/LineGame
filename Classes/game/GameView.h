@@ -1,7 +1,8 @@
 #ifndef __GAMEVIEW_H__
 #define __GAMEVIEW_H__
 
-#include "framework/ui/AGameScene.h"
+//#include "framework/ui/AGameScene.h"
+#include "System.h"
 
 #include "Rander.h"
 #include "State.h"
@@ -12,7 +13,8 @@
 
 
 class CGameView : 
-    public liyan998::CAGameScene ,
+    //public liyan998::CAGameScene ,
+    public Layer,
     public CState
 {
 public:
@@ -32,6 +34,8 @@ public:
 public:
     
     virtual void onEnter() override;
+
+    virtual void onExit() override;
 
     bool onTouchBegan(Touch* touches, Event *event);
 
