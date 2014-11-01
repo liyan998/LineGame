@@ -1,5 +1,6 @@
-#include "game/GameView.h"
-#include "framework/util/Math.h"
+#include "GameView.h"
+#include "util/Math.h"
+
 
 void CGameView::onEnter()
 {
@@ -21,10 +22,9 @@ void CGameView::onEnter()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(lisnter, this);
 
     //--------------------------------------------------------------------
-	m_pDrawNode			= DrawNode::create();
+    m_pPath = new CPath();
 
-	m_pPath				= new CPath();
-	
+	m_pDrawNode			= DrawNode::create();    	      	
     m_pSp               = CMySprite::create();
     m_pShowArea         = CShowArea::create();    
     
@@ -35,8 +35,8 @@ void CGameView::onEnter()
     addChild(m_pShowArea);	
 	addChild(m_pSp);
 	addChild(m_pDrawNode);
-    //------------------------------------
-	
+
+    //------------------------------------    	
 	
 	m_oAllRander.push_back(m_pSp);
     m_oAllRander.push_back(m_pShowArea);
@@ -49,6 +49,63 @@ void CGameView::onEnter()
 	schedule(schedule_selector(CGameView::run));
 }
 
+void CGameView::setState(int stata)
+{
+    switch (stata)
+    {
+    case STATE_INIT:
+        log("STATE_INIT");
+        schedule(schedule_selector(CGameView::initGame));
+        break;
+    case STATE_DRAW:
+        log("STATE_DRAW");
+        break;
+    case STATE_WAIT:
+        log("STATE_WAIT");
+        break;
+    case STATE_RUN:
+        log("STATE_RUN");
+        this->schedule(schedule_selector(CGameView::spriteRun));
+        break;
+    }
+
+    this->m_State = stata;
+}
+          
+
+void CGameView::spriteRun(float t)
+{
+    //log("spriteRun....%d", count);
+    if (count++ > 100)
+    {
+        count = 0;
+        m_pShowArea->setState(CShowArea::State::STATE_CLOSE);
+        m_pSp->setState(CMySprite::STATE_STANDER);
+        m_pPath->clearPoint();
+
+        unschedule(schedule_selector(CGameView::spriteRun));
+        setState(STATE_WAIT);
+    }
+}
+
+
+void CGameView::initGame(float)
+{
+    //log("random rect Size");
+    //TODO random rect Size
+
+}
+
+
+void CGameView::run(float time)
+{
+    m_pDrawNode->clear();
+
+    for (int i = 0; i < m_oAllRander.size(); i++)
+    {
+        m_oAllRander[i]->print(m_pDrawNode);
+    }
+}
 
 
 
@@ -75,12 +132,7 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
             //
             log("location position");
             m_pShowArea->setAreaIndex(0, selectindex);
-            m_pShowArea->setPlayerPosiztion(local, selectindex);           
-        }else{
-//             m_pShowArea->addTempPoint(m_pSp->getPosition());
-//             m_pShowArea->addTempPoint(local);            
-            //m_pSp->setAbsPosition();
-            //setState(STATE_DRAW);
+            m_pShowArea->setPlayerPosiztion(local, selectindex);  
         } 
         m_pSp->setState(CMySprite::STATE_MOVE);
         m_pSp->setAbsPosition();       
@@ -91,15 +143,7 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
     break;
     case STATE_DRAW:
     {
-        //test area close
-//         int selectindex = m_pShowArea->getTargetIndex(local);
-//         m_pShowArea->addTempPoint(local);
-//         if (selectindex != SELECTID_NULL)
-//         {
-//             m_pShowArea->setAreaIndex(1, selectindex);
-//             setState(STATE_RUN);
-//         }   
-//         log("Selectindex :%d", selectindex);
+
     } 
     break;
     }
@@ -143,9 +187,7 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
 
     switch (m_State)
     {
-    case STATE_WAIT:        
-        // m_pShowArea->setPointer(local);
-        //移动精灵、如果不在区域内            
+    case STATE_WAIT:              
         if (!m_pShowArea->hasPointInArea(pos))
         {            
             m_pSp->setState(CMySprite::STATE_DRAW);
@@ -156,9 +198,6 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
         m_pSp->move(local);
         break;
     case STATE_DRAW:
-        //m_pShowArea->setPointer(local);
-        //auto local = touches->getLocation();
-        //m_pShowArea->setPointer(local);           
 
         if (m_pShowArea->hasPointInArea(pos))
         {       
@@ -183,61 +222,3 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
 }
 
 
-
-void CGameView::setState(int stata)
-{
-    switch (stata)
-    {
-    case STATE_INIT:
-        log("STATE_INIT");
-        schedule(schedule_selector(CGameView::initGame));
-        break;
-    case STATE_DRAW:
-        log("STATE_DRAW");
-        break;
-    case STATE_WAIT:
-        log("STATE_WAIT");        
-        break;
-    case STATE_RUN:
-        log("STATE_RUN");
-        this->schedule(schedule_selector(CGameView::spriteRun));
-        break;
-    }
-
-    this->m_State = stata;
-}
-
-
-
-void CGameView::spriteRun(float t)
-{
-    //log("spriteRun....%d", count);
-    if (count++ > 100)
-    {
-        count = 0;
-        m_pShowArea->setState(CShowArea::State::STATE_CLOSE);        
-        m_pSp->setState(CMySprite::STATE_STANDER);
-		m_pPath->clearPoint();
-
-        unschedule(schedule_selector(CGameView::spriteRun));
-        setState(STATE_WAIT);            
-    }
-}
-
-void CGameView::initGame(float)
-{
-    //log("random rect Size");
-    //TODO random rect Size
-
-}
-
-void CGameView::run(float time)
-{
-	m_pDrawNode->clear();
-
-	for (int i = 0;i < m_oAllRander.size();i++)
-	{
-		m_oAllRander[i]->print(m_pDrawNode);
-	}
-
-}

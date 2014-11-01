@@ -1,6 +1,8 @@
-#include "Path.h"
-#include "framework/util/Math.h"
+#include "Path.h"   
+#include "util/Math.h"
 #include "Margin.h"
+
+
 
 void CPath::addPoint(const Vec2& vec2 )
 {
@@ -17,9 +19,8 @@ void CPath::addPoint(const Vec2& vec2 )
         {
             return;
         }
-    }
-
-    log("=====new Point: %d, %d", x, y);
+    }     
+    //log("=====new Point: %d, %d", x, y);
 	m_oAllPoint.push_back(Vec2(x, y));	
 }
 
@@ -47,14 +48,10 @@ void CPath::print( DrawNode* dn)
 }
 
 void CPath::clearPoint()
-{
-//     log("--------------------------------------------");
-//     for (int i = 0; i < m_oAllPoint.size(); i++)
-//     {
-//         log("Vec2(%f, %f),", m_oAllPoint[i].x, m_oAllPoint[i].y);
-//     }
+{        
 	m_oAllPoint.clear();
 }
+
 
 // 大于0为顺时针
 // 小于0为逆时针
@@ -104,6 +101,7 @@ unsigned int CPath::getDirect()
     }
     return direct;
 }
+
 
 int CPath::getRL(int currentDirect, int angle)
 {

@@ -1,8 +1,8 @@
 #ifndef __SHAPE_H__
 #define __SHAPE_H__
 
-#include "framework/System.h"
-#include "triangulate.h"
+#include "System.h"  
+#include "util/triangulate.h"
 
 class CShape
 {

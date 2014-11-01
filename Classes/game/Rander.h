@@ -1,7 +1,7 @@
 #ifndef __RANDER_H__
 #define __RANDER_H__
 
-#include "framework/System.h"
+#include "System.h"
 
 class CRander 
 {

@@ -1,7 +1,8 @@
 #ifndef __TEST_H__
 #define __TEST_H__
 
-#include "triangulate.h"
+#include "util/triangulate.h"
+
 #include "framework/ui/AGameScene.h"
 
 class CTest : public liyan998::CAGameScene

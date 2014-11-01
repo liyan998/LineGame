@@ -1,7 +1,7 @@
 #ifndef __PATH_H__
 #define __PATH_H__
 
-#include "framework/System.h"
+#include "System.h"      
 #include "Rander.h"
 
 class CPath : public CRander

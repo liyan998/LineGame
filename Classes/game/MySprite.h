@@ -1,30 +1,34 @@
 #ifndef __MYSPRITE_H__
 #define __MYSPRITE_H__
 
-#include "framework/System.h"
-#include "framework/State.h"
-#include "game/Path.h"
+#include "System.h"
+#include "State.h"
+#include "Path.h"
 
 #define MAX_ANGLE 4
 
+/************************************************************************/
+/* 
 
 
 
+*/
+/************************************************************************/
 class CMySprite : 
 public Sprite,
 public CState, 
 public CRander
-{
+{          
 
-public:
+public:         
 
     enum State
     {
         STATE_INIT,         //
         STATE_STANDER,      //
-        STATE_MOVE,         //移动 == onTouchBegin  离开区域 => draw
-        STATE_DRAW,         //划线 == onTouchMove   闭合区域 => run
-        STATE_RUN           //运行 == onTouchEnd || closeArea            
+        STATE_MOVE,         //
+        STATE_DRAW,         //
+        STATE_RUN           //          
     };
 
 public:
@@ -57,17 +61,17 @@ private:
 
 private:
 
-	CPath* m_RefPath;
+	CPath*  m_RefPath;
 
-    float                   m_fStep;            //步长
+    float   m_fStep;            //步长
 
-    Vec2                    m_AbPosition;       //相对位置  
+    Vec2    m_AbPosition;       //相对位置  
 
-    Vec2                    m_oPointerStart;
+    Vec2    m_oPointerStart;
 
-	int						m_currentAngle;		//当前角度
+	int		m_currentAngle;		//当前角度
 
-    int*                    m_pAvaMove;         //可行走区域
+    int*    m_pAvaMove;         //可行走区域
 
 };
 

@@ -1,5 +1,7 @@
-#include "Margin.h"
-#include "framework/util/Math.h"
+#include "Margin.h" 
+#include "util/triangulate.h"
+#include "util/Math.h"
+
 
 
 using namespace liyan998;
@@ -13,8 +15,7 @@ bool CMargin::init()
    
     return true;
 }
-
-
+                             
 
 void CMargin::setTaget(const Vec2& star, const Vec2& vec)
 {
@@ -24,8 +25,7 @@ void CMargin::setTaget(const Vec2& star, const Vec2& vec)
     setPosition(star); 
     onDraw();
 }
-
-
+                              
 
 void CMargin::onDraw()
 {   

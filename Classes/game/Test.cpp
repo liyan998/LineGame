@@ -1,5 +1,5 @@
 #include "Test.h"
-#include "framework/util/Math.h"
+#include "util/Math.h"
 
 
 Vec2 test(const Vec2 &pt1, const Vec2 &pt2, const Vec2 &pt3)

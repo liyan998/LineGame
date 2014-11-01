@@ -1,5 +1,5 @@
 #include "Shape.h"
-#include "triangulate.h"
+                    
 
 void CShape::draw(DrawNode* pDd)
 {    

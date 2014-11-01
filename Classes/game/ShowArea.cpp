@@ -1,9 +1,9 @@
 #include "ShowArea.h"
-#include "framework/util/Math.h"
-#include "framework/util/Util.h"
+#include "util/Util.h"      
+#include "util/Math.h"
+
 
 using namespace liyan998;
-
 
 
 
@@ -62,8 +62,7 @@ bool CShowArea::init()
     m_oAllPoint.push_back(rec.origin);
     m_oAllPoint.push_back(Vec2(rec.origin.x + rec.size.width , rec.origin.y ));
 	m_oAllPoint.push_back(Vec2(rec.origin.x + rec.size.width , rec.origin.y - rec.size.height));
-	m_oAllPoint.push_back(Vec2(rec.origin.x , rec.origin.y - rec.size.height ));
-
+	m_oAllPoint.push_back(Vec2(rec.origin.x , rec.origin.y - rec.size.height ));   
   
     createShape(SHAPEID_AREA, m_oAllPoint)->setColor(Color4F(1, 1, 0.5, 1), Color4F(1, 1, 0.5, 1));
     createShape(SHAPEID_TEMP, m_oTempPoint)->setColor(Color4F(0, 1, 0.5, 1), Color4F(0, 1, 0.5, 1));;
@@ -74,21 +73,7 @@ bool CShowArea::init()
 
     return true;
 }
-
-
-
-
-
-void printVector(std::vector<Vec2> &v)
-{
-    for (int i = 0; i < v.size();i++)
-    {
-        log("Vec2(%f, %f),", v[i].x , v[i].y);
-    }
-}
-
-
-
+          
 void CShowArea::flushMargin()
 {
 
@@ -209,40 +194,7 @@ void CShowArea::print(DrawNode* dn)
 }
 
 
-void CShowArea::setPointer(const Vec2& pos)
-{    
-    if (getState() != STATE_DRAWLINE)
-    {
-        log("draw tempPoint start");
-        m_oTempPoint.push_back(m_pPlayer->getPosition());
-        m_oStartPointer = pos;
-        setState(STATE_DRAWLINE);
-    }
-    //----------------------------------------------
-    m_oMovePointer        = pos;
 
-    if ( CUtil::hasPointInPloyon( m_oAllPoint, m_pPlayer->getPosition() ) )
-    {
-        log("colleWidth Ployon");
-    }
-    float   dis           = ccpDistance(m_oStartPointer, m_oMovePointer);
-    float   radina        = CMath::getRadian(m_oStartPointer, m_oMovePointer);
-    int     angle         = CMath::radianToAngle(radina);
- 
-    if (angle == 0 || angle == 180 || angle == 90 || angle == -90) // up
-    {            
-        m_pPlayer->pointerMove(Vec2(dis, RADINA_TOGAME(radina)));    
-
-    } else{
-
-        log("no direct %d", angle);
-        m_pPlayer->setAbsPosition();
-        addTempPoint(m_pPlayer->getPosition());
-        m_oStartPointer = m_oMovePointer;
-    }   
-
-    flush();
-}
 
 int CShowArea::getTargetIndex(const Vec2& rec)
 {    
@@ -343,11 +295,7 @@ void CShowArea::setState(int sta)
 void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
 {
     CMargin* tMargin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
-    Vec2& refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2);
-
-    //log("refp:%f, %f  , %f , %f,  %f, %f ,  %f, %f", tMargin->m_oStart.x, tMargin->m_oStart.y ,
-    //    tMargin->m_oTaget.x, tMargin->m_oTaget.y
-    //    ,refp.x, refp.y, vec2.x, vec2.y);
+    Vec2& refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2); 
     m_pPlayer->setPosition(refp);
 }
 
@@ -389,13 +337,7 @@ void CShowArea::runMove(float inv)
     
 }
 
-void CShowArea::addTempPoint(const Vec2& vec)
-{
-    m_oTempPoint.push_back(vec);
 
-    log("Add Point Size:%d",m_oTempPoint.size());
-    flush();
-}
 
 void CShowArea::clearAreaIndex()
 {
@@ -475,15 +417,13 @@ void CShowArea::clearAreaIndex()
         }else if (nodeCount == 0)                       //在同一区域
         {
             log("same Line!");
-
             startMargin = m_Area[0] + 1;
             it = m_oAllPoint.begin() + startMargin;
 
-            if (pathdirect < 0)                   //逆时针
+            if (pathdirect < 0)                         //逆时针
             {
                 std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
             }
-
             m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
 
         }else{                                          //顺时针
@@ -502,8 +442,7 @@ void CShowArea::clearAreaIndex()
     log("close Area Clear Point");
     log("close solution :%d, %d", m_Area[0], m_Area[1]);
     log("remove point num:%d", delNum);
-    log("direct:%d", nodeCount);
-
+    log("direct:%d", nodeCount);          
 
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 }
@@ -517,6 +456,7 @@ CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
 
     return tShape;
 }
+
 
 CShape* CShowArea::getShape(const int id)
 {
@@ -546,15 +486,3 @@ bool CShowArea::hasPointInArea(const Vec2& point)
 
 
 
-int* CShowArea::getMoveAble(const Vec2& pos)
-{    
-    if (getTargetIndex(pos) == SELECTID_NULL)
-    {
-
-    }
-    else
-    {
-
-    }
-    return NULL;
-}

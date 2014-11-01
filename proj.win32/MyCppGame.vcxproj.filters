@@ -25,6 +25,9 @@
     <Filter Include="Classes\game">
       <UniqueIdentifier>{e4e5a855-e840-4fad-9650-21b909e12ad5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\game\util">
+      <UniqueIdentifier>{c0d7537d-1861-4aaf-9d89-1dd2aaf23831}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -78,9 +81,6 @@
     <ClCompile Include="..\Classes\game\Test.cpp">
       <Filter>Classes\game</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\triangulate.cpp">
-      <Filter>Classes\game</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\framework\util\Util.cpp">
       <Filter>Classes\framework\util</Filter>
     </ClCompile>
@@ -89,6 +89,18 @@
     </ClCompile>
     <ClCompile Include="..\Classes\game\Path.cpp">
       <Filter>Classes\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\util\DateTime.cpp">
+      <Filter>Classes\game\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\util\Math.cpp">
+      <Filter>Classes\game\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\util\Util.cpp">
+      <Filter>Classes\game\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\util\triangulate.cpp">
+      <Filter>Classes\game\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,9 +176,6 @@
     <ClInclude Include="..\Classes\game\Test.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\triangulate.h">
-      <Filter>Classes\game</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\framework\util\Util.h">
       <Filter>Classes\framework\util</Filter>
     </ClInclude>
@@ -180,6 +189,21 @@
       <Filter>Classes\game</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Rander.h">
+      <Filter>Classes\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\util\DateTime.h">
+      <Filter>Classes\game\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\util\Math.h">
+      <Filter>Classes\game\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\util\Util.h">
+      <Filter>Classes\game\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\util\triangulate.h">
+      <Filter>Classes\game\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\System.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
   </ItemGroup>

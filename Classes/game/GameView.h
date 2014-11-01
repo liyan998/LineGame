@@ -2,15 +2,18 @@
 #define __GAMEVIEW_H__
 
 #include "framework/ui/AGameScene.h"
-#include "game/ShowArea.h"
-#include "game/MySprite.h"
-#include "framework/State.h"
-#include "game/Path.h"
-#include "game/Rander.h"
+
+#include "Rander.h"
+#include "State.h"
+#include "ShowArea.h"
+#include "MySprite.h"  
+#include "Path.h"
+#include "Margin.h" 
 
 
-
-class CGameView : public liyan998::CAGameScene ,public CState
+class CGameView : 
+    public liyan998::CAGameScene ,
+    public CState
 {
 public:
 
@@ -19,7 +22,7 @@ public:
         STATE_INIT,     //初始
         STATE_WAIT,     //等待
         STATE_DRAW,     //划线
-        STATE_RUN       //行走 |  
+        STATE_RUN       //行走 
     };
        
 public:
@@ -46,16 +49,11 @@ public:
 
     void spriteRun(float);
 
-	void run(float time);
-
-
+	void run(float time);             
     
-    //-----------------------------------------------------
+    //-----------------------------------------------------   
 
-
-
-private:
- 
+private:                                                       
 
     CShowArea*                  m_pShowArea;        //区域    
 
@@ -65,13 +63,11 @@ private:
 
 	DrawNode*					m_pDrawNode;		//
 
-	std::vector< CRander* >		m_oAllRander;
-		
+	std::vector< CRander* >		m_oAllRander;   	
 
 
     //FIXME--------------------------------
-    int count;
-
+    int count;                          
 };
 
 

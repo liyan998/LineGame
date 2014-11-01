@@ -1,8 +1,5 @@
-
-
-#include "MySprite.h"
-
-#include "framework/util/Math.h"
+#include "MySprite.h"  
+#include "util/Math.h"
 
 using namespace liyan998;
 
@@ -205,7 +202,5 @@ void CMySprite::print(DrawNode* dn)
     case STATE_DRAW:
         dn->drawSegment(m_AbPosition, getPosition(), 1, Color4F(0, 1, 1, 1));
         break;
-    }
-    
-
+    }    
 }
