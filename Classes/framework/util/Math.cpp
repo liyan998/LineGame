@@ -62,13 +62,16 @@ Vec2 CMath::getFootPoint(const Vec2& lineP1, const Vec2& lineP2, const Vec2& lin
     int x1 = (int)(lineP1.x);
     int x2 = (int)(lineP2.x);
 
+    int y1 = (int)(lineP1.y);
+    int y2 = (int)(lineP2.y);
+
     if (x1 - x2 == 0)
     {
-        return Vec2(lineP2.x, lineOP.y);
+        return Vec2(x2, lineOP.y);
     }
     
-    float A = (lineP1.y - lineP2.y) / (lineP1.x - lineP2.x);
-    float B = (lineP1.y - A * lineP1.y);
+    float A = (y2 - y2) / (x1 - x2);
+    float B = (y1 - A * y1);
     float m = lineOP.x + A * lineOP.y;
     /// 求两直线交点坐标  
 

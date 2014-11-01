@@ -77,6 +77,7 @@ public:
 
     void clearAreaIndex();                                          //清除区间
     
+    bool hasPointInMargin(const Vec2& point);                       //点是否在边界上
 
     bool hasPointInArea(const Vec2& point);                         //点是否在区域内
 
@@ -87,8 +88,6 @@ public:
     CShape* createShape(int id, std::vector<Vec2>& refAllPoint);    //
 
     CShape* getShape(const int id);                                 //得到图形
-
-    unsigned int getDirect();                                       //得到闭合区域方向
 
     int*    getMoveAble(const Vec2& pos);                           //返回可行走区域
 

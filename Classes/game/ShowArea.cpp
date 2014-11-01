@@ -279,7 +279,41 @@ bool CShowArea::isCloseArea()
         return false;
     }
 
+
+
     return true;
+}
+
+bool CShowArea::hasPointInMargin(const Vec2& point)
+{
+    for (int i = 0; i < m_oAllMargin.size(); i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
+
+//         const Vec2& p1 ;
+//         const Vec2& p2;
+        switch (tpMagin->m_Angle)
+        {
+        case ANGLE_DOWN:
+//             if (p1.x == point.x )
+//             {
+//             }
+            break;
+        case ANGLE_RIGHT:
+
+            break;
+        case ANGLE_UP:
+
+            break;
+        case ANGLE_LEFT:
+
+            break;
+        default:
+            break;
+        }
+    }
+
+    return false;
 }
 
 
@@ -373,23 +407,21 @@ void CShowArea::clearAreaIndex()
 
     log("-----------------------------------------------------");
     int delNum;
-    int nodeCount       = m_Area[0] - m_Area[1];    
-    //bool isConllFirst   = CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, m_oAllPoint[0]);
+    int nodeCount       = m_Area[0] - m_Area[1];       
 
-    int         startMargin;
-    Vec2Iter    it;
-    unsigned int direct = getDirect();
-
-    log("direct 0x%x", direct);
+    int startMargin;
+    Vec2Iter  it;
+     
+    int pathdirect = m_pPath->getDirect();
 
     log("Path size:%d", m_pPath->m_oAllPoint.size());
 
     //包含起始点
-    if ((nodeCount < 0 && direct == 0xff0000ff) || (nodeCount > 0 && direct == 0x00ffff00)) 
+    if ((nodeCount < 0 && pathdirect < 0) || (nodeCount > 0 && pathdirect > 0))
     {
         log("include first!!!!!!!!");
              
-        if (direct == 0xff0000ff)
+        if (pathdirect < 0)
         {            
             log("Left ro");
             
@@ -408,7 +440,9 @@ void CShowArea::clearAreaIndex()
             it = m_oAllPoint.end();
             m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
             
-        }else if (direct == 0xffff00){
+        }
+        else if (pathdirect > 0)
+        {
             log("Right ro");
             //del body
             it      = m_oAllPoint.begin() + m_Area[0] + 1;
@@ -441,25 +475,22 @@ void CShowArea::clearAreaIndex()
         }else if (nodeCount == 0)                       //在同一区域
         {
             log("same Line!");
+
+            startMargin = m_Area[0] + 1;
+            it = m_oAllPoint.begin() + startMargin;
+
+            if (pathdirect < 0)                   //逆时针
+            {
+                std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+            }
+
+            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+
         }else{                                          //顺时针
             log("right SSSSSS");
             startMargin = m_Area[0] + 1;
 
             it          = m_oAllPoint.begin() + startMargin;
-
-            //--------------------------------------------------------------------
-
-
-            std::vector<Vec2> tsubpoint;
-            CUtil::getSubVector(m_oAllPoint, startMargin, m_Area[1], tsubpoint);
-            std::reverse(tsubpoint.begin(), tsubpoint.end());
-
-            m_oTempPoint.insert(m_oTempPoint.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-            m_oTempPoint.insert(m_oTempPoint.end(), tsubpoint.begin(), tsubpoint.end());
-
-            //getShape(SHAPEID_TEMP)->setShape(m_oTempPoint);
-
-            //--------------------------------------------------------
 
             m_oAllPoint.erase(it, it + delNum);
 
@@ -502,48 +533,6 @@ void CShowArea::setAreaIndex(int index, int areaIndex)
     m_Area[index] = areaIndex;
 }
 
-/************************************************************************/
-/* 
-功能描述:      得到方向
-返回值:        方向值
-                0xff00 00ff 逆序
-                0x00ff ff00 顺序
-
-*/
-/************************************************************************/
-unsigned int CShowArea::getDirect()
-{
-    unsigned int result = 0;
-
-
-   
-    CMargin* startMargin    = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[m_Area[0]]));
-    CMargin* endMargin      = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[m_Area[1]]));
-    
-    if (CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, startMargin->m_oStart))
-    {
-        log("content Start - 1 point!");
-        result |= 0xff000000;
-    }
-    else if (CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, startMargin->m_oTaget)){
-
-        log("content Start - 2 point!");
-        result |= 0xff0000;
-    }
-
-    if (CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, endMargin->m_oStart))
-    {
-        log("content End - 1 point!");
-        result |= 0xff00;
-    }
-    else if (CUtil::hasPointInPloyon(m_pPath->m_oAllPoint, endMargin->m_oTaget)){
-
-        log("content End - 2 point!");
-        result |= 0xff;
-    }
-
-    return result;
-}
 
 
 bool CShowArea::hasPointInArea(const Vec2& point)

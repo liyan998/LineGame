@@ -8,15 +8,24 @@ class CPath : public CRander
 {
 public:
 
-	void addPoint(const Vec2& vec2 );
+    virtual void print(DrawNode* dn);
+
+    //--------------------------------------------
+
+	void addPoint( const Vec2& vec2 );
 
 	void clearPoint();	
 
-	virtual void print(DrawNode* dn);
+    unsigned int getDirect();
+
+
+    int getRL(int currentDirect, int angle);
 
 public:
 	
-	std::vector< Vec2 > m_oAllPoint;
+	std::vector< Vec2 >         m_oAllPoint;
+
+   
 };
 
 #endif//__PATH_H__
