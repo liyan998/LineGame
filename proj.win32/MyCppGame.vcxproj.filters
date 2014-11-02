@@ -96,10 +96,10 @@
     <ClCompile Include="..\Classes\game\util\Math.cpp">
       <Filter>Classes\game\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\util\Util.cpp">
+    <ClCompile Include="..\Classes\game\util\triangulate.cpp">
       <Filter>Classes\game\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\util\triangulate.cpp">
+    <ClCompile Include="..\Classes\game\util\Util.cpp">
       <Filter>Classes\game\util</Filter>
     </ClCompile>
   </ItemGroup>
@@ -182,9 +182,6 @@
     <ClInclude Include="..\Classes\game\Shape.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\framework\State.h">
-      <Filter>Classes\framework</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\Path.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
@@ -197,14 +194,11 @@
     <ClInclude Include="..\Classes\game\util\Math.h">
       <Filter>Classes\game\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\util\Util.h">
-      <Filter>Classes\game\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\util\triangulate.h">
       <Filter>Classes\game\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\System.h">
-      <Filter>Classes\game</Filter>
+    <ClInclude Include="..\Classes\game\util\Util.h">
+      <Filter>Classes\game\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

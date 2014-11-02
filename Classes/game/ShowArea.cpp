@@ -294,8 +294,9 @@ void CShowArea::setState(int sta)
 
 void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
 {
-    CMargin* tMargin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
-    Vec2& refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2); 
+    CMargin* tMargin	= static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
+    Vec2& refp			= CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2); 
+
     m_pPlayer->setPosition(refp);
 }
 
@@ -348,7 +349,7 @@ void CShowArea::clearAreaIndex()
     }
 
     log("-----------------------------------------------------");
-    int delNum;
+    int delNum			= 0;
     int nodeCount       = m_Area[0] - m_Area[1];       
 
     int startMargin;
@@ -359,7 +360,7 @@ void CShowArea::clearAreaIndex()
     log("Path size:%d", m_pPath->m_oAllPoint.size());
 
     //包含起始点
-    if ((nodeCount < 0 && pathdirect < 0) || (nodeCount > 0 && pathdirect > 0))
+    if ((nodeCount < 0 && pathdirect < 0) || (nodeCount > 0 && pathdirect >= 0))
     {
         log("include first!!!!!!!!");
              

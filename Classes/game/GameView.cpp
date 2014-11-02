@@ -227,6 +227,8 @@ void CGameView::onExit()
 {
     Layer::onExit();
 
+	m_oAllRander.clear();
+
     this->removeAllChildren();
   
     delete m_pPath;
