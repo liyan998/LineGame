@@ -297,7 +297,7 @@ void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
     CMargin* tMargin	= static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
     Vec2& refp			= CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2); 
 
-    m_pPlayer->setPosition(refp);
+    m_pPlayer->setPlayerPosition(refp);
 }
 
 // 
@@ -314,7 +314,7 @@ void CShowArea::setPlayerPosiztion()
     Vec2& ps            = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
 
     m_pPlayer->setState(CMySprite::STATE_INIT);
-    m_pPlayer->setPosition(ps);
+    m_pPlayer->setPlayerPosition(ps);
 
     setAreaIndex(0, setLine);
 
@@ -358,9 +358,18 @@ void CShowArea::clearAreaIndex()
     int pathdirect = m_pPath->getDirect();
 
     log("Path size:%d", m_pPath->m_oAllPoint.size());
+    log("Path Direct:%d", pathdirect);
 
+    if (pathdirect == 0)
+    {
+        //FIXME  无法获取临时方向时可能出现的 删除节点异常
+        log("Fixme unschedul");
+        return;
+    }
+
+    
     //包含起始点
-    if ((nodeCount < 0 && pathdirect < 0) || (nodeCount > 0 && pathdirect >= 0))
+    if ((nodeCount < 0 && pathdirect < 0) || (nodeCount > 0 && pathdirect > 0))
     {
         log("include first!!!!!!!!");
              
@@ -384,7 +393,7 @@ void CShowArea::clearAreaIndex()
             m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
             
         }
-        else if (pathdirect > 0)
+        else if (pathdirect >= 0)
         {
             log("Right ro");
             //del body

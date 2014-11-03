@@ -9,7 +9,7 @@ namespace liyan998
 {
 
 
-#define PI 3.14159f
+
 
     class CMath
     {
@@ -35,6 +35,9 @@ namespace liyan998
 
         //点到直线的距离
         static float getPointToLineDis(const Vec2& pt1, const Vec2& pt2, const Vec2& pt3);
+
+        //Vec2去掉精度
+        static const Vec2& getIntPoint(const Vec2& point);
 
     };
 }

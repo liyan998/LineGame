@@ -107,3 +107,13 @@ float CMath::getPointToLineDis(const Vec2& pt1, const Vec2& pt2, const Vec2& pt3
     float B = (pt1.y - A*pt1.y);        
     return abs(A* pt3.x + B - pt3.y) / sqrt(A*A + 1);  
 }
+
+
+const Vec2& CMath::getIntPoint(const Vec2& point)
+{
+
+    int x = FTOI(point.x);
+    int y = FTOI(point.y);
+
+    return Vec2(x , y);
+}

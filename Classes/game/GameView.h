@@ -10,6 +10,7 @@
 #include "MySprite.h"  
 #include "Path.h"
 #include "Margin.h" 
+#include "Player.h"
 
 
 class CGameView : 
@@ -43,7 +44,7 @@ public:
 
     void onTouchMove(Touch* touches, Event *event);
 
-    //---------------------------------------------
+    //---------------------------------------------   -----
 
     virtual void setState(int state);
 
@@ -61,7 +62,9 @@ private:
 
     CShowArea*                  m_pShowArea;        //区域    
 
-    CMySprite*                  m_pSp;              //玩家精灵    
+    CMySprite*                  m_pSp;              //玩家精灵  
+
+    CPlayer*                    m_pPlayer;          //控制精灵
 
 	CPath*						m_pPath;
 

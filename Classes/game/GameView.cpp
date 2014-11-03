@@ -26,16 +26,20 @@ void CGameView::onEnter()
 
 	m_pDrawNode			= DrawNode::create();    	      	
     m_pSp               = CMySprite::create();
+    m_pPlayer           = CPlayer::create();
     m_pShowArea         = CShowArea::create();    
     
 	m_pSp->setPath(m_pPath);
+    m_pSp->setPlayer(m_pPlayer);
+
+    //FIXME 重命名
     m_pShowArea->setPlayer(m_pSp);
     m_pShowArea->setPath(m_pPath);
 		
     addChild(m_pShowArea);	
 	addChild(m_pSp);
 	addChild(m_pDrawNode);
-
+    addChild(m_pPlayer);
     //------------------------------------    	
 	
 	m_oAllRander.push_back(m_pSp);
@@ -65,6 +69,7 @@ void CGameView::setState(int stata)
         break;
     case STATE_RUN:
         log("STATE_RUN");
+        m_pPlayer->moveToPath(m_pPath->m_oAllPoint);
         this->schedule(schedule_selector(CGameView::spriteRun));
         break;
     }
@@ -132,7 +137,8 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
             //
             log("location position");
             m_pShowArea->setAreaIndex(0, selectindex);
-            m_pShowArea->setPlayerPosiztion(local, selectindex);  
+            m_pShowArea->setPlayerPosiztion(local, selectindex);
+
         } 
         m_pSp->setState(CMySprite::STATE_MOVE);
         m_pSp->setAbsPosition();       
@@ -160,10 +166,10 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
     {
     case STATE_INIT:
         break;
-    case STATE_WAIT:     
+    case STATE_WAIT:  
         m_pSp->setState(CMySprite::STATE_STANDER);
 		break;
-    case STATE_DRAW:       
+    case STATE_DRAW:        
         setState(STATE_RUN);            
         break;
     case STATE_RUN:
@@ -172,8 +178,7 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
         break;
     }
 
-}
-
+}                                              
 
 
 void CGameView::onTouchMove(Touch* touches, Event *event)
@@ -197,8 +202,7 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
         }
         m_pSp->move(local);
         break;
-    case STATE_DRAW:
-
+    case STATE_DRAW:   
         if (m_pShowArea->hasPointInArea(pos))
         {       
             if (margin != NULL)
@@ -207,15 +211,20 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
 
                 selectindex = m_pShowArea->getTargetIndex(v);
                 m_pSp->setPosition(v);
-                m_pPath->addPoint(v);               
+                m_pPath->addPoint(v); 
+                
             }else{
-                 //FIXME 移动速度过快会造成无法得到边界信息
+                 //FIXME 移动速度过快会造成无法得到边界信息    
+                log("FIXME");
             }
 
             m_pShowArea->setAreaIndex(1, selectindex);
             setState(STATE_RUN);
             return;
         }
+        
+
+
         m_pSp->move(local);        
         break;
     }  

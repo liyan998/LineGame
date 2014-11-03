@@ -7,21 +7,26 @@ bool CMySprite::init()
 {
     Sprite::init();
 
-    m_currentAngle = ANGLE_NONE;
+    m_currentAngle      = ANGLE_NONE;
     m_fStep				= 2.f;
 
+    //----------------------------------------------------- 
 
-    DrawNode* pDn = DrawNode::create();	
-    addChild(pDn);
 
-    pDn->drawDot(Vec2::ZERO, 20, Color4F(1, 0, 0, 0.5));
-    
-    this->setAnchorPoint(Vec2::ZERO);
-    this->setContentSize(Size(40,40));
-    Rect& rec = this->getBoundingBox();
+    //----------------------------------------------------
 
+//     DrawNode* pDn = DrawNode::create();	
+//     addChild(pDn);                                      
+//     pDn->drawDot(Vec2::ZERO, 20, Color4F(1, 0, 0, 0.5));       
+//     this->setAnchorPoint(Vec2::ZERO);
+//     this->setContentSize(Size(40,40));
+
+    //---------------------------------------------------
+
+    //Rect& rec = this->getBoundingBox();     
     //log("bundBox:%f, %f, %f, %f", rec.origin.x, rec.origin.y, rec.size.width , rec.size.height);
 
+    
     return true;
 }
 
@@ -36,24 +41,36 @@ void CMySprite::move(const Vec2& point)
     if (fixangle == ANGLE_ERROR)
     {
         log("angle:%d , fixangle:%d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", (angle), fixangle);
+        return;
     }
 
     if (m_currentAngle == ANGLE_NONE || m_currentAngle != fixangle)
-	{
-		//log("no direct %d , currentAngle:%d", angle, m_currentAngle);
-
-		//
+	{                                         
+        const Vec2& pos = getPosition();
+        if (m_currentAngle != ANGLE_NONE)
+        {
+            addGuide(pos);
+        }                                        
+        //---------------------------------------------
 		setAbsPosition();
-		m_RefPath->addPoint(getPosition());
+        m_RefPath->addPoint(pos);
 
 		m_oPointerStart     = point;
-		m_currentAngle      = fixangle;
+		m_currentAngle      = fixangle;   
         return;
 	}		
 
 	float dis		= ccpDistance(m_oPointerStart , point);
 	Vec2 position	= CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
-	this->setPosition(position); 
+	this->setPosition(position);
+
+  
+}
+
+
+void CMySprite::spriteMove()
+{
+
 }
 
 
@@ -151,10 +168,9 @@ void CMySprite::setPath(CPath* path)
 }
 
 
-void CMySprite::pointerMove(const Vec2& pointerVec)
+void CMySprite::setPlayer(CPlayer* sp)
 {
-    Vec2 pos = CMath::getVec2(m_AbPosition, pointerVec.x, pointerVec.y);
-    setPosition(pos);
+    this->m_RefPlayer = sp;
 }
 
 
@@ -174,9 +190,26 @@ void CMySprite::setState(int state)
     {
     case STATE_STANDER:
         m_currentAngle = ANGLE_NONE;
+        clearGuide();
+        this->unschedule(schedule_selector(CMySprite::run));
+       
+        log("mysprite state STATE_STANDER");
+        break;
+    case STATE_MOVE:         
+        schedule(schedule_selector(CMySprite::run));
+        log("mysprite state STATE_MOVE");
         break;
     }
 }
+
+void CMySprite::setPlayerPosition(const Vec2& pos)
+{                                     
+    this->setPosition(pos);       
+    m_RefPlayer->setPlayerPosition(pos);
+}
+
+
+
 
 
 void CMySprite::setPointerStart(const Vec2& point)
@@ -187,15 +220,16 @@ void CMySprite::setPointerStart(const Vec2& point)
 
 void CMySprite::print(DrawNode* dn)
 {
-    dn->drawDot(m_oPointerStart, 10, Color4F(0,1,1,1));
+    dn->drawDot(this->getPosition(), 20, Color4F(1, 0, 0, 0.5));  
+        
 
-    int ta[] = { 0 , 200};   
-    for (int i = 0; i < 2;i++)
-    {
-        Vec2 endP = CMath::getVec2(m_oPointerStart, 100, CMath::angleToRadian(ta[i]));
-        dn->drawSegment(m_oPointerStart, endP, 1, Color4F(0, 1, 1, 1));
-    }
-    
+//     dn->drawDot(m_oPointerStart, 10, Color4F(0,1,1,1));
+//     int ta[] = { 0 , 200};   
+//     for (int i = 0; i < 2;i++)
+//     {
+//         Vec2 endP = CMath::getVec2(m_oPointerStart, 100, CMath::angleToRadian(ta[i]));
+//         dn->drawSegment(m_oPointerStart, endP, 1, Color4F(0, 1, 1, 1));
+//     }    
 
     switch (m_State)
     {
@@ -203,4 +237,24 @@ void CMySprite::print(DrawNode* dn)
         dn->drawSegment(m_AbPosition, getPosition(), 1, Color4F(0, 1, 1, 1));
         break;
     }    
+}
+
+
+void CMySprite::run(float tm)
+{
+
+    //log("follow! %f, %f", m_oFollow.x , m_oFollow.y);
+
+}
+
+
+void CMySprite::addGuide(const Vec2& point)
+{
+    m_oTPath.push_back(point);
+}
+
+
+void CMySprite::clearGuide()
+{
+    m_oTPath.clear();
 }
