@@ -13,8 +13,10 @@ bool CShowArea::init()
 {
     Sprite::init();   
 
-    m_pPlayer   = NULL;
-    m_pPath     = NULL;
+    m_pPlayer   = nullptr;
+    m_pPath     = nullptr;
+
+    m_pHandle   = nullptr;
 
     //--------------------------------------
 
@@ -59,11 +61,14 @@ bool CShowArea::init()
 
 	Rect rec(300,592, 200 , 200);
 
-    m_oAllPoint.push_back(rec.origin);
-    m_oAllPoint.push_back(Vec2(rec.origin.x + rec.size.width , rec.origin.y ));
-	m_oAllPoint.push_back(Vec2(rec.origin.x + rec.size.width , rec.origin.y - rec.size.height));
-	m_oAllPoint.push_back(Vec2(rec.origin.x , rec.origin.y - rec.size.height ));   
+    addPoint(rec.origin);
+    addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
+    addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y - rec.size.height));
+    addPoint(Vec2(rec.origin.x, rec.origin.y - rec.size.height));   
   
+    getAllPoint(m_oAllPoint);
+
+
     createShape(SHAPEID_AREA, m_oAllPoint)->setColor(Color4F(1, 1, 0.5, 1), Color4F(1, 1, 0.5, 1));
     createShape(SHAPEID_TEMP, m_oTempPoint)->setColor(Color4F(0, 1, 0.5, 1), Color4F(0, 1, 0.5, 1));;
 
@@ -339,10 +344,7 @@ void CShowArea::setPath(CPath* path)
 }
 
 
-void CShowArea::runMove(float inv)
-{
-    
-}
+
 
 
 //TODO 优化函数结构
@@ -366,108 +368,13 @@ void CShowArea::clearAreaIndex()
     log("Path size:%d", m_pPath->m_oAllPoint.size());
     log("Path Direct:%d", pathdirect);
     log("close Area Clear Point");
-    log("close solution :%d, %d", m_Area[0], m_Area[1]);   
+    log("close solution :%d, %d", m_Area[0], m_Area[1]);
 
+    delPoint(m_Area[0], m_Area[1], DIRECT_CLOCKWISE);
+    log(">>>>>>>>>>>>");
+    delPoint(m_Area[0], m_Area[1], DIRECT_ANTICCLOCKWISE);     
 
-    if (pathdirect == 0)
-    {
-        
-        int s = m_Area[0] < m_Area[1] ? m_Area[0] : m_Area[1];
-        int e = m_Area[0] > m_Area[1] ? m_Area[0] : m_Area[1];
-
-        //del body
-//         it = m_oAllPoint.begin() + m_Area[0] + 1;
-//         delNum = m_oAllPoint.size() - 1 - m_Area[0];
-//         m_oAllPoint.erase(it, it + delNum);
-//         //del head
-//         delNum = m_Area[1] + 1;
-//         it = m_oAllPoint.begin();
-//         m_oAllPoint.erase(it, it + delNum);
-// 
-//         it = m_oAllPoint.end();
-//         m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-
-                          
-    }else if ((nodeCount < 0 && pathdirect < 0) || (nodeCount > 0 && pathdirect > 0))
-    {        
-        //包含起始点
-        log("include first!!!!!!!!");             
-        if (pathdirect < 0)
-        {            
-            log("Left ro");  
-            //删掉target point;
-            delNum  = m_Area[1] + 1;
-            it      = m_oAllPoint.begin() + delNum;
-            m_oAllPoint.erase(it, m_oAllPoint.end());
-
-            //删掉0 -- point1段
-            it      = m_oAllPoint.begin();
-            delNum  = m_Area[0] + 1;
-            m_oAllPoint.erase(it, it + delNum);
-
-            std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-
-            it = m_oAllPoint.end();
-            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());             
-        }
-        else if (pathdirect > 0)
-        {
-            log("Right ro");
-            //del body
-            it      = m_oAllPoint.begin() + m_Area[0] + 1;
-            delNum  = m_oAllPoint.size() - 1 - m_Area[0];
-            m_oAllPoint.erase(it, it + delNum);
-            //del head
-            delNum  = m_Area[1] + 1;
-            it      = m_oAllPoint.begin();
-            m_oAllPoint.erase(it, it + delNum);
-
-            it      = m_oAllPoint.end();
-            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-        }
-    }
-    else
-    {
-        delNum = static_cast<int>(abs(nodeCount));
-        if (nodeCount > 0)                              //逆时针
-        {
-            log("left SSSSSS");
-            startMargin = m_Area[1] + 1;
-
-            it = m_oAllPoint.begin() + startMargin;
-            m_oAllPoint.erase(it, it + delNum);
-
-            it = m_oAllPoint.begin() + startMargin;
-            std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end()); 
-            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-
-        }else if (nodeCount == 0)                       //在同一区域
-        {
-            log("same Line!");
-            startMargin             = m_Area[0] + 1;
-            it                      = m_oAllPoint.begin() + startMargin;
-
-            if (pathdirect < 0)                         //逆时针
-            {
-                std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-            }
-            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-
-        }else{                                          //顺时针
-            log("right SSSSSS");
-            startMargin             = m_Area[0] + 1;
-            it                      = m_oAllPoint.begin() + startMargin;
-
-            m_oAllPoint.erase(it, it + delNum);
-
-            it                      = m_oAllPoint.begin() + startMargin;           
-            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-        }       
-    } 
-    
-    log("remove point num:%d", delNum);
-    log("direct:%d", nodeCount);          
-
+    getAllPoint(m_oAllPoint);
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 }
 
@@ -479,7 +386,7 @@ CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
     m_oAllShape.insert(ShapePair(id, tShape));
 
     return tShape;
-}
+}                               
 
 
 CShape* CShowArea::getShape(const int id)
@@ -522,3 +429,213 @@ void CShowArea::closeArea(int category)
 
 
 
+
+void CShowArea::addPoint(const Vec2& point)
+{
+    TPoint* tp = new TPoint();   
+    tp->vec = point;
+
+    if (m_pHandle == nullptr)
+    {
+        m_pHandle   = tp;
+        tp->id      = 0;
+        tp->isEnd   = true;          
+    }
+    else
+    {
+        TPoint* head        = m_pHandle;  
+        TPoint* preview     = head;
+
+        int count = 1;
+
+        while (head->next != nullptr)
+        {
+            if (head->isEnd)
+            {
+                break;
+            }
+
+            count++;
+           
+            preview     = preview->next;
+            head        = head->next;
+
+
+           
+        } 
+        //log("%d preview :%d",count, preview->id);
+        //log("head :%d", head->id);
+
+        if (head->isEnd)
+        {
+            head->isEnd = false;
+        }
+        tp->isEnd       = true;
+        tp->id          = count;
+        tp->preview     = preview;
+        tp->next        = m_pHandle;
+
+        head->next      = tp;  
+
+        m_pHandle->preview = tp;        
+    } 
+}
+
+
+void CShowArea::getAllPoint(std::vector<Vec2>& outputVec)
+{
+    outputVec.clear();
+
+    TPoint* head = m_pHandle;
+
+    while (head != nullptr)
+    {          
+        outputVec.push_back(head->vec);
+
+        if (head->isEnd)
+        {
+            break;
+        }               
+        head = head->next;                        
+    }                    
+}
+
+
+
+unsigned int CShowArea::size()
+{
+    TPoint* head = m_pHandle;      
+
+    unsigned int count = 0;
+    while (head != nullptr)
+    {
+        
+        head->id = count++;
+
+        if (head->isEnd)
+        {
+            break;
+        }
+        head = head->next;
+    }
+
+    return count;
+}
+
+
+void CShowArea::delPoint(int index)
+{                                  
+    if (m_pHandle == nullptr)
+    {
+        log("link is null!");
+        return;
+    }                          
+
+    TPoint* head ;
+    if (index == m_pHandle->id)  
+    {
+        head = m_pHandle->next;  
+        delete m_pHandle;
+        log("head is delete"); 
+
+        m_pHandle = head;  
+        size();
+
+        return;
+    }
+
+
+    TPoint* preview     = m_pHandle;
+    head                = m_pHandle->next;
+     
+    while (head != nullptr)
+    {
+        if (head->id == index)
+        {
+            if (head->isEnd)
+            {      
+
+            }    
+        }
+
+        if (head->isEnd)
+        {
+            break;
+        }
+        head        = head->next;
+        preview     = preview->next;        
+    }
+}
+
+
+void CShowArea::delPoint(int start, int end, int category)
+{
+    log("close solution :%d, %d", start, end);
+
+    
+
+    TPoint* head = getPoint(start);
+    switch (category)
+    {
+    case DIRECT_CLOCKWISE:
+    {
+
+                             while (head != nullptr)
+                             {
+                                 log("point %d", head->id);
+
+                                 if (head->id == end)
+                                 {
+                                     break;
+                                 }
+                                 head = head->next;                                  
+                             }
+    }
+
+        break; 
+    case DIRECT_ANTICCLOCKWISE:
+    {                             
+                                  while (head != nullptr)
+                                  {
+                                      log("point %d", head->id);
+
+                                      if (head->id == end)
+                                      {
+                                          break;
+                                      }
+                                      head = head->preview;
+                                  }
+    }          
+        break;
+    }           
+}
+
+
+
+TPoint* CShowArea::getPoint(int index)
+{                                 
+    TPoint* head = m_pHandle;  
+
+    while (head != nullptr)
+    {
+        if (head->id == index)
+        {
+            return head;
+        }
+               
+        if (head->isEnd)
+        {
+            break;
+        }
+        head = head->next;
+       
+    }
+
+    return nullptr;
+}
+
+
+void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end)
+{
+    
+}

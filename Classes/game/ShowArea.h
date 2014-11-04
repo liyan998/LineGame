@@ -9,16 +9,42 @@
 //////////////////////////////////////////////////////////////////////////////////////
                                         
 
-#define SELECTID_NULL   -1                                          //边界选择ID NULL
+#define SELECTID_NULL           -1                                          //边界选择ID NULL
 
-#define MAX_INDEX       2                                           //连接节点数 起始， 终止
+#define MAX_INDEX               2                                           //连接节点数 起始， 终止
 
-#define SHAPEID_AREA    11                                          //图形ID 封闭区域   
-#define SHAPEID_TEMP    12                                          //图形ID 临时区域  
+#define SHAPEID_AREA            11                                          //图形ID 封闭区域   
+#define SHAPEID_TEMP            12                                          //图形ID 临时区域  
 
-#define CLOSETYPE_1     1                                           //闭合类型
+#define DIRECT_CLOCKWISE        1                                           //闭合类型顺时针
+#define DIRECT_ANTICCLOCKWISE   -1                                          //闭合类型逆时针
 
 //////////////////////////////////////////////////////////////////////////////////////
+
+struct TPoint
+{                    
+
+    Vec2 vec;      
+
+    TPoint* next; 
+
+    TPoint* preview;
+
+    int id;
+
+    bool isEnd;
+
+    TPoint() :
+        next(nullptr), 
+        preview(nullptr),
+        isEnd(false),
+        id(-1)
+    {};
+
+    ~TPoint(){};
+
+
+};
 
 
 class CShowArea : 
@@ -68,13 +94,13 @@ public:
 
     void setAreaIndex(int index, int areaIndex);                    //设置区间索引     
 
+    //-----------------------------------------------------------------------------------
+
     int getTargetIndex(const  Vec2&);                               //得到当前点位置的边界
 
-    CMargin* getMargin(int index);                                  //得到边界对象      
+    CMargin* getMargin(int index);                                  //得到边界对象   
 
-    bool isCloseArea();                                             //区域是否闭合
-
-    void runMove(float inv);                                        //执行运动
+    bool isCloseArea();                                             //区域是否闭合  
  
     void clearAreaIndex();                                          //清除区间
     
@@ -86,11 +112,36 @@ public:
 
     void flush();
 
+
+
     CShape* createShape(int id, std::vector<Vec2>& refAllPoint);    //
 
     CShape* getShape(const int id);                                 //得到图形
 
     int*    getMoveAble(const Vec2& pos);                           //返回可行走区域
+
+
+    //-----------------------------------------------------------------------------
+
+    void addPoint(const Vec2& point);                               //添加节点到尾部
+
+    void getAllPoint(std::vector<Vec2>& outputVec);                 //返回所有节点
+
+    unsigned int size();                                            //节点数
+
+
+
+    void delPoint(int start, int end, int category);                //删除节点
+
+    void delPoint(int index);                                       //删除单个节点
+
+    void insert(std::vector<Vec2>& allpint, int start, int end);    //插入节点
+
+    TPoint* getPoint(int index);                                    //得到节点
+
+    void printPoint();
+
+
 
 private:
 
@@ -100,8 +151,12 @@ private:
 private:
 
     DrawNode*                   m_pDrawNode;                        //
-    std::vector< Vec2 >         m_oAllPoint;                        //
-    std::vector< Vec2 >         m_oTempPoint;                       //
+                                                                       
+    TPoint*                     m_pHandle;
+
+
+    std::vector<Vec2>           m_oAllPoint;
+    std::vector<Vec2>           m_oTempPoint;
     std::vector< int >          m_oAllMargin;                       //      
                                                                     
     CMySprite*                  m_pPlayer;                          //
