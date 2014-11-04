@@ -205,7 +205,7 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
     case STATE_DRAW:   
         if (m_pShowArea->hasPointInArea(pos))
         {       
-            if (margin != NULL)
+            if (margin != nullptr)
             {
                 const Vec2 & v = liyan998::CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_pPath->m_oAllPoint[m_pPath->m_oAllPoint.size() - 1]);
 

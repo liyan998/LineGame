@@ -44,6 +44,6 @@ void CPlayer::moveToPath(const std::vector<Vec2>& allPoint)
     }
 
     //allAction.pushBack(nullptr);
-    m_pSp->runAction(Sequence::create(allAction));
+    //m_pSp->runAction(Sequence::create(allAction));
 
 }

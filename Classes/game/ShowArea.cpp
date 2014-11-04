@@ -286,6 +286,12 @@ void CShowArea::setState(int sta)
         {            
             m_pPath->clearPoint();
         }        
+
+        for (int i = 0; i < MAX_INDEX; i++)
+        {
+            m_Area[i] = SELECTID_NULL;
+        }
+
         flush();
         break;
     }    
@@ -359,24 +365,22 @@ void CShowArea::clearAreaIndex()
 
     log("Path size:%d", m_pPath->m_oAllPoint.size());
     log("Path Direct:%d", pathdirect);
-
-    if (pathdirect == 0)
-    {
-        //FIXME  无法获取临时方向时可能出现的 删除节点异常
-        log("Fixme unschedul");
-        return;
-    }
-
+    log("close Area Clear Point");
+    log("close solution :%d, %d", m_Area[0], m_Area[1]);
     
+//     if (pathdirect == 0)
+//     {
+//         //FIXME  无法获取临时方向时可能出现的 删除节点异常
+//         log("Fixme unschedul");
+//         return;
+//     }     
     //包含起始点
-    if ((nodeCount < 0 && pathdirect < 0) || (nodeCount > 0 && pathdirect > 0))
+    if ((nodeCount < 0 && pathdirect <= 0) || (nodeCount > 0 && pathdirect >= 0))
     {
-        log("include first!!!!!!!!");
-             
-        if (pathdirect < 0)
+        log("include first!!!!!!!!");             
+        if (pathdirect < 0 || nodeCount < 0)
         {            
-            log("Left ro");
-            
+            log("Left ro");  
             //删掉target point;
             delNum  = m_Area[1] + 1;
             it      = m_oAllPoint.begin() + delNum;
@@ -390,10 +394,9 @@ void CShowArea::clearAreaIndex()
             std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
 
             it = m_oAllPoint.end();
-            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-            
+            m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());             
         }
-        else if (pathdirect >= 0)
+        else if (pathdirect > 0 || nodeCount > 0)
         {
             log("Right ro");
             //del body
@@ -407,7 +410,11 @@ void CShowArea::clearAreaIndex()
 
             it      = m_oAllPoint.end();
             m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-        }     
+        }
+        else if (pathdirect == 0)
+        {
+            log("2 temp path");
+        }           
     }
     else
     {
@@ -447,10 +454,8 @@ void CShowArea::clearAreaIndex()
             it          = m_oAllPoint.begin() + startMargin;           
             m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
         }       
-    }
-
-    log("close Area Clear Point");
-    log("close solution :%d, %d", m_Area[0], m_Area[1]);
+    } 
+    
     log("remove point num:%d", delNum);
     log("direct:%d", nodeCount);          
 
