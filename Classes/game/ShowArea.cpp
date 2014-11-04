@@ -345,7 +345,7 @@ void CShowArea::runMove(float inv)
 }
 
 
-
+//TODO 优化函数结构
 void CShowArea::clearAreaIndex()
 {
     if (m_Area[0] == -1 || m_Area[1] == -1)
@@ -356,29 +356,43 @@ void CShowArea::clearAreaIndex()
 
     log("-----------------------------------------------------");
     int delNum			= 0;
-    int nodeCount       = m_Area[0] - m_Area[1];       
-
+    int nodeCount       = m_Area[0] - m_Area[1];
     int startMargin;
-    Vec2Iter  it;
+    Vec2Iter it;
      
-    int pathdirect = m_pPath->getDirect();
+    int pathdirect      = m_pPath->getDirect();
 
+    log("Max margin :%d", m_oAllMargin.size());
     log("Path size:%d", m_pPath->m_oAllPoint.size());
     log("Path Direct:%d", pathdirect);
     log("close Area Clear Point");
-    log("close solution :%d, %d", m_Area[0], m_Area[1]);
-    
-//     if (pathdirect == 0)
-//     {
-//         //FIXME  无法获取临时方向时可能出现的 删除节点异常
-//         log("Fixme unschedul");
-//         return;
-//     }     
-    //包含起始点
-    if ((nodeCount < 0 && pathdirect <= 0) || (nodeCount > 0 && pathdirect >= 0))
+    log("close solution :%d, %d", m_Area[0], m_Area[1]);   
+
+
+    if (pathdirect == 0)
     {
+        
+        int s = m_Area[0] < m_Area[1] ? m_Area[0] : m_Area[1];
+        int e = m_Area[0] > m_Area[1] ? m_Area[0] : m_Area[1];
+
+        //del body
+//         it = m_oAllPoint.begin() + m_Area[0] + 1;
+//         delNum = m_oAllPoint.size() - 1 - m_Area[0];
+//         m_oAllPoint.erase(it, it + delNum);
+//         //del head
+//         delNum = m_Area[1] + 1;
+//         it = m_oAllPoint.begin();
+//         m_oAllPoint.erase(it, it + delNum);
+// 
+//         it = m_oAllPoint.end();
+//         m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+
+                          
+    }else if ((nodeCount < 0 && pathdirect < 0) || (nodeCount > 0 && pathdirect > 0))
+    {        
+        //包含起始点
         log("include first!!!!!!!!");             
-        if (pathdirect < 0 || nodeCount < 0)
+        if (pathdirect < 0)
         {            
             log("Left ro");  
             //删掉target point;
@@ -396,7 +410,7 @@ void CShowArea::clearAreaIndex()
             it = m_oAllPoint.end();
             m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());             
         }
-        else if (pathdirect > 0 || nodeCount > 0)
+        else if (pathdirect > 0)
         {
             log("Right ro");
             //del body
@@ -411,10 +425,6 @@ void CShowArea::clearAreaIndex()
             it      = m_oAllPoint.end();
             m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
         }
-        else if (pathdirect == 0)
-        {
-            log("2 temp path");
-        }           
     }
     else
     {
@@ -434,8 +444,8 @@ void CShowArea::clearAreaIndex()
         }else if (nodeCount == 0)                       //在同一区域
         {
             log("same Line!");
-            startMargin = m_Area[0] + 1;
-            it = m_oAllPoint.begin() + startMargin;
+            startMargin             = m_Area[0] + 1;
+            it                      = m_oAllPoint.begin() + startMargin;
 
             if (pathdirect < 0)                         //逆时针
             {
@@ -445,13 +455,12 @@ void CShowArea::clearAreaIndex()
 
         }else{                                          //顺时针
             log("right SSSSSS");
-            startMargin = m_Area[0] + 1;
-
-            it          = m_oAllPoint.begin() + startMargin;
+            startMargin             = m_Area[0] + 1;
+            it                      = m_oAllPoint.begin() + startMargin;
 
             m_oAllPoint.erase(it, it + delNum);
 
-            it          = m_oAllPoint.begin() + startMargin;           
+            it                      = m_oAllPoint.begin() + startMargin;           
             m_oAllPoint.insert(it, m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
         }       
     } 
@@ -497,6 +506,18 @@ bool CShowArea::hasPointInArea(const Vec2& point)
         return true;
     }
     return false;
+}
+
+
+void CShowArea::closeArea(int category)
+{
+    int delNum          = 0;
+    int nodeCount       = m_Area[0] - m_Area[1];
+    int startMargin;
+    Vec2Iter it;
+
+    int pathdirect      = m_pPath->getDirect();  
+
 }
 
 

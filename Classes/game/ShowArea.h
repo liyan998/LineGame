@@ -6,15 +6,19 @@
 #include "Shape.h"
 #include "MySprite.h"  
 
-/////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
                                         
 
-#define SELECTID_NULL   -1
+#define SELECTID_NULL   -1                                          //边界选择ID NULL
 
-#define MAX_INDEX       2
+#define MAX_INDEX       2                                           //连接节点数 起始， 终止
 
-#define SHAPEID_AREA    11      
-#define SHAPEID_TEMP    12     
+#define SHAPEID_AREA    11                                          //图形ID 封闭区域   
+#define SHAPEID_TEMP    12                                          //图形ID 临时区域  
+
+#define CLOSETYPE_1     1                                           //闭合类型
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 
 class CShowArea : 
@@ -26,8 +30,8 @@ public:
 
     enum State
     {
-        STATE_DRAWLINE,                         //划线
-        STATE_CLOSE                             //闭合状态
+        STATE_DRAWLINE,                                             //划线
+        STATE_CLOSE                                                 //闭合状态
     };
 
     typedef std::vector< Vec2 >::iterator       Vec2Iter;
@@ -52,7 +56,7 @@ public:
 
     virtual void setState(int state);                               //设置状态
 
-    //---------------------------------------------------
+    //---------------------------------------------------------------------------------
 
     void setPlayer(CMySprite*);
 
@@ -90,18 +94,23 @@ public:
 
 private:
 
-    DrawNode*                   m_pDrawNode;                //
-    std::vector< Vec2 >         m_oAllPoint;                //
-    std::vector< Vec2 >         m_oTempPoint;               //
-    std::vector< int >          m_oAllMargin;               //      
-                                                                    
-    CMySprite*                  m_pPlayer;                  //
-    CPath*                      m_pPath;                    //路径
-    ClippingNode*               m_pClip;                    //
+    void closeArea(int category);                                   //闭合区域 
 
-    int                         m_Area[MAX_INDEX];            
+
+private:
+
+    DrawNode*                   m_pDrawNode;                        //
+    std::vector< Vec2 >         m_oAllPoint;                        //
+    std::vector< Vec2 >         m_oTempPoint;                       //
+    std::vector< int >          m_oAllMargin;                       //      
+                                                                    
+    CMySprite*                  m_pPlayer;                          //
+    CPath*                      m_pPath;                            //路径
+    ClippingNode*               m_pClip;                            //
+
+    int                         m_Area[MAX_INDEX];                  //边界ID            
     
-    std::map<int, CShape*>      m_oAllShape;                     
+    std::map<int, CShape*>      m_oAllShape;                        //图形集合                   
     
 };                                              
 
