@@ -41,7 +41,7 @@ struct TPoint
         id(-1)
     {};
 
-    ~TPoint(){};
+    ~TPoint(){ preview = nullptr; next = nullptr; };
 
 
 };
@@ -127,7 +127,7 @@ public:
 
     void getAllPoint(std::vector<Vec2>& outputVec);                 //返回所有节点
 
-    unsigned int size();                                            //节点数
+    unsigned int resetId();                                         //节点数
 
 
 
@@ -135,11 +135,17 @@ public:
 
     void delPoint(int index);                                       //删除单个节点
 
-    void insert(std::vector<Vec2>& allpint, int start, int end);    //插入节点
+    void insert(std::vector<Vec2>& allpint, int start, int end, int direct);    //插入节点
 
     TPoint* getPoint(int index);                                    //得到节点
 
-    void printPoint();
+    TPoint* getTempHead(const std::vector<Vec2>& allpoint);
+
+    TPoint* getTempEnd(TPoint* head);
+
+    TPoint* getSubLink(int start, int end, int category);
+
+    void printPoint(TPoint* hp);
 
 
 

@@ -359,20 +359,43 @@ void CShowArea::clearAreaIndex()
     log("-----------------------------------------------------");
     int delNum			= 0;
     int nodeCount       = m_Area[0] - m_Area[1];
-    int startMargin;
+   
+    int ddirect         = -1;
     Vec2Iter it;
      
     int pathdirect      = m_pPath->getDirect();
 
-    log("Max margin :%d", m_oAllMargin.size());
-    log("Path size:%d", m_pPath->m_oAllPoint.size());
-    log("Path Direct:%d", pathdirect);
-    log("close Area Clear Point");
-    log("close solution :%d, %d", m_Area[0], m_Area[1]);
 
-    delPoint(m_Area[0], m_Area[1], DIRECT_CLOCKWISE);
-    log(">>>>>>>>>>>>");
-    delPoint(m_Area[0], m_Area[1], DIRECT_ANTICCLOCKWISE);     
+    int start           = -1;
+    int end             = -1;
+
+    if (pathdirect < 0)
+    {
+        ddirect = DIRECT_ANTICCLOCKWISE;
+    }else if (pathdirect > 0)
+    {
+        ddirect = DIRECT_CLOCKWISE;
+    }
+
+    switch (ddirect)
+    {
+    case DIRECT_ANTICCLOCKWISE:
+        start = m_Area[1];
+        end = m_Area[0];
+        std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+        break;
+    case DIRECT_CLOCKWISE:
+        start = m_Area[0];
+        end = m_Area[1]; 
+        break;
+    default:
+        break;
+    }
+
+    
+
+    insert(m_pPath->m_oAllPoint, start, end, ddirect);
+       
 
     getAllPoint(m_oAllPoint);
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
@@ -488,35 +511,57 @@ void CShowArea::getAllPoint(std::vector<Vec2>& outputVec)
 
     TPoint* head = m_pHandle;
 
-    while (head != nullptr)
-    {          
-        outputVec.push_back(head->vec);
+    TPoint* realhead = m_pHandle;
 
-        if (head->isEnd)
+    bool skip = false;
+
+    while (head != nullptr)
+    {    
+        if (skip && head == m_pHandle)
         {
             break;
-        }               
-        head = head->next;                        
-    }                    
+        }
+
+        outputVec.push_back(head->vec); 
+        head = head->next;    
+
+        
+        if (!skip)
+        {
+            skip = true;
+        }
+    }     
+                   
+
+    log("Size : %d" , outputVec.size());
+    //printPoint(m_pHandle);
 }
 
 
 
-unsigned int CShowArea::size()
+unsigned int CShowArea::resetId()
 {
     TPoint* head = m_pHandle;      
 
     unsigned int count = 0;
+
+    TPoint* realhead = head;
+    bool skip = false;
     while (head != nullptr)
     {
         
-        head->id = count++;
-
-        if (head->isEnd)
+        if (skip && realhead == head)         
         {
             break;
         }
-        head = head->next;
+
+        head->id = count++;         
+        head = head->next;   
+
+        if (!skip)
+        {
+            skip = true;
+        }
     }
 
     return count;
@@ -529,42 +574,69 @@ void CShowArea::delPoint(int index)
     {
         log("link is null!");
         return;
-    }                          
-
+    }                                  
     TPoint* head ;
+// 
     if (index == m_pHandle->id)  
     {
         head = m_pHandle->next;  
+        TPoint* preview = m_pHandle->preview;
+        TPoint* next = m_pHandle->next;
+
         delete m_pHandle;
+        m_pHandle = nullptr;
+
+        preview->next = head;
+        head->preview = preview;
+       
+
+        
         log("head is delete"); 
 
         m_pHandle = head;  
-        size();
+        //size();
 
         return;
-    }
+    }           
+    //----------------------------------------------------     
+    head        = m_pHandle;
 
+    bool skip   = false;
+    
+    TPoint* realHead = head;
 
-    TPoint* preview     = m_pHandle;
-    head                = m_pHandle->next;
-     
     while (head != nullptr)
     {
-        if (head->id == index)
-        {
-            if (head->isEnd)
-            {      
-
-            }    
-        }
-
-        if (head->isEnd)
+        if (skip && head == realHead)
         {
             break;
         }
-        head        = head->next;
-        preview     = preview->next;        
+
+        if (head->id == index)
+        {
+            TPoint* currenttp = head;           //当前节点
+            TPoint* previewtp = head->preview;  //上一个节点
+            TPoint* nexttp = head->next;
+
+            previewtp->next = nexttp;
+            nexttp->preview = previewtp;
+
+            delete currenttp;
+            currenttp = nullptr;
+
+            log("body is delete");
+
+            return;
+        }
+
+       
+        if (!skip)
+        {
+            skip = true;
+        }
+        head        = head->next;               
     }
+    log("no id:%d element", index);
 }
 
 
@@ -616,18 +688,30 @@ TPoint* CShowArea::getPoint(int index)
 {                                 
     TPoint* head = m_pHandle;  
 
+    bool skip = false;
+    TPoint* realHead = head;
+
+
     while (head != nullptr)
     {
+        if (skip && head == realHead)
+        {
+            break;
+        }                        
+        //--------------------------------------
+
         if (head->id == index)
         {
             return head;
-        }
-               
-        if (head->isEnd)
-        {
-            break;
-        }
+        }                               
         head = head->next;
+
+        //--------------------------------------
+
+        if (!skip)
+        {
+            skip = true;
+        }
        
     }
 
@@ -635,7 +719,193 @@ TPoint* CShowArea::getPoint(int index)
 }
 
 
-void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end)
+void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end , int direct)
 {
     
+    if (start == end)
+    {
+        TPoint* current = getPoint(start);
+       
+        TPoint* tlink   = getTempHead(allpint); 
+        TPoint* tend    = getTempEnd(tlink);
+
+        TPoint* next    = current->next;
+
+        current->next   = tlink;
+        tlink->preview  = current;
+
+        tend->next      = next;
+        next->preview   = tend;  
+
+        resetId();
+    }else{                             
+        
+        TPoint* startp      = getPoint(start);   
+        TPoint* clipStart   = startp->next;         //断头
+        //clips
+        clipStart->preview  = nullptr; 
+
+        TPoint* endp        = getPoint(end);        
+        TPoint* clipEnd     = endp->next;
+        endp->next = nullptr;                       //断开尾部 
+
+        ///-------------------------------------------
+
+        bool hasContent0    = false;
+        TPoint* findhead    = clipStart;
+
+        while (findhead != nullptr)
+        {            
+            TPoint* tDelref = findhead;
+             
+
+            if (findhead == m_pHandle)
+            {
+                hasContent0 = true;                 
+            }                        
+
+            findhead = findhead->next;
+            delete tDelref;
+        }            
+
+        //---------------------------------------------
+
+
+        //connect
+        TPoint* temptp      = getTempHead(m_pPath->m_oAllPoint);
+        TPoint* tempep      = getTempEnd(temptp);
+
+        startp->next        = temptp;
+        temptp->preview     = startp;          
+        
+        tempep->next        = clipEnd;
+        clipEnd->preview    = tempep;
+
+        if (hasContent0){ m_pHandle = startp; }
+        
+        resetId();  
+    }
+}
+
+
+
+
+TPoint* CShowArea::getSubLink(int start, int end, int category)
+{
+    TPoint* current = m_pHandle;
+
+    while (current != nullptr)
+    {
+
+        current = current->next;
+    }
+    return nullptr;
+}
+
+
+
+/*
+TPoint* current     = m_pHandle;
+bool skip           = false;
+TPoint* realHead    = current;
+
+while (current != nullptr)
+{
+if (skip && current == realHead)
+{
+break;
+}
+
+
+
+
+
+current = current->next;
+
+if (!skip)
+{
+skip = true;
+}
+}
+*/
+TPoint* CShowArea::getTempHead(const std::vector<Vec2>& allpoint)
+{
+    TPoint* thead = nullptr;
+    
+    for (int i = 0; i < allpoint.size(); i++)
+    {                                                                
+        TPoint* tp = new TPoint();
+        tp->vec = allpoint[i];
+
+        if (thead == nullptr)
+        {
+            thead       = tp; 
+            thead->id   = 1000;
+        }
+        else
+        {
+            int count = 1001;
+            TPoint* head        = thead;
+            TPoint* preview     = head;  
+
+            while (head->next != nullptr)
+            {
+                count++;
+                preview         = preview->next;
+                head            = head->next; 
+            }
+          
+            tp->id              = count;
+            tp->preview         = preview; 
+            head->next          = tp;          
+        }
+    }
+    return thead;
+}
+
+
+TPoint* CShowArea::getTempEnd(TPoint* hp)
+{
+    TPoint* head = hp;
+    while (head->next != nullptr)
+    {                                       
+        if (head->isEnd)
+        {
+            return head;
+        }                 
+        head = head->next;
+    }
+
+    return head;
+}
+
+void CShowArea::printPoint(TPoint* hp)
+{                       
+
+    TPoint* head = hp;
+
+    TPoint* realhead = hp;
+
+    bool skip = false;
+
+    log("==============================");
+    while (head != nullptr)
+    {                                     
+        if (skip && head == realhead)
+        {
+            break;
+        }
+
+        log("TP:%d, \tpreview:%d  \tnext:%d", 
+            head->id, 
+            head->preview != nullptr ? head->preview->id : -1,
+            head->next != nullptr ? head->next->id : -1
+            );
+        head = head->next;
+
+        if (!skip)
+        {
+            skip = true;
+        }
+    }
 }
