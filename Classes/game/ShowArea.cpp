@@ -42,7 +42,7 @@ bool CShowArea::init()
     m_pClip->setInverted(true);
     m_pClip->setAlphaThreshold(0.f);
 #ifdef DEBUG_LINE
-   addChild(m_pClip);
+    addChild(m_pClip);
 #endif
 
 
@@ -59,7 +59,7 @@ bool CShowArea::init()
    
     //----------------------------------------    
 
-	Rect rec(300,592, 200 , 200);
+	Rect rec(250,592, 80 , 80);
 
     addPoint(rec.origin);
     addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
@@ -206,7 +206,7 @@ int CShowArea::getTargetIndex(const Vec2& rec)
     for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
-        Rect& trec = tpMagin->getBoundingBox();
+        const Rect& trec = tpMagin->getBoundingBox();
 
         if (trec.containsPoint(rec))
         {
@@ -228,7 +228,7 @@ CMargin* CShowArea::getMargin(int index)
 }
 
 
-//TODO¼ì²é»®ÏßÇøÓòÊÇ·ñ±ÕºÏ
+//TODOï¿½ï¿½é»®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Õºï¿½
 bool CShowArea::isCloseArea()
 {
     if (m_pPath != NULL && m_pPath->m_oAllPoint.size() < 1)
@@ -306,7 +306,7 @@ void CShowArea::setState(int sta)
 void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
 {
     CMargin* tMargin	= static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
-    Vec2& refp			= CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2); 
+    const Vec2& refp			= CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2);
 
     m_pPlayer->setPlayerPosition(refp);
 }
@@ -322,7 +322,7 @@ void CShowArea::setPlayerPosiztion()
     float dis           = ccpDistance(margin->m_oStart, margin->m_oTaget);
     int ranint          = CMath::getRandom(0, dis);
 
-    Vec2& ps            = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
+    const Vec2& ps            = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
 
     m_pPlayer->setState(CMySprite::STATE_INIT);
     m_pPlayer->setPlayerPosition(ps);
@@ -347,7 +347,7 @@ void CShowArea::setPath(CPath* path)
 
 
 
-//TODO ÓÅ»¯º¯Êý½á¹¹
+//TODO ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½á¹?
 void CShowArea::clearAreaIndex()
 {
     if (m_Area[0] == -1 || m_Area[1] == -1)
@@ -614,8 +614,8 @@ void CShowArea::delPoint(int index)
 
         if (head->id == index)
         {
-            TPoint* currenttp = head;           //µ±Ç°½Úµã
-            TPoint* previewtp = head->preview;  //ÉÏÒ»¸ö½Úµã
+            TPoint* currenttp = head;           //ï¿½ï¿½Ç°ï¿½Úµï¿½
+            TPoint* previewtp = head->preview;  //ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
             TPoint* nexttp = head->next;
 
             previewtp->next = nexttp;
@@ -741,13 +741,13 @@ void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end , int dire
     }else{                             
         
         TPoint* startp      = getPoint(start);   
-        TPoint* clipStart   = startp->next;         //¶ÏÍ·
+        TPoint* clipStart   = startp->next;         //ï¿½ï¿½Í·
         //clips
         clipStart->preview  = nullptr; 
 
         TPoint* endp        = getPoint(end);        
         TPoint* clipEnd     = endp->next;
-        endp->next = nullptr;                       //¶Ï¿ªÎ²²¿ 
+        endp->next = nullptr;                       //ï¿½Ï¿ï¿½Î²ï¿½ï¿½ 
 
         ///-------------------------------------------
 

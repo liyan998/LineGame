@@ -6,11 +6,11 @@ using namespace liyan998;
 
 /************************************************************************/
 /* 
-//¸ù¾ÝÆðÊ¼µã£¬Ãþ£¬»¡¶ÈµÃµ½Ò»¸öÏòÁ¿
-//rStart    ÆðÊ¼ÏòÁ¿
-//step      ÏòÁ¿Ãþ
-//radian    »¡¶È
-//return    ÏòÁ¿
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÈµÃµï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//rStart    ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+//step      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//radian    ï¿½ï¿½ï¿½ï¿½
+//return    ï¿½ï¿½ï¿½ï¿½
 */
 /************************************************************************/
 Vec2 CMath::getVec2(const Vec2& rStart,float step, float radian)
@@ -49,12 +49,12 @@ int CMath::getRandom(int startI, int endI)
 
 /************************************************************************/
 /* 
-µÃµ½Ö±ÏßÍâÒ»µãµ½Ö±ÏßµÄ´¹×ã
-lineP1  Ö±ÏßÉÏÒ»µã
-lineP2  Ö±ÏßÉÏÒ»µã
-lineOP  Ö±ÏßÍâµã
+ï¿½Ãµï¿½Ö±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ãµ½Ö±ï¿½ßµÄ´ï¿½ï¿½ï¿½
+lineP1  Ö±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+lineP2  Ö±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+lineOP  Ö±ï¿½ï¿½ï¿½ï¿½ï¿½
 
-return ´¹×ã×ø±ê
+return ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 /************************************************************************/
 Vec2 CMath::getFootPoint(const Vec2& lineP1, const Vec2& lineP2, const Vec2& lineOP)
@@ -73,7 +73,7 @@ Vec2 CMath::getFootPoint(const Vec2& lineP1, const Vec2& lineP2, const Vec2& lin
     float A = (y2 - y2) / (x1 - x2);
     float B = (y1 - A * y1);
     float m = lineOP.x + A * lineOP.y;
-    /// ÇóÁ½Ö±Ïß½»µã×ø±ê  
+    /// ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ß½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 
     Vec2 ptCross;
     ptCross.x = ((m - A * B) / (A * A + 1));
@@ -87,13 +87,13 @@ Vec2 CMath::getFootPoint(const Vec2& lineP1, const Vec2& lineP2, const Vec2& lin
 /************************************************************************/
 /* 
 
-µãµ½Ö±ÏßµÄ¾àÀë
+ï¿½ãµ½Ö±ï¿½ßµÄ¾ï¿½ï¿½ï¿½
 
-pt1 Ö±ÏßÉÏÒ»µã
-pt2 Ö±ÏßÉÏÒ»µã
-pt3 Ö±ÏßÍâµã
+pt1 Ö±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+pt2 Ö±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+pt3 Ö±ï¿½ï¿½ï¿½ï¿½ï¿½
 
-return µãµ½Ö±ÏßµÄ¾àÀë
+return ï¿½ãµ½Ö±ï¿½ßµÄ¾ï¿½ï¿½ï¿½
 */
 /************************************************************************/
 float CMath::getPointToLineDis(const Vec2& pt1, const Vec2& pt2, const Vec2& pt3)
@@ -112,8 +112,8 @@ float CMath::getPointToLineDis(const Vec2& pt1, const Vec2& pt2, const Vec2& pt3
 const Vec2& CMath::getIntPoint(const Vec2& point)
 {
 
-    int x = FTOI(point.x);
-    int y = FTOI(point.y);
+    int x = static_cast<int>(point.x);
+    int y = static_cast<int>(point.y);
 
     return Vec2(x , y);
 }

@@ -52,15 +52,15 @@ void CMyGame::Init()
     
     m_pGameScreen = CGameScreen::create();
 
-    m_pGameScreen->InitScene(ADD_SCENE(31,      CGameView));
-    m_pGameScreen->InitScene(ADD_SCENE(11,      HelloWorld ));
-    m_pGameScreen->InitScene(ADD_SCENE(12,      CUIFrom    ));
-	m_pGameScreen->InitScene(ADD_SCENE(13,		CTest));
+    m_pGameScreen->InitScene(liyan998::MapPair(31, CREATE_SCENE( CGameView )));
+    m_pGameScreen->InitScene(liyan998::MapPair(11, CREATE_SCENE( HelloWorld )));
+    m_pGameScreen->InitScene(liyan998::MapPair(12, CREATE_SCENE( CUIFrom )));
+    m_pGameScreen->InitScene(liyan998::MapPair(13, CREATE_SCENE( CTest )));
 
     auto director = Director::getInstance();  
     director->runWithScene(m_pGameScreen);
 
-    m_pGameScreen->SetScene(31);
+    m_pGameScreen->SetScene(13);
 
     log("MyGame Init finished");
 }
@@ -107,7 +107,7 @@ void CMyGame::setState(State state)
         Init();
     }
         break;
-    case CAGame::STATE_RUN:
+    case CAGame::STATE_RUN:                         
     {
         Run();
     }

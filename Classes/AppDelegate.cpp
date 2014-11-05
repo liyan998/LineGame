@@ -25,8 +25,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     
     
     glview->setFrameSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-    //director->setContentScaleFactor(SCREEN_HEIGHT / 800.f);
-    glview->setFrameZoomFactor(SCREEN_WIDTH / SCREEN_HEIGHT);
+    director->setContentScaleFactor(SCREEN_WIDTH / 320.0f);
+    //glview->setFrameZoomFactor(SCREEN_WIDTH / SCREEN_HEIGHT);
     glview->setDesignResolutionSize(SCREEN_WIDTH, SCREEN_HEIGHT, ResolutionPolicy::SHOW_ALL);
     //director->setContentScaleFactor(640 / 960);
     // turn on display FPS

@@ -144,7 +144,7 @@ bool Triangulate::Process(const Vector2dVector &contour,Vector2dVector &result)
 /*** END OF CODE SECTION TRIANGULATE.CPP BEGINNING OF TEST.CPP A SMALL **/
 /*** TEST APPLICATION TO DEMONSTRATE THE USAGE OF THE TRIANGULATOR     **/
 /************************************************************************/
-
+/*
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -200,3 +200,4 @@ void main(int argc,char **argv)
   }
 
 }
+*/
