@@ -9,6 +9,23 @@ void CGameView::onEnter()
     //FIXME 
     count = 0;
 
+    Size visibleSize    = Director::getInstance()->getVisibleSize();
+    Vec2 origin         = Director::getInstance()->getVisibleOrigin();
+
+    // add a "close" icon to exit the progress. it's an autorelease object
+    auto closeItem = MenuItemImage::create(
+        "CloseNormal.png",
+        "CloseSelected.png",
+        CC_CALLBACK_1(CGameView::menuCloseCallback, this));
+
+    closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width / 2,
+        origin.y + closeItem->getContentSize().height / 2));
+
+    // create menu, it's an autorelease object
+    auto menu = Menu::create(closeItem, NULL);
+    menu->setPosition(Vec2::ZERO);
+    this->addChild(menu, 1);
+
     //----------------------------------------------------
 
     log("CGameView OnEnter...");
@@ -51,6 +68,7 @@ void CGameView::onEnter()
     //------------------------------------------  
 
 	schedule(schedule_selector(CGameView::run));
+
 }
 
 void CGameView::setState(int stata)
@@ -231,6 +249,21 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
 }
 
 
+void CGameView::menuCloseCallback(Ref* ref)
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
+    MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.", "Alert");
+    return;
+#endif
+
+    Director::getInstance()->end();
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    exit(0);
+#endif
+
+
+}
 
 void CGameView::onExit()
 {

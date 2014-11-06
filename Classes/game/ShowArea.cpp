@@ -3,20 +3,20 @@
 #include "util/Math.h"
 
 
-using namespace liyan998;
+using namespace liyan998;   
 
-
-
-#define DEBUG_LINE
+//#define DEBUG_LINE
 
 bool CShowArea::init()
 {
     Sprite::init();   
+    m_Model     = MODEL_OUT;
 
     m_pPlayer   = nullptr;
-    m_pPath     = nullptr;
-
+    m_pPath     = nullptr;        
     m_pHandle   = nullptr;
+
+    Size visibleSize = Director::getInstance()->getVisibleSize();
 
     //--------------------------------------
 
@@ -27,61 +27,55 @@ bool CShowArea::init()
 
     //------------------------------------
 
-    log("CShowArea::init...");
+    log("CShowArea::init...");   
 
-    Size visibleSize = Director::getInstance()->getVisibleSize();
     auto pSprite = Sprite::create("HelloWorld.png");
     pSprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	pSprite->setScale(2.0f);
-#ifdef DEBUG_LINE
+	pSprite->setScale(2.0f); 
     addChild(pSprite);
-#endif
-    //--------------------------------------------------------------
+                                        
+    //-------------------------------------------------------------- 
 
-    m_pClip = ClippingNode::create();
+    m_pDrawNode     = DrawNode::create(); 
+    //m_pDrawNode->retain(); m_pClip->retain();
+
+    m_pClip         = ClippingNode::create(); 
+    ///m_pClip->retain();
+
     m_pClip->setInverted(true);
-    m_pClip->setAlphaThreshold(0.f);
-#ifdef DEBUG_LINE
-    addChild(m_pClip);
-#endif
-
+    m_pClip->setAlphaThreshold(0.f);   
 
     LayerColor* pLc = LayerColor::create(Color4B(0,0,0,200));
     m_pClip->addChild(pLc);
-    //----------------------------------------------
 
-    m_pDrawNode = DrawNode::create(); 
-#ifdef DEBUG_LINE
-   m_pClip->setStencil(m_pDrawNode);
-#else
-   addChild(m_pDrawNode);
-#endif
-   
-    //----------------------------------------    
+    m_pClip->setStencil(m_pDrawNode);
 
-	Rect rec(250,592, 80 , 80);
+    //---------------------------------------------- 
 
-    addPoint(rec.origin);
-    addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
-    addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y - rec.size.height));
-    addPoint(Vec2(rec.origin.x, rec.origin.y - rec.size.height));   
-  
-    getAllPoint(m_oAllPoint);
+    setMode(MODEL_OUT);
+                                  
+   //----------------------------------------    
+	
 
+   Rect rec(250, 592, 80, 80);
 
-    createShape(SHAPEID_AREA, m_oAllPoint)->setColor(Color4F(1, 1, 0.5, 1), Color4F(1, 1, 0.5, 1));
-    createShape(SHAPEID_TEMP, m_oTempPoint)->setColor(Color4F(0, 1, 0.5, 1), Color4F(0, 1, 0.5, 1));;
+   addPoint(rec.origin);
+   addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
+   addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y - rec.size.height));
+   addPoint(Vec2(rec.origin.x, rec.origin.y - rec.size.height));
 
-    flush();
+   getAllPoint(m_oAllPoint);
 
-    setState(STATE_CLOSE);
+   createShape(SHAPEID_AREA, m_oAllPoint)->setColor(Color4F(1, 1, 0.5, 1), Color4F(1, 1, 0.5, 1));
+   createShape(SHAPEID_TEMP, m_oTempPoint)->setColor(Color4F(0, 1, 0.5, 1), Color4F(0, 1, 0.5, 1));;
 
+   setState(STATE_CLOSE);          
     return true;
-}
-          
-void CShowArea::flushMargin()
-{
+}                                  
 
+
+void CShowArea::flushMargin()
+{                  
     for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         this->removeChildByTag(m_oAllMargin[i]);
@@ -106,9 +100,7 @@ void CShowArea::flushMargin()
         pMarg->setTag(10 + i);
         addChild(pMarg);
         m_oAllMargin.push_back(pMarg->getTag());
-    }
-
-
+    }                
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -121,9 +113,7 @@ void CShowArea::flush()
     //---------------------------------------------------
 	
     m_pDrawNode->clear();   
-    getShape(SHAPEID_AREA)->draw(m_pDrawNode);
-    
- 
+    getShape(SHAPEID_AREA)->draw(m_pDrawNode);   
 
 	for (int i = 0 ;i < m_oAllPoint.size();i++)
 	{		
@@ -194,12 +184,22 @@ void CShowArea::print(DrawNode* dn)
 //         dn->drawDot(m_oTempPoint[i], 10, Color4F(1,0,1,0.5));
 //     }
 
-    getShape(SHAPEID_TEMP)->draw(dn);
+    for (int i = 0; i < m_oAllPoint.size();i++)
+    {
+        if (i + 1 < m_oAllPoint.size())
+        {
+            dn->drawSegment(m_oAllPoint[i], m_oAllPoint[i + 1], 1, Color4F(1, 0, 0, 1));
+        }
+        else
+        {
+            dn->drawSegment(m_oAllPoint[i], m_oAllPoint[0], 1, Color4F(1, 0, 0, 1));
+        }
+    }
+
+    //getShape(SHAPEID_TEMP)->draw(dn);
     
 }
-
-
-
+                                      
 
 int CShowArea::getTargetIndex(const Vec2& rec)
 {    
@@ -281,6 +281,14 @@ void CShowArea::setState(int sta)
     this->m_State = sta;
     switch (sta)
     {
+
+    case STATE_INIT:
+    {
+
+           
+
+    }                                             
+        break;
     case STATE_CLOSE:
         if (isCloseArea())
         {
@@ -298,7 +306,7 @@ void CShowArea::setState(int sta)
         }
 
         flush();
-        break;
+        break;      
     }    
 }
 
@@ -322,7 +330,7 @@ void CShowArea::setPlayerPosiztion()
     float dis           = ccpDistance(margin->m_oStart, margin->m_oTaget);
     int ranint          = CMath::getRandom(0, dis);
 
-    const Vec2& ps            = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
+    const Vec2& ps      = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
 
     m_pPlayer->setState(CMySprite::STATE_INIT);
     m_pPlayer->setPlayerPosition(ps);
@@ -357,15 +365,10 @@ void CShowArea::clearAreaIndex()
     }
 
     log("-----------------------------------------------------");
-    int delNum			= 0;
-    int nodeCount       = m_Area[0] - m_Area[1];
-   
-    int ddirect         = -1;
-    Vec2Iter it;
-     
-    int pathdirect      = m_pPath->getDirect();
+    log("area -- %d , %d", m_Area[0], m_Area[1]);
 
-
+    int ddirect         = 0;      
+    int pathdirect      = m_pPath->getDirect();   
     int start           = -1;
     int end             = -1;
 
@@ -375,30 +378,43 @@ void CShowArea::clearAreaIndex()
     }else if (pathdirect > 0)
     {
         ddirect = DIRECT_CLOCKWISE;
-    }
+    }else{ 
+
+        ddirect = DIRECT_ANTICCLOCKWISE;
+        if (m_Area[0] < m_Area[1])
+        {
+            ddirect = DIRECT_CLOCKWISE;
+        }        
+    }                
 
     switch (ddirect)
     {
     case DIRECT_ANTICCLOCKWISE:
-        start = m_Area[1];
-        end = m_Area[0];
+        start   = m_Area[1];
+        end     = m_Area[0];
         std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
         break;
     case DIRECT_CLOCKWISE:
-        start = m_Area[0];
-        end = m_Area[1]; 
+        start   = m_Area[0];
+        end     = m_Area[1]; 
         break;
     default:
         break;
+    }            
+
+    if (start == -1 || end == -1)
+    {               
+        log("ddirect %d, start %d , end %d", ddirect, start, end); 
+        return;
     }
 
-    
+    insert(m_pPath->m_oAllPoint, start, end);   
 
-    insert(m_pPath->m_oAllPoint, start, end, ddirect);
-       
+    getAllPoint(m_oAllPoint);                        
 
-    getAllPoint(m_oAllPoint);
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
+
+    //setMode(MODEL_IN);
 }
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
@@ -439,24 +455,37 @@ bool CShowArea::hasPointInArea(const Vec2& point)
 }
 
 
-void CShowArea::closeArea(int category)
+int CShowArea::getMode()
 {
-    int delNum          = 0;
-    int nodeCount       = m_Area[0] - m_Area[1];
-    int startMargin;
-    Vec2Iter it;
-
-    int pathdirect      = m_pPath->getDirect();  
-
+    return this->m_Model;
 }
 
 
+void CShowArea::setMode(int mode)
+{                            
+    this->m_Model = mode;      
+    switch (mode)
+    {
+    case MODEL_IN:
+
+        m_pClip->retain();
+        this->removeChild(m_pClip,true);
+        this->addChild(m_pDrawNode);
+
+        break;
+    case MODEL_OUT:         
+        m_pDrawNode->retain();
+        this->removeChild(m_pDrawNode, true);
+        this->addChild(m_pClip);
+        break;
+    }
+}
 
 
 void CShowArea::addPoint(const Vec2& point)
 {
-    TPoint* tp = new TPoint();   
-    tp->vec = point;
+    TPoint* tp  = new TPoint();   
+    tp->vec     = point;
 
     if (m_pHandle == nullptr)
     {
@@ -469,7 +498,7 @@ void CShowArea::addPoint(const Vec2& point)
         TPoint* head        = m_pHandle;  
         TPoint* preview     = head;
 
-        int count = 1;
+        int count           = 1;
 
         while (head->next != nullptr)
         {
@@ -480,27 +509,23 @@ void CShowArea::addPoint(const Vec2& point)
 
             count++;
            
-            preview     = preview->next;
-            head        = head->next;
-
-
-           
+            preview         = preview->next;
+            head            = head->next;               
         } 
-        //log("%d preview :%d",count, preview->id);
-        //log("head :%d", head->id);
-
+                      
         if (head->isEnd)
         {
-            head->isEnd = false;
+            head->isEnd     = false;
         }
-        tp->isEnd       = true;
-        tp->id          = count;
-        tp->preview     = preview;
-        tp->next        = m_pHandle;
 
-        head->next      = tp;  
+        tp->isEnd           = true;
+        tp->id              = count;
+        tp->preview         = preview;
+        tp->next            = m_pHandle;
 
-        m_pHandle->preview = tp;        
+        head->next          = tp;  
+
+        m_pHandle->preview  = tp;        
     } 
 }
 
@@ -509,9 +534,9 @@ void CShowArea::getAllPoint(std::vector<Vec2>& outputVec)
 {
     outputVec.clear();
 
-    TPoint* head = m_pHandle;
+    TPoint* head        = m_pHandle;
 
-    TPoint* realhead = m_pHandle;
+    TPoint* realhead    = m_pHandle;
 
     bool skip = false;
 
@@ -530,11 +555,8 @@ void CShowArea::getAllPoint(std::vector<Vec2>& outputVec)
         {
             skip = true;
         }
-    }     
-                   
-
-    log("Size : %d" , outputVec.size());
-    //printPoint(m_pHandle);
+    }                           
+    log("Size : %d" , outputVec.size());      
 }
 
 
@@ -555,8 +577,8 @@ unsigned int CShowArea::resetId()
             break;
         }
 
-        head->id = count++;         
-        head = head->next;   
+        head->id    = count++;         
+        head        = head->next;   
 
         if (!skip)
         {
@@ -587,14 +609,11 @@ void CShowArea::delPoint(int index)
         m_pHandle = nullptr;
 
         preview->next = head;
-        head->preview = preview;
-       
+        head->preview = preview; 
 
-        
         log("head is delete"); 
 
-        m_pHandle = head;  
-        //size();
+        m_pHandle = head;      
 
         return;
     }           
@@ -614,15 +633,15 @@ void CShowArea::delPoint(int index)
 
         if (head->id == index)
         {
-            TPoint* currenttp = head;           //��ǰ�ڵ�
-            TPoint* previewtp = head->preview;  //��һ���ڵ�
-            TPoint* nexttp = head->next;
+            TPoint* currenttp   = head;           //��ǰ�ڵ�
+            TPoint* previewtp   = head->preview;  //��һ���ڵ�
+            TPoint* nexttp      = head->next;
 
-            previewtp->next = nexttp;
-            nexttp->preview = previewtp;
+            previewtp->next     = nexttp;
+            nexttp->preview     = previewtp;
 
             delete currenttp;
-            currenttp = nullptr;
+            currenttp           = nullptr;
 
             log("body is delete");
 
@@ -640,57 +659,14 @@ void CShowArea::delPoint(int index)
 }
 
 
-void CShowArea::delPoint(int start, int end, int category)
-{
-    log("close solution :%d, %d", start, end);
-
-    
-
-    TPoint* head = getPoint(start);
-    switch (category)
-    {
-    case DIRECT_CLOCKWISE:
-    {
-
-                             while (head != nullptr)
-                             {
-                                 log("point %d", head->id);
-
-                                 if (head->id == end)
-                                 {
-                                     break;
-                                 }
-                                 head = head->next;                                  
-                             }
-    }
-
-        break; 
-    case DIRECT_ANTICCLOCKWISE:
-    {                             
-                                  while (head != nullptr)
-                                  {
-                                      log("point %d", head->id);
-
-                                      if (head->id == end)
-                                      {
-                                          break;
-                                      }
-                                      head = head->preview;
-                                  }
-    }          
-        break;
-    }           
-}
-
 
 
 TPoint* CShowArea::getPoint(int index)
 {                                 
-    TPoint* head = m_pHandle;  
+    TPoint* head        = m_pHandle; 
 
-    bool skip = false;
-    TPoint* realHead = head;
-
+    TPoint* realHead    = head;   
+    bool skip           = false; 
 
     while (head != nullptr)
     {
@@ -711,43 +687,40 @@ TPoint* CShowArea::getPoint(int index)
         if (!skip)
         {
             skip = true;
-        }
-       
-    }
-
+        }                               
+    }                           
     return nullptr;
 }
 
 
-void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end , int direct)
+void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end)
 {
     
     if (start == end)
     {
-        TPoint* current = getPoint(start);
+        TPoint* current     = getPoint(start);
        
-        TPoint* tlink   = getTempHead(allpint); 
-        TPoint* tend    = getTempEnd(tlink);
+        TPoint* tlink       = getTempHead(allpint); 
+        TPoint* tend        = getTempEnd(tlink);
 
-        TPoint* next    = current->next;
+        TPoint* next        = current->next;
 
-        current->next   = tlink;
-        tlink->preview  = current;
+        current->next       = tlink;
+        tlink->preview      = current;
 
-        tend->next      = next;
-        next->preview   = tend;  
+        tend->next          = next;
+        next->preview       = tend;  
 
         resetId();
-    }else{                             
-        
+    }else{       
         TPoint* startp      = getPoint(start);   
-        TPoint* clipStart   = startp->next;         //��ͷ
+        TPoint* clipStart   = startp->next;         //
         //clips
         clipStart->preview  = nullptr; 
 
         TPoint* endp        = getPoint(end);        
         TPoint* clipEnd     = endp->next;
-        endp->next = nullptr;                       //�Ͽ�β�� 
+        endp->next = nullptr;                       // 
 
         ///-------------------------------------------
 
@@ -756,8 +729,7 @@ void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end , int dire
 
         while (findhead != nullptr)
         {            
-            TPoint* tDelref = findhead;
-             
+            TPoint* tDelref = findhead;  
 
             if (findhead == m_pHandle)
             {
@@ -769,8 +741,6 @@ void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end , int dire
         }            
 
         //---------------------------------------------
-
-
         //connect
         TPoint* temptp      = getTempHead(m_pPath->m_oAllPoint);
         TPoint* tempep      = getTempEnd(temptp);
@@ -782,25 +752,12 @@ void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end , int dire
         clipEnd->preview    = tempep;
 
         if (hasContent0){ m_pHandle = startp; }
-        
+
         resetId();  
     }
 }
 
 
-
-
-TPoint* CShowArea::getSubLink(int start, int end, int category)
-{
-    TPoint* current = m_pHandle;
-
-    while (current != nullptr)
-    {
-
-        current = current->next;
-    }
-    return nullptr;
-}
 
 
 
@@ -839,12 +796,12 @@ TPoint* CShowArea::getTempHead(const std::vector<Vec2>& allpoint)
 
         if (thead == nullptr)
         {
-            thead       = tp; 
-            thead->id   = 1000;
+            thead               = tp; 
+            thead->id           = 1000;
         }
         else
         {
-            int count = 1001;
+            int count           = 1001;
             TPoint* head        = thead;
             TPoint* preview     = head;  
 
@@ -877,6 +834,36 @@ TPoint* CShowArea::getTempEnd(TPoint* hp)
     }
 
     return head;
+}
+
+void CShowArea::clearPoint()
+{
+       
+    TPoint* current     = m_pHandle;
+    bool skip           = false;
+    TPoint* realHead    = current;
+
+    while (current != nullptr)
+    {
+        if (skip && current == realHead)
+        {
+            break;
+        }
+
+        TPoint* temp    = current;
+        current         = current->next;
+
+        delete temp;
+        temp = nullptr;
+
+        if (!skip)
+        {
+            skip = true;
+        }
+    }
+
+    m_pHandle = nullptr;
+
 }
 
 void CShowArea::printPoint(TPoint* hp)

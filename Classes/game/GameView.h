@@ -46,6 +46,8 @@ public:
 
     //---------------------------------------------   -----
 
+    void menuCloseCallback(Ref* ref);
+
     virtual void setState(int state);
 
     void initGame(float);

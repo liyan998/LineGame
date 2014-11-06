@@ -25,7 +25,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     
     
     glview->setFrameSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-    director->setContentScaleFactor(SCREEN_WIDTH / 320.0f);
+    director->setContentScaleFactor(SCREEN_WIDTH / 320);
     //glview->setFrameZoomFactor(SCREEN_WIDTH / SCREEN_HEIGHT);
     glview->setDesignResolutionSize(SCREEN_WIDTH, SCREEN_HEIGHT, ResolutionPolicy::SHOW_ALL);
     //director->setContentScaleFactor(640 / 960);
