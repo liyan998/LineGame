@@ -4,7 +4,7 @@
 #include "System.h"
 #include "State.h"
 #include "Path.h"
-#include "Player.h"
+#include "Game1Player.h"
 
 #define MAX_ANGLE 4
 
@@ -48,7 +48,7 @@ public:
 
 	void setPath(CPath* path);
 
-    void setPlayer(CPlayer* sp);
+    void setPlayer(CGamePlayer* sp);
                                                     
     void setPlayerPosition(const Vec2& pos);    
 
@@ -75,7 +75,7 @@ private:
 
     CPath*                  m_RefPath;
 
-    CPlayer*                m_RefPlayer;
+    CGamePlayer*                m_RefPlayer;
 
     std::vector<Vec2>       m_oTPath;            	
 

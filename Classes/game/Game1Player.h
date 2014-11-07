@@ -1,13 +1,13 @@
-#ifndef __PLAYER_H__
-#define __PLAYER_H__
+#ifndef __GAME1PLAYER_H__
+#define __GAME1PLAYER_H__
 
 #include "System.h"
 
-class CPlayer : public Node
+class CGamePlayer : public Node
 {
 public:
 
-    CREATE_FUNC( CPlayer )
+    CREATE_FUNC( CGamePlayer )
 
     virtual bool init();
 

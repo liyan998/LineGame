@@ -43,7 +43,7 @@ void CGameView::onEnter()
 
 	m_pDrawNode			= DrawNode::create();    	      	
     m_pSp               = CMySprite::create();
-    m_pPlayer           = CPlayer::create();
+    m_pPlayer           = CGamePlayer::create();
     m_pShowArea         = CShowArea::create();    
     
 	m_pSp->setPath(m_pPath);
@@ -239,9 +239,7 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
             m_pShowArea->setAreaIndex(1, selectindex);
             setState(STATE_RUN);
             return;
-        }
-        
-
+        }                             
 
         m_pSp->move(local);        
         break;

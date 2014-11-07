@@ -3,9 +3,9 @@
 
 #include "util/triangulate.h"
 
-#include "framework/ui/AGameScene.h"
+#include "System.h"
 
-class CTest : public liyan998::CAGameScene
+class CTest : public Layer
 {
 public:
 	CREATE_FUNC(CTest)
@@ -22,7 +22,7 @@ public:
 
 	void menuCloseCallback(Ref* pSender);
 
-	Vector2dVector allpoint;
+	std::vector<Vec2> allpoint;
 
 	DrawNode* m_Dn;
 };

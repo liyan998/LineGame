@@ -90,7 +90,7 @@
     <ClCompile Include="..\Classes\game\util\triangulate.cpp">
       <Filter>Classes\game\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\Player.cpp">
+    <ClCompile Include="..\Classes\game\Game1Player.cpp">
       <Filter>Classes\game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -188,7 +188,7 @@
     <ClInclude Include="..\Classes\game\System.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\Player.h">
+    <ClInclude Include="..\Classes\game\Game1Player.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
   </ItemGroup>

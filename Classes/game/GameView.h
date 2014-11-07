@@ -10,7 +10,7 @@
 #include "MySprite.h"  
 #include "Path.h"
 #include "Margin.h" 
-#include "Player.h"
+#include "Game1Player.h"
 
 
 class CGameView : 
@@ -66,7 +66,7 @@ private:
 
     CMySprite*                  m_pSp;              //玩家精灵  
 
-    CPlayer*                    m_pPlayer;          //控制精灵
+    CGamePlayer*                    m_pPlayer;          //控制精灵
 
 	CPath*						m_pPath;
 

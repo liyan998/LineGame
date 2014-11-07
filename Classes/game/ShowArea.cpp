@@ -42,11 +42,11 @@ bool CShowArea::init()
     m_pClip         = ClippingNode::create(); 
     ///m_pClip->retain();
 
-    m_pClip->setInverted(true);
-    m_pClip->setAlphaThreshold(0.f);   
+    //m_pClip->setInverted(true);
+    //m_pClip->setAlphaThreshold(0.f);   
 
-    LayerColor* pLc = LayerColor::create(Color4B(0,0,0,200));
-    m_pClip->addChild(pLc);
+    //LayerColor* pLc = LayerColor::create(Color4B(0,0,0,200));
+    //m_pClip->addChild(pLc);
 
     m_pClip->setStencil(m_pDrawNode);
 
@@ -404,17 +404,21 @@ void CShowArea::clearAreaIndex()
 
     if (start == -1 || end == -1)
     {               
-        log("ddirect %d, start %d , end %d", ddirect, start, end); 
+        
         return;
     }
 
+    log("ddirect %d, start %d , end %d", ddirect, start, end); 
     insert(m_pPath->m_oAllPoint, start, end);   
 
     getAllPoint(m_oAllPoint);                        
 
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 
-    //setMode(MODEL_IN);
+//     if (this->m_Model != MODEL_IN)
+//     {
+//         setMode(MODEL_IN);
+//     }
 }
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
@@ -463,7 +467,8 @@ int CShowArea::getMode()
 
 void CShowArea::setMode(int mode)
 {                            
-    this->m_Model = mode;      
+    this->m_Model = mode;
+
     switch (mode)
     {
     case MODEL_IN:
@@ -474,9 +479,11 @@ void CShowArea::setMode(int mode)
 
         break;
     case MODEL_OUT:         
+
         m_pDrawNode->retain();
         this->removeChild(m_pDrawNode, true);
         this->addChild(m_pClip);
+
         break;
     }
 }
@@ -734,10 +741,11 @@ void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end)
             if (findhead == m_pHandle)
             {
                 hasContent0 = true;                 
-            }                        
-
+            }                            
             findhead = findhead->next;
+
             delete tDelref;
+            tDelref = nullptr;
         }            
 
         //---------------------------------------------
@@ -888,7 +896,7 @@ void CShowArea::printPoint(TPoint* hp)
             head->preview != nullptr ? head->preview->id : -1,
             head->next != nullptr ? head->next->id : -1
             );
-        head = head->next;
+        head = head->next;                                                
 
         if (!skip)
         {

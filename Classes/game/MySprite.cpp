@@ -24,9 +24,8 @@ bool CMySprite::init()
     //---------------------------------------------------
 
     //Rect& rec = this->getBoundingBox();     
-    //log("bundBox:%f, %f, %f, %f", rec.origin.x, rec.origin.y, rec.size.width , rec.size.height);
+    //log("bundBox:%f, %f, %f, %f", rec.origin.x, rec.origin.y, rec.size.width , rec.size.height);     
 
-    
     return true;
 }
 
@@ -62,8 +61,7 @@ void CMySprite::move(const Vec2& point)
 
 	float dis		= ccpDistance(m_oPointerStart , point);
 	Vec2 position	= CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
-	this->setPosition(position);
-
+	this->setPosition(position);              
   
 }
 
@@ -168,7 +166,7 @@ void CMySprite::setPath(CPath* path)
 }
 
 
-void CMySprite::setPlayer(CPlayer* sp)
+void CMySprite::setPlayer(CGamePlayer* sp)
 {
     this->m_RefPlayer = sp;
 }
