@@ -42,11 +42,11 @@ bool CShowArea::init()
     m_pClip         = ClippingNode::create(); 
     ///m_pClip->retain();
 
-    //m_pClip->setInverted(true);
-    //m_pClip->setAlphaThreshold(0.f);   
+    m_pClip->setInverted(true);
+    m_pClip->setAlphaThreshold(0.f);   
 
-    //LayerColor* pLc = LayerColor::create(Color4B(0,0,0,200));
-    //m_pClip->addChild(pLc);
+    LayerColor* pLc = LayerColor::create(Color4B(0,0,0,200));
+    m_pClip->addChild(pLc);
 
     m_pClip->setStencil(m_pDrawNode);
 
