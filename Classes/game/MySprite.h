@@ -67,14 +67,19 @@ public:
     //------------------------------------------------------
 
     void fixPosition(const Vec2& inPos, Vec2& outPos);
+	
 
+    void setSpStartPosition();							//设置SP起始点坐标
 
+    void setDirectStartPosition(const Vec2& point);		//设置方向检查起始坐标
 
-    void setAbsPosition();                      //设置相对坐标
+	void checkDirect(const Vec2& inPos);				//方向检查
 
-    void setPointerStart(const Vec2& point);    //设置相对起始坐标
+	void changeDirect(const Vec2& inPos ,int angle);
 
-    void run(float tm);                         //            
+	int getAbsDistance();								//得到相对距离
+
+    void run(float tm);									//            
 
     void addGuide(const Vec2& point);
 
@@ -99,15 +104,17 @@ private:
 
     std::vector<Vec2>       m_oTPath;            	
 
-    float                   m_fStep;            //步长
+    float                   m_fStep;				//步长
 
-    Vec2                    m_AbPosition;       //相对位置  
+    Vec2                    m_oSpStartPosition;     //sp起始位置
+    Vec2                    m_oDirectStart;			//方向检查起始点
 
-    Vec2                    m_oPointerStart;
+	Vec2					m_oAbsPosition;			//相对位置起始点
+	Vec2					m_oEndPosition;
 
-	int		                m_currentAngle;		//当前角度
+	int		                m_currentAngle;			//当前角度
 
-    int                     m_iCountRecord;     //记录相对节点的次数
+    int                     m_iCountRecord;			//
 
 };
 

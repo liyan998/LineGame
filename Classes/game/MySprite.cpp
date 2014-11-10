@@ -148,10 +148,10 @@ void CMySprite::setShowArea(CShowArea* area)
 }
 
 
-void CMySprite::setAbsPosition()
+void CMySprite::setSpStartPosition()
 {
-    log("Ready to Move");
-    this->m_AbPosition = this->getPosition();
+    log("sp Ready to Move");
+    this->m_oSpStartPosition = this->getPosition();
 }
 
 
@@ -199,7 +199,7 @@ void CMySprite::setState(int state)
         m_currentAngle = ANGLE_NONE;
         //schedule(schedule_selector(CMySprite::run));
         log("mysprite state STATE_MOVE");
-        setAbsPosition();       
+        setSpStartPosition();       
         break;            
     case STATE_RUN:
         log("mysprite state STATE_RUN");
@@ -233,12 +233,9 @@ void CMySprite::setPlayerPosition(const Vec2& pos)
  @return        void 
 */
 /************************************************************************/
-void CMySprite::setPointerStart(const Vec2& point)
+void CMySprite::setDirectStartPosition(const Vec2& point)
 {
-    this->m_oPointerStart = point;
-	log("startPoint: %f, %f", m_oPointerStart.x, m_oPointerStart.y);
-
-    //setState(STATE_DRAW);
+    this->m_oDirectStart = point;
 }
 
 /************************************************************************/
@@ -265,7 +262,9 @@ void CMySprite::onPressed(const Vec2& vec2)
     else
     {
         setState(STATE_MOVE);
-        setPointerStart(vec2);
+        setDirectStartPosition(vec2);
+		m_oAbsPosition = vec2;
+		m_oEndPosition = m_oAbsPosition;
     }
 
 }
@@ -280,31 +279,18 @@ void CMySprite::onPressed(const Vec2& vec2)
 /*********************************************************************/
 void CMySprite::onMove(const Vec2& point)
 {                                    
+	checkDirect(point);
+	m_oEndPosition = point;
+
+	int distance = getAbsDistance();
+	log("angle:%d , distance:%d",m_currentAngle, distance);
 
 
-    if (m_iCountRecord++ > 3)
-    {
-
-
-        float radian = RADINA_TOGAME(CMath::getRadian(m_oPointerStart, point));
-        int angle = CMath::radianToAngle(radian);
-        int fixangle = getFixAngle(angle);
-        log("angle :%d , fixangle:%d" , angle, fixangle);
-
-//         float dis = ccpDistance(m_oPointerStart, inPos);
-//         outPos = CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
-
-
-        setPointerStart(point);
-        m_iCountRecord = 0;
-      
-    }
-
-
-
-//     Vec2 fixPos = getPosition();   
-//     fixPosition(point, fixPos);       
-//     this->setPosition(fixPos);      
+	Vec2 fixPos = CMath::getVec2(m_oSpStartPosition, distance, CMath::angleToRadian( m_currentAngle));
+	
+	//Vec2 fixPos = getPosition();   
+	//fixPosition(point, fixPos);       
+	this->setPosition(fixPos);      
 }
 
 
@@ -319,40 +305,96 @@ void CMySprite::onMove(const Vec2& point)
 /*********************************************************************/
 void CMySprite::fixPosition(const Vec2& inPos, Vec2& outPos)
 {
+	
 
-    float radian = RADINA_TOGAME(CMath::getRadian(m_oPointerStart, inPos));
-    int angle = CMath::radianToAngle(radian);
-    int fixangle = getFixAngle(angle);
-
-    if (fixangle == ANGLE_ERROR)
-    {
-        log("angle:%d , fixangle:%d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", (angle), fixangle);
-        return;
-    }
-
-    //------------------------------------------------------------------ 
-
-    if (m_currentAngle == ANGLE_NONE || m_currentAngle != fixangle)
-    {
-        log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
-        const Vec2& pos = getPosition();
-
-
-        addGuide(pos);
-        //---------------------------------------------
-        setAbsPosition();
-        // 
-        // m_RefPath->addPoint(pos);        //   
-
-        m_oPointerStart     = inPos;
-        m_currentAngle      = fixangle;
-        return;
-    }
-
-    float dis = ccpDistance(m_oPointerStart, inPos);
-    outPos = CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
+	//float dis = ccpDistance(m_oPointerStart, inPos);
+	//outPos = CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
+    
 }
 
+/*********************************************************************/
+/*
+* @brief        检查方向
+* @param[in]    inPos   输入坐标
+* @param[out]   
+* @return       void
+*/
+/*********************************************************************/
+void CMySprite::checkDirect(const Vec2& inPos)
+{
+	if (m_iCountRecord++ > 3)
+	{
+		//
+		float radian	= RADINA_TOGAME(CMath::getRadian(m_oDirectStart, inPos));
+		int angle		= CMath::radianToAngle(radian);
+		int fixangle	= getFixAngle(angle);
+
+
+		if (m_currentAngle == ANGLE_NONE || m_currentAngle != fixangle)
+		{
+			changeDirect(inPos, fixangle);	
+			m_currentAngle      = fixangle;
+			return;
+		}	
+
+		setDirectStartPosition(inPos);
+		m_iCountRecord = 0;
+	}
+}
+
+
+void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
+{
+
+	log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
+	//const Vec2& pos = getPosition();
+
+	//log("angle :%d , fixangle:%d" , angle, fixangle);
+	//addGuide(pos);
+	//---------------------------------------------
+	//setSpStartPosition();
+	// 
+	//m_RefPath->addPoint(pos);        //   
+
+	//m_oPointerStart     = inPos;
+
+	if (m_currentAngle != ANGLE_NONE)
+	{
+		m_oAbsPosition = inPos;
+		m_oEndPosition = m_oAbsPosition;
+
+		m_oSpStartPosition = getPosition();
+	}
+
+}
+
+
+int CMySprite::getAbsDistance()
+{
+	//根据方向得到 距离
+
+	if (m_currentAngle == ANGLE_NONE || m_currentAngle == ANGLE_ERROR)
+	{
+		return 0;
+	}
+
+	int distance = 0;
+
+
+	if (90 == abs(m_currentAngle))
+	{
+		//log("up down");
+
+		distance = static_cast<int>(abs(m_oAbsPosition.y - m_oEndPosition.y));
+
+	}else{
+		//log("right left");
+		distance = static_cast<int>(abs(m_oAbsPosition.x - m_oEndPosition.x));
+
+	}
+
+	return distance;
+}
 
 /**
 * @brief        渲染通道
@@ -365,7 +407,7 @@ void CMySprite::print(DrawNode* dn)
     dn->drawDot(this->getPosition(), 20, Color4F(1, 0, 0, 0.5));  
         
 
-dn->drawDot(m_oPointerStart, 3, Color4F(.03,0,1,1));
+	
 //     int ta[] = { 0 , 200};   
 //     for (int i = 0; i < 2;i++)
 //     {
@@ -381,11 +423,20 @@ dn->drawDot(m_oPointerStart, 3, Color4F(.03,0,1,1));
         
     switch (m_State)
     {
-    case STATE_DRAW:
-        dn->drawSegment(m_AbPosition, getPosition(), 1, Color4F(0, 1, 1, 1));
+    case STATE_DRAW:		
+
+		dn->drawSegment(m_oSpStartPosition ,getPosition(), 1, Color4F(0, 1, 1, 1));
+      
         break;
+	case STATE_MOVE:
+		dn->drawDot(m_oDirectStart, 3, Color4F(.03,0,1,1));
+		dn->drawSegment(m_oAbsPosition, m_oEndPosition, 1, Color4F(0, 1, 1, 1));
+
+		break;
     }    
 }
+
+
 
 
 void CMySprite::run(float tm)
