@@ -66,7 +66,7 @@ void CGameView::onEnter()
 	
     //------------------------------------------  
 
-	schedule(schedule_selector(CGameView::run));
+	//schedule(schedule_selector(CGameView::run));
 
 }
 
@@ -172,7 +172,7 @@ void CGameView::onTouchMove(Touch* touches, Event *event)
     switch (m_State)
     {                
     case STATE_RUN: 
-        m_pSp->move(local); 
+        m_pSp->onMove(local); 
         break;
     }  
 }
@@ -203,4 +203,5 @@ void CGameView::onExit()
     this->removeAllChildren();
   
     delete m_pPath;
+    m_pPath = nullptr;
 }

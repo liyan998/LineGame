@@ -58,12 +58,17 @@ public:
                                                     
     void setPlayerPosition(const Vec2& pos);  
 
+    //------------------------------------------------------
 
-    void onPressed(const Vec2& vec2);  
+    void onPressed(const Vec2& vec2);             //
+
+    void onMove(const Vec2& point);               // 
+
+    //------------------------------------------------------
+
+    //void fixPosition(const Vec2& position);
 
 
-
-    void move(const Vec2& point);               //sp 引导线    
 
     void setAbsPosition();                      //设置相对坐标
 
