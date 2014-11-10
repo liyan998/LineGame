@@ -66,7 +66,7 @@ public:
 
     //------------------------------------------------------
 
-    //void fixPosition(const Vec2& position);
+    void fixPosition(const Vec2& inPos, Vec2& outPos);
 
 
 
@@ -107,7 +107,7 @@ private:
 
 	int		                m_currentAngle;		//当前角度
 
-    int*                    m_pAvaMove;         //可行走区域
+    int                     m_iCountRecord;     //记录相对节点的次数
 
 };
 

@@ -11,7 +11,7 @@ bool CMySprite::init()
 
     m_currentAngle      = ANGLE_NONE;
     m_fStep				= 2.f;
-
+    m_iCountRecord      = 0;
     //----------------------------------------------------- 
 
 
@@ -156,6 +156,15 @@ void CMySprite::setAbsPosition()
 
 
 
+
+/************************************************************************/
+/*
+@brief        设置精灵状态
+@param[in]     state   状态值
+@param[out]
+@return        void
+*/
+/************************************************************************/
 void CMySprite::setState(int state)
 {
     this->m_State = state;
@@ -198,36 +207,55 @@ void CMySprite::setState(int state)
         clearGuide();
         break;
     }
-}
+}                
 
+
+/************************************************************************/
+/*
+@brief        设置玩家为之
+@param[in]     pos   输入坐标
+@param[out]
+@return        void
+*/
+/************************************************************************/
 void CMySprite::setPlayerPosition(const Vec2& pos)
 {                                     
     this->setPosition(pos);       
     m_RefPlayer->setPlayerPosition(pos);
-}
+}         
 
 
-
-
-
+/************************************************************************/
+/* 
+ @brief        设置移动起始点
+ @param[in]     point   输入坐标
+ @param[out]    
+ @return        void 
+*/
+/************************************************************************/
 void CMySprite::setPointerStart(const Vec2& point)
 {
     this->m_oPointerStart = point;
 	log("startPoint: %f, %f", m_oPointerStart.x, m_oPointerStart.y);
 
-    setState(STATE_DRAW);
+    //setState(STATE_DRAW);
 }
 
-
+/************************************************************************/
+/**
+* @brief        屏幕指针按下
+* @param[in]    vec2   输入坐标
+* @param[out]
+* @return       void
+*/
+/************************************************************************/
 void CMySprite::onPressed(const Vec2& vec2)
 {
 
     int selectindex = m_RefShowArea->getTargetIndex(vec2);
     if (selectindex != SELECTID_NULL)
-    {
-        //
-        log("location position");
-     
+    {            
+        log("location position");          
 
         CMargin* tMargin = m_RefShowArea->getMargin(selectindex);
         const Vec2& refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2);
@@ -242,65 +270,102 @@ void CMySprite::onPressed(const Vec2& vec2)
 
 }
 
+/**********************************************************************/
+/* 
+* @brief        屏幕指针移动
+* @param[in]    point   输入坐标
+* @param[out]   
+* @return       void
+*/
+/*********************************************************************/
 void CMySprite::onMove(const Vec2& point)
+{                                    
+
+
+    if (m_iCountRecord++ > 3)
+    {
+
+
+        float radian = RADINA_TOGAME(CMath::getRadian(m_oPointerStart, point));
+        int angle = CMath::radianToAngle(radian);
+        int fixangle = getFixAngle(angle);
+        log("angle :%d , fixangle:%d" , angle, fixangle);
+
+//         float dis = ccpDistance(m_oPointerStart, inPos);
+//         outPos = CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
+
+
+        setPointerStart(point);
+        m_iCountRecord = 0;
+      
+    }
+
+
+
+//     Vec2 fixPos = getPosition();   
+//     fixPosition(point, fixPos);       
+//     this->setPosition(fixPos);      
+}
+
+
+
+/*********************************************************************/
+/*
+* @brief        根据规则修正点轨迹
+* @param[in]    inPos   输入坐标
+* @param[out]   outPos  输出修正后的坐标
+* @return       void
+*/
+/*********************************************************************/
+void CMySprite::fixPosition(const Vec2& inPos, Vec2& outPos)
 {
-    float radian    = RADINA_TOGAME(CMath::getRadian(m_oPointerStart, point));
-    int angle       = CMath::radianToAngle(radian);
-    int fixangle    = getFixAngle(angle);
+
+    float radian = RADINA_TOGAME(CMath::getRadian(m_oPointerStart, inPos));
+    int angle = CMath::radianToAngle(radian);
+    int fixangle = getFixAngle(angle);
 
     if (fixangle == ANGLE_ERROR)
     {
         log("angle:%d , fixangle:%d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", (angle), fixangle);
         return;
-    } 
+    }
 
     //------------------------------------------------------------------ 
 
     if (m_currentAngle == ANGLE_NONE || m_currentAngle != fixangle)
     {
         log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
-        const Vec2& pos = getPosition(); 
+        const Vec2& pos = getPosition();
 
-                                             
+
         addGuide(pos);
         //---------------------------------------------
         setAbsPosition();
         // 
-       // m_RefPath->addPoint(pos);        //   
+        // m_RefPath->addPoint(pos);        //   
 
-        m_oPointerStart = point;
-        m_currentAngle = fixangle;
+        m_oPointerStart     = inPos;
+        m_currentAngle      = fixangle;
         return;
     }
 
-    float dis       = ccpDistance(m_oPointerStart, point);
-    Vec2 position   = CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
-    this->setPosition(position);
-
-
-
-//     if (m_oTPath.size() == 1)
-//     {
-//         m_RefPlayer->movePlayerTo(m_oTPath[0], position);
-//     }
-
-
-    //m_RefPlayer->setPlayerPosition(position);
-
+    float dis = ccpDistance(m_oPointerStart, inPos);
+    outPos = CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
 }
 
 
-// void CMySprite::fixPosition(const Vec2& position)
-// {
-// 
-// }
-
+/**
+* @brief        渲染通道
+* @param[in]    dn  渲染节点
+* @param[out]   
+* @return       void
+*/
 void CMySprite::print(DrawNode* dn)
 {
     dn->drawDot(this->getPosition(), 20, Color4F(1, 0, 0, 0.5));  
         
 
-//     dn->drawDot(m_oPointerStart, 10, Color4F(0,1,1,1));
+dn->drawDot(m_oPointerStart, 3, Color4F(.03,0,1,1));
 //     int ta[] = { 0 , 200};   
 //     for (int i = 0; i < 2;i++)
 //     {

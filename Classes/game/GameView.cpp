@@ -66,7 +66,7 @@ void CGameView::onEnter()
 	
     //------------------------------------------  
 
-	//schedule(schedule_selector(CGameView::run));
+	schedule(schedule_selector(CGameView::run));
 
 }
 
