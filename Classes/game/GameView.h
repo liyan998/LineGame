@@ -2,7 +2,7 @@
 #define __GAMEVIEW_H__
 
 //#include "framework/ui/AGameScene.h"
-#include "System.h"
+#include "System.h" 
 
 #include "Rander.h"
 #include "State.h"
@@ -23,9 +23,7 @@ public:
     enum State
     {
         STATE_INIT,     //初始
-        STATE_WAIT,     //等待
-        STATE_DRAW,     //划线
-        STATE_RUN       //行走 
+        STATE_RUN       // 
     };
        
 public:
@@ -66,7 +64,7 @@ private:
 
     CMySprite*                  m_pSp;              //玩家精灵  
 
-    CGamePlayer*                    m_pPlayer;          //控制精灵
+    CGamePlayer*                m_pPlayer;          //控制精灵
 
 	CPath*						m_pPath;
 

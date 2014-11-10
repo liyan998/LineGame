@@ -83,15 +83,9 @@ public:
 
     virtual void setState(int state);                               //设置状态
 
-    //---------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------     
 
-    void setPlayer(CMySprite*);
-
-    void setPath(CPath* path);
-
-    void setPlayerPosiztion();
-
-    void setPlayerPosiztion(const Vec2& vec2, int index);  
+    void setPath(CPath* path); 
 
     void setAreaIndex(int index, int areaIndex);                    //设置区间索引     
 
@@ -164,7 +158,7 @@ private:
     std::vector<Vec2>           m_oTempPoint;
     std::vector< int >          m_oAllMargin;                       //
                                                                     
-    CMySprite*                  m_pPlayer;                          //
+
     CPath*                      m_pPath;                            //路径
     ClippingNode*               m_pClip;                            //
 

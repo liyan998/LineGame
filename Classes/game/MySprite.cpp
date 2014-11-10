@@ -1,5 +1,7 @@
 #include "MySprite.h"  
 #include "util/Math.h"
+#include "Margin.h"
+#include "ShowArea.h"
 
 using namespace liyan998;
 
@@ -29,41 +31,9 @@ bool CMySprite::init()
     return true;
 }
 
-void CMySprite::move(const Vec2& point)
-{
-	float radian    = RADINA_TOGAME( CMath::getRadian( m_oPointerStart, point ) );	
-	int angle       = CMath::radianToAngle( radian );	
-	int fixangle    = getFixAngle(angle);
 
-    //log("angle:%d , fixangle:%d", (angle), fixangle);	
-    //assert(fixangle != ANGLE_ERROR);	
-    if (fixangle == ANGLE_ERROR)
-    {
-        log("angle:%d , fixangle:%d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", (angle), fixangle);
-        return;
-    }
 
-    if (m_currentAngle == ANGLE_NONE || m_currentAngle != fixangle)
-	{                                         
-        const Vec2& pos = getPosition();
-        if (m_currentAngle != ANGLE_NONE)
-        {
-            addGuide(pos);
-        }                                        
-        //---------------------------------------------
-		setAbsPosition();
-        m_RefPath->addPoint(pos);
 
-		m_oPointerStart     = point;
-		m_currentAngle      = fixangle;   
-        return;
-	}		
-
-	float dis		= ccpDistance(m_oPointerStart , point);
-	Vec2 position	= CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
-	this->setPosition(position);              
-  
-}
 
 
 void CMySprite::spriteMove()
@@ -78,7 +48,7 @@ void CMySprite::spriteMove()
 //90, 0 , -90, 180
 int CMySprite::getFixAngle(int angle)
 {
-	int errorMarign = 20;
+	int errorMarign = 45;
 
 	int angleList[] = { 90, 0 , -90, 180 ,270 };
 
@@ -172,6 +142,12 @@ void CMySprite::setPlayer(CGamePlayer* sp)
 }
 
 
+void CMySprite::setShowArea(CShowArea* area)
+{
+    this->m_RefShowArea = area;
+}
+
+
 void CMySprite::setAbsPosition()
 {
     log("Ready to Move");
@@ -185,17 +161,41 @@ void CMySprite::setState(int state)
     this->m_State = state;
 
     switch (state)
+    {        
+    case STATE_INIT:
     {
+                       
+                       int setLine = 0;
+
+                       CMargin* margin = m_RefShowArea->getMargin(setLine);
+
+                       float rad = CMath::getRadian(margin->m_oStart, margin->m_oTaget);
+                       float dis = ccpDistance(margin->m_oStart, margin->m_oTaget);
+                       int ranint = CMath::getRandom(0, dis);
+
+                       const Vec2& ps = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
+
+
+                       setPlayerPosition(ps);
+    }
+        break;
     case STATE_STANDER:
-        m_currentAngle = ANGLE_NONE;
-        clearGuide();
-        this->unschedule(schedule_selector(CMySprite::run));
+        //m_currentAngle = ANGLE_NONE;
+        //clearGuide();
+        //this->unschedule(schedule_selector(CMySprite::run));
        
         log("mysprite state STATE_STANDER");
         break;
-    case STATE_MOVE:         
-        schedule(schedule_selector(CMySprite::run));
+    case STATE_MOVE:     
+        m_currentAngle = ANGLE_NONE;
+        //schedule(schedule_selector(CMySprite::run));
         log("mysprite state STATE_MOVE");
+        setAbsPosition();       
+        break;            
+    case STATE_RUN:
+        log("mysprite state STATE_RUN");
+        //m_currentAngle = ANGLE_NONE;
+        clearGuide();
         break;
     }
 }
@@ -214,7 +214,89 @@ void CMySprite::setPointerStart(const Vec2& point)
 {
     this->m_oPointerStart = point;
 	log("startPoint: %f, %f", m_oPointerStart.x, m_oPointerStart.y);
+
+    setState(STATE_DRAW);
 }
+
+
+void CMySprite::onPressed(const Vec2& vec2)
+{
+
+    int selectindex = m_RefShowArea->getTargetIndex(vec2);
+    if (selectindex != SELECTID_NULL)
+    {
+        //
+        log("location position");
+        //m_pShowArea->setAreaIndex(0, selectindex);
+       // m_RefShowArea->setPlayerPosiztion(vec2, selectindex);
+
+        CMargin* tMargin = m_RefShowArea->getMargin(selectindex);
+        const Vec2& refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2);
+        // 
+        setPlayerPosition(refp);
+    }
+    else
+    {
+        setState(STATE_MOVE);
+        setPointerStart(vec2);
+    }
+
+}
+
+void CMySprite::move(const Vec2& point)
+{
+    float radian    = RADINA_TOGAME(CMath::getRadian(m_oPointerStart, point));
+    int angle       = CMath::radianToAngle(radian);
+    int fixangle    = getFixAngle(angle);
+
+    if (fixangle == ANGLE_ERROR)
+    {
+        log("angle:%d , fixangle:%d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", (angle), fixangle);
+        return;
+    }      
+
+
+
+
+
+    //------------------------------------------------------------------ 
+
+
+    if (m_currentAngle == ANGLE_NONE || m_currentAngle != fixangle)
+    {
+        log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
+        const Vec2& pos = getPosition(); 
+
+                                             
+        addGuide(pos);
+        //         //---------------------------------------------
+        setAbsPosition();
+        // 
+       // m_RefPath->addPoint(pos);        // 
+
+
+
+        m_oPointerStart = point;
+        m_currentAngle = fixangle;
+        return;
+    }
+
+    float dis       = ccpDistance(m_oPointerStart, point);
+    Vec2 position   = CMath::getVec2(m_AbPosition, dis, CMath::angleToRadian(fixangle));
+    this->setPosition(position);
+
+
+
+    if (m_oTPath.size() == 1)
+    {
+        m_RefPlayer->movePlayerTo(m_oTPath[0], position);
+    }
+
+
+    //m_RefPlayer->setPlayerPosition(position);
+
+}
+
 
 void CMySprite::print(DrawNode* dn)
 {
@@ -229,6 +311,12 @@ void CMySprite::print(DrawNode* dn)
 //         dn->drawSegment(m_oPointerStart, endP, 1, Color4F(0, 1, 1, 1));
 //     }    
 
+
+    for (int i = 0; i < m_oTPath.size();i++)
+    {
+        dn->drawDot(m_oTPath[i], 10, Color4F(0, 1, 1, 1));  
+    }               
+        
     switch (m_State)
     {
     case STATE_DRAW:

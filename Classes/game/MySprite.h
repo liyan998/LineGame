@@ -2,9 +2,13 @@
 #define __MYSPRITE_H__
 
 #include "System.h"
+
 #include "State.h"
 #include "Path.h"
 #include "Game1Player.h"
+
+
+class CShowArea;
 
 #define MAX_ANGLE 4
 
@@ -49,8 +53,14 @@ public:
 	void setPath(CPath* path);
 
     void setPlayer(CGamePlayer* sp);
+
+    void setShowArea(CShowArea* area);
                                                     
-    void setPlayerPosition(const Vec2& pos);    
+    void setPlayerPosition(const Vec2& pos);  
+
+
+    void onPressed(const Vec2& vec2);  
+
 
 
     void move(const Vec2& point);               //sp 引导线    
@@ -65,6 +75,8 @@ public:
 
     void clearGuide();
 
+   
+
 private:                                                        
 
 	int getFixAngle(int angle);                 //修正角度
@@ -75,7 +87,10 @@ private:
 
     CPath*                  m_RefPath;
 
-    CGamePlayer*                m_RefPlayer;
+    CGamePlayer*            m_RefPlayer;
+
+    CShowArea*              m_RefShowArea;
+
 
     std::vector<Vec2>       m_oTPath;            	
 

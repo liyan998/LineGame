@@ -10,9 +10,8 @@ using namespace liyan998;
 bool CShowArea::init()
 {
     Sprite::init();   
-    m_Model     = MODEL_OUT;
+    m_Model     = MODEL_OUT; 
 
-    m_pPlayer   = nullptr;
     m_pPath     = nullptr;        
     m_pHandle   = nullptr;
 
@@ -311,40 +310,37 @@ void CShowArea::setState(int sta)
 }
 
 
-void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
-{
-    CMargin* tMargin	= static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
-    const Vec2& refp			= CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2);
-
-    m_pPlayer->setPlayerPosition(refp);
-}
+// void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
+// {
+//     CMargin* tMargin	= static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
+//     const Vec2& refp	= CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2);
+// 
+//     //m_pPlayer->setPlayerPosition(refp);
+// }
 
 // 
-void CShowArea::setPlayerPosiztion()
-{
-    int setLine         = CMath::getRandom(0, m_oAllMargin.size() - 1);
+// void CShowArea::setPlayerPosiztion()
+// {
+//     int setLine         = CMath::getRandom(0, m_oAllMargin.size() - 1);
+// 
+//     CMargin* margin     = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[setLine]));
+// 
+//     float rad           = CMath::getRadian(margin->m_oStart, margin->m_oTaget);
+//     float dis           = ccpDistance(margin->m_oStart, margin->m_oTaget);
+//     int ranint          = CMath::getRandom(0, dis);
+// 
+//     const Vec2& ps      = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
+// 
+//     //m_pPlayer->setState(CMySprite::STATE_INIT);
+//     //m_pPlayer->setPlayerPosition(ps);
+// 
+//     //setAreaIndex(0, setLine);
+// 
+//     log("sprite setPostion:%f, %f, %d", m_pPlayer->getPosition().x, m_pPlayer->getPosition().y, ranint);
+// 
+// }
 
-    CMargin* margin     = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[setLine]));
 
-    float rad           = CMath::getRadian(margin->m_oStart, margin->m_oTaget);
-    float dis           = ccpDistance(margin->m_oStart, margin->m_oTaget);
-    int ranint          = CMath::getRandom(0, dis);
-
-    const Vec2& ps      = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
-
-    m_pPlayer->setState(CMySprite::STATE_INIT);
-    m_pPlayer->setPlayerPosition(ps);
-
-    setAreaIndex(0, setLine);
-
-    log("sprite setPostion:%f, %f, %d", m_pPlayer->getPosition().x, m_pPlayer->getPosition().y, ranint);
-
-}
-
-void CShowArea::setPlayer(CMySprite* sp)
-{
-    this->m_pPlayer = sp;
-}
 
 void CShowArea::setPath(CPath* path)
 {
