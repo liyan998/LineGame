@@ -78,7 +78,7 @@ void CMySprite::spriteMove()
 //90, 0 , -90, 180
 int CMySprite::getFixAngle(int angle)
 {
-	int errorMarign = 20;
+	int errorMarign = 45;
 
 	int angleList[] = { 90, 0 , -90, 180 ,270 };
 
