@@ -20,7 +20,7 @@ void CPath::addPoint(const Vec2& vec2 )
             return;
         }
     }     
-    //log("=====new Point: %d, %d", x, y);
+    log("=====new Point: %d, %d", x, y);
 	m_oAllPoint.push_back(Vec2(x, y));	
 }
 

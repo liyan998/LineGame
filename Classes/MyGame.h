@@ -7,8 +7,8 @@
 
 /////////////////////////////////
 //
-#define SCREEN_WIDTH    480
-#define SCREEN_HEIGHT   854
+#define SCREEN_WIDTH    640
+#define SCREEN_HEIGHT   960
 
 
 #define SCENEID_MENU    0x001

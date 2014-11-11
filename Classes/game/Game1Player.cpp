@@ -9,11 +9,8 @@ bool CGamePlayer::init()
 
     m_pSp = Sprite::create("CloseNormal.png");
     addChild(m_pSp);
-
-
-    setState(STATE_STOP);
-
-
+                              
+    setState(STATE_STOP); 
     schedule(schedule_selector(CGamePlayer::run));
 
     return true;
@@ -21,8 +18,7 @@ bool CGamePlayer::init()
 
 
 void CGamePlayer::setPlayerPosition(const Vec2& pos)
-{
-
+{                               
     m_pSp->setPosition(pos);
 }
 
@@ -34,15 +30,13 @@ const Vec2& CGamePlayer::getPlsyerPosition()
 
 
 void CGamePlayer::movePlayerTo(const Vec2& star, const Vec2& pos)
-{
-
+{                                  
     m_oMargin.setTaget(star, pos);
 
     if (m_State != STATE_RUN)
     {
         setState(STATE_RUN);
-    }
-
+    }                              
 }
 
 void CGamePlayer::moveToPath(const std::vector<Vec2>& allPoint)

@@ -158,7 +158,8 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
         setState(STATE_RUN);
         break;
     case STATE_RUN:
-        m_pSp->setState(CMySprite::STATE_RUN);
+        m_pSp->onReleased(local);
+        
         break;
     }
 
@@ -185,6 +186,7 @@ void CGameView::menuCloseCallback(Ref* ref)
     return;
 #endif
 
+    log("exit~~~~~~!");
     Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)

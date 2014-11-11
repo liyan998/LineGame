@@ -32,8 +32,8 @@ public:
         STATE_INIT,         //
         STATE_STANDER,      //
         STATE_MOVE,         //
-        STATE_DRAW,         //
-        STATE_RUN           //          
+        STATE_CLOSE,        //
+        STATE_BACK          //          
     };
 
 public:
@@ -50,24 +50,31 @@ public:
 
 	//----------------------------------------------------
 
-	void setPath(CPath* path);
+    inline void setPath(CPath* path){ this->m_RefPath = path; };
 
-    void setPlayer(CGamePlayer* sp);
+    inline void setPlayer(CGamePlayer* sp){ this->m_RefPlayer = sp; };
 
-    void setShowArea(CShowArea* area);
+    inline void setShowArea(CShowArea* area){ this->m_RefShowArea = area; };
                                                     
-    void setPlayerPosition(const Vec2& pos);  
+    inline void setPlayerPosition(const Vec2& pos)
+    { 
+        m_oSpCurrentPos = pos;
+        m_RefPlayer->setPlayerPosition(pos);
+    };
 
     //------------------------------------------------------
 
-    void onPressed(const Vec2& vec2);             //
+    void onPressed(const Vec2& pointer);                //     
 
-    void onMove(const Vec2& point);               // 
+    void onMove(const Vec2& pointer);                   // 
+
+    void onReleased(const Vec2& pointer);
 
     //------------------------------------------------------
 
-    void fixPosition(const Vec2& inPos, Vec2& outPos);
-	
+    void fixPosition(const Vec2& inPos, Vec2& outPos);  //修正位置 
+
+    void playerMove(const Vec2& spPosition);            //精灵移动 
 
     void setSpStartPosition();							//设置SP起始点坐标
 
@@ -75,7 +82,9 @@ public:
 
 	void checkDirect(const Vec2& inPos);				//方向检查
 
-	void changeDirect(const Vec2& inPos ,int angle);
+	void changeDirect(const Vec2& inPos ,int angle);    //方向改变
+
+    bool hasRevceDircet(int direct, int fixangle);      //是否相向运动
 
 	int getAbsDistance();								//得到相对距离
 
@@ -85,13 +94,14 @@ public:
 
     void clearGuide();
 
+    void reback();
    
 
 private:                                                        
 
 	int getFixAngle(int angle);                 //修正角度
 
-    void spriteMove();                          //精灵移动          
+             
 
 private:                                             
 
@@ -106,13 +116,19 @@ private:
 
     float                   m_fStep;				//步长
 
-    Vec2                    m_oSpStartPosition;     //sp起始位置
-    Vec2                    m_oDirectStart;			//方向检查起始点
+    //-----------------------------------------------------------------
 
-	Vec2					m_oAbsPosition;			//相对位置起始点
-	Vec2					m_oEndPosition;
+    Vec2                    m_oSpCurrentPos;        //SP当前位置
+    Vec2                    m_oSpStartPos;          //sp起始位置
 
-	int		                m_currentAngle;			//当前角度
+    Vec2                    m_oSpTarget;            //spRebackTarget   
+
+    //手势操作--------------------------------------------------------
+	int		                m_currentAngle;			//当前角度 
+    Vec2                    m_oDirectStart;			//方向检查起始点 
+
+	Vec2					m_oAbsStartPos;	        //相对位置起始点
+	Vec2					m_oAbsEndPos;           //相对位置终点
 
     int                     m_iCountRecord;			//
 
