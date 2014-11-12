@@ -32,6 +32,7 @@ public:
         STATE_INIT,         //
         STATE_STANDER,      //
         STATE_MOVE,         //
+        STATE_DRAW,         //
         STATE_CLOSE,        //
         STATE_BACK          //          
     };
@@ -84,6 +85,8 @@ public:
 
 	void changeDirect(const Vec2& inPos ,int angle);    //方向改变
 
+    
+
     bool hasRevceDircet(int direct, int fixangle);      //是否相向运动
 
 	int getAbsDistance();								//得到相对距离
@@ -95,7 +98,13 @@ public:
     void clearGuide();
 
     void reback();
-   
+
+    void runback();
+
+    void adsorption(const Vec2& inPoint, Vec2& outPoint);//吸附
+
+    void onMoveToDraw(const Vec2& inPoint);
+    
 
 private:                                                        
 
@@ -116,6 +125,7 @@ private:
 
     float                   m_fStep;				//步长
 
+    int                     m_curMarginIndex;       //当前选择边
     //-----------------------------------------------------------------
 
     Vec2                    m_oSpCurrentPos;        //SP当前位置

@@ -455,6 +455,24 @@ bool CShowArea::hasPointInArea(const Vec2& point)
 }
 
 
+int CShowArea::getNearMargin(const Vec2& point)
+{
+    for (int i = 0; i < m_oAllMargin.size(); i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
+
+
+        if (tpMagin->boundingBox().containsPoint(point))
+        {
+            //log("~~~~~~~~~~~dis %d",i);
+            return i;
+        }         
+
+        //float dis = CMath::getPointToLineDis(tpMagin->m_oStart, tpMagin->m_oTaget, point);
+    } 
+    return SELECTID_NULL; 
+}
+
 int CShowArea::getMode()
 {
     return this->m_Model;

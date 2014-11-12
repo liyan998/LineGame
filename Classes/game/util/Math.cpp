@@ -99,8 +99,9 @@ return �㵽ֱ�ߵľ���
 float CMath::getPointToLineDis(const Vec2& pt1, const Vec2& pt2, const Vec2& pt3)
 { 
     if (pt1.x - pt2.x == 0)
-    {
-        return abs(pt1.x - pt3.x);
+    {          
+        return 0;
+        //return abs(pt1.x - pt3.x);
     }
 
     float A = (pt1.y - pt2.y) / (pt1.x - pt2.x);
@@ -109,11 +110,12 @@ float CMath::getPointToLineDis(const Vec2& pt1, const Vec2& pt2, const Vec2& pt3
 }
 
 
-const Vec2& CMath::getIntPoint(const Vec2& point)
+void CMath::getIntPoint(Vec2& point)
 {
 
     int x = static_cast<int>(point.x);
     int y = static_cast<int>(point.y);
 
-    return Vec2(x , y);
+    point.x = x;
+    point.y = y;
 }

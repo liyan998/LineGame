@@ -101,7 +101,9 @@ public:
     
     bool hasPointInMargin(const Vec2& point);                       //点是否在边界上
 
-    bool hasPointInArea(const Vec2& point);                         //点是否在区域内   
+    bool hasPointInArea(const Vec2& point);                         //点是否在区域内
+
+    int getNearMargin(const Vec2& point);                      //得到该点最近的边
 
     int getMode();                                                  //得到划线模式
 
