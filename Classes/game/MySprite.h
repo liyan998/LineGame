@@ -97,13 +97,19 @@ public:
 
     void clearGuide();
 
-    void reback();
+    void checkBack();
 
     void runback();
+
+    void checkGo();
+
+    void runGo();
 
     void adsorption(const Vec2& inPoint, Vec2& outPoint);//吸附
 
     void onMoveToDraw(const Vec2& inPoint);
+
+    void onStander(const Vec2& inPoint);
     
 
 private:                                                        
@@ -134,13 +140,16 @@ private:
     Vec2                    m_oSpTarget;            //spRebackTarget   
 
     //手势操作--------------------------------------------------------
-	int		                m_currentAngle;			//当前角度 
+	int		                m_currentAngle;			//当前角度 | back currentAngle 
     Vec2                    m_oDirectStart;			//方向检查起始点 
 
 	Vec2					m_oAbsStartPos;	        //相对位置起始点
 	Vec2					m_oAbsEndPos;           //相对位置终点
 
     int                     m_iCountRecord;			//
+    //----------------------------------------------------
+
+    
 
 };
 

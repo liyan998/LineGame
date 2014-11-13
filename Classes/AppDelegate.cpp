@@ -24,16 +24,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     }   
     
     
-    glview->setFrameSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-    //director->setContentScaleFactor(SCREEN_WIDTH / 320);
-    glview->setFrameZoomFactor(0.8);
-    glview->setDesignResolutionSize(SCREEN_WIDTH, SCREEN_HEIGHT, ResolutionPolicy::NO_BORDER);
-    
-    // turn on display FPS
-    director->setDisplayStats(true);
-
-    // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0 / 60);
+   
 
 
     //---------------------------------------------------------------------------------------
@@ -81,8 +72,41 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
    // director->runWithScene(scene);
     
+
+    Size designSize(960,640);
+    Size screenSize = glview->getFrameSize();
+
+    log("FrameSize: %f,%f", screenSize.width, screenSize.height);
+
+    if (screenSize.height > designSize.height)
+    {
+        
+    }
+    else{
+
+
+    }
+    
+
+    //glview->setFrameSize(director->getWinSize().width, director->getWinSize().height);
+    //director->setContentScaleFactor(SCREEN_WIDTH / 320);
+
+    //glview->setFrameZoomFactor(0.8);
+    glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::NO_BORDER);
+    //director->setContentScaleFactor( screenSize.height/designSize.height );
+    // turn on display FPS
+    director->setDisplayStats(true);
+
+    // set FPS. the default value is 1.0/60 if you don't call this
+    director->setAnimationInterval(1.0 / 60);
+
+
+
+
     CMyGame::getShareGame()->setState(CMyGame::STATE_INIT);
     
+    Vec2 origin = director->getVisibleOrigin();
+    log("org %f, %f",origin.x, origin.y );
    
   
     return true;

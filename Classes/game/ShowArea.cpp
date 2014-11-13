@@ -55,8 +55,11 @@ bool CShowArea::init()
                                   
    //----------------------------------------    
 	
+   Vec2 origin = Director::getInstance()->getVisibleOrigin();
+   Size screen = Director::getInstance()->getVisibleSize();
 
-   Rect rec(250, 592, 80, 80);
+   Rect rec(screen.width / 2 + origin.x - 40, screen.height / 2 + origin.y + 40, 80, 80);
+
 
    addPoint(rec.origin);
    addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
@@ -359,6 +362,8 @@ void CShowArea::clearAreaIndex()
         log("no area %d | %d", m_Area[0], m_Area[1]);
         return;
     }
+
+
 
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);

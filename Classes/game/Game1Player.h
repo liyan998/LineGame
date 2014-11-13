@@ -3,7 +3,9 @@
 
 #include "System.h"
 #include "State.h"
-#include "Margin.h"
+
+
+#define INDEX_NONE -1
 
 class CGamePlayer : public Node ,public CState
 {
@@ -38,13 +40,30 @@ public:
 
     void run(float time);
 
-private:
-              
-    CMargin     m_oMargin;
+    void setTarget(const Vec2& point);
 
-    Sprite*     m_pSp;
+    void addFollow(const Vec2& point);
 
-    int         m_iStep;
+    int getStrackSize();
+
+
+
+
+private:    
+
+    Sprite*             m_pSp;
+
+    int                 m_iStep;
+
+    int                 m_iCurrentDirect;
+
+    Vec2                m_oCurrentTarget;
+
+    
+
+    std::vector<Vec2>   m_oAllGuide;
+
+    
 };
 
 

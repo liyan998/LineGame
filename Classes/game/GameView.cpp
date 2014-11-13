@@ -51,6 +51,8 @@ void CGameView::onEnter()
     m_pSp->setShowArea(m_pShowArea);
           
     m_pShowArea->setPath(m_pPath);
+    m_pShowArea->setPosition(origin);
+
 		
     addChild(m_pShowArea);	
 	addChild(m_pSp);
