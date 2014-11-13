@@ -52,47 +52,35 @@ void CGamePlayer::addFollow(const Vec2& point)
 }
 
 
-void CGamePlayer::movePlayerTo(const Vec2& star, const Vec2& pos)
-{                                  
-                         
-}
-
-void CGamePlayer::moveToPath(const std::vector<Vec2>& allPoint)
-{
-
-
-
-
-
-
-}
 
 
 void CGamePlayer::run(float time)
 {
+	log("plyer urn %d ,%d", m_State ,m_oAllGuide.size());
     switch (m_State)
     {
-    case STATE_RUN:     
-                            
+    case STATE_RUN:                             
 
          int dis = ccpDistance(getPlsyerPosition(), m_oCurrentTarget);
-         if (dis > m_iStep)
+         if (dis < m_iStep)		 
          {      
-             m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
-             Vec2 npos = CMath::getVec2(getPlsyerPosition(), m_iStep, CMath::angleToRadian(m_iCurrentDirect));
-             m_pSp->setPosition(npos);               
-         }
-         else if (m_oAllGuide.size() > 0)
-         {
-             m_oCurrentTarget = m_oAllGuide[0];
-             m_oAllGuide.erase(m_oAllGuide.begin());
-            
-         }
-         else
-         {
-             setState(STATE_STANDER);
+
+			 if (m_oAllGuide.size() < 1)
+			 {
+				 setState(STATE_STANDER);
+				 return;
+			 }
+			 else
+			 {
+				 setTarget(m_oAllGuide[0]);				 
+				 m_oAllGuide.erase(m_oAllGuide.begin());  
+
+			 }		 
          }
 
+		 m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
+		 Vec2 npos = CMath::getVec2(getPlsyerPosition(), m_iStep, CMath::angleToRadian(m_iCurrentDirect));
+		 m_pSp->setPosition(npos);  
          log("%d, %d" ,dis, m_oAllGuide.size());
                                            
         break;

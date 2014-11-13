@@ -452,10 +452,10 @@ void CMySprite::playerMove(const Vec2& spPosition)
     //if stack < 1
 
     
-
-
-
-    m_RefPlayer->setTarget(spPosition);
+	if (m_RefPlayer->getStrackSize() < 1)
+	{
+		m_RefPlayer->setTarget(spPosition);
+	}    
     
     //else if ¾àÀë > mstep
 
@@ -666,6 +666,8 @@ void CMySprite::addGuide(const Vec2& point)
     m_oTPath.push_back(point);
     m_RefPath->m_oAllPoint.push_back(point);
 
+	m_RefPlayer->addFollow(point);
+
    
 }
 
@@ -698,7 +700,9 @@ void CMySprite::checkBack()
         clearGuide();
 
         setState(STATE_STANDER);      
-    }else{
+    }
+	else
+	{
         int lastIndex   = m_oTPath.size() - 1;
         m_oSpTarget     = m_oTPath[lastIndex];
 
@@ -803,7 +807,8 @@ void CMySprite::adsorption(const Vec2& inpoint, Vec2& outPoint)
         {
             outPoint = margin->m_oTaget;
         }
-        else{
+        else
+		{
             outPoint = margin->m_oStart;
         }       
     }

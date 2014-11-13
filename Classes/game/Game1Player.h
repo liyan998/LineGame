@@ -31,11 +31,7 @@ public:
     //-----------------------------------------------------
 
     void setPlayerPosition(const Vec2& pos);
-
-    void movePlayerTo(const Vec2& start, const Vec2& pos); 
-
-    void moveToPath(const std::vector<Vec2>& allPoint);
-
+   
     const Vec2& getPlsyerPosition();
 
     void run(float time);
