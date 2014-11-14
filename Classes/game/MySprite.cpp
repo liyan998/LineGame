@@ -262,9 +262,7 @@ void CMySprite::onPressed(const Vec2& vec2)
         break;
     default:
         break;
-    }
-    
-
+    }          
 }
 
 /**********************************************************************/
@@ -347,8 +345,8 @@ void CMySprite::onStander(const Vec2& inPoint)
 
         log("location position %d", selectindex);
 
-        CMargin* tMargin = m_RefShowArea->getMargin(selectindex);
-        Vec2 refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, inPoint);
+        CMargin* tMargin    = m_RefShowArea->getMargin(selectindex);
+        Vec2 refp           = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, inPoint);
         CMath::getIntPoint(refp);
 
         setPlayerPosition(refp);  
@@ -356,11 +354,13 @@ void CMySprite::onStander(const Vec2& inPoint)
     else
     {                       
         //
+        
         setState(STATE_MOVE);
+
         setDirectStartPosition(inPoint);
 
-        m_oAbsStartPos = inPoint;
-        m_oAbsEndPos = m_oAbsStartPos;
+        m_oAbsStartPos  = inPoint;
+        m_oAbsEndPos    = m_oAbsStartPos;
     }
 
 }
@@ -475,15 +475,7 @@ void CMySprite::playerMove(const Vec2& spPosition)
         break;
     }
 	  
-    
-    //else if ¾àÀë > mstep
-
-        //setTarget
-
-
-
-                                                             
-    //log("distance:%d , size:%d", distance, m_oTPath.size()); 
+ 
 }
 
 
@@ -712,7 +704,10 @@ void CMySprite::checkBack()
     {
         log("Back complete!");
 
+
+
         adsorption(m_oSpCurrentPos, m_oSpCurrentPos);
+        m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
 
         clearGuide();
 

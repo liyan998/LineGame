@@ -35,7 +35,14 @@ void CGamePlayer::setTarget(const Vec2& point)
 {  
     m_oCurrentTarget = point; 
     //m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
-    setState(STATE_RUN);
+    
+    log("SetTarget: %f, %f", point.x , point.y);
+    if (m_State != STATE_RUN)
+    {
+        setState(STATE_RUN);
+    }
+
+
 }
 
 
@@ -69,7 +76,7 @@ int CGamePlayer::getStep()
 
 void CGamePlayer::run(float time)
 {
-    log("-------------------------------");
+    //log("-------------------------------");
 	//log("plyer urn %d ,%d", m_State ,m_oAllGuide.size());
     switch (m_State)
     {
@@ -77,7 +84,7 @@ void CGamePlayer::run(float time)
 
          int dis = ccpDistance(getPlsyerPosition(), m_oCurrentTarget);
 
-         log("target:%f,%f", m_oCurrentTarget.x, m_oCurrentTarget.y);
+         //log("target:%f,%f", m_oCurrentTarget.x, m_oCurrentTarget.y);
          if (dis < m_iStep)		 
          {               
              log("Distance:%d", dis);

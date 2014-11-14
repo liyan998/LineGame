@@ -8,6 +8,7 @@ void CGameView::onEnter()
     //----------------------------------------------------
     //FIXME 
     count = 0;
+    
 
     Size visibleSize    = Director::getInstance()->getVisibleSize();
     Vec2 origin         = Director::getInstance()->getVisibleOrigin();
@@ -128,8 +129,17 @@ void CGameView::run(float time)
 
 bool CGameView::onTouchBegan(Touch* touches, Event *event)
 {
-    //log("CGameView::onTouchBegan<<<<<<<<<<");
+
+    if (m_oPointers.size() + 1 > 2)
+    {                   
+        return false;
+    }
+                                       
     auto local          = touches->getLocation();    
+    log("CGameView::onTouchBegan<<<<<<<<<< %d", m_oPointers.size());
+    log("id:%d, point:%f, %f", touches->getID(), local.x, local.y );
+                                                        
+    m_oPointers.insert(PointPari(touches->getID(), local));
 
     switch (m_State)
     {
@@ -142,7 +152,7 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
     } 
     break;
     case STATE_RUN:      
-        m_pSp->onPressed(local);                                
+        m_pSp->onPressed(local);                         
         break;   
     }
     
@@ -152,7 +162,28 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
 
 void CGameView::onTouchEnded(Touch* touches, Event *event)
 {
+    PointIter pinter = m_oPointers.find(touches->getID());
+
+    if (pinter != m_oPointers.end())
+    {
+        m_oPointers.erase(pinter);
+    } 
+    else
+    {
+        log("not find! id");
+    }
+
+    if (m_oPointers.size() == 1)
+    {                           
+        const Vec2& endpoint = m_oPointers.begin()->second;
+        log("set Start Point, %f, %f", endpoint.x, endpoint.y);
+
+        m_pSp->onPressed(endpoint);
+        return;
+    }
+
     auto local = touches->getLocation();
+    //log("CGameView::onTouchEnded>>>>>>>>>>> %d", m_oPointers.size());
     //log("CGameView::onTouchEnded>>>>>>>>>>>%f, %f", local.x, local.y); 
     switch (m_State)
     {
@@ -160,8 +191,7 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
         setState(STATE_RUN);
         break;
     case STATE_RUN:
-        m_pSp->onReleased(local);
-        
+        m_pSp->onReleased(local);         
         break;
     }
 
@@ -170,11 +200,23 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
 
 void CGameView::onTouchMove(Touch* touches, Event *event)
 {
-    //log("CGameView::onTouchMove-------------");
-    auto local          = touches->getLocation(); 
+    auto local = touches->getLocation(); 
+                               
+    PointIter iter = m_oPointers.find(touches->getID()); 
+    if (iter != m_oPointers.end())
+    {
+        iter->second = local;
+    }
+
+    //log("CGameView::onTouchMove-------------%d", m_oPointers.size());
+    if (m_oPointers.size() > 1)
+    {
+        return;
+    }
+
     switch (m_State)
     {                
-    case STATE_RUN: 
+    case STATE_RUN:           
         m_pSp->onMove(local); 
         break;
     }  

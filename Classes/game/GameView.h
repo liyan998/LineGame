@@ -18,6 +18,13 @@ class CGameView :
     public Layer,
     public CState
 {
+
+public:
+
+    typedef std::pair<int, Vec2> PointPari;
+
+    typedef std::map<int, Vec2>::iterator PointIter;
+
 public:
 
     enum State
@@ -70,7 +77,9 @@ private:
 
 	DrawNode*					m_pDrawNode;		//
 
-	std::vector< CRander* >		m_oAllRander;   	
+	std::vector< CRander* >		m_oAllRander;     
+
+    std::map< int , Vec2 >      m_oPointers;
 
 
     //FIXME--------------------------------
