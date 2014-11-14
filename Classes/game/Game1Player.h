@@ -30,6 +30,8 @@ public:
 
     //-----------------------------------------------------
 
+    int getStep();
+
     void setPlayerPosition(const Vec2& pos);
    
     const Vec2& getPlsyerPosition();

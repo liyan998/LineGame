@@ -416,10 +416,10 @@ void CShowArea::clearAreaIndex()
 
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 
-//     if (this->m_Model != MODEL_IN)
-//     {
-//         setMode(MODEL_IN);
-//     }
+    if (this->m_Model != MODEL_IN)
+    {
+        setMode(MODEL_IN);
+    }
 }
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)

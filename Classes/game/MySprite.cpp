@@ -197,16 +197,17 @@ void CMySprite::setState(int state)
         log("mysprite state STATE_BACK");
         //m_currentAngle = ANGLE_NONE;
        // clearGuide();  
+        m_RefPlayer->setState(CGamePlayer::STATE_STOP);
         schedule(schedule_selector(CMySprite::run));
         checkBack();
         break;
     case STATE_CLOSE:      
-        log("mysprite state STATE_CLOSE"); 
-        m_RefShowArea->setState(CShowArea::STATE_CLOSE); 
-        clearGuide();
+        log("mysprite state STATE_CLOSE");
 
-        setState(STATE_STANDER);
 
+        //m_RefShowArea->setState(CShowArea::STATE_CLOSE); 
+        //clearGuide();                 
+        //setState(STATE_STANDER); 
         break;
     case STATE_DRAW:
         log("mysprite state STATE_DRAW");
@@ -447,15 +448,33 @@ void CMySprite::onReleased(const Vec2& pointer)
 /*********************************************************************/
 void CMySprite::playerMove(const Vec2& spPosition)
 {                                                        
+     switch (m_State)
+    {
+    case STATE_MOVE:
+    case STATE_DRAW:
+    case STATE_CLOSE:
+        if (m_RefPlayer->getStrackSize() < 1)
+        {
+            m_RefPlayer->setTarget(spPosition);
+        }
+        break;
+    case STATE_BACK:
 
-  
-    //if stack < 1
 
-    
-	if (m_RefPlayer->getStrackSize() < 1)
-	{
-		m_RefPlayer->setTarget(spPosition);
-	}    
+        int dis = ccpDistance(spPosition, m_RefPlayer->getPlsyerPosition());
+
+        if (dis > m_fStep)
+        {         
+            //log("!!!!!!!!");
+            return;
+        }
+        //log("ddddddddddd%d", dis);
+        m_RefPlayer->setPlayerPosition(spPosition);
+
+
+        break;
+    }
+	  
     
     //else if ¾àÀë > mstep
 
@@ -666,9 +685,7 @@ void CMySprite::addGuide(const Vec2& point)
     m_oTPath.push_back(point);
     m_RefPath->m_oAllPoint.push_back(point);
 
-	m_RefPlayer->addFollow(point);
-
-   
+	m_RefPlayer->addFollow(point);   
 }
 
 
@@ -722,11 +739,11 @@ void CMySprite::run(float tm)
         runback();
         break;
     case STATE_CLOSE:
-        break;
-    case STATE_STANDER:
-        break;
-    case STATE_DRAW: 
         runGo();
+        break;
+    case STATE_STANDER:        
+        break;
+    case STATE_DRAW:         
         break;
     case STATE_MOVE:       
         break;
@@ -757,6 +774,8 @@ void CMySprite::runback()
     m_oSpCurrentPos = CMath::getVec2(m_oSpCurrentPos, m_fStep, CMath::angleToRadian(m_currentAngle));
 
     //m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
+    playerMove(m_oSpCurrentPos);
+
 
 }
 
@@ -771,13 +790,12 @@ void CMySprite::checkGo()
 
 void CMySprite::runGo()
 {
-    //int dis = ccpDistance(m_RefPlayer->getPlsyerPosition(), m_oSpTarget);
-
-    
-
-    //m = CMath::getVec2(m_oSpCurrentPos, m_fStep, CMath::angleToRadian(m_currentAngle));
-
-
+    if (m_RefPlayer->getState() == CGamePlayer::STATE_STANDER)
+    {
+        m_RefShowArea->setState(CShowArea::STATE_CLOSE);
+        clearGuide();
+        setState(STATE_STANDER);
+    } 
 }
 
 
@@ -797,7 +815,7 @@ void CMySprite::adsorption(const Vec2& inpoint, Vec2& outPoint)
     
     float dis = CMath::getPointToLineDis(margin->m_oStart, margin->m_oTaget, inpoint);
 
-    log("diis : %f", dis);
+    //log("diis : %f", dis);
     if (dis == 0 && !CUtil::hasPointInLine(margin->m_oStart, margin->m_oTaget, inpoint))
     {           
         float dis1 = ccpDistance(margin->m_oStart, inpoint);

@@ -34,7 +34,7 @@ const Vec2& CGamePlayer::getPlsyerPosition()
 void CGamePlayer::setTarget(const Vec2& point)
 {  
     m_oCurrentTarget = point; 
-    m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
+    //m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
     setState(STATE_RUN);
 }
 
@@ -48,40 +48,61 @@ int CGamePlayer::getStrackSize()
 
 void CGamePlayer::addFollow(const Vec2& point)
 {              
-    m_oAllGuide.push_back(point); 
+
+    if (m_State == STATE_RUN)
+    {
+        m_oAllGuide.push_back(point); 
+        log("add Target point %f,%f", point.x ,point.y);
+        return;
+    }
+    log("not target");
 }
 
 
 
+int CGamePlayer::getStep()
+{
+
+
+    return this->m_iStep;
+}
 
 void CGamePlayer::run(float time)
 {
-	log("plyer urn %d ,%d", m_State ,m_oAllGuide.size());
+    log("-------------------------------");
+	//log("plyer urn %d ,%d", m_State ,m_oAllGuide.size());
     switch (m_State)
     {
     case STATE_RUN:                             
 
          int dis = ccpDistance(getPlsyerPosition(), m_oCurrentTarget);
-         if (dis < m_iStep)		 
-         {      
 
+         log("target:%f,%f", m_oCurrentTarget.x, m_oCurrentTarget.y);
+         if (dis < m_iStep)		 
+         {               
+             log("Distance:%d", dis);
+             if (m_oAllGuide.size() > 0)
+             {
+                 log("remove target %f, %f", m_oAllGuide[0].x, m_oAllGuide[0].y);
+                 m_oAllGuide.erase(m_oAllGuide.begin());
+             }
+            
 			 if (m_oAllGuide.size() < 1)
 			 {
-				 setState(STATE_STANDER);
-				 return;
+				 setState(STATE_STANDER);				
 			 }
 			 else
-			 {
-				 setTarget(m_oAllGuide[0]);				 
-				 m_oAllGuide.erase(m_oAllGuide.begin());  
+			 { 	 
+                 setTarget(m_oAllGuide[0]);	
+             }	
 
-			 }		 
+             return;
          }
 
 		 m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
 		 Vec2 npos = CMath::getVec2(getPlsyerPosition(), m_iStep, CMath::angleToRadian(m_iCurrentDirect));
 		 m_pSp->setPosition(npos);  
-         log("%d, %d" ,dis, m_oAllGuide.size());
+         //log("%d, %d" ,dis, m_oAllGuide.size());
                                            
         break;
     }
@@ -96,6 +117,17 @@ void CGamePlayer::setState(int state)
     case STATE_RUN:
         log("Player is MoveSTATE!");
         break;
+    case STATE_STANDER:
+        m_oAllGuide.clear();
+        log("Player is Stander");
+       
+        break;
+    case STATE_STOP:
+
+        m_oAllGuide.clear();
+        log("Player is Stop");
+        break;
+
     default:
         break;
     }
