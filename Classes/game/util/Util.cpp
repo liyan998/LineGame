@@ -110,3 +110,15 @@ void CUtil::getSubVector(const std::vector<Vec2>& resource, int start, int end, 
         std::copy(it + start, it + end + 1, std::back_inserter(result));
     }
 }
+
+
+bool CUtil::hasPointCoinclude(const Vec2& p1, const Vec2& p2)
+{
+    if (p1.x == p2.x && p1.y == p2.y)
+    {
+        return true;
+    }
+
+
+    return false;
+}

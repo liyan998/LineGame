@@ -7,7 +7,7 @@ bool CGamePlayer::init()
 {
     Node::init();
 
-    m_iStep = 2;
+    m_iStep = 6;
 
     m_pSp = Sprite::create("CloseNormal.png");
     addChild(m_pSp);
@@ -36,7 +36,7 @@ void CGamePlayer::setTarget(const Vec2& point)
     m_oCurrentTarget = point; 
     //m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
     
-    log("SetTarget: %f, %f", point.x , point.y);
+    //log("SetTarget: %f, %f", point.x , point.y);
     if (m_State != STATE_RUN)
     {
         setState(STATE_RUN);
@@ -122,7 +122,7 @@ void CGamePlayer::setState(int state)
     switch (state)
     {
     case STATE_RUN:
-        log("Player is MoveSTATE!");
+        //log("Player is MoveSTATE!");
         break;
     case STATE_STANDER:
         m_oAllGuide.clear();

@@ -130,7 +130,7 @@ void CGameView::run(float time)
 bool CGameView::onTouchBegan(Touch* touches, Event *event)
 {
 
-    if (m_oPointers.size() + 1 > 2)
+    if (m_oPointers.size() + 1 > 1)
     {                   
         return false;
     }
@@ -173,14 +173,14 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
         log("not find! id");
     }
 
-    if (m_oPointers.size() == 1)
-    {                           
-        const Vec2& endpoint = m_oPointers.begin()->second;
-        log("set Start Point, %f, %f", endpoint.x, endpoint.y);
-
-        m_pSp->onPressed(endpoint);
-        return;
-    }
+//     if (m_oPointers.size() == 1)
+//     {                           
+//         const Vec2& endpoint = m_oPointers.begin()->second;
+//         log("set Start Point, %f, %f", endpoint.x, endpoint.y);
+// 
+//         m_pSp->onPressed(endpoint);
+//         return;
+//     }
 
     auto local = touches->getLocation();
     //log("CGameView::onTouchEnded>>>>>>>>>>> %d", m_oPointers.size());

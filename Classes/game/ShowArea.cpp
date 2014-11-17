@@ -243,40 +243,129 @@ bool CShowArea::isCloseArea()
     return true;
 }
 
-bool CShowArea::hasPointInMargin(const Vec2& point)
+int CShowArea::hasPointInMargin(const Vec2& point)
 {
     for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
 
-//         const Vec2& p1 ;
-//         const Vec2& p2;
-        switch (tpMagin->m_Angle)
+        if (CUtil::hasPointInLine(tpMagin->m_oStart, tpMagin->m_oTaget, point))
         {
-        case ANGLE_DOWN:
-//             if (p1.x == point.x )
-//             {
-//             }
-            break;
-        case ANGLE_RIGHT:
-
-            break;
-        case ANGLE_UP:
-
-            break;
-        case ANGLE_LEFT:
-
-            break;
-        default:
-            break;
+            return i;
         }
+
     }
 
-    return false;
+    return SELECTID_NULL;
 }
 
 
 
+//得到可行走区域指针
+void CShowArea::getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect)
+{          
+
+
+
+    for (int i = 0; i < m_oAllMargin.size();i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//        
+        //是否在节点上 
+       if (inPoint == tpMagin->m_oStart || inPoint == tpMagin->m_oTaget)
+       { 
+            //log("inNode ~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            outDirect.push_back(ANGLE_LEFT);
+            outDirect.push_back(ANGLE_RIGHT);
+            outDirect.push_back(ANGLE_DOWN);
+            outDirect.push_back(ANGLE_UP);
+
+            return;
+        }else
+        
+        if (CUtil::hasPointInLine(tpMagin->m_oStart, tpMagin->m_oTaget, inPoint))
+        {
+            //是否在边上                    
+            
+            int parm = m_Model == MODEL_IN ? 1 : -1;
+            int a1 = getNextAngle(tpMagin->m_Angle, parm);
+            int a2 = getNextAngle(a1, parm);
+
+            outDirect.push_back(tpMagin->m_Angle);
+            outDirect.push_back(a1);
+            outDirect.push_back(a2);
+            return;
+
+            //log("~~~~~~~~~~~%d , %d, %d", tpMagin->m_Angle, a1, a2);
+        }
+    }      
+
+   // log("MODEL:%d", m_Model);
+
+
+    switch (m_Model)
+    {
+    case MODEL_IN:
+        if (hasPointInArea(inPoint))
+        {
+            outDirect.push_back(ANGLE_LEFT);
+            outDirect.push_back(ANGLE_RIGHT);
+            outDirect.push_back(ANGLE_DOWN);
+            outDirect.push_back(ANGLE_UP);
+        }
+        break;
+    case MODEL_OUT:
+        if (!hasPointInArea(inPoint))
+        {
+            outDirect.push_back(ANGLE_LEFT);
+            outDirect.push_back(ANGLE_RIGHT);
+            outDirect.push_back(ANGLE_DOWN);
+            outDirect.push_back(ANGLE_UP);
+        }
+        break;
+    default:
+        break;
+    }
+    //是否在区域外         
+           
+}
+
+
+int CShowArea::getNextAngle(int currentangle, int d)
+{
+#define MAX_ANGLE 4
+    int anglelist[MAX_ANGLE] =
+    {
+        ANGLE_LEFT,
+        ANGLE_UP,
+        ANGLE_RIGHT,
+        ANGLE_DOWN
+    };              
+    int currentindex    = 0;
+    int selectindex     = 0;
+
+    for (int i = 0; i < MAX_ANGLE;i++)
+    {
+        if (currentangle == anglelist[i])
+        {
+            currentindex = i;
+        }
+    }
+
+    if (currentindex + d >= MAX_ANGLE)
+    {
+        selectindex = 0;
+    }else if (currentindex + d < 0)
+    {
+        selectindex = MAX_ANGLE - 1;
+    }
+    else
+    {
+        selectindex = currentindex + d;
+    }
+
+    //log("currentindex:%d, selectindex:%d", currentindex, selectindex);
+    return anglelist[selectindex];
+}
 
 void CShowArea::setState(int sta)
 {
@@ -415,10 +504,10 @@ void CShowArea::clearAreaIndex()
 
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 
-    if (this->m_Model != MODEL_IN)
-    {
-        setMode(MODEL_IN);
-    }
+//     if (this->m_Model != MODEL_IN)
+//     {
+//         setMode(MODEL_IN);
+//     }
 }
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
@@ -506,6 +595,8 @@ void CShowArea::setMode(int mode)
     }
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 void CShowArea::addPoint(const Vec2& point)
 {

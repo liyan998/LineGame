@@ -99,13 +99,17 @@ public:
  
     void clearAreaIndex();                                          //清除区间
     
-    bool hasPointInMargin(const Vec2& point);                       //点是否在边界上
+    int hasPointInMargin(const Vec2& point);                       //点是否在边界上
 
     bool hasPointInArea(const Vec2& point);                         //点是否在区域内
 
-    int getNearMargin(const Vec2& point);                      //得到该点最近的边
+    int getNearMargin(const Vec2& point);                               //得到该点最近的边
 
-    int getMode();                                                  //得到划线模式
+    int getMode();                                                      //得到划线模式
+
+    void getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect); //返回可行走区域
+
+    int getNextAngle(int currentangle, int d);
 
 protected:
 
@@ -117,7 +121,7 @@ protected:
 
     CShape* getShape(const int id);                                 //得到图形
 
-    int*    getMoveAble(const Vec2& pos);                           //返回可行走区域
+    
 
     void setMode(int mode);                                         //设置反向模式    
    
@@ -156,8 +160,8 @@ private:
 
     TPoint*                     m_pHandle;                          
 
-    std::vector<Vec2>           m_oAllPoint;
-    std::vector<Vec2>           m_oTempPoint;
+    std::vector< Vec2 >         m_oAllPoint;
+    std::vector< Vec2 >         m_oTempPoint;
     std::vector< int >          m_oAllMargin;                       //
                                                                     
 
