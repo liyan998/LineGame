@@ -370,7 +370,7 @@ bool CMySprite::hasMoveAction()
     std::vector<int> abv;
     m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
 
-    log("currentdirect:%d, %d", m_currentAngle, abv.size());
+    //log("currentdirect:%d, %d", m_currentAngle, abv.size());
     
     for (int i = 0; i < abv.size();i++)
     {
@@ -387,11 +387,13 @@ bool CMySprite::hasMoveAction()
 
 void CMySprite::onDrawToClose(const Vec2& inPoint)
 {
-    fixPosition(inPoint, m_oSpCurrentPos);
+    
 
 
     if (m_RefShowArea->hasPointInArea(m_oSpCurrentPos))
     {
+
+       
         int index = m_RefShowArea->getNearMargin(m_oSpCurrentPos);
 
         if (index == SELECTID_NULL)
@@ -417,8 +419,9 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
 
         m_curMarginIndex = index;
         setState(STATE_CLOSE);
+        return;
     }
-   
+    fixPosition(inPoint, m_oSpCurrentPos);
 
 }
 
@@ -474,6 +477,11 @@ void CMySprite::onMoveToDraw()
 
 
    
+    bool pldis = CUtil::hasPointInLine(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
+
+
+
+    //log("  pldis:%d", pldis);
 
 
     //是否在边界上
@@ -493,30 +501,27 @@ void CMySprite::onMoveToDraw()
     else
     {
         //draw
-         float dis = CUtil::getDisPointLine(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
+         float dis = CMath::getPointToLineDis(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
          Vec2 startpoint = m_oSpCurrentPos;
 
 
-         float pldis = CUtil::getDisPointLine(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
-
-
-         log(" dis:%f, pldis:%f", dis, pldis);
          
 
-
-        if (dis > 20)
+        if (dis > 0)
+        { 
+            startpoint = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
+            addGuide(startpoint);
+        }else if (dis == 0)
         {
 
-
-            startpoint = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
         }
 
 
 
 
-        log("AreaIndex:%d", m_curMarginIndex);
+       // log("dis %f, AreaIndex:%d",dis,  m_curMarginIndex);
 
-        addGuide(startpoint);
+        //addGuide(startpoint);
 
         m_RefShowArea->setAreaIndex(0, m_curMarginIndex);
 
@@ -634,7 +639,7 @@ void CMySprite::checkDirect(const Vec2& inPos)
 /*********************************************************************/
 void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
 {
-	log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
+	//log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
 	
 
 	//log("angle :%d , fixangle:%d" , angle, fixangle);
@@ -778,7 +783,7 @@ void CMySprite::print(DrawNode* dn)
 
 void CMySprite::addGuide(const Vec2& point)
 {
-    log("add guide line %f ,%f",point.x, point.y);
+    //log("add guide line %f ,%f",point.x, point.y);
     m_oTPath.push_back(point);
     m_RefPath->m_oAllPoint.push_back(point);
 
@@ -788,7 +793,7 @@ void CMySprite::addGuide(const Vec2& point)
 
 void CMySprite::clearGuide()
 {
-    log("guide clear");
+    //log("guide clear");
     m_oTPath.clear();
     m_RefPath->clearPoint();
 

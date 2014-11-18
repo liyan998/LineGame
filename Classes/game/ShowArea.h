@@ -111,6 +111,8 @@ public:
 
     int getNextAngle(int currentangle, int d);
 
+    float getArea();
+
 protected:
 
     void flushMargin();                                             //刷新边界对象集合   
@@ -148,7 +150,11 @@ private:
 
     TPoint* getTempHead(const std::vector<Vec2>& allpoint);
 
-    TPoint* getTempEnd(TPoint* head);        
+    TPoint* getTempEnd(TPoint* head);   
+
+    
+
+    int getDDirect(int start, int end);                             //得到直连方向
 
     void printPoint(TPoint* hp);
 

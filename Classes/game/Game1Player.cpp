@@ -87,7 +87,7 @@ void CGamePlayer::run(float time)
          //log("target:%f,%f", m_oCurrentTarget.x, m_oCurrentTarget.y);
          if (dis < m_iStep)		 
          {               
-             log("Distance:%d", dis);
+             //log("Distance:%d", dis);
              if (m_oAllGuide.size() > 0)
              {
                  log("remove target %f, %f", m_oAllGuide[0].x, m_oAllGuide[0].y);
@@ -126,7 +126,7 @@ void CGamePlayer::setState(int state)
         break;
     case STATE_STANDER:
         m_oAllGuide.clear();
-        log("Player is Stander");
+        //log("Player is Stander");
        
         break;
     case STATE_STOP:

@@ -450,10 +450,7 @@ void CShowArea::clearAreaIndex()
     {
         log("no area %d | %d", m_Area[0], m_Area[1]);
         return;
-    }
-
-
-
+    }   
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
 
@@ -468,23 +465,18 @@ void CShowArea::clearAreaIndex()
     }else if (pathdirect > 0)
     {
         ddirect = DIRECT_CLOCKWISE;
-    }else{ 
-
-        ddirect = DIRECT_ANTICCLOCKWISE;
-        if (m_Area[0] < m_Area[1])
-        {
-            ddirect = DIRECT_CLOCKWISE;
-        }        
+    }else{   
+        ddirect = getDDirect(m_Area[0], m_Area[1]);
     }                
 
     switch (ddirect)
     {
-    case DIRECT_ANTICCLOCKWISE:
+    case DIRECT_ANTICCLOCKWISE:   //逆时针   反转起始点终点 反转点集
         start   = m_Area[1];
         end     = m_Area[0];
         std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
         break;
-    case DIRECT_CLOCKWISE:
+    case DIRECT_CLOCKWISE:        //顺时针
         start   = m_Area[0];
         end     = m_Area[1]; 
         break;
@@ -503,6 +495,14 @@ void CShowArea::clearAreaIndex()
     getAllPoint(m_oAllPoint);                        
 
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
+
+
+    Size visSize = Director::getInstance()->getVisibleSize();
+    //log("VisibleSize:%f , %f", visSize.width, visSize.height);
+
+    float totalarea     = visSize.width * visSize.height;
+    float currentarea   = getArea();
+    log("area:%f", currentarea / totalarea);
 
 //     if (this->m_Model != MODEL_IN)
 //     {
@@ -594,6 +594,46 @@ void CShowArea::setMode(int mode)
         break;
     }
 }
+
+float CShowArea::getArea()
+{   
+//     Size visSize = Director::getInstance()->getVisibleSize();
+//     log("VisibleSize:%f , %f", visSize.width, visSize.height); 
+    Vector2dVector resvv;
+//     resvv.push_back(Vector2d(0,0));
+//     resvv.push_back(Vector2d(visSize.width, 0));
+//     resvv.push_back(Vector2d(visSize.width, visSize.height));
+//     resvv.push_back(Vector2d(0, visSize.height));
+    for (int i = 0; i < m_oAllPoint.size();i++)
+    {          
+        resvv.push_back( Vector2d( m_oAllPoint[i].x, m_oAllPoint[i].y ) );
+    }              
+
+    Vector2dVector vv; 
+    Triangulate::Process(resvv, vv);
+
+    int tcount = vv.size() / 3;
+
+    float total = 0;
+    for (int i = 0; i < tcount; i++)
+    {
+        const Vector2d &p1 = vv[i * 3 + 0];
+        const Vector2d &p2 = vv[i * 3 + 1];
+        const Vector2d &p3 = vv[i * 3 + 2];
+        Vec2 tvec1[] =
+        {
+            Vec2(p1.GetX(), p1.GetY()),
+            Vec2(p2.GetX(), p2.GetY()),
+            Vec2(p3.GetX(), p3.GetY())
+        };
+       
+        total += CMath::getTraingleArea(tvec1[0], tvec1[1], tvec1[2]);       
+    }
+    return total;
+}
+
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -1012,4 +1052,43 @@ void CShowArea::printPoint(TPoint* hp)
             skip = true;
         }
     }
+}
+
+
+int CShowArea::getDDirect(int start, int end)
+{
+    
+   
+
+    TPoint* startPoint  = getPoint(start); 
+    TPoint* endPoint    = getPoint(end);
+    TPoint* current = startPoint;
+
+    int count[2] = {0,0};
+    while (current->id != endPoint->id)
+    {
+
+        count[0]++;
+        current = current->preview;
+    }
+
+    current = startPoint;
+    while (current->id != endPoint->id)
+    {
+
+        count[1]++;
+        current = current->next;
+    }
+
+    log("Count:%d, %d", count[0], count[1]);
+
+         
+    if (count[0] < count[1])
+    {
+        return DIRECT_ANTICCLOCKWISE;
+    }
+    else
+    {
+        return DIRECT_CLOCKWISE;
+    }                      
 }

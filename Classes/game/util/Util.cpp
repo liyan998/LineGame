@@ -111,14 +111,3 @@ void CUtil::getSubVector(const std::vector<Vec2>& resource, int start, int end, 
     }
 }
 
-
-bool CUtil::hasPointCoinclude(const Vec2& p1, const Vec2& p2)
-{
-    if (p1.x == p2.x && p1.y == p2.y)
-    {
-        return true;
-    }
-
-
-    return false;
-}

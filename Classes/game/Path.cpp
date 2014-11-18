@@ -86,9 +86,7 @@ unsigned int CPath::getDirect()
             }
             else if(rl == -1){
                 direct--;
-            }
-
-
+            }              
             /*log("direct: %d", direct);*/
             currentDirect = allMargin[i]->m_Angle;
         }

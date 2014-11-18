@@ -11,7 +11,9 @@ bool CMargin::init()
     Sprite::init();
 
     m_pDrawNode = DrawNode::create();
-    addChild(m_pDrawNode);   
+    addChild(m_pDrawNode); 
+
+   
    
     return true;
 }
@@ -42,7 +44,11 @@ void CMargin::onDraw()
 
     const Vec2& testEnd = CMath::getVec2(Vec2::ZERO, dis, iangle - 90);
       
-    //m_pDrawNode->clear();
-   //m_pDrawNode->drawSegment(Vec2::ZERO, Vec2(dis, 0 ), 15, Color4F(1, 1, 0, 0.5));   
+
+//     if (m_pDrawNode != nullptr)
+//     {
+//         m_pDrawNode->clear();
+//         m_pDrawNode->drawSegment(Vec2::ZERO, Vec2(dis, 0), 15, Color4F(1, 1, 0, 0.5));
+//     }
 }
 
