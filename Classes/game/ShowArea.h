@@ -113,6 +113,7 @@ public:
 
     float getArea();
 
+    std::vector< Vec2 >         m_oTempPoint, tmp1, tmp2;
 protected:
 
     void flushMargin();                                             //刷新边界对象集合   
@@ -127,7 +128,6 @@ protected:
 
     void setMode(int mode);                                         //设置反向模式    
    
-
 private:
 
     //-----------------------------------------------------------------------------
@@ -158,8 +158,11 @@ private:
 
     void printPoint(TPoint* hp);
 
+    
+
  //////////////////////////////////////////////////////////////////////////
 
+    
 private:
 
     DrawNode*                   m_pDrawNode;                        //  
@@ -167,7 +170,6 @@ private:
     TPoint*                     m_pHandle;                          
 
     std::vector< Vec2 >         m_oAllPoint;
-    std::vector< Vec2 >         m_oTempPoint;
     std::vector< int >          m_oAllMargin;                       //
                                                                     
 

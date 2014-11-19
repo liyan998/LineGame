@@ -254,6 +254,9 @@ void CMySprite::onPressed(const Vec2& vec2)
     case STATE_CLOSE:
         break;
     case STATE_STANDER: 
+        m_RefShowArea->m_oTempPoint.clear();
+        m_RefShowArea->tmp1.clear();
+        m_RefShowArea->tmp2.clear();
         onStander(vec2);
         break;
     case STATE_DRAW:

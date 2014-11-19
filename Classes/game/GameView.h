@@ -11,6 +11,7 @@
 #include "Path.h"
 #include "Margin.h" 
 #include "Game1Player.h"
+#include "GameLogic.h"
 
 
 class CGameView : 
@@ -67,7 +68,7 @@ public:
 
 private:                                                       
 
-    CShowArea*                  m_pShowArea;        //区域    
+    CShowArea*                  m_pShowArea;        //区域   
 
     CMySprite*                  m_pSp;              //玩家精灵  
 
@@ -81,6 +82,7 @@ private:
 
     std::map< int , Vec2 >      m_oPointers;
 
+    CGameLogic*                 m_pGameLogic;
 
     //FIXME--------------------------------
     int count;                          

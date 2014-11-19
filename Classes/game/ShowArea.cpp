@@ -116,11 +116,11 @@ void CShowArea::flush()
 	
     m_pDrawNode->clear();   
     getShape(SHAPEID_AREA)->draw(m_pDrawNode);   
-
-	for (int i = 0 ;i < m_oAllPoint.size();i++)
-	{		
-		m_pDrawNode->drawDot(m_oAllPoint[i],2,Color4F(1,1,1,1));
-	}
+    getShape(SHAPEID_TEMP)->draw(m_pDrawNode);
+// 	for (int i = 0 ;i < m_oAllPoint.size();i++)
+// 	{		
+// 		m_pDrawNode->drawDot(m_oAllPoint[i],2,Color4F(1,1,1,1));
+// 	}
 
 //     for (int i = 0; i < m_oTempPoint.size(); i++)
 //     {
@@ -131,7 +131,7 @@ void CShowArea::flush()
 //     }
 // 	for (int i = 0 ;i < m_oTempPoint.size();i++)
 // 	{
-// 		m_pDrawNode->drawDot(m_oTempPoint[i],2,Color4F(1,1,1,1));
+// 		m_pDrawNode->drawDot(m_oTempPoint[i],22,Color4F(1,1,1,1));
 // 	}
 
 
@@ -198,7 +198,42 @@ void CShowArea::print(DrawNode* dn)
         }
     }
 
-    //getShape(SHAPEID_TEMP)->draw(dn);
+
+    for (int i = 0; i < tmp1.size(); i++)
+    {
+        dn->drawDot(tmp1[i], 5, Color4F(0.5, 0.5, 1, 0.6));
+    }
+    for (int i = 0; i < tmp2.size(); i++)
+    {
+        dn->drawDot(tmp2[i], 10, Color4F(1, 1, 1, 0.2));
+    }
+//     for (int i = 0; i < m_pPath->m_oAllPoint.size(); i++)
+//     {
+//         dn->drawDot(m_pPath->m_oAllPoint[i], 10, Color4F(1, 1,0.5, 0.3));
+//     }
+
+    int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
+    int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
+
+    std::vector<Vec2>& miniarea = tmp1;
+
+    if (c1 < c2)
+    {
+        miniarea = tmp1;
+    }
+    else
+    {   
+        miniarea = tmp2;
+    }
+
+
+    getShape(SHAPEID_TEMP)->setShape(miniarea);
+    getShape(SHAPEID_TEMP)->setColor(Color4F(1, 0, 0.5, 1), Color4F(1, 0, 0.5, 0.2));
+    getShape(SHAPEID_TEMP)->draw(dn);
+
+//     getShape(SHAPEID_AREA)->setShape(tmp2);
+//     getShape(SHAPEID_AREA)->setColor(Color4F(0, 1, 0.5, 1), Color4F(1, 1, 0.5, 0.2));
+//     getShape(SHAPEID_AREA)->draw(dn);
     
 }
                                       
@@ -454,47 +489,63 @@ void CShowArea::clearAreaIndex()
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
 
-    int ddirect         = 0;      
-    int pathdirect      = m_pPath->getDirect();   
-    int start           = -1;
-    int end             = -1;
+      getDDirect(m_Area[0], m_Area[1]);
 
-    if (pathdirect < 0)
-    {
-        ddirect = DIRECT_ANTICCLOCKWISE;
-    }else if (pathdirect > 0)
-    {
-        ddirect = DIRECT_CLOCKWISE;
-    }else{   
-        ddirect = getDDirect(m_Area[0], m_Area[1]);
-    }                
+      int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
+      int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
 
-    switch (ddirect)
-    {
-    case DIRECT_ANTICCLOCKWISE:   //逆时针   反转起始点终点 反转点集
-        start   = m_Area[1];
-        end     = m_Area[0];
-        std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-        break;
-    case DIRECT_CLOCKWISE:        //顺时针
-        start   = m_Area[0];
-        end     = m_Area[1]; 
-        break;
-    default:
-        break;
-    }            
+      std::vector<Vec2>& miniarea = tmp1;
 
-    if (start == -1 || end == -1)
-    {                                 
-        return;
-    }
+      if (c1 < c2)
+      {
+          miniarea = tmp1;
+      }
+      else
+      {
+          miniarea = tmp2;
+      }
 
-    log("ddirect %d, start %d , end %d", ddirect, start, end); 
-    insert(m_pPath->m_oAllPoint, start, end);   
+//     int ddirect         = 0;      
+//     int pathdirect      = m_pPath->getDirect();   
+//     int start           = -1;
+//     int end             = -1;
+// 
+//     if (pathdirect < 0)
+//     {
+//         ddirect = DIRECT_ANTICCLOCKWISE;
+//     }else if (pathdirect > 0)
+//     {
+//         ddirect = DIRECT_CLOCKWISE;
+//     }else{   
+//     
+//        // ddirect = 
+//     }                
+//     switch (ddirect)
+//     {
+//     case DIRECT_ANTICCLOCKWISE:   //逆时针   反转起始点终点 反转点集
+//         start   = m_Area[1];
+//         end     = m_Area[0];
+//         std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+//         break;
+//     case DIRECT_CLOCKWISE:        //顺时针
+//         start   = m_Area[0];
+//         end     = m_Area[1]; 
+//         break;
+//     default:
+//         break;
+//     }            
+// 
+//     if (start == -1 || end == -1)
+//     {                                 
+//         return;
+//     }
 
-    getAllPoint(m_oAllPoint);                        
+    //log("ddirect %d, start %d , end %d", ddirect, start, end); 
+    //insert(m_pPath->m_oAllPoint, start, end);   
 
-    getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
+    //getAllPoint(m_oAllPoint);                        
+
+    //getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 
 
     Size visSize = Director::getInstance()->getVisibleSize();
@@ -1056,39 +1107,50 @@ void CShowArea::printPoint(TPoint* hp)
 
 
 int CShowArea::getDDirect(int start, int end)
-{
-    
-   
-
+{      
     TPoint* startPoint  = getPoint(start); 
     TPoint* endPoint    = getPoint(end);
-    TPoint* current = startPoint;
 
-    int count[2] = {0,0};
-    while (current->id != endPoint->id)
+    if (startPoint == nullptr || endPoint == nullptr)
     {
+        return 0;
+    }
 
-        count[0]++;
+    log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
+    std::vector<Vec2> tv1;
+    std::vector<Vec2> tv2;
+    
+    TPoint* current = startPoint->next;
+    TPoint* tend    = endPoint->next;
+    while (current->id != tend->id)
+    {
+        //log("%f,%f", current->vec.x, current->vec.y);
+        tmp1.push_back(current->vec);
+        current = current->next;
+    }     
+    tmp1.insert(tmp1.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+   
+    current = startPoint;
+    tend = endPoint;
+    while (current->id != tend->id)
+    {                                
+        tmp2.push_back(current->vec);
         current = current->preview;
     }
+    
+    tmp2.insert(tmp2.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+   // getShape(SHAPEID_TEMP)->setShape(m_oTempPoint);
 
-    current = startPoint;
-    while (current->id != endPoint->id)
-    {
 
-        count[1]++;
-        current = current->next;
-    }
+    int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
+    int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
+    
 
-    log("Count:%d, %d", count[0], count[1]);
+    log("c1:%d, c2:%d", c1, c2);
 
-         
-    if (count[0] < count[1])
-    {
-        return DIRECT_ANTICCLOCKWISE;
-    }
-    else
-    {
-        return DIRECT_CLOCKWISE;
-    }                      
+
+
+    return 0;
 }
+

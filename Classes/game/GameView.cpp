@@ -45,7 +45,8 @@ void CGameView::onEnter()
 	m_pDrawNode			= DrawNode::create();    	      	
     m_pSp               = CMySprite::create();
     m_pPlayer           = CGamePlayer::create();
-    m_pShowArea         = CShowArea::create();    
+    m_pShowArea         = CShowArea::create();
+    m_pGameLogic        = CGameLogic::create();
     
 	m_pSp->setPath(m_pPath);
     m_pSp->setPlayer(m_pPlayer);
@@ -54,20 +55,33 @@ void CGameView::onEnter()
     m_pShowArea->setPath(m_pPath);
     m_pShowArea->setPosition(origin);
 
+    //------------------------------------
+
+    m_pGameLogic->m_refPath         = m_pPath;
+    m_pGameLogic->m_refPlayer       = m_pPlayer;
+    m_pGameLogic->m_refShowArea     = m_pShowArea;
+    m_pGameLogic->m_refSp           = m_pSp;
+
+    //----------------------------
 		
     addChild(m_pShowArea);	
 	addChild(m_pSp);
 	addChild(m_pDrawNode);
     addChild(m_pPlayer);
+    addChild(m_pGameLogic);
     //------------------------------------    	
 	
 	m_oAllRander.push_back(m_pSp);
     m_oAllRander.push_back(m_pShowArea);
-    m_oAllRander.push_back(m_pPath);
+    m_oAllRander.push_back(m_pPath); 
 
-    setState(STATE_INIT);
+    //----------------------------------------
+
+     
 	
     //------------------------------------------  
+
+    setState(STATE_INIT);
 
 	schedule(schedule_selector(CGameView::run));
 
@@ -89,21 +103,6 @@ void CGameView::setState(int stata)
     this->m_State = stata;
 }
           
-
-void CGameView::spriteRun(float t)
-{
-    //log("spriteRun....%d", count);
-    if (count++ > 100)
-    {
-        count = 0;
-        m_pShowArea->setState(CShowArea::State::STATE_CLOSE);
-        m_pSp->setState(CMySprite::STATE_STANDER);
-        m_pPath->clearPoint();
-
-        unschedule(schedule_selector(CGameView::spriteRun));
-        
-    }
-}
 
 
 void CGameView::initGame(float)
