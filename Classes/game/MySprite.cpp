@@ -298,11 +298,11 @@ void CMySprite::onMove(const Vec2& point)
     {                           
         checkDirect(point);
 
-        if (!hasMoveAction())
-        {
-            log("don't move it");
-            return;
-        }
+//         if (!hasMoveAction())
+//         {
+//             log("don't move it");
+//             return;
+//         }
 
         onMoveToDraw();         
         //-----------------------------------  

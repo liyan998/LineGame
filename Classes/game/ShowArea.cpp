@@ -78,6 +78,8 @@ bool CShowArea::init()
 
 void CShowArea::flushMargin()
 {                  
+
+    log("flush margin");
     for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         this->removeChildByTag(m_oAllMargin[i]);
@@ -201,7 +203,7 @@ void CShowArea::print(DrawNode* dn)
 
     for (int i = 0; i < tmp1.size(); i++)
     {
-        dn->drawDot(tmp1[i], 5, Color4F(0.5, 0.5, 1, 0.6));
+        dn->drawDot(tmp1[i], 5, Color4F(1, 0, 0, 0.6));
     }
     for (int i = 0; i < tmp2.size(); i++)
     {
@@ -214,25 +216,20 @@ void CShowArea::print(DrawNode* dn)
 
     int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
     int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
+// 
+std::vector<Vec2>& miniarea = c1 < c2 ? tmp1 : tmp2;
 
-    std::vector<Vec2>& miniarea = tmp1;
-
-    if (c1 < c2)
-    {
-        miniarea = tmp1;
-    }
-    else
-    {   
-        miniarea = tmp2;
-    }
-
-
-    getShape(SHAPEID_TEMP)->setShape(miniarea);
-    getShape(SHAPEID_TEMP)->setColor(Color4F(1, 0, 0.5, 1), Color4F(1, 0, 0.5, 0.2));
+getShape(SHAPEID_TEMP)->setShape(miniarea);
+    getShape(SHAPEID_TEMP)->setColor(Color4F(1, 0, 0.5, 1), Color4F(1, 0, 0.5, 0.3));
     getShape(SHAPEID_TEMP)->draw(dn);
 
+    //log("c1 %d c2 %d", c1, c2);
+//     getShape(SHAPEID_TEMP)->setShape(tmp1);
+//     getShape(SHAPEID_TEMP)->setColor(Color4F(1, 0, 0.5, 1), Color4F(1, 0, 0.5, 0.3));
+//     getShape(SHAPEID_TEMP)->draw(dn);
+// 
 //     getShape(SHAPEID_AREA)->setShape(tmp2);
-//     getShape(SHAPEID_AREA)->setColor(Color4F(0, 1, 0.5, 1), Color4F(1, 1, 0.5, 0.2));
+//     getShape(SHAPEID_AREA)->setColor(Color4F(0, 1, 0.5, 1), Color4F(1, 1, 0, 0.2));
 //     getShape(SHAPEID_AREA)->draw(dn);
     
 }
@@ -489,21 +486,12 @@ void CShowArea::clearAreaIndex()
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
 
-      getDDirect(m_Area[0], m_Area[1]);
+    //printPoint(m_pHandle);
+    getDDirect(m_Area[0], m_Area[1]);
 
-      int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
-      int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
 
-      std::vector<Vec2>& miniarea = tmp1;
+ 
 
-      if (c1 < c2)
-      {
-          miniarea = tmp1;
-      }
-      else
-      {
-          miniarea = tmp2;
-      }
 
 //     int ddirect         = 0;      
 //     int pathdirect      = m_pPath->getDirect();   
@@ -543,9 +531,10 @@ void CShowArea::clearAreaIndex()
     //log("ddirect %d, start %d , end %d", ddirect, start, end); 
     //insert(m_pPath->m_oAllPoint, start, end);   
 
-    //getAllPoint(m_oAllPoint);                        
+    getAllPoint(m_oAllPoint);
+   // std::reverse(m_oAllPoint.begin(), m_oAllPoint.end());
 
-    //getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
+    getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 
 
     Size visSize = Director::getInstance()->getVisibleSize();
@@ -1084,6 +1073,14 @@ void CShowArea::printPoint(TPoint* hp)
     bool skip = false;
 
     log("==============================");
+
+    if (head == nullptr)
+
+    {
+        log("link no node");
+        return;
+    }
+
     while (head != nullptr)
     {                                     
         if (skip && head == realhead)
@@ -1104,53 +1101,207 @@ void CShowArea::printPoint(TPoint* hp)
         }
     }
 }
-
-
 int CShowArea::getDDirect(int start, int end)
-{      
-    TPoint* startPoint  = getPoint(start); 
-    TPoint* endPoint    = getPoint(end);
+{
 
-    if (startPoint == nullptr || endPoint == nullptr)
+    if (start == end)
     {
-        return 0;
+        TPoint* current = getPoint(start);   
+        if (m_pPath->getDirect() < 0)
+        {                                         
+            std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+        }                                 
+
+        TPoint* tlink = getTempHead(m_pPath->m_oAllPoint);
+        TPoint* tend = getTempEnd(tlink);
+
+        TPoint* next = current->next;
+
+        current->next = tlink;
+        tlink->preview = current;
+
+        tend->next = next;
+        next->preview = tend;
+
+        resetId();
+    }
+    else
+    {
+
+        TPoint* startPoint = getPoint(start);
+        TPoint* endPoint = getPoint(end);
+
+
+        TPoint* current = startPoint;
+        while (current->id != endPoint->id)
+        {                          
+            current = current->next;
+
+
+
+            tmp1.push_back(current->vec);
+
+            log("# %d",current->id);
+        }
+        
+        tmp1.insert(tmp1.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+
+        current = startPoint;
+
+        while (current->id != endPoint->id)
+        {
+            log("$ %d", current->id);
+
+            tmp2.push_back(current->vec);
+            current = current->preview;
+        }
+        tmp2.insert(tmp2.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+
+    
+        int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
+        int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
+        log("c1:%d     c2:%d", c1, c2);
+                log("m_pPath->getDirect(),%d", m_pPath->getDirect());
+                      log("List1:%d", tmp1.size());
+                         log("List2:%d", tmp2.size());
+      
+// //          
+
+
+        std::vector<Vec2> miniarea;
+        if (c1 > c2)
+        {
+            miniarea.insert(miniarea.begin(), tmp1.begin(), tmp1.end());
+            log("A include B: %d", tmp1.size());
+        }
+        else
+        {
+            miniarea.insert(miniarea.begin(), tmp2.begin(), tmp2.end());
+            log("B include A: %d", tmp2.size());
+        }
+
+        if (m_pPath->getDirect() > 0)
+        {    
+            std::reverse(miniarea.begin(), miniarea.end());
+        }                          
+
+        clearPoint();
+        for (int i = 0; i < miniarea.size(); i++)
+        {
+            addPoint(miniarea[i]);
+        }
+    
+    
     }
 
-    log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-    std::vector<Vec2> tv1;
-    std::vector<Vec2> tv2;
-    
-    TPoint* current = startPoint->next;
-    TPoint* tend    = endPoint->next;
-    while (current->id != tend->id)
-    {
-        //log("%f,%f", current->vec.x, current->vec.y);
-        tmp1.push_back(current->vec);
-        current = current->next;
-    }     
-    tmp1.insert(tmp1.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
-   
-    current = startPoint;
-    tend = endPoint;
-    while (current->id != tend->id)
-    {                                
-        tmp2.push_back(current->vec);
-        current = current->preview;
-    }
-    
-    tmp2.insert(tmp2.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
-   // getShape(SHAPEID_TEMP)->setShape(m_oTempPoint);
-
-
-    int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
-    int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
-    
-
-    log("c1:%d, c2:%d", c1, c2);
 
 
 
     return 0;
 }
+
+// int CShowArea::getDDirect(int start, int end)
+// {      
+// 
+// 
+//     if (start == end)
+//     {        
+//         TPoint* current = getPoint(start);   
+//         if (m_pPath->getDirect() < 0)
+//         {                                         
+//             std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+//         }                                 
+// 
+//         TPoint* tlink = getTempHead(m_pPath->m_oAllPoint);
+//         TPoint* tend = getTempEnd(tlink);
+// 
+//         TPoint* next = current->next;
+// 
+//         current->next = tlink;
+//         tlink->preview = current;
+// 
+//         tend->next = next;
+//         next->preview = tend;
+// 
+//         resetId();
+//     }
+//     else{
+// 
+//         TPoint* startPoint = getPoint(start);
+//         TPoint* endPoint = getPoint(end);  
+// 
+//         log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+// 
+//        // std::vector<Vec2> tv1;
+//        // std::vector<Vec2> tv2;
+// 
+//         tmp1.clear();
+//         TPoint* current = startPoint->next;
+//         TPoint* tend = endPoint->next;
+//         while (current->id != tend->id)
+//         {
+//             //log("%f,%f", current->vec.x, current->vec.y);
+//             tmp1.push_back(current->vec);
+//             current = current->next;
+//         }
+//         tmp1.insert(tmp1.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+// 
+//         log("!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//         tmp2.clear();
+//         current = startPoint;
+//         tend = endPoint;
+//         while (current->id != tend->id)
+//         {
+//             tmp2.push_back(current->vec);
+//             current = current->preview;
+//         }
+// 
+//        tmp2.insert(tmp2.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+// 
+//         //=====================================================
+// 
+//         int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
+//         int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
+// 
+// 
+//         log("c1:%d     c2:%d", c1, c2);
+//         std::vector<Vec2>& miniarea = tmp1;
+// 
+//         if (c1 > c2)
+//         {
+//             miniarea = tmp1;
+//             log("A include B: %d", tmp1.size());
+//         }
+//         else
+//         {
+//             miniarea = tmp2;
+//             log("B include A: %d", tmp2.size());
+//         }
+// 
+// 
+// 
+//        // miniarea.insert(miniarea.begin(),m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+//          
+//         log("m_pPath->getDirect(),%d", m_pPath->getDirect());
+//         log("List1:%d", tmp1.size());
+//         log("List2:%d", tmp2.size());
+//         
+//         if (m_pPath->getDirect() > 0)
+//         {    
+//             std::reverse(miniarea.begin(), miniarea.end());
+//         }                          
+// 
+//         clearPoint();
+//         for (int i = 0; i < miniarea.size(); i++)
+//         {
+//             addPoint(miniarea[i]);
+//         }
+// 
+// 
+//         //printPoint(m_pHandle);
+//     }
+// 
+// 
+//     return 0;
+// }
 
