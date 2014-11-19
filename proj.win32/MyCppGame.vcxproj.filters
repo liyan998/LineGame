@@ -164,9 +164,6 @@
     <ClInclude Include="..\Classes\game\Shape.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\framework\State.h">
-      <Filter>Classes\framework</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\Path.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
@@ -185,7 +182,7 @@
     <ClInclude Include="..\Classes\game\util\triangulate.h">
       <Filter>Classes\game\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\System.h">
+    <ClInclude Include="..\Classes\game\State.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Game1Player.h">

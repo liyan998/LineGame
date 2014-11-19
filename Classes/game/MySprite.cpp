@@ -290,6 +290,8 @@ void CMySprite::onMove(const Vec2& point)
     case STATE_DRAW: 
         
         fixPosition(point, m_oSpCurrentPos);
+
+		//FIXME 反向模式时 外围区域检测
         if (m_RefShowArea->hasPointInArea(m_oSpCurrentPos))
         {                                                                
             int index = m_RefShowArea->getNearMargin(m_oSpCurrentPos);

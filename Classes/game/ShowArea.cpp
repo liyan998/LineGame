@@ -119,7 +119,7 @@ void CShowArea::flush()
 
 	for (int i = 0 ;i < m_oAllPoint.size();i++)
 	{		
-		m_pDrawNode->drawDot(m_oAllPoint[i],2,Color4F(1,1,1,1));
+		m_pDrawNode->drawDot(m_oAllPoint[i],10,Color4F(1,1,1,1));
 	}
 
 //     for (int i = 0; i < m_oTempPoint.size(); i++)
