@@ -244,7 +244,7 @@ void CMySprite::setDirectStartPosition(const Vec2& point)
 /************************************************************************/
 void CMySprite::onPressed(const Vec2& vec2)
 {
-
+    //log("~~~~~~~~~~~~~ %d",m_State);
     switch (m_State)
     {
     case STATE_INIT:
@@ -254,6 +254,9 @@ void CMySprite::onPressed(const Vec2& vec2)
     case STATE_CLOSE:
         break;
     case STATE_STANDER: 
+        m_RefShowArea->m_oTempPoint.clear();
+        m_RefShowArea->tmp1.clear();
+        m_RefShowArea->tmp2.clear();
         onStander(vec2);
         break;
     case STATE_DRAW:
@@ -275,8 +278,7 @@ void CMySprite::onPressed(const Vec2& vec2)
 /*********************************************************************/
 void CMySprite::onMove(const Vec2& point)
 {              
-    checkDirect(point);
-    m_oAbsEndPos = point;
+   
     switch (m_State)
     {
     case STATE_INIT:
@@ -288,48 +290,27 @@ void CMySprite::onMove(const Vec2& point)
     case STATE_STANDER:
         break;
     case STATE_DRAW: 
-        
-        fixPosition(point, m_oSpCurrentPos);
-
-		//FIXME 反向模式时 外围区域检测
-        if (m_RefShowArea->hasPointInArea(m_oSpCurrentPos))
-        {                                                                
-            int index = m_RefShowArea->getNearMargin(m_oSpCurrentPos);
-                
-            if (index == SELECTID_NULL)
-            {
-                return;
-            }      
-
-            CMargin* margin = m_RefShowArea->getMargin(index);
-            Vec2 endp = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
-
-//             log("close  %f,%f | %f,%f ||  %f,%f",
-//                 margin->m_oStart.x,
-//                 margin->m_oStart.y,
-//                 margin->m_oTaget.x,
-//                 margin->m_oTaget.y,
-//                 m_oSpCurrentPos.x,
-//                 m_oSpCurrentPos.y
-//                 );
-
-            addGuide(endp);
-
-            m_RefShowArea->setAreaIndex(1, index);
-            setState(STATE_CLOSE);
-        }
+        checkDirect(point);        
+        onDrawToClose(point);
         playerMove(m_oSpCurrentPos);
         break;
-    case STATE_MOVE:              
-        //得到可行走方向               
-        onMoveToDraw(point);
-        //TODO可行走范围约束    
-        //log("currentdirect:%d", m_currentAngle); 
-        fixPosition(point, m_oSpCurrentPos);
+    case STATE_MOVE:
+    {                           
+        checkDirect(point);
+
+//         if (!hasMoveAction())
+//         {
+//             log("don't move it");
+//             return;
+//         }
+
+        onMoveToDraw();         
         //-----------------------------------  
+        fixPosition(point, m_oSpCurrentPos);
         //---------------------------------   
         playerMove(m_oSpCurrentPos);      
         //---------------------------------------- 1
+    }
         break;
     default:
         break;
@@ -338,73 +319,6 @@ void CMySprite::onMove(const Vec2& point)
 
 
 
-void CMySprite::onStander(const Vec2& inPoint)
-{
-    int selectindex = m_RefShowArea->getTargetIndex(inPoint);
-    if (selectindex != SELECTID_NULL)
-    {
-        m_curMarginIndex = selectindex;
-
-        log("location position %d", selectindex);
-
-        CMargin* tMargin    = m_RefShowArea->getMargin(selectindex);
-        Vec2 refp           = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, inPoint);
-        CMath::getIntPoint(refp);
-
-        setPlayerPosition(refp);  
-    }
-    else
-    {                       
-        //
-        
-        setState(STATE_MOVE);
-
-        setDirectStartPosition(inPoint);
-
-        m_oAbsStartPos  = inPoint;
-        m_oAbsEndPos    = m_oAbsStartPos;
-    }
-
-}
-
-void CMySprite::onMoveToDraw(const Vec2& inPoint)
-{  
-    if (m_curMarginIndex == SELECTID_NULL)
-    {
-        return;
-    }                                
-
-    CMargin* margin = m_RefShowArea->getMargin(m_curMarginIndex);
-
-    if (CUtil::hasPointInLine(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos))
-    {
-        //log("true  %f,%f | %f,%f ||  %f,%f",
-//             margin->m_oStart.x,
-//             margin->m_oStart.y,
-//             margin->m_oTaget.x,
-//             margin->m_oTaget.y,
-//             m_oSpCurrentPos.x,
-//             m_oSpCurrentPos.y
-//             );
-        m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
-    }
-    else
-    {
-        //draw
-        float dis = CUtil::getDisPointLine(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
-        Vec2 startpoint = m_oSpCurrentPos;
-        if (dis > 0)
-        {
-            startpoint = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);          
-        }
-
-        log("AreaIndex:%d", m_curMarginIndex);
-        addGuide(startpoint);
-        m_RefShowArea->setAreaIndex(0, m_curMarginIndex);  
-        
-        setState(STATE_DRAW);
-    }
-}
 
 /**********************************************************************/
 /*
@@ -439,6 +353,185 @@ void CMySprite::onReleased(const Vec2& pointer)
 
 }
 
+
+
+/**********************************************************************/
+/*
+* @brief        在边界内移动，离开边界转换为划线状态
+* @param[in]    inPoint   输入坐标
+* @param[out]
+* @return       void
+*/
+/*********************************************************************/
+bool CMySprite::hasMoveAction()
+{
+
+    //TODO可行走范围约束    
+
+    //得到可行走方向
+
+    std::vector<int> abv;
+    m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
+
+    //log("currentdirect:%d, %d", m_currentAngle, abv.size());
+    
+    for (int i = 0; i < abv.size();i++)
+    {
+        if (m_currentAngle == abv[i])
+        {
+            return true;
+        }
+    }
+
+
+    return false;
+}
+
+
+void CMySprite::onDrawToClose(const Vec2& inPoint)
+{
+    
+
+
+    if (m_RefShowArea->hasPointInArea(m_oSpCurrentPos))
+    {
+
+       
+        int index = m_RefShowArea->getNearMargin(m_oSpCurrentPos);
+
+        if (index == SELECTID_NULL)
+        {
+            return;
+        }
+
+        CMargin* margin = m_RefShowArea->getMargin(index);
+        Vec2 endp = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
+
+        //             log("close  %f,%f | %f,%f ||  %f,%f",
+        //                 margin->m_oStart.x,
+        //                 margin->m_oStart.y,
+        //                 margin->m_oTaget.x,
+        //                 margin->m_oTaget.y,
+        //                 m_oSpCurrentPos.x,
+        //                 m_oSpCurrentPos.y
+        //                 );
+
+        addGuide(endp);
+
+        m_RefShowArea->setAreaIndex(1, index);
+
+        m_curMarginIndex = index;
+        setState(STATE_CLOSE);
+        return;
+    }
+    fixPosition(inPoint, m_oSpCurrentPos);
+
+}
+
+
+void CMySprite::onStander(const Vec2& inPoint)
+{
+    int selectindex = m_RefShowArea->getTargetIndex(inPoint);
+    if (selectindex != SELECTID_NULL)
+    {
+        m_curMarginIndex = selectindex;
+
+        log("location position %d", selectindex);
+
+        CMargin* tMargin = m_RefShowArea->getMargin(selectindex);
+        Vec2 refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, inPoint);
+        CMath::getIntPoint(refp);
+
+        setPlayerPosition(refp);      
+    }
+    else
+    {                 //
+        setState(STATE_MOVE);
+
+        setDirectStartPosition(inPoint);
+
+        m_oAbsStartPos = inPoint;
+        m_oAbsEndPos = m_oAbsStartPos;
+    }
+
+}
+
+
+/**********************************************************************/
+/*
+* @brief        在边界内移动，离开边界转换为划线状态
+* @param[in]    inPoint   输入坐标
+* @param[out]
+* @return       void
+*/
+/*********************************************************************/
+void CMySprite::onMoveToDraw()
+{
+    if (m_curMarginIndex == SELECTID_NULL)
+    {
+        return;
+    }
+
+
+
+    int tindex = m_RefShowArea->hasPointInMargin(m_oSpCurrentPos);
+
+    CMargin* margin = m_RefShowArea->getMargin(m_curMarginIndex);
+
+
+   
+    bool pldis = CUtil::hasPointInLine(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
+
+
+
+    //log("  pldis:%d", pldis);
+
+
+    //是否在边界上
+    if (tindex != SELECTID_NULL)
+    {
+        //log("true  %f,%f | %f,%f ||  %f,%f",
+        //             margin->m_oStart.x,
+        //             margin->m_oStart.y,
+        //             margin->m_oTaget.x,
+        //             margin->m_oTaget.y,
+        //             m_oSpCurrentPos.x,
+        //             m_oSpCurrentPos.y
+        //             );
+        m_curMarginIndex = tindex;
+        m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
+    }
+    else
+    {
+        //draw
+         float dis = CMath::getPointToLineDis(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
+         Vec2 startpoint = m_oSpCurrentPos;
+
+
+         
+
+        if (dis > 0)
+        { 
+            startpoint = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
+            addGuide(startpoint);
+        }else if (dis == 0)
+        {
+
+        }
+
+
+
+
+       // log("dis %f, AreaIndex:%d",dis,  m_curMarginIndex);
+
+        //addGuide(startpoint);
+
+        m_RefShowArea->setAreaIndex(0, m_curMarginIndex);
+
+
+        setState(STATE_DRAW);
+    }
+}
 
 /*********************************************************************/
 /*
@@ -507,7 +600,7 @@ void CMySprite::fixPosition(const Vec2& inPos, Vec2& outPos)
 /*********************************************************************/
 void CMySprite::checkDirect(const Vec2& inPos)
 {
-	if (m_iCountRecord++ > 3)
+	if (m_iCountRecord++ > 5)
 	{
 		//
 		float radian	= RADINA_TOGAME(CMath::getRadian(m_oDirectStart, inPos));
@@ -523,7 +616,12 @@ void CMySprite::checkDirect(const Vec2& inPos)
 
 		setDirectStartPosition(inPos);
 		m_iCountRecord = 0;
+
+        
 	}
+
+    m_oAbsEndPos = inPos;
+   
 }
 
 
@@ -544,7 +642,7 @@ void CMySprite::checkDirect(const Vec2& inPos)
 /*********************************************************************/
 void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
 {
-	log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
+	//log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
 	
 
 	//log("angle :%d , fixangle:%d" , angle, fixangle);
@@ -655,7 +753,20 @@ void CMySprite::print(DrawNode* dn)
             dn->drawSegment(m_oTPath[i], m_oSpCurrentPos, 4, Color4F(1, .3, .3, 1));
         }    
         dn->drawDot(m_oTPath[i], 10, Color4F(0, 1, 1, 1));  
-    }               
+    }            
+
+
+    std::vector<int> abv;
+    //log("%f ,%f, %d", m_oSpCurrentPos.x, m_oSpCurrentPos.y, abv.size());
+    m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
+
+    for (int i = 0; i < abv.size();i++)
+    {
+        Vec2 endp = CMath::getVec2(m_oSpCurrentPos, 120, CMath::angleToRadian(abv[i]));
+
+        dn->drawSegment(m_oSpCurrentPos, endp, 1, Color4F(0, .3, .3, 1));
+        
+    }
         
     switch (m_State)
     {                 
@@ -675,7 +786,7 @@ void CMySprite::print(DrawNode* dn)
 
 void CMySprite::addGuide(const Vec2& point)
 {
-    log("add guide line %f ,%f",point.x, point.y);
+    //log("add guide line %f ,%f",point.x, point.y);
     m_oTPath.push_back(point);
     m_RefPath->m_oAllPoint.push_back(point);
 
@@ -685,7 +796,7 @@ void CMySprite::addGuide(const Vec2& point)
 
 void CMySprite::clearGuide()
 {
-    log("guide clear");
+    //log("guide clear");
     m_oTPath.clear();
     m_RefPath->clearPoint();
 
@@ -705,8 +816,6 @@ void CMySprite::checkBack()
     if (m_oTPath.size() == 0)
     {
         log("Back complete!");
-
-
 
         adsorption(m_oSpCurrentPos, m_oSpCurrentPos);
         m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
@@ -789,6 +898,7 @@ void CMySprite::runGo()
 {
     if (m_RefPlayer->getState() == CGamePlayer::STATE_STANDER)
     {
+        
         m_RefShowArea->setState(CShowArea::STATE_CLOSE);
         clearGuide();
         setState(STATE_STANDER);

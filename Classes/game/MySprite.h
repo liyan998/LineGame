@@ -63,6 +63,8 @@ public:
         m_RefPlayer->setPlayerPosition(pos);
     };
 
+    inline float getSpStep(){return this->m_fStep;}
+
     //------------------------------------------------------
 
     void onPressed(const Vec2& pointer);                //     
@@ -91,11 +93,13 @@ public:
 
 	int getAbsDistance();								//得到相对距离
 
-    void run(float tm);									//            
+    void run(float tm);			
+    //            
 
     void addGuide(const Vec2& point);
 
     void clearGuide();
+
 
     void checkBack();
 
@@ -105,16 +109,23 @@ public:
 
     void runGo();
 
+
     void adsorption(const Vec2& inPoint, Vec2& outPoint);//吸附
 
-    void onMoveToDraw(const Vec2& inPoint);
+
+    void onMoveToDraw();
 
     void onStander(const Vec2& inPoint);
-    
+                                               
+    void onDrawToClose(const Vec2& inPoint);      
+
+    bool hasMoveAction();
 
 private:                                                        
 
 	int getFixAngle(int angle);                 //修正角度
+
+
 
              
 

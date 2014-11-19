@@ -78,6 +78,8 @@ bool CShowArea::init()
 
 void CShowArea::flushMargin()
 {                  
+
+    log("flush margin");
     for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         this->removeChildByTag(m_oAllMargin[i]);
@@ -116,11 +118,11 @@ void CShowArea::flush()
 	
     m_pDrawNode->clear();   
     getShape(SHAPEID_AREA)->draw(m_pDrawNode);   
-
-	for (int i = 0 ;i < m_oAllPoint.size();i++)
-	{		
-		m_pDrawNode->drawDot(m_oAllPoint[i],10,Color4F(1,1,1,1));
-	}
+    getShape(SHAPEID_TEMP)->draw(m_pDrawNode);
+// 	for (int i = 0 ;i < m_oAllPoint.size();i++)
+// 	{		
+// 		m_pDrawNode->drawDot(m_oAllPoint[i],2,Color4F(1,1,1,1));
+// 	}
 
 //     for (int i = 0; i < m_oTempPoint.size(); i++)
 //     {
@@ -131,7 +133,7 @@ void CShowArea::flush()
 //     }
 // 	for (int i = 0 ;i < m_oTempPoint.size();i++)
 // 	{
-// 		m_pDrawNode->drawDot(m_oTempPoint[i],2,Color4F(1,1,1,1));
+// 		m_pDrawNode->drawDot(m_oTempPoint[i],22,Color4F(1,1,1,1));
 // 	}
 
 
@@ -198,7 +200,37 @@ void CShowArea::print(DrawNode* dn)
         }
     }
 
-    //getShape(SHAPEID_TEMP)->draw(dn);
+
+    for (int i = 0; i < tmp1.size(); i++)
+    {
+        dn->drawDot(tmp1[i], 5, Color4F(1, 0, 0, 0.6));
+    }
+    for (int i = 0; i < tmp2.size(); i++)
+    {
+        dn->drawDot(tmp2[i], 10, Color4F(1, 1, 1, 0.2));
+    }
+//     for (int i = 0; i < m_pPath->m_oAllPoint.size(); i++)
+//     {
+//         dn->drawDot(m_pPath->m_oAllPoint[i], 10, Color4F(1, 1,0.5, 0.3));
+//     }
+
+    int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
+    int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
+// 
+std::vector<Vec2>& miniarea = c1 < c2 ? tmp1 : tmp2;
+
+getShape(SHAPEID_TEMP)->setShape(miniarea);
+    getShape(SHAPEID_TEMP)->setColor(Color4F(1, 0, 0.5, 1), Color4F(1, 0, 0.5, 0.3));
+    getShape(SHAPEID_TEMP)->draw(dn);
+
+    //log("c1 %d c2 %d", c1, c2);
+//     getShape(SHAPEID_TEMP)->setShape(tmp1);
+//     getShape(SHAPEID_TEMP)->setColor(Color4F(1, 0, 0.5, 1), Color4F(1, 0, 0.5, 0.3));
+//     getShape(SHAPEID_TEMP)->draw(dn);
+// 
+//     getShape(SHAPEID_AREA)->setShape(tmp2);
+//     getShape(SHAPEID_AREA)->setColor(Color4F(0, 1, 0.5, 1), Color4F(1, 1, 0, 0.2));
+//     getShape(SHAPEID_AREA)->draw(dn);
     
 }
                                       
@@ -243,40 +275,129 @@ bool CShowArea::isCloseArea()
     return true;
 }
 
-bool CShowArea::hasPointInMargin(const Vec2& point)
+int CShowArea::hasPointInMargin(const Vec2& point)
 {
     for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
 
-//         const Vec2& p1 ;
-//         const Vec2& p2;
-        switch (tpMagin->m_Angle)
+        if (CUtil::hasPointInLine(tpMagin->m_oStart, tpMagin->m_oTaget, point))
         {
-        case ANGLE_DOWN:
-//             if (p1.x == point.x )
-//             {
-//             }
-            break;
-        case ANGLE_RIGHT:
-
-            break;
-        case ANGLE_UP:
-
-            break;
-        case ANGLE_LEFT:
-
-            break;
-        default:
-            break;
+            return i;
         }
+
     }
 
-    return false;
+    return SELECTID_NULL;
 }
 
 
 
+//得到可行走区域指针
+void CShowArea::getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect)
+{          
+
+
+
+    for (int i = 0; i < m_oAllMargin.size();i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//        
+        //是否在节点上 
+       if (inPoint == tpMagin->m_oStart || inPoint == tpMagin->m_oTaget)
+       { 
+            //log("inNode ~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            outDirect.push_back(ANGLE_LEFT);
+            outDirect.push_back(ANGLE_RIGHT);
+            outDirect.push_back(ANGLE_DOWN);
+            outDirect.push_back(ANGLE_UP);
+
+            return;
+        }else
+        
+        if (CUtil::hasPointInLine(tpMagin->m_oStart, tpMagin->m_oTaget, inPoint))
+        {
+            //是否在边上                    
+            
+            int parm = m_Model == MODEL_IN ? 1 : -1;
+            int a1 = getNextAngle(tpMagin->m_Angle, parm);
+            int a2 = getNextAngle(a1, parm);
+
+            outDirect.push_back(tpMagin->m_Angle);
+            outDirect.push_back(a1);
+            outDirect.push_back(a2);
+            return;
+
+            //log("~~~~~~~~~~~%d , %d, %d", tpMagin->m_Angle, a1, a2);
+        }
+    }      
+
+   // log("MODEL:%d", m_Model);
+
+
+    switch (m_Model)
+    {
+    case MODEL_IN:
+        if (hasPointInArea(inPoint))
+        {
+            outDirect.push_back(ANGLE_LEFT);
+            outDirect.push_back(ANGLE_RIGHT);
+            outDirect.push_back(ANGLE_DOWN);
+            outDirect.push_back(ANGLE_UP);
+        }
+        break;
+    case MODEL_OUT:
+        if (!hasPointInArea(inPoint))
+        {
+            outDirect.push_back(ANGLE_LEFT);
+            outDirect.push_back(ANGLE_RIGHT);
+            outDirect.push_back(ANGLE_DOWN);
+            outDirect.push_back(ANGLE_UP);
+        }
+        break;
+    default:
+        break;
+    }
+    //是否在区域外         
+           
+}
+
+
+int CShowArea::getNextAngle(int currentangle, int d)
+{
+#define MAX_ANGLE 4
+    int anglelist[MAX_ANGLE] =
+    {
+        ANGLE_LEFT,
+        ANGLE_UP,
+        ANGLE_RIGHT,
+        ANGLE_DOWN
+    };              
+    int currentindex    = 0;
+    int selectindex     = 0;
+
+    for (int i = 0; i < MAX_ANGLE;i++)
+    {
+        if (currentangle == anglelist[i])
+        {
+            currentindex = i;
+        }
+    }
+
+    if (currentindex + d >= MAX_ANGLE)
+    {
+        selectindex = 0;
+    }else if (currentindex + d < 0)
+    {
+        selectindex = MAX_ANGLE - 1;
+    }
+    else
+    {
+        selectindex = currentindex + d;
+    }
+
+    //log("currentindex:%d, selectindex:%d", currentindex, selectindex);
+    return anglelist[selectindex];
+}
 
 void CShowArea::setState(int sta)
 {
@@ -361,64 +482,72 @@ void CShowArea::clearAreaIndex()
     {
         log("no area %d | %d", m_Area[0], m_Area[1]);
         return;
-    }
-
-
-
+    }   
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
 
-    int ddirect         = 0;      
-    int pathdirect      = m_pPath->getDirect();   
-    int start           = -1;
-    int end             = -1;
+    //printPoint(m_pHandle);
+    getDDirect(m_Area[0], m_Area[1]);
 
-    if (pathdirect < 0)
-    {
-        ddirect = DIRECT_ANTICCLOCKWISE;
-    }else if (pathdirect > 0)
-    {
-        ddirect = DIRECT_CLOCKWISE;
-    }else{ 
 
-        ddirect = DIRECT_ANTICCLOCKWISE;
-        if (m_Area[0] < m_Area[1])
-        {
-            ddirect = DIRECT_CLOCKWISE;
-        }        
-    }                
+ 
 
-    switch (ddirect)
-    {
-    case DIRECT_ANTICCLOCKWISE:
-        start   = m_Area[1];
-        end     = m_Area[0];
-        std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-        break;
-    case DIRECT_CLOCKWISE:
-        start   = m_Area[0];
-        end     = m_Area[1]; 
-        break;
-    default:
-        break;
-    }            
 
-    if (start == -1 || end == -1)
-    {                                 
-        return;
-    }
+//     int ddirect         = 0;      
+//     int pathdirect      = m_pPath->getDirect();   
+//     int start           = -1;
+//     int end             = -1;
+// 
+//     if (pathdirect < 0)
+//     {
+//         ddirect = DIRECT_ANTICCLOCKWISE;
+//     }else if (pathdirect > 0)
+//     {
+//         ddirect = DIRECT_CLOCKWISE;
+//     }else{   
+//     
+//        // ddirect = 
+//     }                
+//     switch (ddirect)
+//     {
+//     case DIRECT_ANTICCLOCKWISE:   //逆时针   反转起始点终点 反转点集
+//         start   = m_Area[1];
+//         end     = m_Area[0];
+//         std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+//         break;
+//     case DIRECT_CLOCKWISE:        //顺时针
+//         start   = m_Area[0];
+//         end     = m_Area[1]; 
+//         break;
+//     default:
+//         break;
+//     }            
+// 
+//     if (start == -1 || end == -1)
+//     {                                 
+//         return;
+//     }
 
-    log("ddirect %d, start %d , end %d", ddirect, start, end); 
-    insert(m_pPath->m_oAllPoint, start, end);   
+    //log("ddirect %d, start %d , end %d", ddirect, start, end); 
+    //insert(m_pPath->m_oAllPoint, start, end);   
 
-    getAllPoint(m_oAllPoint);                        
+    getAllPoint(m_oAllPoint);
+   // std::reverse(m_oAllPoint.begin(), m_oAllPoint.end());
 
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 
-    if (this->m_Model != MODEL_IN)
-    {
-        setMode(MODEL_IN);
-    }
+
+    Size visSize = Director::getInstance()->getVisibleSize();
+    //log("VisibleSize:%f , %f", visSize.width, visSize.height);
+
+    float totalarea     = visSize.width * visSize.height;
+    float currentarea   = getArea();
+    log("area:%f", currentarea / totalarea);
+
+//     if (this->m_Model != MODEL_IN)
+//     {
+//         setMode(MODEL_IN);
+//     }
 }
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
@@ -506,6 +635,48 @@ void CShowArea::setMode(int mode)
     }
 }
 
+float CShowArea::getArea()
+{   
+//     Size visSize = Director::getInstance()->getVisibleSize();
+//     log("VisibleSize:%f , %f", visSize.width, visSize.height); 
+    Vector2dVector resvv;
+//     resvv.push_back(Vector2d(0,0));
+//     resvv.push_back(Vector2d(visSize.width, 0));
+//     resvv.push_back(Vector2d(visSize.width, visSize.height));
+//     resvv.push_back(Vector2d(0, visSize.height));
+    for (int i = 0; i < m_oAllPoint.size();i++)
+    {          
+        resvv.push_back( Vector2d( m_oAllPoint[i].x, m_oAllPoint[i].y ) );
+    }              
+
+    Vector2dVector vv; 
+    Triangulate::Process(resvv, vv);
+
+    int tcount = vv.size() / 3;
+
+    float total = 0;
+    for (int i = 0; i < tcount; i++)
+    {
+        const Vector2d &p1 = vv[i * 3 + 0];
+        const Vector2d &p2 = vv[i * 3 + 1];
+        const Vector2d &p3 = vv[i * 3 + 2];
+        Vec2 tvec1[] =
+        {
+            Vec2(p1.GetX(), p1.GetY()),
+            Vec2(p2.GetX(), p2.GetY()),
+            Vec2(p3.GetX(), p3.GetY())
+        };
+       
+        total += CMath::getTraingleArea(tvec1[0], tvec1[1], tvec1[2]);       
+    }
+    return total;
+}
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 void CShowArea::addPoint(const Vec2& point)
 {
@@ -902,6 +1073,14 @@ void CShowArea::printPoint(TPoint* hp)
     bool skip = false;
 
     log("==============================");
+
+    if (head == nullptr)
+
+    {
+        log("link no node");
+        return;
+    }
+
     while (head != nullptr)
     {                                     
         if (skip && head == realhead)
@@ -922,3 +1101,207 @@ void CShowArea::printPoint(TPoint* hp)
         }
     }
 }
+int CShowArea::getDDirect(int start, int end)
+{
+
+    if (start == end)
+    {
+        TPoint* current = getPoint(start);   
+        if (m_pPath->getDirect() < 0)
+        {                                         
+            std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+        }                                 
+
+        TPoint* tlink = getTempHead(m_pPath->m_oAllPoint);
+        TPoint* tend = getTempEnd(tlink);
+
+        TPoint* next = current->next;
+
+        current->next = tlink;
+        tlink->preview = current;
+
+        tend->next = next;
+        next->preview = tend;
+
+        resetId();
+    }
+    else
+    {
+
+        TPoint* startPoint = getPoint(start);
+        TPoint* endPoint = getPoint(end);
+
+
+        TPoint* current = startPoint;
+        while (current->id != endPoint->id)
+        {                          
+            current = current->next;
+
+
+
+            tmp1.push_back(current->vec);
+
+            log("# %d",current->id);
+        }
+        
+        tmp1.insert(tmp1.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+
+        current = startPoint;
+
+        while (current->id != endPoint->id)
+        {
+            log("$ %d", current->id);
+
+            tmp2.push_back(current->vec);
+            current = current->preview;
+        }
+        tmp2.insert(tmp2.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+
+    
+        int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
+        int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
+        log("c1:%d     c2:%d", c1, c2);
+                log("m_pPath->getDirect(),%d", m_pPath->getDirect());
+                      log("List1:%d", tmp1.size());
+                         log("List2:%d", tmp2.size());
+      
+// //          
+
+
+        std::vector<Vec2> miniarea;
+        if (c1 > c2)
+        {
+            miniarea.insert(miniarea.begin(), tmp1.begin(), tmp1.end());
+            log("A include B: %d", tmp1.size());
+        }
+        else
+        {
+            miniarea.insert(miniarea.begin(), tmp2.begin(), tmp2.end());
+            log("B include A: %d", tmp2.size());
+        }
+
+        if (m_pPath->getDirect() > 0)
+        {    
+            std::reverse(miniarea.begin(), miniarea.end());
+        }                          
+
+        clearPoint();
+        for (int i = 0; i < miniarea.size(); i++)
+        {
+            addPoint(miniarea[i]);
+        }
+    
+    
+    }
+
+
+
+
+    return 0;
+}
+
+// int CShowArea::getDDirect(int start, int end)
+// {      
+// 
+// 
+//     if (start == end)
+//     {        
+//         TPoint* current = getPoint(start);   
+//         if (m_pPath->getDirect() < 0)
+//         {                                         
+//             std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+//         }                                 
+// 
+//         TPoint* tlink = getTempHead(m_pPath->m_oAllPoint);
+//         TPoint* tend = getTempEnd(tlink);
+// 
+//         TPoint* next = current->next;
+// 
+//         current->next = tlink;
+//         tlink->preview = current;
+// 
+//         tend->next = next;
+//         next->preview = tend;
+// 
+//         resetId();
+//     }
+//     else{
+// 
+//         TPoint* startPoint = getPoint(start);
+//         TPoint* endPoint = getPoint(end);  
+// 
+//         log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+// 
+//        // std::vector<Vec2> tv1;
+//        // std::vector<Vec2> tv2;
+// 
+//         tmp1.clear();
+//         TPoint* current = startPoint->next;
+//         TPoint* tend = endPoint->next;
+//         while (current->id != tend->id)
+//         {
+//             //log("%f,%f", current->vec.x, current->vec.y);
+//             tmp1.push_back(current->vec);
+//             current = current->next;
+//         }
+//         tmp1.insert(tmp1.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+// 
+//         log("!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//         tmp2.clear();
+//         current = startPoint;
+//         tend = endPoint;
+//         while (current->id != tend->id)
+//         {
+//             tmp2.push_back(current->vec);
+//             current = current->preview;
+//         }
+// 
+//        tmp2.insert(tmp2.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+// 
+//         //=====================================================
+// 
+//         int c1 = CUtil::getCountPointInPloyon(tmp1, tmp2);
+//         int c2 = CUtil::getCountPointInPloyon(tmp2, tmp1);
+// 
+// 
+//         log("c1:%d     c2:%d", c1, c2);
+//         std::vector<Vec2>& miniarea = tmp1;
+// 
+//         if (c1 > c2)
+//         {
+//             miniarea = tmp1;
+//             log("A include B: %d", tmp1.size());
+//         }
+//         else
+//         {
+//             miniarea = tmp2;
+//             log("B include A: %d", tmp2.size());
+//         }
+// 
+// 
+// 
+//        // miniarea.insert(miniarea.begin(),m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+//          
+//         log("m_pPath->getDirect(),%d", m_pPath->getDirect());
+//         log("List1:%d", tmp1.size());
+//         log("List2:%d", tmp2.size());
+//         
+//         if (m_pPath->getDirect() > 0)
+//         {    
+//             std::reverse(miniarea.begin(), miniarea.end());
+//         }                          
+// 
+//         clearPoint();
+//         for (int i = 0; i < miniarea.size(); i++)
+//         {
+//             addPoint(miniarea[i]);
+//         }
+// 
+// 
+//         //printPoint(m_pHandle);
+//     }
+// 
+// 
+//     return 0;
+// }
+

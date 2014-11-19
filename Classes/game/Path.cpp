@@ -55,7 +55,7 @@ void CPath::clearPoint()
 
 // 大于0为顺时针
 // 小于0为逆时针
-unsigned int CPath::getDirect()
+int CPath::getDirect()
 {
     std::vector<CMargin*> allMargin;
     //log("size:%d", m_oAllPoint.size());
@@ -86,9 +86,7 @@ unsigned int CPath::getDirect()
             }
             else if(rl == -1){
                 direct--;
-            }
-
-
+            }              
             /*log("direct: %d", direct);*/
             currentDirect = allMargin[i]->m_Angle;
         }

@@ -24,6 +24,8 @@ public:
     CREATE_FUNC( CMargin )
 
 public:
+
+    CMargin():m_pDrawNode(nullptr){};
     
     virtual bool init();
 

@@ -110,3 +110,4 @@ void CUtil::getSubVector(const std::vector<Vec2>& resource, int start, int end, 
         std::copy(it + start, it + end + 1, std::back_inserter(result));
     }
 }
+

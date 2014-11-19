@@ -21,6 +21,8 @@ public:
 
     //µÃµ½×Óvector
     static void getSubVector(const std::vector<Vec2>& resource, int start, int end, std::vector<Vec2>& result);
+
+
 };
  
 

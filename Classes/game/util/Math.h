@@ -39,6 +39,10 @@ namespace liyan998
         //Vec2去掉精度
         static void getIntPoint(Vec2& inPoint);
 
+
+        //海伦公式求三角形面积
+        static float getTraingleArea(const Vec2& p1, const Vec2& p2, const Vec2& p3);
+
     };
 }
 

@@ -16,7 +16,7 @@ public:
 
 	void clearPoint();	
 
-    unsigned int getDirect();
+    int getDirect();
 
 
     int getRL(int currentDirect, int angle);
