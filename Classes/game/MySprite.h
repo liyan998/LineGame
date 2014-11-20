@@ -96,7 +96,7 @@ public:
     void run(float tm);			
     //            
 
-    void addGuide(const Vec2& point);
+    void addGuide(const Vec2& point, bool hasinsertpath);
 
     void clearGuide();
 
@@ -159,6 +159,8 @@ private:
 
     int                     m_iCountRecord;			//
     //----------------------------------------------------
+
+    Vec2                    m_oGuideLStart;
 
     
 

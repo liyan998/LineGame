@@ -27,6 +27,13 @@ void CMargin::setTaget(const Vec2& star, const Vec2& vec)
     setPosition(star); 
     onDraw();
 }
+
+void CMargin::getAvableMoveDirect(const Vec2& inPosition, std::vector<Vec2>& outPosList)
+{
+
+
+
+}
                               
 
 void CMargin::onDraw()

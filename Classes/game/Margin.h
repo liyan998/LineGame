@@ -32,6 +32,8 @@ public:
     void onDraw();
 
     void setTaget(const Vec2&, const Vec2&); 
+
+    void getAvableMoveDirect(const Vec2& inPosition, std::vector<Vec2>& outPosList);
   
     Vec2 m_oStart;
     Vec2 m_oTaget;
@@ -39,6 +41,8 @@ public:
     DrawNode*                   m_pDrawNode;
 
     int                         m_Angle;
+
+    
     
 };
 

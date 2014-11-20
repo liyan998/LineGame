@@ -113,7 +113,10 @@ public:
 
     float getArea();
 
-    std::vector< Vec2 >         m_oTempPoint, tmp1, tmp2;
+    bool hasIncludeMaster();                                        //是否包含BOSS   
+
+    std::vector< Vec2 >         m_oTempPoint, resultArea, addArea;
+
 protected:
 
     void flushMargin();                                             //刷新边界对象集合   
@@ -129,6 +132,7 @@ protected:
     void setMode(int mode);                                         //设置反向模式    
    
 private:
+
 
     //-----------------------------------------------------------------------------
 

@@ -30,10 +30,10 @@ using namespace cocos2d;
 
 #define RADINA_TOGAME( radina ) PI / 2 - radina  
 
-#define FTOI( fn ) static_cast<int>##(fn)
+#define FTOI( fn ) static_cast<int>(fn)
 
-
-
+#define GRAD_CELL 10
+#define GRAD_NUMBER( x ) FTOI( x ) / GRAD_CELL * GRAD_CELL
 
 
 
