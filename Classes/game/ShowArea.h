@@ -124,7 +124,7 @@ public:
 
     bool hasIncludeMaster();                                            //是否包含BOSS
 
-
+    void clearSameLineNode(std::vector<Vec2>& outputVec);
 
   
     int getPositionType(const Vec2& inPos);                             //得到当前位置的类型

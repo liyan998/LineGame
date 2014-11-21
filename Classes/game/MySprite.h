@@ -161,6 +161,7 @@ private:
     //----------------------------------------------------
 
     Vec2                    m_oGuideLStart;
+    Vec2                    m_oGuideLEnd;
 
     
 

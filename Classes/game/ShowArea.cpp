@@ -297,19 +297,7 @@ int CShowArea::getPositionType(const Vec2& inPos)
 
 //得到可行走区域指针
 void CShowArea::getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect)
-{     
-
-
-
-
-
-
-
-
-
-
-
-
+{  
     for (int i = 0; i < m_oAllMargin.size();i++)
     {
         CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
@@ -413,13 +401,9 @@ void CShowArea::setState(int sta)
 {
     this->m_State = sta;
     switch (sta)
-    {
-
+    { 
     case STATE_INIT:
-    {
-
-           
-
+    {                  
     }                                             
         break;
     case STATE_CLOSE:
@@ -465,6 +449,10 @@ void CShowArea::clearAreaIndex()
 
     getDDirect(m_Area[0], m_Area[1]);
 
+    clearSameLineNode(addArea);
+    clearSameLineNode(resultArea);
+
+
     std::vector<Vec2>* pResult;
     clearPoint();
 
@@ -481,6 +469,7 @@ void CShowArea::clearAreaIndex()
         pResult = &resultArea;
     }    
 
+    ;
 
     for (int i = 0; i < pResult->size(); i++)
     {
@@ -701,29 +690,89 @@ void CShowArea::getAllPoint(std::vector<Vec2>& outputVec)
 {
     outputVec.clear();
 
+   
+
     TPoint* head        = m_pHandle;
-
     TPoint* realhead    = m_pHandle;
-
-    bool skip = false;
+    bool skip           = false;
 
     while (head != nullptr)
     {    
         if (skip && head == m_pHandle)
         {
             break;
-        }
-
+        }                    
+                    
         outputVec.push_back(head->vec); 
-        head = head->next;    
 
-        
+        head = head->next;         
         if (!skip)
         {
             skip = true;
         }
-    }                           
+    }      
+
+    log("Size : %d", outputVec.size());
+    clearSameLineNode(outputVec);
     log("Size : %d" , outputVec.size());      
+}
+
+
+void CShowArea::clearSameLineNode(std::vector<Vec2>& outputVec)
+{                       
+    int direct = ANGLE_NONE;
+    Vec2 prV(Vec2::ZERO);
+    std::vector<Vec2> alldelid;  
+
+
+    for (int i = 0; i < outputVec.size(); i++)
+    {  
+        if (prV == Vec2::ZERO)
+        {
+            prV = outputVec[0];
+
+        }
+        else
+        {
+            int td = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(prV, outputVec[i])));
+
+            //log("Td:%d", td);
+            if (td == direct)
+            {
+                alldelid.push_back(prV);
+            }
+
+//             if (prV == outputVec[i])
+//             {
+//                 //log("Del :%f, %f", prV.x, prV.y);
+//                 alldelid.push_back(prV);
+//             }                 
+
+            direct = td;
+            prV = outputVec[i];
+        }  
+    }      
+
+    for (int i = 0; i < alldelid.size();i++)
+    {
+        for (Vec2Iter j = outputVec.begin(); j != outputVec.end(); ++j)
+        {
+                     
+            if (*j == alldelid[i])
+            {          
+                //log("del %f, %f", alldelid[i].x, alldelid[i].y);
+                outputVec.erase(j);
+                break;
+            }
+        }
+    } 
+
+    clearPoint();
+
+    for (int i = 0; i < outputVec.size(); i++)
+    {                
+        addPoint(outputVec[i]);
+    }
 }
 
 

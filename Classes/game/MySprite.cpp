@@ -420,13 +420,13 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         int type = m_RefShowArea->getPositionType(endp);
         log("type:%d" ,type);
 
-        if (type == POSITION_ENDPOINT)
+        if (type != POSITION_ENDPOINT)
         {
-            addGuide(endp, false);  
+            addGuide(endp, true);  
         }
         else
         {
-            addGuide(endp, true);
+            addGuide(endp, false);
         }
 
         m_RefShowArea->setAreaIndex(1, index);
@@ -492,13 +492,14 @@ void CMySprite::onMoveToDraw()
 //     switch (positiontype)
 //     {
 //     case POSITION_ENDPOINT:
-//         //在端点上
-// 
+//         //在端点上     
+//         m_oGuideLStart = m_oSpCurrentPos;
 //         break;
 //     case POSITION_LINE:
 //         //在线上
-// 
+//         m_oGuideLStart = m_oSpCurrentPos;
 //         break;
+//       
 //     default:
 //        break;
 //     }  
@@ -511,30 +512,14 @@ void CMySprite::onMoveToDraw()
     {                
         m_curMarginIndex = tindex;
         m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
+        m_oGuideLStart = m_oSpCurrentPos;
     }
     else
     {
-        //draw
-         float dis = CMath::getPointToLineDis(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
-         Vec2 startpoint = m_oSpCurrentPos;        
-
-        if (dis > 0)
-        { 
-            startpoint = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
-            addGuide(startpoint, true);
-        }else if (dis == 0)
-        {             
-            float d_v1 = ccpDistance(m_oSpCurrentPos, margin->m_oStart);
-            float d_v2 = ccpDistance(m_oSpCurrentPos, margin->m_oTaget);
-            if (d_v2 < d_v1)
-            {                            
-                addGuide(margin->m_oTaget, false);                
-            }
-            else
-            {                               
-               addGuide(margin->m_oStart, false);
-            }                
-        }                  
+        //draw          
+        
+        addGuide(m_oGuideLStart, true);
+        
         m_RefShowArea->setAreaIndex(0, m_curMarginIndex);
         setState(STATE_DRAW);
     }
@@ -803,37 +788,27 @@ void CMySprite::print(DrawNode* dn)
 void CMySprite::addGuide(const Vec2& point, bool hasinsertpath)
 {
 
-
-    log("point:%f, %f", point.x ,point.y);
-    
-    Vec2 grpoint(GRAD_NUMBER(point.x), GRAD_NUMBER(point.y));
-    log("grpoint:%f, %f", grpoint.x, grpoint.y);
-
-    //log("add guide line %f ,%f",point.x, point.y);
-    //同一个点不添加
-
-
-
+    //同一个点不添加  
 
     for (int i = 0; i < m_oTPath.size();i++)
     {
-        if (m_oTPath[i] == grpoint)
+        if (m_oTPath[i] == point)
         {
             log("reover!");
             return;
         }
     }
-    //同一条直线上不添加                                                  
+    //同一条直线上不添加                        
 
 
-    m_oTPath.push_back(grpoint);
+    m_oTPath.push_back(point);
 
     if (hasinsertpath)
     {
-        m_RefPath->m_oAllPoint.push_back(grpoint);
+        m_RefPath->m_oAllPoint.push_back(point);
     }
 
-    m_RefPlayer->addFollow(grpoint);
+    m_RefPlayer->addFollow(point);
 }
 
 

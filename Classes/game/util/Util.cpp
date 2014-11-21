@@ -33,7 +33,7 @@ bool CUtil::hasPointInPloyon(const std::vector<Vec2>& refVector,const Vec2& refP
 
     for (int i = 0; i < polySides; i++)
     {
-        if ((polyY[i] <= y && polyY[j] >= y || polyY[j] <= y && polyY[i] >= y)
+        if ((polyY[i] < y && polyY[j] >= y || polyY[j] < y && polyY[i] >= y)
             &&
             (polyX[i] <= x || polyX[j] <= x)
             )
