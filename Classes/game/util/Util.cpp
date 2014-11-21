@@ -11,7 +11,7 @@
 
 #include "Math.h"
 
-bool CUtil::hasPointInPloyon(std::vector<Vec2>& refVector,const Vec2& refPoint)
+bool CUtil::hasPointInPloyon(const std::vector<Vec2>& refVector,const Vec2& refPoint)
 { 
     unsigned int count = 0;
     int polySides = refVector.size();
@@ -33,7 +33,7 @@ bool CUtil::hasPointInPloyon(std::vector<Vec2>& refVector,const Vec2& refPoint)
 
     for (int i = 0; i < polySides; i++)
     {
-        if ((polyY[i] < y && polyY[j] >= y || polyY[j] < y && polyY[i] >= y)
+        if ((polyY[i] <= y && polyY[j] >= y || polyY[j] <= y && polyY[i] >= y)
             &&
             (polyX[i] <= x || polyX[j] <= x)
             )
@@ -111,3 +111,32 @@ void CUtil::getSubVector(const std::vector<Vec2>& resource, int start, int end, 
     }
 }
 
+
+/*********************************************************************/
+/*
+* @brief        
+* @param[in]    direct      
+
+* @param[out]
+* @return       
+*/
+/*********************************************************************/
+int CUtil::getRevceDircet(int direct)
+{
+    //log("%d", (direct == ANGLE_UP) && (fixangle == ANGLE_DOWN));
+
+
+    switch (direct)
+    {
+    case ANGLE_LEFT:
+        return ANGLE_RIGHT;
+    case ANGLE_RIGHT:
+        return ANGLE_LEFT;
+    case ANGLE_DOWN:
+        return ANGLE_UP;
+    case ANGLE_UP:
+        return ANGLE_DOWN;
+    }
+
+    return ANGLE_NONE;
+}

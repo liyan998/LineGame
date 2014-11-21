@@ -1,7 +1,8 @@
 #include "Test.h"
 #include "util/Math.h"
+#include "util/Util.h"
 
-
+using namespace liyan998;
 
 bool CTest::init()
 {
@@ -27,38 +28,8 @@ bool CTest::init()
     //------------------------------------------------------------------------------------
 
     m_Dn = DrawNode::create();
-    //m_Dn->setAnchorPoint(Vec2(0.5f, 0.5f));
-    //m_Dn->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-
-    Rect rec(0, 0, 300, 300);
-    allpoint.push_back(rec.origin);
-    allpoint.push_back(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
-    allpoint.push_back(Vec2(rec.origin.x + rec.size.width, rec.origin.y - rec.size.height));
-    allpoint.push_back(Vec2(rec.origin.x, rec.origin.y - rec.size.height));
-
-    m_Dn->drawPolygon(&allpoint[0], allpoint.size(), Color4F(1, 1, 1, 1), 0, Color4F(1, 1, 1, 1));
-    
-    //-----------------------------------------------------------
-
-    ClippingNode* cn = ClippingNode::create();
-
-    //cn->setContentSize(Size(visibleSize.width, visibleSize.height));
-    cn->setAnchorPoint(Vec2(0.5, 0.5));
-    cn->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-    cn->setStencil(m_Dn);
-    //cn->setInverted(true);
-    //cn->setAlphaThreshold(0.05f);
-
-    addChild(cn);
-
-    //----------------------------------------------------
-
-    auto pSprite = Sprite::create("HelloWorld.png");
-    //pSprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-    pSprite->setScale(2.0f);
-    cn->addChild(pSprite);
-                              
-
+  
+    addChild(m_Dn);
 
     //---------------------------------------------
 
@@ -80,10 +51,27 @@ bool CTest::init()
 
 
     //------------------------------------------------
+   
 
+    Rect rec(
+        GRAD_NUMBER(visibleSize.width / 2 + origin.x - 40),
+        GRAD_NUMBER(visibleSize.height / 2 + origin.y + 40),
+        GRAD_NUMBER(80),
+
+        GRAD_NUMBER(80)
+        );
+
+
+
+    allpoint.push_back(rec.origin);
+    allpoint.push_back(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
+    allpoint.push_back(Vec2(rec.origin.x + rec.size.width, rec.origin.y - rec.size.height));
+    allpoint.push_back(Vec2(rec.origin.x, rec.origin.y - rec.size.height));
 
     
-
+    shape = new CShape();
+    shape->setColor(Color4F(1, 1, 0.5, .4), Color4F(1, 1, 0.5, .2));
+    shape->setShape(allpoint);
 
 
 	return true;
@@ -91,34 +79,41 @@ bool CTest::init()
 
 
 void CTest::flush()
-{
+{                   
+
+
+
+    log("currentPosition:%f, %f", currentposition.x, currentposition.y);
+    if (CUtil::hasPointInPloyon(allpoint, currentposition))
+    {
+        log("in Ployon");
+    }
+    else{
+        log("out ployon");
+    }
+    
+
 	m_Dn->clear();
-
-    allpoint.clear();
-  
-    Rect rec(0, 0, 30, 300);
-
-    allpoint.push_back(rec.origin);
-    allpoint.push_back(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
-    allpoint.push_back(Vec2(rec.origin.x + rec.size.width, rec.origin.y - rec.size.height));
-    allpoint.push_back(Vec2(rec.origin.x, rec.origin.y - rec.size.height));
-
-
-    m_Dn->drawPolygon(&allpoint[0], allpoint.size(), Color4F(1, 1, 1, 1), 0, Color4F(1, 1, 1, 1));
-
+    shape->draw(m_Dn);
+    m_Dn->drawDot(currentposition, 3, Color4F(1,0.4,1,0.5));
 }
 
 
 
 bool CTest::onTouchBegan(Touch* touches, Event *event)
 {
+
+   
+    currentposition = (touches->getLocation());
+    currentposition.x = GRAD_NUMBER(currentposition.x);
+    currentposition.y = GRAD_NUMBER(currentposition.y);
     return true;
 }
 
 void CTest::onTouchEnded(Touch* touches, Event *event)
 {
 
-
+    flush();
 }
 
 
@@ -131,7 +126,7 @@ void CTest::onTouchMove(Touch* touches, Event *event)
 void CTest::menuCloseCallback(Ref* pSender)
 {
 	
-    flush();
+    //flush();
 // #if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
 //     MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.", "Alert");
 //     return;

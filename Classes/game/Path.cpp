@@ -2,6 +2,15 @@
 #include "util/Math.h"
 #include "Margin.h"
 
+int CPath::DIRECT[MAXDIRECT][DIRECT_SELECT] =
+{
+    //angle ,ÄæÊ±Õë£¬   Ë³Ê±Õë
+    { 90,   180,    0 },
+    { 0,    90,     -90 },
+    { -90,  0,      180 },
+    { 180,  -90,    90 }
+};
+
 
 
 void CPath::addPoint(const Vec2& vec2 )
@@ -103,14 +112,7 @@ int CPath::getDirect()
 
 int CPath::getRL(int currentDirect, int angle)
 {
-    int DIRECT[4][3] = 
-    {
-        //angle ,ÄæÊ±Õë£¬Ë³Ê±Õë
-        { 90,   180 ,   0 },
-        { 0,    90,     -90},
-        { -90,  0,      180 },
-        { 180,  -90,    90 }
-    };
+   
 
     for (int i = 0; i < 4;i++)
     {

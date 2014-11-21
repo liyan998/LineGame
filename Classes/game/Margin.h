@@ -31,9 +31,10 @@ public:
 
     void onDraw();
 
-    void setTaget(const Vec2&, const Vec2&); 
+    void setTaget(const Vec2&, const Vec2&);  
 
-    void getAvableMoveDirect(const Vec2& inPosition, std::vector<Vec2>& outPosList);
+    unsigned int getAvableDirect(const std::vector<Vec2>& allPoint);
+
   
     Vec2 m_oStart;
     Vec2 m_oTaget;
@@ -41,6 +42,8 @@ public:
     DrawNode*                   m_pDrawNode;
 
     int                         m_Angle;
+
+    int                         m_iAvable;                  //可行走方向
 
     
     

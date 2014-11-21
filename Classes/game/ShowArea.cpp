@@ -94,6 +94,10 @@ void CShowArea::flushMargin()
 
     m_oAllMargin.clear();
 
+    m_oAllEndPoint.clear();
+    //----------------------------------------------------------
+
+
     int size = m_oAllPoint.size();
 
     for (int i = 0; i < size; i++)
@@ -111,7 +115,24 @@ void CShowArea::flushMargin()
         pMarg->setTag(10 + i);
         addChild(pMarg);
         m_oAllMargin.push_back(pMarg->getTag());
-    }                
+    }
+
+    
+    for (int i = 0; i < m_oAllMargin.size(); i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
+
+        //收集端点
+        unsigned int result     = tpMagin->getAvableDirect(m_oAllPoint);
+        unsigned int r1         = result >> 16;
+        unsigned int r2         = result & 0x0000ffff;
+        //FFFF, FFFF
+        m_oAllEndPoint.insert(EndPointPair(tpMagin->m_oStart, r1));
+        m_oAllEndPoint.insert(EndPointPair(tpMagin->m_oTaget, r2));
+
+
+        
+    }            
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -246,13 +267,55 @@ int CShowArea::hasPointInMargin(const Vec2& point)
 
 
 
+int CShowArea::getPositionType(const Vec2& inPos)
+{
+
+    for (int i = 0; i < m_oAllMargin.size(); i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
+
+        if (inPos == tpMagin->m_oStart || inPos == tpMagin->m_oTaget)
+        {
+            return POSITION_ENDPOINT;
+        }    
+        else if (CUtil::hasPointInLine(tpMagin->m_oStart, tpMagin->m_oTaget, inPos))
+        {
+            return POSITION_LINE;
+        }
+
+    }  
+    if (!hasPointInArea(inPos))
+    {
+        return POSITION_LOCK;
+    }
+    else{
+        return POSITION_UNLOCK;
+    }                                 
+}
+
+
+
 //得到可行走区域指针
 void CShowArea::getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect)
 {     
+
+
+
+
+
+
+
+
+
+
+
+
     for (int i = 0; i < m_oAllMargin.size();i++)
     {
-        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//        
-        //是否在节点上 
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
+
+
+//         //是否在节点上 
        if (inPoint == tpMagin->m_oStart || inPoint == tpMagin->m_oTaget)
        { 
             //log("inNode ~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -416,7 +479,8 @@ void CShowArea::clearAreaIndex()
     else
     {                      
         pResult = &resultArea;
-    }                   
+    }    
+
 
     for (int i = 0; i < pResult->size(); i++)
     {
@@ -426,14 +490,9 @@ void CShowArea::clearAreaIndex()
     getAllPoint(m_oAllPoint);         
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 
-    //Scorp计算
-
-
+    //Scorp计算 
     float area = getArea();
-
     log(" Area :%f", area);
-
-
 }
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
@@ -463,22 +522,33 @@ void CShowArea::setAreaIndex(int index, int areaIndex)
 }
 
 
-
+/**********************************************************************/
+/*
+* @brief        point是否在已解锁区域内，一般模式 
+* @param[in]    point   输入坐标
+* @param[out]
+* @return       bool   在反转模式下 不在区域内为返回结果
+                       在一般模式下 在区域内为返回结果
+*/
+/*********************************************************************/
 bool CShowArea::hasPointInArea(const Vec2& point)
-{
-    if (CUtil::hasPointInPloyon(m_oAllPoint, point))
+{                
+    bool result = CUtil::hasPointInPloyon(m_oAllPoint, point);
+
+    switch (m_Model)
     {
-        return true;
-    }
-    return false;
+    case MODEL_IN: 
+        return !result;
+    case MODEL_OUT: 
+        return result; 
+    } 
+    return result;
 }
 
 
 
 bool CShowArea::hasIncludeMaster()
-{
-
-
+{ 
     return CUtil::hasPointInPloyon(addArea, Vec2(100, 500));
 }
 

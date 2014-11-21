@@ -187,6 +187,7 @@ void CMySprite::setState(int state)
         //clearGuide();
         this->unschedule(schedule_selector(CMySprite::run));       
         log("mysprite state STATE_STANDER");
+        //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
         break;
     case STATE_MOVE:     
         this->unschedule(schedule_selector(CMySprite::run));
@@ -292,7 +293,9 @@ void CMySprite::onMove(const Vec2& point)
     case STATE_STANDER:
         break;
     case STATE_DRAW: 
-        checkDirect(point);        
+        checkDirect(point); 
+
+        //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
         onDrawToClose(point);
         playerMove(m_oSpCurrentPos);
         break;
@@ -300,11 +303,13 @@ void CMySprite::onMove(const Vec2& point)
     {                           
         checkDirect(point);
 
-        if (!hasMoveAction())
-        {
-            log("don't move it");
-            return;
-        }
+        //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
+
+//         if (!hasMoveAction())
+//         {
+//             log("don't move it");
+//             return;
+//         }
 
         onMoveToDraw();         
         //-----------------------------------  
@@ -370,13 +375,19 @@ bool CMySprite::hasMoveAction()
 
     //TODO可行走范围约束    
 
+    //int postiontype = m_RefShowArea->getPositionType(m_oSpCurrentPos);
+    //log("current type:%d", postiontype);  
+                                           
     //得到可行走方向
+
+
+
 
     std::vector<int> abv;
     m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
 
     //log("currentdirect:%d, %d", m_currentAngle, abv.size());
-    
+//     
     for (int i = 0; i < abv.size();i++)
     {
         if (m_currentAngle == abv[i])
@@ -388,7 +399,7 @@ bool CMySprite::hasMoveAction()
 
     return false;
 }
-
+                                                                                          
 
 void CMySprite::onDrawToClose(const Vec2& inPoint)
 {                          
@@ -405,16 +416,19 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         CMargin* margin = m_RefShowArea->getMargin(index);
         Vec2 endp = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
 
-        //             log("close  %f,%f | %f,%f ||  %f,%f",
-        //                 margin->m_oStart.x,
-        //                 margin->m_oStart.y,
-        //                 margin->m_oTaget.x,
-        //                 margin->m_oTaget.y,
-        //                 m_oSpCurrentPos.x,
-        //                 m_oSpCurrentPos.y
-        //                 );
 
-        addGuide(endp, true);  
+        int type = m_RefShowArea->getPositionType(endp);
+        log("type:%d" ,type);
+
+        if (type == POSITION_ENDPOINT)
+        {
+            addGuide(endp, false);  
+        }
+        else
+        {
+            addGuide(endp, true);
+        }
+
         m_RefShowArea->setAreaIndex(1, index);
         m_curMarginIndex = index;
 
@@ -471,7 +485,24 @@ void CMySprite::onMoveToDraw()
     if (m_curMarginIndex == SELECTID_NULL)
     {
         return;
-    }                                      
+    }         
+
+
+//     int positiontype = m_RefShowArea->getPositionType(m_oSpCurrentPos);
+//     switch (positiontype)
+//     {
+//     case POSITION_ENDPOINT:
+//         //在端点上
+// 
+//         break;
+//     case POSITION_LINE:
+//         //在线上
+// 
+//         break;
+//     default:
+//        break;
+//     }  
+
     int tindex = m_RefShowArea->hasPointInMargin(m_oSpCurrentPos);
     CMargin* margin = m_RefShowArea->getMargin(m_curMarginIndex);
 
@@ -492,7 +523,7 @@ void CMySprite::onMoveToDraw()
             startpoint = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
             addGuide(startpoint, true);
         }else if (dis == 0)
-        {
+        {             
             float d_v1 = ccpDistance(m_oSpCurrentPos, margin->m_oStart);
             float d_v2 = ccpDistance(m_oSpCurrentPos, margin->m_oTaget);
             if (d_v2 < d_v1)
@@ -502,8 +533,7 @@ void CMySprite::onMoveToDraw()
             else
             {                               
                addGuide(margin->m_oStart, false);
-            }                             
-         
+            }                
         }                  
         m_RefShowArea->setAreaIndex(0, m_curMarginIndex);
         setState(STATE_DRAW);
@@ -570,7 +600,7 @@ void CMySprite::fixPosition(const Vec2& inPos, Vec2& outPos)
     outPos.x = GRAD_NUMBER(outPos.x);
     outPos.y = GRAD_NUMBER(outPos.y);
 
-   log("outPos1 %f, %f", outPos.x, outPos.y);
+   //log("outPos1 %f, %f", outPos.x, outPos.y);
     
 }
 
