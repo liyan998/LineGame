@@ -4,6 +4,7 @@
 #include "util/triangulate.h"
 
 #include "System.h"
+#include "Shape.h"
 
 class CTest : public Layer
 {
@@ -25,6 +26,10 @@ public:
 	std::vector<Vec2> allpoint;
 
 	DrawNode* m_Dn;
+
+    CShape* shape;
+
+    Vec2 currentposition;
 };
 
 

@@ -2,6 +2,15 @@
 #include "util/Math.h"
 #include "Margin.h"
 
+int CPath::DIRECT[MAXDIRECT][DIRECT_SELECT] =
+{
+    //angle ,逆时针，   顺时针
+    { 90,   180,    0 },
+    { 0,    90,     -90 },
+    { -90,  0,      180 },
+    { 180,  -90,    90 }
+};
+
 
 
 void CPath::addPoint(const Vec2& vec2 )
@@ -20,7 +29,7 @@ void CPath::addPoint(const Vec2& vec2 )
             return;
         }
     }     
-    //log("=====new Point: %d, %d", x, y);
+    log("=====new Point: %d, %d", x, y);
 	m_oAllPoint.push_back(Vec2(x, y));	
 }
 
@@ -55,7 +64,7 @@ void CPath::clearPoint()
 
 // 大于0为顺时针
 // 小于0为逆时针
-unsigned int CPath::getDirect()
+int CPath::getDirect()
 {
     std::vector<CMargin*> allMargin;
     //log("size:%d", m_oAllPoint.size());
@@ -86,9 +95,7 @@ unsigned int CPath::getDirect()
             }
             else if(rl == -1){
                 direct--;
-            }
-
-
+            }              
             /*log("direct: %d", direct);*/
             currentDirect = allMargin[i]->m_Angle;
         }
@@ -105,14 +112,7 @@ unsigned int CPath::getDirect()
 
 int CPath::getRL(int currentDirect, int angle)
 {
-    int DIRECT[4][3] = 
-    {
-        //angle ,逆时针，顺时针
-        { 90,   180 ,   0 },
-        { 0,    90,     -90},
-        { -90,  0,      180 },
-        { 180,  -90,    90 }
-    };
+   
 
     for (int i = 0; i < 4;i++)
     {

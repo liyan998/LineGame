@@ -73,7 +73,7 @@ Vec2 CMath::getFootPoint(const Vec2& lineP1, const Vec2& lineP2, const Vec2& lin
     float A = (y2 - y2) / (x1 - x2);
     float B = (y1 - A * y1);
     float m = lineOP.x + A * lineOP.y;
-    /// ����ֱ�߽������  
+   
 
     Vec2 ptCross;
     ptCross.x = ((m - A * B) / (A * A + 1));
@@ -99,7 +99,8 @@ return �㵽ֱ�ߵľ���
 float CMath::getPointToLineDis(const Vec2& pt1, const Vec2& pt2, const Vec2& pt3)
 { 
     if (pt1.x - pt2.x == 0)
-    {
+    {          
+        //return 0;
         return abs(pt1.x - pt3.x);
     }
 
@@ -109,11 +110,29 @@ float CMath::getPointToLineDis(const Vec2& pt1, const Vec2& pt2, const Vec2& pt3
 }
 
 
-const Vec2& CMath::getIntPoint(const Vec2& point)
+void CMath::getIntPoint(Vec2& point)
 {
 
     int x = static_cast<int>(point.x);
     int y = static_cast<int>(point.y);
 
-    return Vec2(x , y);
+    point.x = x;
+    point.y = y;
+}
+
+
+float CMath::getTraingleArea(const Vec2& p1, const Vec2& p2, const Vec2& p3)
+{          
+    const int MAXMARGIN = 3;
+    float allMargin[MAXMARGIN];
+
+    allMargin[0] = ccpDistance(p1, p3);
+    allMargin[1] = ccpDistance(p1, p2);
+    allMargin[2] = ccpDistance(p2, p3);    
+
+    float p = (allMargin[0] + allMargin[1] + allMargin[2]) / 2;
+
+
+    return sqrt(p * (p - allMargin[0]) * (p - allMargin[1]) * (p - allMargin[2]));
+
 }

@@ -24,17 +24,47 @@ bool AppDelegate::applicationDidFinishLaunching() {
     }   
     
     
-    glview->setFrameSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-    //director->setContentScaleFactor(SCREEN_WIDTH / 320);
-    //glview->setFrameZoomFactor(SCREEN_WIDTH / SCREEN_HEIGHT);
-    glview->setDesignResolutionSize(SCREEN_WIDTH, SCREEN_HEIGHT, ResolutionPolicy::NO_BORDER);
-    //director->setContentScaleFactor(640 / 960);
-    // turn on display FPS
-    director->setDisplayStats(true);
+   
 
-    // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0 / 60);
 
+    //---------------------------------------------------------------------------------------
+
+    Size size;
+    size = director->getWinSize();
+    log("***IDONG: Director getWinSize:w=%f,h=%f", size.width, size.height);
+
+    size = director->getWinSizeInPixels();
+    log("***IDONG: Director getWinSizeInPixels:w=%f,h=%f", size.width, size.height);
+
+    size = director->getVisibleSize();
+    log("***IDONG: Director getVisibleSize:w=%f,h=%f", size.width, size.height);
+
+    Point point = director->getVisibleOrigin();
+    log("***IDONG: Director getVisibleOrigin:x=%f,y=%f", point.x, point.y);
+
+
+    log("***IDONG: Director BS: getContentScaleFactor: scaleFactor=%f", director->getContentScaleFactor());
+
+
+//     // set design resolution size  
+//     glview->setDesignResolutionSize(SCREEN_WIDTH, SCREEN_HEIGHT, ResolutionPolicy::NO_BORDER);
+
+    log("***IDONG:\n");
+    log("***IDONG: Director AS: getContentScaleFactor: scaleFactor=%f", director->getContentScaleFactor());
+
+    size = director->getWinSize();
+    log("***IDONG: Director getWinSize:w=%f,h=%f", size.width, size.height);
+
+    size = director->getWinSizeInPixels();
+    log("***IDONG: Director getWinSizeInPixels:w=%f,h=%f", size.width, size.height);
+
+    size = director->getVisibleSize();
+    log("***IDONG: Director getVisibleSize:w=%f,h=%f", size.width, size.height);
+
+    point = director->getVisibleOrigin();
+    log("***IDONG: Director getVisibleOrigin:x=%f,y=%f", point.x, point.y);
+
+    //--------------------------------------------------------------------------
 
     // create a scene. it's an autorelease object
     //auto scene = HelloWorld::createScene();
@@ -42,8 +72,41 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
    // director->runWithScene(scene);
     
+
+    Size designSize(960,640);
+    Size screenSize = glview->getFrameSize();
+
+    log("FrameSize: %f,%f", screenSize.width, screenSize.height);
+
+    if (screenSize.height > designSize.height)
+    {
+        
+    }
+    else{
+
+
+    }
+    
+
+    //glview->setFrameSize(director->getWinSize().width, director->getWinSize().height);
+    //director->setContentScaleFactor(SCREEN_WIDTH / 320);
+
+    //glview->setFrameZoomFactor(0.8);
+    glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::NO_BORDER);
+    //director->setContentScaleFactor( screenSize.height/designSize.height );
+    // turn on display FPS
+    director->setDisplayStats(true);
+
+    // set FPS. the default value is 1.0/60 if you don't call this
+    director->setAnimationInterval(1.0 / 60);
+
+
+
+
     CMyGame::getShareGame()->setState(CMyGame::STATE_INIT);
     
+    Vec2 origin = director->getVisibleOrigin();
+    log("org %f, %f",origin.x, origin.y );
    
   
     return true;

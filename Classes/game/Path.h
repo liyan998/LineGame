@@ -4,8 +4,15 @@
 #include "System.h"      
 #include "Rander.h"
 
+#define MAXDIRECT       4
+#define DIRECT_SELECT   3
+
 class CPath : public CRander
 {
+
+public:
+
+    static int DIRECT[MAXDIRECT][DIRECT_SELECT];
 public:
 
     virtual void print(DrawNode* dn);
@@ -16,7 +23,7 @@ public:
 
 	void clearPoint();	
 
-    unsigned int getDirect();
+    int getDirect();
 
 
     int getRL(int currentDirect, int angle);

@@ -9,7 +9,9 @@
 #include <iterator>
 #include <algorithm> 
 
-bool CUtil::hasPointInPloyon(std::vector<Vec2>& refVector,const Vec2& refPoint)
+#include "Math.h"
+
+bool CUtil::hasPointInPloyon(const std::vector<Vec2>& refVector,const Vec2& refPoint)
 { 
     unsigned int count = 0;
     int polySides = refVector.size();
@@ -31,7 +33,7 @@ bool CUtil::hasPointInPloyon(std::vector<Vec2>& refVector,const Vec2& refPoint)
 
     for (int i = 0; i < polySides; i++)
     {
-        if ((polyY[i] < y && polyY[j] >= y || polyY[j] < y && polyY[i] >= y)
+        if ((polyY[i] <= y && polyY[j] >= y || polyY[j] <= y && polyY[i] >= y)
             &&
             (polyX[i] <= x || polyX[j] <= x)
             )
@@ -61,14 +63,39 @@ unsigned int CUtil::getCountPointInPloyon(std::vector<Vec2>& refPloyon, std::vec
 
 
 bool CUtil::hasPointInLine(const Vec2& lineP1, const Vec2& lineP2, const Vec2& outPoint)
-{
-
-
-
-
+{          //     Vec2 point[MAX];
+//     point[0] = lineP1;
+//     point[1] = lineP2;
+//     point[2] = outPoint;
+// 
+//     for (int i = 0; i < MAX;i++)
+//     {
+//         liyan998::CMath::getIntPoint(point[i]);
+//     }   
+ 
+//     distance[0] = static_cast<int>(ccpDistance(point[0], point[2]));
+//     distance[1] = static_cast<int>(ccpDistance(point[1], point[2]));
+//     distance[2] = static_cast<int>(ccpDistance(point[0], point[1]));
+       
+    if (getDisPointLine(lineP1, lineP2, outPoint) < 0.01f)
+    {                                                  
+        return true;
+    }  
     return false;
 }
 
+
+float CUtil::getDisPointLine(const Vec2& lineP1, const Vec2& lineP2, const Vec2& outPoint)
+{
+    const int MAX = 3;
+    float distance[MAX];
+
+    distance[0] = ccpDistance(lineP1, outPoint);
+    distance[1] = ccpDistance(lineP2, outPoint);
+    distance[2] = ccpDistance(lineP1, lineP2);
+
+    return distance[1] + distance[0] - distance[2];   
+}
 
 void CUtil::getSubVector(const std::vector<Vec2>& resource, int start, int end, std::vector<Vec2>& result)
 {
@@ -82,4 +109,34 @@ void CUtil::getSubVector(const std::vector<Vec2>& resource, int start, int end, 
     {
         std::copy(it + start, it + end + 1, std::back_inserter(result));
     }
+}
+
+
+/*********************************************************************/
+/*
+* @brief        
+* @param[in]    direct      
+
+* @param[out]
+* @return       
+*/
+/*********************************************************************/
+int CUtil::getRevceDircet(int direct)
+{
+    //log("%d", (direct == ANGLE_UP) && (fixangle == ANGLE_DOWN));
+
+
+    switch (direct)
+    {
+    case ANGLE_LEFT:
+        return ANGLE_RIGHT;
+    case ANGLE_RIGHT:
+        return ANGLE_LEFT;
+    case ANGLE_DOWN:
+        return ANGLE_UP;
+    case ANGLE_UP:
+        return ANGLE_DOWN;
+    }
+
+    return ANGLE_NONE;
 }

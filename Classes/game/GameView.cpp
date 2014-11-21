@@ -8,6 +8,7 @@ void CGameView::onEnter()
     //----------------------------------------------------
     //FIXME 
     count = 0;
+    
 
     Size visibleSize    = Director::getInstance()->getVisibleSize();
     Vec2 origin         = Director::getInstance()->getVisibleOrigin();
@@ -44,28 +45,43 @@ void CGameView::onEnter()
 	m_pDrawNode			= DrawNode::create();    	      	
     m_pSp               = CMySprite::create();
     m_pPlayer           = CGamePlayer::create();
-    m_pShowArea         = CShowArea::create();    
+    m_pShowArea         = CShowArea::create();
+    m_pGameLogic        = CGameLogic::create();
     
 	m_pSp->setPath(m_pPath);
     m_pSp->setPlayer(m_pPlayer);
-
-    //FIXME 重命名
-    m_pShowArea->setPlayer(m_pSp);
+    m_pSp->setShowArea(m_pShowArea);
+          
     m_pShowArea->setPath(m_pPath);
+    m_pShowArea->setPosition(origin);
+
+    //------------------------------------
+
+    m_pGameLogic->m_refPath         = m_pPath;
+    m_pGameLogic->m_refPlayer       = m_pPlayer;
+    m_pGameLogic->m_refShowArea     = m_pShowArea;
+    m_pGameLogic->m_refSp           = m_pSp;
+
+    //----------------------------
 		
     addChild(m_pShowArea);	
 	addChild(m_pSp);
 	addChild(m_pDrawNode);
     addChild(m_pPlayer);
+    addChild(m_pGameLogic);
     //------------------------------------    	
 	
 	m_oAllRander.push_back(m_pSp);
     m_oAllRander.push_back(m_pShowArea);
-    m_oAllRander.push_back(m_pPath);
+    m_oAllRander.push_back(m_pPath); 
 
-    setState(STATE_INIT);
+    //----------------------------------------
+
+     
 	
     //------------------------------------------  
+
+    setState(STATE_INIT);
 
 	schedule(schedule_selector(CGameView::run));
 
@@ -78,17 +94,9 @@ void CGameView::setState(int stata)
     case STATE_INIT:
         log("STATE_INIT");
         schedule(schedule_selector(CGameView::initGame));
-        break;
-    case STATE_DRAW:
-        log("STATE_DRAW");
-        break;
-    case STATE_WAIT:
-        log("STATE_WAIT");
-        break;
+        break;      
     case STATE_RUN:
-        log("STATE_RUN");
-        m_pPlayer->moveToPath(m_pPath->m_oAllPoint);
-        this->schedule(schedule_selector(CGameView::spriteRun));
+        log("STATE_RUN");        
         break;
     }
 
@@ -96,26 +104,12 @@ void CGameView::setState(int stata)
 }
           
 
-void CGameView::spriteRun(float t)
-{
-    //log("spriteRun....%d", count);
-    if (count++ > 100)
-    {
-        count = 0;
-        m_pShowArea->setState(CShowArea::State::STATE_CLOSE);
-        m_pSp->setState(CMySprite::STATE_STANDER);
-        m_pPath->clearPoint();
-
-        unschedule(schedule_selector(CGameView::spriteRun));
-        setState(STATE_WAIT);
-    }
-}
-
 
 void CGameView::initGame(float)
 {
     //log("random rect Size");
     //TODO random rect Size
+
 
 }
 
@@ -134,8 +128,17 @@ void CGameView::run(float time)
 
 bool CGameView::onTouchBegan(Touch* touches, Event *event)
 {
-    //log("CGameView::onTouchBegan<<<<<<<<<<");
+
+    if (m_oPointers.size() + 1 > 1)
+    {                   
+        return false;
+    }
+                                       
     auto local          = touches->getLocation();    
+    log("CGameView::onTouchBegan<<<<<<<<<< %d", m_oPointers.size());
+    log("id:%d, point:%f, %f", touches->getID(), local.x, local.y );
+                                                        
+    m_oPointers.insert(PointPari(touches->getID(), local));
 
     switch (m_State)
     {
@@ -143,33 +146,13 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
     {   
         unschedule(schedule_selector(CGameView::initGame));
         log("init position random rect Size");
-        m_pShowArea->setPlayerPosiztion();
-        setState(STATE_WAIT);    
+     
+        m_pSp->setState(CMySprite::STATE_INIT);
     } 
     break;
-    case STATE_WAIT:
-    {
-        int selectindex = m_pShowArea->getTargetIndex(local);
-        if (selectindex != SELECTID_NULL)
-        {
-            //
-            log("location position");
-            m_pShowArea->setAreaIndex(0, selectindex);
-            m_pShowArea->setPlayerPosiztion(local, selectindex);
-
-        } 
-        m_pSp->setState(CMySprite::STATE_MOVE);
-        m_pSp->setAbsPosition();       
-        m_pSp->setPointerStart(local);
-        
-        log("Selectindex :%d", selectindex);
-    }  
-    break;
-    case STATE_DRAW:
-    {
-
-    } 
-    break;
+    case STATE_RUN:      
+        m_pSp->onPressed(local);                         
+        break;   
     }
     
     return true;
@@ -178,21 +161,36 @@ bool CGameView::onTouchBegan(Touch* touches, Event *event)
 
 void CGameView::onTouchEnded(Touch* touches, Event *event)
 {
+    PointIter pinter = m_oPointers.find(touches->getID());
+
+    if (pinter != m_oPointers.end())
+    {
+        m_oPointers.erase(pinter);
+    } 
+    else
+    {
+        log("not find! id");
+    }
+
+//     if (m_oPointers.size() == 1)
+//     {                           
+//         const Vec2& endpoint = m_oPointers.begin()->second;
+//         log("set Start Point, %f, %f", endpoint.x, endpoint.y);
+// 
+//         m_pSp->onPressed(endpoint);
+//         return;
+//     }
+
     auto local = touches->getLocation();
+    //log("CGameView::onTouchEnded>>>>>>>>>>> %d", m_oPointers.size());
     //log("CGameView::onTouchEnded>>>>>>>>>>>%f, %f", local.x, local.y); 
     switch (m_State)
     {
     case STATE_INIT:
-        break;
-    case STATE_WAIT:  
-        m_pSp->setState(CMySprite::STATE_STANDER);
-		break;
-    case STATE_DRAW:        
-        setState(STATE_RUN);            
+        setState(STATE_RUN);
         break;
     case STATE_RUN:
-        break;
-    default:
+        m_pSp->onReleased(local);         
         break;
     }
 
@@ -201,47 +199,24 @@ void CGameView::onTouchEnded(Touch* touches, Event *event)
 
 void CGameView::onTouchMove(Touch* touches, Event *event)
 {
-    //log("CGameView::onTouchMove-------------");
-    auto local          = touches->getLocation();
+    auto local = touches->getLocation(); 
+                               
+    PointIter iter = m_oPointers.find(touches->getID()); 
+    if (iter != m_oPointers.end())
+    {
+        iter->second = local;
+    }
 
-    const Vec2& pos     = m_pSp->getPosition();
-    int selectindex     = m_pShowArea->getTargetIndex(pos);
-    CMargin* margin     = m_pShowArea->getMargin(selectindex);
+    //log("CGameView::onTouchMove-------------%d", m_oPointers.size());
+    if (m_oPointers.size() > 1)
+    {
+        return;
+    }
 
     switch (m_State)
-    {
-    case STATE_WAIT:              
-        if (!m_pShowArea->hasPointInArea(pos))
-        {            
-            m_pSp->setState(CMySprite::STATE_DRAW);
-            m_pShowArea->setAreaIndex(0, selectindex);
-            setState(STATE_DRAW);
-            return;
-        }
-        m_pSp->move(local);
-        break;
-    case STATE_DRAW:   
-        if (m_pShowArea->hasPointInArea(pos))
-        {       
-            if (margin != nullptr)
-            {
-                const Vec2 & v = liyan998::CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_pPath->m_oAllPoint[m_pPath->m_oAllPoint.size() - 1]);
-
-                selectindex = m_pShowArea->getTargetIndex(v);
-                m_pSp->setPosition(v);
-                m_pPath->addPoint(v); 
-                
-            }else{
-                 //FIXME 移动速度过快会造成无法得到边界信息    
-                log("FIXME");
-            }
-
-            m_pShowArea->setAreaIndex(1, selectindex);
-            setState(STATE_RUN);
-            return;
-        }                             
-
-        m_pSp->move(local);        
+    {                
+    case STATE_RUN:           
+        m_pSp->onMove(local); 
         break;
     }  
 }
@@ -254,6 +229,7 @@ void CGameView::menuCloseCallback(Ref* ref)
     return;
 #endif
 
+    log("exit~~~~~~!");
     Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
@@ -272,4 +248,5 @@ void CGameView::onExit()
     this->removeAllChildren();
   
     delete m_pPath;
+    m_pPath = nullptr;
 }

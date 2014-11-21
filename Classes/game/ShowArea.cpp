@@ -10,9 +10,8 @@ using namespace liyan998;
 bool CShowArea::init()
 {
     Sprite::init();   
-    m_Model     = MODEL_OUT;
+    m_Model     = MODEL_OUT; 
 
-    m_pPlayer   = nullptr;
     m_pPath     = nullptr;        
     m_pHandle   = nullptr;
 
@@ -56,8 +55,18 @@ bool CShowArea::init()
                                   
    //----------------------------------------    
 	
+   Vec2 origin = Director::getInstance()->getVisibleOrigin();
+   Size screen = Director::getInstance()->getVisibleSize();
 
-   Rect rec(250, 592, 80, 80);
+   Rect rec(
+       GRAD_NUMBER(screen.width / 2 + origin.x - 40), 
+       GRAD_NUMBER(screen.height / 2 + origin.y + 40),
+       GRAD_NUMBER(80),
+       
+       GRAD_NUMBER(80)
+       );
+
+
 
    addPoint(rec.origin);
    addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
@@ -76,12 +85,18 @@ bool CShowArea::init()
 
 void CShowArea::flushMargin()
 {                  
+
+    log("flush margin");
     for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         this->removeChildByTag(m_oAllMargin[i]);
     }
 
     m_oAllMargin.clear();
+
+    m_oAllEndPoint.clear();
+    //----------------------------------------------------------
+
 
     int size = m_oAllPoint.size();
 
@@ -100,7 +115,24 @@ void CShowArea::flushMargin()
         pMarg->setTag(10 + i);
         addChild(pMarg);
         m_oAllMargin.push_back(pMarg->getTag());
-    }                
+    }
+
+    
+    for (int i = 0; i < m_oAllMargin.size(); i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
+
+        //收集端点
+        unsigned int result     = tpMagin->getAvableDirect(m_oAllPoint);
+        unsigned int r1         = result >> 16;
+        unsigned int r2         = result & 0x0000ffff;
+        //FFFF, FFFF
+        m_oAllEndPoint.insert(EndPointPair(tpMagin->m_oStart, r1));
+        m_oAllEndPoint.insert(EndPointPair(tpMagin->m_oTaget, r2));
+
+
+        
+    }            
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -114,50 +146,7 @@ void CShowArea::flush()
 	
     m_pDrawNode->clear();   
     getShape(SHAPEID_AREA)->draw(m_pDrawNode);   
-
-	for (int i = 0 ;i < m_oAllPoint.size();i++)
-	{		
-		m_pDrawNode->drawDot(m_oAllPoint[i],2,Color4F(1,1,1,1));
-	}
-
-//     for (int i = 0; i < m_oTempPoint.size(); i++)
-//     {
-//         if (i + 1 < m_oTempPoint.size())
-//         {
-//             m_pDrawNode->drawSegment(m_oTempPoint[i], m_oTempPoint[i + 1], 2, Color4F(1, .5F, .5F, .5F));
-//         }       
-//     }
-// 	for (int i = 0 ;i < m_oTempPoint.size();i++)
-// 	{
-// 		m_pDrawNode->drawDot(m_oTempPoint[i],2,Color4F(1,1,1,1));
-// 	}
-
-
-//     for (int i = 0; i < m_oAllMargin.size(); i++)
-//     {
-//         CMargin* pMarg = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));
-// 
-//         log("pMarg->m_Angle :%d", pMarg->m_Angle);
-//         Vec2 endP1 = CMath::getVec2(pMarg->getPosition(), 100, CMath::angleToRadian(90 + pMarg->m_Angle));
-//         Vec2 endP2 = CMath::getVec2(pMarg->getPosition(), 100, CMath::angleToRadian(pMarg->m_Angle));
-//         Vec2 endP3 = CMath::getVec2(pMarg->getPosition(), 100, CMath::angleToRadian(180 + pMarg->m_Angle));
-// 
-//         m_pDrawNode->drawSegment(pMarg->getPosition(), endP1, 1, Color4F(1, 1, 0, 1));
-//         m_pDrawNode->drawSegment(pMarg->getPosition(), endP2, 1, Color4F(1, 0, 1, 1));
-//         m_pDrawNode->drawSegment(pMarg->getPosition(), endP3, 1, Color4F(0, 1, 1, 1));
-// 
-//         m_pDrawNode->drawDot(pMarg->getPosition(), 4, Color4F(1, 0, 0, 1));
-//     }
-    	
-//     switch (m_State)
-//     {
-//     case STATE_DRAWLINE:		
-//         if (m_oTempPoint.size() > 0)
-//         {
-//             m_pDrawNode->drawSegment(m_oTempPoint[m_oTempPoint.size() - 1], m_pPlayer->getPosition(), 3, Color4F(1, 1, 1, 1));
-//         }        
-//         break;
-//     }
+   
    
 }
 
@@ -196,7 +185,30 @@ void CShowArea::print(DrawNode* dn)
         }
     }
 
-    //getShape(SHAPEID_TEMP)->draw(dn);
+
+    for (int i = 0; i < resultArea.size(); i++)
+    {
+        dn->drawDot(resultArea[i], 5, Color4F(1, 0, 0, 0.6));
+    }
+    for (int i = 0; i < addArea.size(); i++)
+    {
+        dn->drawDot(addArea[i], 10, Color4F(1, 1, 1, 0.2));
+    }
+    for (int i = 0; i < m_pPath->m_oAllPoint.size(); i++)
+    {
+        dn->drawDot(m_pPath->m_oAllPoint[i], 10, Color4F(1, 1,0.5, 0.3));
+    }
+
+
+
+    //log("c1 %d c2 %d", c1, c2);
+    getShape(SHAPEID_TEMP)->setShape(resultArea);
+    getShape(SHAPEID_TEMP)->setColor(Color4F(1, 0, 0.5, 1), Color4F(1, 0, 0.5, 0.3));
+    getShape(SHAPEID_TEMP)->draw(dn);
+// 
+    getShape(SHAPEID_AREA)->setShape(addArea);
+    getShape(SHAPEID_AREA)->setColor(Color4F(0, 1, 0.5, 1), Color4F(1, 1, 0, 0.2));
+    getShape(SHAPEID_AREA)->draw(dn);
     
 }
                                       
@@ -228,53 +240,174 @@ CMargin* CShowArea::getMargin(int index)
 }
 
 
-//TODO锟斤拷榛拷锟斤拷锟斤拷锟斤拷欠锟秸猴拷
+
 bool CShowArea::isCloseArea()
 {
     if (m_pPath != NULL && m_pPath->m_oAllPoint.size() < 1)
     {
         return false;
-    }
-
-
-
+    } 
     return true;
 }
 
-bool CShowArea::hasPointInMargin(const Vec2& point)
+int CShowArea::hasPointInMargin(const Vec2& point)
 {
     for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
 
-//         const Vec2& p1 ;
-//         const Vec2& p2;
-        switch (tpMagin->m_Angle)
+        if (CUtil::hasPointInLine(tpMagin->m_oStart, tpMagin->m_oTaget, point))
         {
-        case ANGLE_DOWN:
-//             if (p1.x == point.x )
-//             {
-//             }
-            break;
-        case ANGLE_RIGHT:
-
-            break;
-        case ANGLE_UP:
-
-            break;
-        case ANGLE_LEFT:
-
-            break;
-        default:
-            break;
-        }
+            return i;
+        }   
     }
 
-    return false;
+    return SELECTID_NULL;
 }
 
 
 
+int CShowArea::getPositionType(const Vec2& inPos)
+{
+
+    for (int i = 0; i < m_oAllMargin.size(); i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
+
+        if (inPos == tpMagin->m_oStart || inPos == tpMagin->m_oTaget)
+        {
+            return POSITION_ENDPOINT;
+        }    
+        else if (CUtil::hasPointInLine(tpMagin->m_oStart, tpMagin->m_oTaget, inPos))
+        {
+            return POSITION_LINE;
+        }
+
+    }  
+    if (!hasPointInArea(inPos))
+    {
+        return POSITION_LOCK;
+    }
+    else{
+        return POSITION_UNLOCK;
+    }                                 
+}
+
+
+
+//得到可行走区域指针
+void CShowArea::getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect)
+{     
+
+
+
+
+
+
+
+
+
+
+
+
+    for (int i = 0; i < m_oAllMargin.size();i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
+
+
+//         //是否在节点上 
+       if (inPoint == tpMagin->m_oStart || inPoint == tpMagin->m_oTaget)
+       { 
+            //log("inNode ~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            outDirect.push_back(ANGLE_LEFT);
+            outDirect.push_back(ANGLE_RIGHT);
+            outDirect.push_back(ANGLE_DOWN);
+            outDirect.push_back(ANGLE_UP);
+
+            return;
+        }else
+        
+        if (CUtil::hasPointInLine(tpMagin->m_oStart, tpMagin->m_oTaget, inPoint))
+        {
+            //是否在边上                    
+            
+            int parm = m_Model == MODEL_IN ? 1 : -1;
+            int a1 = getNextAngle(tpMagin->m_Angle, parm);
+            int a2 = getNextAngle(a1, parm);
+
+            outDirect.push_back(tpMagin->m_Angle);
+            outDirect.push_back(a1);
+            outDirect.push_back(a2);
+            return;
+
+            //log("~~~~~~~~~~~%d , %d, %d", tpMagin->m_Angle, a1, a2);
+        }
+    }      
+
+    switch (m_Model)
+    {
+    case MODEL_IN:
+        if (hasPointInArea(inPoint))
+        {
+            outDirect.push_back(ANGLE_LEFT);
+            outDirect.push_back(ANGLE_RIGHT);
+            outDirect.push_back(ANGLE_DOWN);
+            outDirect.push_back(ANGLE_UP);
+        }
+        break;
+    case MODEL_OUT:
+        if (!hasPointInArea(inPoint))
+        {
+            outDirect.push_back(ANGLE_LEFT);
+            outDirect.push_back(ANGLE_RIGHT);
+            outDirect.push_back(ANGLE_DOWN);
+            outDirect.push_back(ANGLE_UP);
+        }
+        break;
+    default:
+        break;
+    }
+    //是否在区域外         
+           
+}
+
+
+int CShowArea::getNextAngle(int currentangle, int d)
+{
+#define MAX_ANGLE 4
+    int anglelist[MAX_ANGLE] =
+    {
+        ANGLE_LEFT,
+        ANGLE_UP,
+        ANGLE_RIGHT,
+        ANGLE_DOWN
+    };              
+    int currentindex    = 0;
+    int selectindex     = 0;
+
+    for (int i = 0; i < MAX_ANGLE;i++)
+    {
+        if (currentangle == anglelist[i])
+        {
+            currentindex = i;
+        }
+    }
+
+    if (currentindex + d >= MAX_ANGLE)
+    {
+        selectindex = 0;
+    }else if (currentindex + d < 0)
+    {
+        selectindex = MAX_ANGLE - 1;
+    }
+    else
+    {
+        selectindex = currentindex + d;
+    }
+
+    //log("currentindex:%d, selectindex:%d", currentindex, selectindex);
+    return anglelist[selectindex];
+}
 
 void CShowArea::setState(int sta)
 {
@@ -311,114 +444,55 @@ void CShowArea::setState(int sta)
 }
 
 
-void CShowArea::setPlayerPosiztion(const Vec2& vec2, int index)
-{
-    CMargin* tMargin	= static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[index])); 
-    const Vec2& refp			= CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, vec2);
-
-    m_pPlayer->setPlayerPosition(refp);
-}
-
-// 
-void CShowArea::setPlayerPosiztion()
-{
-    int setLine         = CMath::getRandom(0, m_oAllMargin.size() - 1);
-
-    CMargin* margin     = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[setLine]));
-
-    float rad           = CMath::getRadian(margin->m_oStart, margin->m_oTaget);
-    float dis           = ccpDistance(margin->m_oStart, margin->m_oTaget);
-    int ranint          = CMath::getRandom(0, dis);
-
-    const Vec2& ps      = CMath::getVec2(margin->m_oStart, ranint, RADINA_TOGAME(rad));
-
-    m_pPlayer->setState(CMySprite::STATE_INIT);
-    m_pPlayer->setPlayerPosition(ps);
-
-    setAreaIndex(0, setLine);
-
-    log("sprite setPostion:%f, %f, %d", m_pPlayer->getPosition().x, m_pPlayer->getPosition().y, ranint);
-
-}
-
-void CShowArea::setPlayer(CMySprite* sp)
-{
-    this->m_pPlayer = sp;
-}
-
 void CShowArea::setPath(CPath* path)
 {
     this->m_pPath = path;
 }
 
 
+            
 
-
-
-//TODO 锟脚伙拷锟斤拷锟斤拷峁?
 void CShowArea::clearAreaIndex()
 {
     if (m_Area[0] == -1 || m_Area[1] == -1)
     {
         log("no area %d | %d", m_Area[0], m_Area[1]);
         return;
-    }
-
+    }   
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
 
-    int ddirect         = 0;      
-    int pathdirect      = m_pPath->getDirect();   
-    int start           = -1;
-    int end             = -1;
 
-    if (pathdirect < 0)
-    {
-        ddirect = DIRECT_ANTICCLOCKWISE;
-    }else if (pathdirect > 0)
-    {
-        ddirect = DIRECT_CLOCKWISE;
-    }else{ 
+    getDDirect(m_Area[0], m_Area[1]);
 
-        ddirect = DIRECT_ANTICCLOCKWISE;
-        if (m_Area[0] < m_Area[1])
+    std::vector<Vec2>* pResult;
+    clearPoint();
+
+    if (hasIncludeMaster())
+    {          
+        pResult = &addArea;
+        if (this->m_Model != MODEL_IN)
         {
-            ddirect = DIRECT_CLOCKWISE;
-        }        
-    }                
-
-    switch (ddirect)
-    {
-    case DIRECT_ANTICCLOCKWISE:
-        start   = m_Area[1];
-        end     = m_Area[0];
-        std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-        break;
-    case DIRECT_CLOCKWISE:
-        start   = m_Area[0];
-        end     = m_Area[1]; 
-        break;
-    default:
-        break;
-    }            
-
-    if (start == -1 || end == -1)
-    {               
-        
-        return;
+            setMode(MODEL_IN);
+        }
     }
+    else
+    {                      
+        pResult = &resultArea;
+    }    
 
-    log("ddirect %d, start %d , end %d", ddirect, start, end); 
-    insert(m_pPath->m_oAllPoint, start, end);   
 
-    getAllPoint(m_oAllPoint);                        
+    for (int i = 0; i < pResult->size(); i++)
+    {
+        addPoint((*pResult)[i]);
+    }                                       
 
+    getAllPoint(m_oAllPoint);         
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 
-//     if (this->m_Model != MODEL_IN)
-//     {
-//         setMode(MODEL_IN);
-//     }
+    //Scorp计算 
+    float area = getArea();
+    log(" Area :%f", area);
 }
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
@@ -448,16 +522,49 @@ void CShowArea::setAreaIndex(int index, int areaIndex)
 }
 
 
-
+/**********************************************************************/
+/*
+* @brief        point是否在已解锁区域内，一般模式 
+* @param[in]    point   输入坐标
+* @param[out]
+* @return       bool   在反转模式下 不在区域内为返回结果
+                       在一般模式下 在区域内为返回结果
+*/
+/*********************************************************************/
 bool CShowArea::hasPointInArea(const Vec2& point)
-{
-    if (CUtil::hasPointInPloyon(m_oAllPoint, point))
+{                
+    bool result = CUtil::hasPointInPloyon(m_oAllPoint, point);
+
+    switch (m_Model)
     {
-        return true;
-    }
-    return false;
+    case MODEL_IN: 
+        return !result;
+    case MODEL_OUT: 
+        return result; 
+    } 
+    return result;
 }
 
+
+
+bool CShowArea::hasIncludeMaster()
+{ 
+    return CUtil::hasPointInPloyon(addArea, Vec2(100, 500));
+}
+
+int CShowArea::getNearMargin(const Vec2& point)
+{
+    for (int i = 0; i < m_oAllMargin.size(); i++)
+    {
+        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));// 
+
+        if (tpMagin->boundingBox().containsPoint(point))
+        {             
+            return i;
+        } 
+    } 
+    return SELECTID_NULL; 
+}
 
 int CShowArea::getMode()
 {
@@ -488,6 +595,59 @@ void CShowArea::setMode(int mode)
     }
 }
 
+float CShowArea::getArea()
+{   
+
+    Vector2dVector resvv;
+
+    for (int i = 0; i < m_oAllPoint.size();i++)
+    {          
+        resvv.push_back( Vector2d( m_oAllPoint[i].x, m_oAllPoint[i].y ) );
+    }              
+
+    Vector2dVector vv; 
+    Triangulate::Process(resvv, vv);
+
+    int tcount = vv.size() / 3;
+
+    float total = 0;
+    for (int i = 0; i < tcount; i++)
+    {
+        const Vector2d &p1 = vv[i * 3 + 0];
+        const Vector2d &p2 = vv[i * 3 + 1];
+        const Vector2d &p3 = vv[i * 3 + 2];
+        Vec2 tvec1[] =
+        {
+            Vec2(p1.GetX(), p1.GetY()),
+            Vec2(p2.GetX(), p2.GetY()),
+            Vec2(p3.GetX(), p3.GetY())
+        };
+       
+        total += CMath::getTraingleArea(tvec1[0], tvec1[1], tvec1[2]);       
+    }
+
+    //--------------------------------------------------------------------
+
+    Size visSize = Director::getInstance()->getVisibleSize();  
+
+    float totalarea = visSize.width * visSize.height;
+    float currentarea = total;
+
+    float area = currentarea / totalarea;
+
+    if (m_Model == MODEL_IN)
+    {
+        area = 1 - area;
+    }
+    //log("area:%f", area);
+    return area;
+}
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 void CShowArea::addPoint(const Vec2& point)
 {
@@ -884,6 +1044,14 @@ void CShowArea::printPoint(TPoint* hp)
     bool skip = false;
 
     log("==============================");
+
+    if (head == nullptr)
+
+    {
+        log("link no node");
+        return;
+    }
+
     while (head != nullptr)
     {                                     
         if (skip && head == realhead)
@@ -904,3 +1072,96 @@ void CShowArea::printPoint(TPoint* hp)
         }
     }
 }
+int CShowArea::getDDirect(int start, int end)
+{                                       
+    std::vector<Vec2> tempV1, tempV2;
+    if (start == end)
+    {
+        TPoint* current = getPoint(start);  
+
+        //------------------------------------------------------
+        CMargin* margin = getMargin(start);
+
+        Vec2 sv = *m_pPath->m_oAllPoint.begin();
+        Vec2 ev = *(m_pPath->m_oAllPoint.end() - 1);
+        int angle = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(sv, ev)));
+     
+        if (angle != margin->m_Angle)
+        {
+            std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+        }
+        //-----------------------------------------------------------------------------
+
+        addArea.insert(addArea.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+
+        TPoint* tlink = getTempHead(m_pPath->m_oAllPoint);
+        TPoint* tend = getTempEnd(tlink);
+
+        TPoint* next = current->next;
+
+        current->next = tlink;
+        tlink->preview = current;
+
+        tend->next = next;
+        next->preview = tend;
+
+        resetId();
+
+        getAllPoint(resultArea);
+    }
+    else
+    {                                    
+        TPoint* startPoint = getPoint(start);
+        TPoint* endPoint = getPoint(end); 
+
+        TPoint* current = startPoint;
+        while (current->id != endPoint->id)
+        {                          
+            current = current->next;
+            tempV1.push_back(current->vec);
+            //log("# %d",current->id);
+        }                                             
+        tempV1.insert(tempV1.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+
+        current = startPoint; 
+        while (current->id != endPoint->id)
+        {
+            //log("$ %d", current->id);    
+            tempV2.push_back(current->vec);
+            current = current->preview;
+        }
+        tempV2.insert(tempV2.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+    
+        int c1 = CUtil::getCountPointInPloyon(tempV1, tempV2);
+        int c2 = CUtil::getCountPointInPloyon(tempV2, tempV1); 
+
+        if (c1 > c2)
+        {
+            if (m_pPath->getDirect() > 0)
+            {               
+                resultArea.insert(resultArea.begin(), tempV1.rbegin(), tempV1.rend());
+                addArea.insert(addArea.begin(), tempV2.rbegin(), tempV2.rend());
+            } 
+            else
+            {
+                resultArea.insert(resultArea.begin(), tempV1.begin(), tempV1.end());
+                addArea.insert(addArea.begin(), tempV2.begin(), tempV2.end());
+            }           
+        }
+        else
+        {
+            if (m_pPath->getDirect() > 0)
+            {                                               
+                resultArea.insert(resultArea.begin(), tempV2.rbegin(), tempV2.rend());
+                addArea.insert(addArea.begin(), tempV1.rbegin(), tempV1.rend());
+            }   
+            else
+            {
+                resultArea.insert(resultArea.begin(), tempV2.begin(), tempV2.end());
+                addArea.insert(addArea.begin(), tempV1.begin(), tempV1.end());
+            }            
+        }                                              
+    }
+    return 0;
+}
+

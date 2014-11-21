@@ -2,30 +2,66 @@
 #define __GAME1PLAYER_H__
 
 #include "System.h"
+#include "State.h"
 
-class CGamePlayer : public Node
+
+#define INDEX_NONE -1
+
+class CGamePlayer : public Node ,public CState
 {
+
+public:
+
+    enum State
+    {
+        STATE_STOP,
+        STATE_RUN,
+        STATE_STANDER
+    };
+
+
 public:
 
     CREATE_FUNC( CGamePlayer )
 
     virtual bool init();
 
+    virtual void setState(int state);
+
     //-----------------------------------------------------
 
+    int getStep();
+
     void setPlayerPosition(const Vec2& pos);
-
-    void movePlayerTo(const Vec2& pos); 
-
-    void moveToPath(const std::vector<Vec2>& allPoint);
-
+   
     const Vec2& getPlsyerPosition();
 
-private:
+    void run(float time);
 
-    Sprite* m_pSp;
+    void setTarget(const Vec2& point);
 
-    int m_iStep;
+    void addFollow(const Vec2& point);
+
+    int getStrackSize();
+
+
+
+
+private:    
+
+    Sprite*             m_pSp;
+
+    int                 m_iStep;
+
+    int                 m_iCurrentDirect;
+
+    Vec2                m_oCurrentTarget;
+
+    
+
+    std::vector<Vec2>   m_oAllGuide;
+
+    
 };
 
 
