@@ -8,7 +8,7 @@ class CUtil
 public:
 
     //点是否在ployon内
-    static bool hasPointInPloyon(std::vector<Vec2>& refVector,const Vec2& refPoint);
+    static bool hasPointInPloyon(const std::vector<Vec2>& refVector,const Vec2& refPoint);
  
     //返回在ployon内的点个数
     static unsigned int getCountPointInPloyon(std::vector<Vec2>& refPloyon, std::vector<Vec2>& refAllPoint);
@@ -21,6 +21,10 @@ public:
 
     //得到子vector
     static void getSubVector(const std::vector<Vec2>& resource, int start, int end, std::vector<Vec2>& result);
+
+
+    //得到相向而行方向
+    static int getRevceDircet(int direct);
 
 
 };
