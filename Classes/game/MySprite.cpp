@@ -420,14 +420,14 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         int type = m_RefShowArea->getPositionType(endp);
         log("type:%d" ,type);
 
-        if (type != POSITION_ENDPOINT)
-        {
+//         if (type != POSITION_ENDPOINT)
+//         {
             addGuide(endp, true);  
-        }
-        else
-        {
-            addGuide(endp, false);
-        }
+//        }
+//         else
+//         {
+//             addGuide(endp, false);
+//         }
 
         m_RefShowArea->setAreaIndex(1, index);
         m_curMarginIndex = index;

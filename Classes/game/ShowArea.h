@@ -15,8 +15,6 @@
 #define SHAPEID_AREA            11                                          //图形ID 封闭区域   
 #define SHAPEID_TEMP            12                                          //图形ID 临时区域  
 
-#define DIRECT_CLOCKWISE        1                                           //闭合类型顺时针
-#define DIRECT_ANTICCLOCKWISE   -1                                          //闭合类型逆时针
 
 #define MODEL_IN                0                                           //反转模式
 #define MODEL_OUT               1                                           //一般模式
@@ -156,11 +154,11 @@ private:
 
     unsigned int resetId();                                         //节点数
                                                                             
-    void delPoint(int start, int end, int category);                //删除节点
+  
 
     void delPoint(int index);                                       //删除单个节点
 
-    void insert(std::vector<Vec2>& allpint, int start, int end);    //插入节点
+
 
     void clearPoint();                                              //清除所有节点
 
@@ -197,6 +195,8 @@ private:
     std::map<int, CShape*>          m_oAllShape;                        //图形集合  
 
     int                             m_Model;                            //模式
+
+	int								m_iRorate;							//方向
     
     std::map<Vec2, unsigned int>    m_oAllEndPoint;                     //所有端点可行走区域
 };                                              

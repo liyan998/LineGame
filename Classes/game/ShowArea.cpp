@@ -202,9 +202,9 @@ void CShowArea::print(DrawNode* dn)
 
 
     //log("c1 %d c2 %d", c1, c2);
-    getShape(SHAPEID_TEMP)->setShape(resultArea);
-    getShape(SHAPEID_TEMP)->setColor(Color4F(1, 0, 0.5, 1), Color4F(1, 0, 0.5, 0.3));
-    getShape(SHAPEID_TEMP)->draw(dn);
+//     getShape(SHAPEID_TEMP)->setShape(resultArea);
+//     getShape(SHAPEID_TEMP)->setColor(Color4F(1, 0, 0.5, 1), Color4F(1, 0, 0.5, 0.3));
+//     getShape(SHAPEID_TEMP)->draw(dn);
 // 
     getShape(SHAPEID_AREA)->setShape(addArea);
     getShape(SHAPEID_AREA)->setColor(Color4F(0, 1, 0.5, 1), Color4F(1, 1, 0, 0.2));
@@ -446,39 +446,54 @@ void CShowArea::clearAreaIndex()
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
 
+	int startType	= getPositionType( m_pPath->m_oAllPoint[0] );
+	int endType		= getPositionType( *(m_pPath->m_oAllPoint.end() - 1) );
 
-    getDDirect(m_Area[0], m_Area[1]);
-
-    clearSameLineNode(addArea);
-    clearSameLineNode(resultArea);
+	log(" startType:%d endType:%d",startType, endType );
 
 
-    std::vector<Vec2>* pResult;
-    clearPoint();
+	switch (startType + endType)	
+	{
+	case POSITION_ENDPOINT + POSITION_ENDPOINT:
+		log(" End + End");
+		break;
+	case POSITION_LINE + POSITION_LINE:
+		{
+			log("Line + LIne");
+			getDDirect(m_Area[0], m_Area[1]);
+			clearSameLineNode(addArea);
+			clearSameLineNode(resultArea);
+			std::vector<Vec2>* pResult;
+			clearPoint();
+			if (hasIncludeMaster())
+			{          
+				pResult = &addArea;
+				if (this->m_Model != MODEL_IN)
+				{
+					setMode(MODEL_IN);
+				}
+			}
+			else
+			{                      
+				pResult = &resultArea;
+			}    
 
-    if (hasIncludeMaster())
-    {          
-        pResult = &addArea;
-        if (this->m_Model != MODEL_IN)
-        {
-            setMode(MODEL_IN);
-        }
-    }
-    else
-    {                      
-        pResult = &resultArea;
-    }    
+			for (int i = 0; i < pResult->size(); i++)
+			{
+				addPoint((*pResult)[i]);
+			}       
+			getAllPoint(m_oAllPoint);  
 
-    ;
-
-    for (int i = 0; i < pResult->size(); i++)
-    {
-        addPoint((*pResult)[i]);
-    }                                       
-
-    getAllPoint(m_oAllPoint);         
-    getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
-
+			m_iRorate = CUtil::getRotateDirect(m_oAllPoint);
+		}		
+		break;
+	case POSITION_ENDPOINT + POSITION_LINE:
+		log("End + Line");
+		break;
+	}
+    
+	log("Rotate:%d", m_iRorate);
+	getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
     //Scorpº∆À„ 
     float area = getArea();
     log(" Area :%f", area);
@@ -909,72 +924,6 @@ TPoint* CShowArea::getPoint(int index)
 }
 
 
-void CShowArea::insert(std::vector<Vec2>& allpint, int start, int end)
-{
-    
-    if (start == end)
-    {
-        TPoint* current     = getPoint(start);
-       
-        TPoint* tlink       = getTempHead(allpint); 
-        TPoint* tend        = getTempEnd(tlink);
-
-        TPoint* next        = current->next;
-
-        current->next       = tlink;
-        tlink->preview      = current;
-
-        tend->next          = next;
-        next->preview       = tend;  
-
-        resetId();
-    }else{       
-        TPoint* startp      = getPoint(start);   
-        TPoint* clipStart   = startp->next;         //
-        //clips
-        clipStart->preview  = nullptr; 
-
-        TPoint* endp        = getPoint(end);        
-        TPoint* clipEnd     = endp->next;
-        endp->next = nullptr;                       // 
-
-        ///-------------------------------------------
-
-        bool hasContent0    = false;
-        TPoint* findhead    = clipStart;
-
-        while (findhead != nullptr)
-        {            
-            TPoint* tDelref = findhead;  
-
-            if (findhead == m_pHandle)
-            {
-                hasContent0 = true;                 
-            }                            
-            findhead = findhead->next;
-
-            delete tDelref;
-            tDelref = nullptr;
-        }            
-
-        //---------------------------------------------
-        //connect
-        TPoint* temptp      = getTempHead(m_pPath->m_oAllPoint);
-        TPoint* tempep      = getTempEnd(temptp);
-
-        startp->next        = temptp;
-        temptp->preview     = startp;          
-        
-        tempep->next        = clipEnd;
-        clipEnd->preview    = tempep;
-
-        if (hasContent0){ m_pHandle = startp; }
-
-        resetId();  
-    }
-}
-
-
 
 
 
@@ -1121,6 +1070,21 @@ void CShowArea::printPoint(TPoint* hp)
         }
     }
 }
+
+
+
+
+/************************************************************************/
+/*
+@brief			
+
+@param[in]		int start
+				int end   
+@param[out]
+
+@return			int
+*/
+/************************************************************************/
 int CShowArea::getDDirect(int start, int end)
 {                                       
     std::vector<Vec2> tempV1, tempV2;

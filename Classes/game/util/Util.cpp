@@ -10,6 +10,9 @@
 #include <algorithm> 
 
 #include "Math.h"
+#include "../Margin.h"
+#include "../Path.h"
+
 
 bool CUtil::hasPointInPloyon(const std::vector<Vec2>& refVector,const Vec2& refPoint)
 { 
@@ -139,4 +142,77 @@ int CUtil::getRevceDircet(int direct)
     }
 
     return ANGLE_NONE;
+}
+
+
+int CUtil::getRotateDirect(const std::vector<Vec2>& allpoint)
+{
+	std::vector<CMargin*> allMargin;
+	//log("size:%d", m_oAllPoint.size());
+	for (int i = 0; i < allpoint.size()-1; i++)
+	{
+		CMargin* tmarg = new CMargin();
+		if (i + 1 < allpoint.size())
+		{
+			tmarg->setTaget(allpoint[i], allpoint[i + 1]);
+		}      
+		allMargin.push_back(tmarg);
+	}
+
+	int direct          = 0;
+	int currentDirect   = ANGLE_NONE;
+	for (int i = 0; i < allMargin.size();i++)
+	{
+		if (currentDirect == ANGLE_NONE)
+		{
+			currentDirect = allMargin[i]->m_Angle;
+		}
+		else{           
+			int rl = getRL(currentDirect, allMargin[i]->m_Angle);
+
+			if (rl == 1)
+			{
+				direct++;
+			}
+			else if(rl == -1){
+				direct--;
+			}              
+			//log("direct: %d", direct);
+			currentDirect = allMargin[i]->m_Angle;
+		}
+		//log("%d --\t %d", i, allMargin[i]->m_Angle);
+	}    
+
+	for (int i = 0; i < allMargin.size(); i++)
+	{
+		delete allMargin[i];
+	}
+
+
+	if (direct > 0)
+	{
+		return DIRECT_CLOCKWISE;
+	}else if (direct < 0)
+	{
+		return DIRECT_ANTICCLOCKWISE;
+	}
+
+	
+	return 0;
+}
+
+int CUtil::getRL(int currentDirect, int angle)
+{
+	for (int i = 0; i < 4;i++)
+	{
+		if (currentDirect == CPath::DIRECT[i][0])
+		{
+			if (angle == CPath::DIRECT[i][1])
+			{
+				return -1;
+			}else if(angle == CPath::DIRECT[i][2]){
+				return 1;
+			}
+		}
+	}
 }

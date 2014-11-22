@@ -112,8 +112,6 @@ int CPath::getDirect()
 
 int CPath::getRL(int currentDirect, int angle)
 {
-   
-
     for (int i = 0; i < 4;i++)
     {
         if (currentDirect == DIRECT[i][0])
