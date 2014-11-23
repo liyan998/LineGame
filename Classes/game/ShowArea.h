@@ -171,7 +171,9 @@ private:
     TPoint* getTempEnd(TPoint* head);                                         
     
 
-    int getDDirect(int start, int end);                             //得到直连方向
+    int getDDirect(int start, int end);                             //
+
+	void selectArea();
 
     void printPoint(TPoint* hp);                                                    
     

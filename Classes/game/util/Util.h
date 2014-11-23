@@ -28,6 +28,7 @@ public:
 
 	//得到旋转方向
 	static int getRotateDirect(const std::vector<Vec2>& allpoint);
+	static int getRotateDirect(const std::vector<Vec2>&allpoint, const std::vector<Vec2>&path);	
 	static int getRL(int currentDirect, int angle);
 };
 

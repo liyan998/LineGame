@@ -144,6 +144,40 @@ int CUtil::getRevceDircet(int direct)
     return ANGLE_NONE;
 }
 
+int CUtil::getRotateDirect(const std::vector<Vec2>& allpoint, const std::vector<Vec2>& path)
+{
+	
+	int result = getRotateDirect(path);
+
+	if (result != 0)
+	{
+		return result;
+	}
+
+	/////////////////////////////////////////////////////
+	/*
+	Vec2 starpoint = *path.begin();
+	Vec2 endpoint = *(path.end() - 1);
+	
+	int startindex	= -1;
+	int endindex	= -1;
+
+
+	for (int i = 0; i < allpoint.size(); i++)
+	{
+		if (starpoint == allpoint[i])
+		{
+			startindex = i;
+		}
+		else if (endpoint == allpoint[i])
+		{
+			endindex = i;
+		}
+	}
+	*/
+
+	return 0;
+}
 
 int CUtil::getRotateDirect(const std::vector<Vec2>& allpoint)
 {
@@ -200,9 +234,7 @@ int CUtil::getRotateDirect(const std::vector<Vec2>& allpoint)
 	}else if (direct < 0)
 	{
 		return DIRECT_ANTICCLOCKWISE;
-	}
-
-	
+	}	
 	return 0;
 }
 

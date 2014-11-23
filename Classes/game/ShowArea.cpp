@@ -470,9 +470,8 @@ void CShowArea::clearAreaIndex()
 		closedLine_End();
 		break;
 	}
-    
-	log("Rotate:%d", m_iRorate);
-	getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
+	//----------------------------------------------
+	
     //Scorp计算 
     float area = getArea();
     log(" Area :%f", area);
@@ -484,46 +483,77 @@ void CShowArea::closedLine_End()
 
 }
 
+/**********************************************************************/
+/**
+* @brief        解锁起点在 在端点上， 终点在端点上
+				
+				解锁算法：删除原始区域两个端点，将path区域添加进入原始区域
+				解锁区域：path区域	
+				
+* @param[in]    
+* @param[out]
+* @return      
+*/
+/*********************************************************************/
 void CShowArea::closedEnd_End()
 {
-
+	std::vector<Vec2> toV1, toV2;
 	//衔接处 两端点都要删除
 	Vec2 start = m_pPath->m_oAllPoint[0];
 
 	Vec2 end = *(m_pPath->m_oAllPoint.end() - 1);
 
-	log("m_pPath->m_oAllPoint Size:%d", m_pPath->m_oAllPoint.size());
+	//log("m_pPath->m_oAllPoint Size:%d", m_pPath->m_oAllPoint.size());
 	//删除path
-	m_pPath->m_oAllPoint.erase(m_pPath->m_oAllPoint.begin());
-	m_pPath->m_oAllPoint.erase(m_pPath->m_oAllPoint.end() - 1);
-	log("m_pPath->m_oAllPoint Size:%d", m_pPath->m_oAllPoint.size());
+	//m_pPath->m_oAllPoint.erase(m_pPath->m_oAllPoint.begin());
+	//m_pPath->m_oAllPoint.erase(m_pPath->m_oAllPoint.end() - 1);
+	//log("m_pPath->m_oAllPoint Size:%d", m_pPath->m_oAllPoint.size());
 	//删除
 
-// 	TPoint* pStart	= getPoint(start);
-// 	TPoint* pEnd	= getPoint(end);
-// 
-// 	TPoint* tHeand	= getTempHead(m_pPath->m_oAllPoint);
-// 	TPoint* tEnd	= getTempEnd(tHeand);
-// 
-// 	TPoint* pStartPrevew = pStart->preview;
-// 
-// 	pStartPrevew->next	= tHeand;
-// 	tHeand->preview		= pStartPrevew;
-// 
-// 	TPoint* pEndPreview = pEnd->preview;
-// 
-// 
-// 
-// 	pStart->next = tHeand;
-// 	tHeand->preview = pStart;
+	TPoint* pStart	= getPoint(start);
+	TPoint* pEnd	= getPoint(end);
 
+	TPoint* pCurrent = pStart;
 
+	while (pCurrent->vec != pEnd->vec)
+	{
+		log("$%d", pCurrent->id);
+		toV1.push_back(pCurrent->vec);
+		pCurrent = pCurrent->next;
+	}
+	toV1.push_back(pCurrent->vec);
+	log("$%d", pCurrent->id);
 
-
+	while (pCurrent->vec != pStart->vec)
+	{
+		log("#%d", pCurrent->id);
+		toV2.push_back(pCurrent->vec);
+		pCurrent = pCurrent->next;
+	}
+	log("#%d", pCurrent->id);
+	toV2.push_back(pCurrent->vec);
 	
 
+	//addArea.insert(addArea.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+	int pathdirect = CUtil::getRotateDirect(m_pPath->m_oAllPoint);
 
+	if (pathdirect == DIRECT_CLOCKWISE)
+	{
+		toV1.insert(toV1.end(), m_pPath->m_oAllPoint.rbegin() + 1, m_pPath->m_oAllPoint.rend() - 1);	
+		addArea.insert(addArea.begin(), toV1.begin(), toV1.end());
+		//--------------------------------------------
+		toV2.insert(toV2.end(), m_pPath->m_oAllPoint.begin() + 1, m_pPath->m_oAllPoint.end() - 1);
+		resultArea.insert(resultArea.begin(), toV2.begin(), toV2.end() );
+	}
+	else if (pathdirect == DIRECT_ANTICCLOCKWISE)
+	{
+		toV2.insert(toV2.end(), m_pPath->m_oAllPoint.begin() + 1, m_pPath->m_oAllPoint.end() - 1);
+		addArea.insert(addArea.begin(), toV2.begin(), toV2.end());
 
+		toV1.insert(toV1.end(), m_pPath->m_oAllPoint.rbegin() + 1, m_pPath->m_oAllPoint.rend() - 1);
+		resultArea.insert(resultArea.begin(), toV1.begin(), toV1.end());
+	}
+	selectArea();
 }
 
 void CShowArea::closedLine_Line()
@@ -531,10 +561,16 @@ void CShowArea::closedLine_Line()
 	getDDirect(m_Area[0], m_Area[1]);
 	clearSameLineNode(addArea);
 	clearSameLineNode(resultArea);
+	selectArea();
+}
+
+
+void CShowArea::selectArea()
+{
 	std::vector<Vec2>* pResult;
 	clearPoint();
 	if (hasIncludeMaster())
-	{          
+	{
 		pResult = &addArea;
 		if (this->m_Model != MODEL_IN)
 		{
@@ -542,21 +578,20 @@ void CShowArea::closedLine_Line()
 		}
 	}
 	else
-	{                      
+	{
 		pResult = &resultArea;
-	}    
+	}
 
 	for (int i = 0; i < pResult->size(); i++)
 	{
 		addPoint((*pResult)[i]);
-	}       
-	getAllPoint(m_oAllPoint);  
-
-
-
+	}
+	getAllPoint(m_oAllPoint);
 
 	m_iRorate = CUtil::getRotateDirect(m_oAllPoint);
 
+	log("Rotate:%d", m_iRorate);
+	getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 }
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
@@ -1217,7 +1252,6 @@ int CShowArea::getDDirect(int start, int end)
 		int c1 = CUtil::getCountPointInPloyon(tempV1, tempV2);
 		int c2 = CUtil::getCountPointInPloyon(tempV2, tempV1); 
 
- 		//log("dddddddddddd");
  		if (c1 > c2)
  		{			
  			resultArea.insert(resultArea.begin(), tempV1.begin(), tempV1.end());
