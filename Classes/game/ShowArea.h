@@ -164,6 +164,8 @@ private:
 
     TPoint* getPoint(int index);                                    //得到节点
 
+	TPoint* getPoint(const Vec2& inPosition);                       //得到节点
+
     TPoint* getTempHead(const std::vector<Vec2>& allpoint);
 
     TPoint* getTempEnd(TPoint* head);                                         
@@ -176,7 +178,9 @@ private:
 
  //////////////////////////////////////////////////////////////////////////
 
-    
+	void closedLine_Line();
+	void closedLine_End();
+    void closedEnd_End();
 private:
 
     DrawNode*                       m_pDrawNode;                        //  

@@ -61,12 +61,9 @@ bool CShowArea::init()
    Rect rec(
        GRAD_NUMBER(screen.width / 2 + origin.x - 40), 
        GRAD_NUMBER(screen.height / 2 + origin.y + 40),
-       GRAD_NUMBER(80),
-       
+       GRAD_NUMBER(80),       
        GRAD_NUMBER(80)
        );
-
-
 
    addPoint(rec.origin);
    addPoint(Vec2(rec.origin.x + rec.size.width, rec.origin.y));
@@ -74,6 +71,8 @@ bool CShowArea::init()
    addPoint(Vec2(rec.origin.x, rec.origin.y - rec.size.height));
 
    getAllPoint(m_oAllPoint);
+
+   m_iRorate = CUtil::getRotateDirect(m_oAllPoint);
 
    createShape(SHAPEID_AREA, m_oAllPoint)->setColor(Color4F(1, 1, 0.5, 1), Color4F(1, 1, 0.5, 1));
    createShape(SHAPEID_TEMP, m_oTempPoint)->setColor(Color4F(0, 1, 0.5, 1), Color4F(0, 1, 0.5, 1));;
@@ -298,6 +297,8 @@ int CShowArea::getPositionType(const Vec2& inPos)
 //得到可行走区域指针
 void CShowArea::getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect)
 {  
+
+	//log("dddddddddddddd");
     for (int i = 0; i < m_oAllMargin.size();i++)
     {
         CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
@@ -320,15 +321,18 @@ void CShowArea::getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect)
             //是否在边上                    
             
             int parm = m_Model == MODEL_IN ? 1 : -1;
+
+			//log("parm:%d ,mrotate:%d",parm, m_iRorate);
+			parm *=  m_iRorate;
             int a1 = getNextAngle(tpMagin->m_Angle, parm);
             int a2 = getNextAngle(a1, parm);
-
+			//log("~~~~~~~~~~~%d , %d, %d", tpMagin->m_Angle, a1, a2);
             outDirect.push_back(tpMagin->m_Angle);
             outDirect.push_back(a1);
             outDirect.push_back(a2);
             return;
 
-            //log("~~~~~~~~~~~%d , %d, %d", tpMagin->m_Angle, a1, a2);
+            
         }
     }      
 
@@ -451,44 +455,19 @@ void CShowArea::clearAreaIndex()
 
 	log(" startType:%d endType:%d",startType, endType );
 
-
 	switch (startType + endType)	
 	{
 	case POSITION_ENDPOINT + POSITION_ENDPOINT:
 		log(" End + End");
+		closedEnd_End();
 		break;
 	case POSITION_LINE + POSITION_LINE:
-		{
-			log("Line + LIne");
-			getDDirect(m_Area[0], m_Area[1]);
-			clearSameLineNode(addArea);
-			clearSameLineNode(resultArea);
-			std::vector<Vec2>* pResult;
-			clearPoint();
-			if (hasIncludeMaster())
-			{          
-				pResult = &addArea;
-				if (this->m_Model != MODEL_IN)
-				{
-					setMode(MODEL_IN);
-				}
-			}
-			else
-			{                      
-				pResult = &resultArea;
-			}    
-
-			for (int i = 0; i < pResult->size(); i++)
-			{
-				addPoint((*pResult)[i]);
-			}       
-			getAllPoint(m_oAllPoint);  
-
-			m_iRorate = CUtil::getRotateDirect(m_oAllPoint);
-		}		
+		log("Line + LIne");
+		closedLine_Line();				
 		break;
 	case POSITION_ENDPOINT + POSITION_LINE:
 		log("End + Line");
+		closedLine_End();
 		break;
 	}
     
@@ -497,6 +476,87 @@ void CShowArea::clearAreaIndex()
     //Scorp计算 
     float area = getArea();
     log(" Area :%f", area);
+}
+
+
+void CShowArea::closedLine_End()
+{
+
+}
+
+void CShowArea::closedEnd_End()
+{
+
+	//衔接处 两端点都要删除
+	Vec2 start = m_pPath->m_oAllPoint[0];
+
+	Vec2 end = *(m_pPath->m_oAllPoint.end() - 1);
+
+	log("m_pPath->m_oAllPoint Size:%d", m_pPath->m_oAllPoint.size());
+	//删除path
+	m_pPath->m_oAllPoint.erase(m_pPath->m_oAllPoint.begin());
+	m_pPath->m_oAllPoint.erase(m_pPath->m_oAllPoint.end() - 1);
+	log("m_pPath->m_oAllPoint Size:%d", m_pPath->m_oAllPoint.size());
+	//删除
+
+// 	TPoint* pStart	= getPoint(start);
+// 	TPoint* pEnd	= getPoint(end);
+// 
+// 	TPoint* tHeand	= getTempHead(m_pPath->m_oAllPoint);
+// 	TPoint* tEnd	= getTempEnd(tHeand);
+// 
+// 	TPoint* pStartPrevew = pStart->preview;
+// 
+// 	pStartPrevew->next	= tHeand;
+// 	tHeand->preview		= pStartPrevew;
+// 
+// 	TPoint* pEndPreview = pEnd->preview;
+// 
+// 
+// 
+// 	pStart->next = tHeand;
+// 	tHeand->preview = pStart;
+
+
+
+
+	
+
+
+
+}
+
+void CShowArea::closedLine_Line()
+{
+	getDDirect(m_Area[0], m_Area[1]);
+	clearSameLineNode(addArea);
+	clearSameLineNode(resultArea);
+	std::vector<Vec2>* pResult;
+	clearPoint();
+	if (hasIncludeMaster())
+	{          
+		pResult = &addArea;
+		if (this->m_Model != MODEL_IN)
+		{
+			setMode(MODEL_IN);
+		}
+	}
+	else
+	{                      
+		pResult = &resultArea;
+	}    
+
+	for (int i = 0; i < pResult->size(); i++)
+	{
+		addPoint((*pResult)[i]);
+	}       
+	getAllPoint(m_oAllPoint);  
+
+
+
+
+	m_iRorate = CUtil::getRotateDirect(m_oAllPoint);
+
 }
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
@@ -924,6 +984,39 @@ TPoint* CShowArea::getPoint(int index)
 }
 
 
+TPoint* CShowArea::getPoint(const Vec2& inPosition)
+{
+	TPoint* head        = m_pHandle; 
+
+	TPoint* realHead    = head;   
+	bool skip           = false; 
+
+	while (head != nullptr)
+	{
+		if (skip && head == realHead)
+		{
+			break;
+		}                        
+		//--------------------------------------
+
+		if (head->vec == inPosition)
+		{
+			return head;
+		}                               
+		head = head->next;
+
+		//--------------------------------------
+
+		if (!skip)
+		{
+			skip = true;
+		}                               
+	}                           
+	return nullptr;
+
+}
+
+
 
 
 
@@ -1105,7 +1198,7 @@ int CShowArea::getDDirect(int start, int end)
         }
         //-----------------------------------------------------------------------------
 
-        addArea.insert(addArea.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+        tempV1.insert(tempV1.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
 
         TPoint* tlink = getTempHead(m_pPath->m_oAllPoint);
         TPoint* tend = getTempEnd(tlink);
@@ -1119,8 +1212,22 @@ int CShowArea::getDDirect(int start, int end)
         next->preview = tend;
 
         resetId();
+		getAllPoint(tempV2);
 
-        getAllPoint(resultArea);
+		int c1 = CUtil::getCountPointInPloyon(tempV1, tempV2);
+		int c2 = CUtil::getCountPointInPloyon(tempV2, tempV1); 
+
+ 		//log("dddddddddddd");
+ 		if (c1 > c2)
+ 		{			
+ 			resultArea.insert(resultArea.begin(), tempV1.begin(), tempV1.end());
+ 			addArea.insert(addArea.begin(), tempV2.begin(), tempV2.end());			
+ 		}
+ 		else
+ 		{			                          
+ 			resultArea.insert(resultArea.begin(), tempV2.begin(), tempV2.end());
+ 			addArea.insert(addArea.begin(), tempV1.begin(), tempV1.end());			
+ 		}    
     }
     else
     {                                    
@@ -1145,6 +1252,8 @@ int CShowArea::getDDirect(int start, int end)
         }
         tempV2.insert(tempV2.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
     
+		//--------------------------------------------------------------
+
         int c1 = CUtil::getCountPointInPloyon(tempV1, tempV2);
         int c2 = CUtil::getCountPointInPloyon(tempV2, tempV1); 
 

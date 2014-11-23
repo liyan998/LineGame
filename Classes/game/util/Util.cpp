@@ -147,6 +147,11 @@ int CUtil::getRevceDircet(int direct)
 
 int CUtil::getRotateDirect(const std::vector<Vec2>& allpoint)
 {
+	if (allpoint.size() == 0)
+	{
+		return 0;
+	}
+
 	std::vector<CMargin*> allMargin;
 	//log("size:%d", m_oAllPoint.size());
 	for (int i = 0; i < allpoint.size()-1; i++)
