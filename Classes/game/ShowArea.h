@@ -98,7 +98,9 @@ public:
 
     //--------------------------------------------------------------------------------   
 
-    CMargin* getMargin(int index);                                      //得到边界对象   
+    CMargin* getMargin(int index);                                      //得到边界对象 
+
+
 
     bool isCloseArea();                                                 //区域是否闭合  
  
@@ -115,6 +117,8 @@ public:
 
 
     void getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect); //返回可行走区域
+
+    int getMarginDirect(int direct);                                    //得到边界上的可行走方向
 
     int getNextAngle(int currentangle, int d);
 
@@ -141,7 +145,9 @@ protected:
 
     CShape* getShape(const int id);                                 //得到图形     
 
-    void setMode(int mode);                                         //设置反向模式    
+    void setMode(int mode);                                         //设置反向模式
+
+    void checkMarginAvableDirect();                                 //补充检查可行走区域
    
 private:
 
@@ -152,13 +158,9 @@ private:
 
     void getAllPoint(std::vector<Vec2>& outputVec);                 //返回所有节点
 
-    unsigned int resetId();                                         //节点数
-                                                                            
-  
+    unsigned int resetId();                                         //节点数  
 
     void delPoint(int index);                                       //删除单个节点
-
-
 
     void clearPoint();                                              //清除所有节点
 

@@ -92,11 +92,9 @@ void CShowArea::flushMargin()
     }
 
     m_oAllMargin.clear();
-
     m_oAllEndPoint.clear();
+
     //----------------------------------------------------------
-
-
     int size = m_oAllPoint.size();
 
     for (int i = 0; i < size; i++)
@@ -111,27 +109,54 @@ void CShowArea::flushMargin()
             pMarg->setTaget(m_oAllPoint[i], m_oAllPoint[0]);
         }
 
+        pMarg->setAvableDirect(getMarginDirect(pMarg->m_Angle));
+        pMarg->getAvableDirect(m_oAllPoint, m_oAllEndPoint);
         pMarg->setTag(10 + i);
         addChild(pMarg);
         m_oAllMargin.push_back(pMarg->getTag());
     }
+     
+    checkMarginAvableDirect();
+}
 
-    
-    for (int i = 0; i < m_oAllMargin.size(); i++)
+
+
+/************************************************************************/
+/* 
+* @brief       补充检查在边上的可行走方向
+
+* @param[in]
+* @param[out]
+* @return      void 
+*/
+/************************************************************************/
+void CShowArea::checkMarginAvableDirect()
+{
+    for (EndPointIterator iter = m_oAllEndPoint.begin(); iter != m_oAllEndPoint.end(); ++iter)
     {
-        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
+        const Vec2& inPoint = iter->first;
+        int amargin = iter->second;
 
-        //收集端点
-        unsigned int result     = tpMagin->getAvableDirect(m_oAllPoint);
-        unsigned int r1         = result >> 16;
-        unsigned int r2         = result & 0x0000ffff;
-        //FFFF, FFFF
-        m_oAllEndPoint.insert(EndPointPair(tpMagin->m_oStart, r1));
-        m_oAllEndPoint.insert(EndPointPair(tpMagin->m_oTaget, r2));
+        std::vector<int> avables;
+        CUtil::getDirectFromFlag(amargin, avables);
 
+        for (int i = 0; i < avables.size(); i++)
+        {
+            int revdirect = CUtil::getRevceDircet(avables[i]);
 
-        
-    }            
+            Vec2 tPoint = CMath::getVec2(inPoint, GRAD_CELL, CMath::angleToRadian(revdirect));
+
+            tPoint.x = GRAD_NUMBER(tPoint.x);
+            tPoint.y = GRAD_NUMBER(tPoint.y);
+
+            int gpt = getPositionType(tPoint);
+            if (gpt == POSITION_LINE)
+            {
+                amargin |= CUtil::converDirectToFlag(revdirect);
+                iter->second = amargin;
+            }
+        }
+    } 
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -283,6 +308,7 @@ int CShowArea::getPositionType(const Vec2& inPos)
         }
 
     }  
+
     if (!hasPointInArea(inPos))
     {
         return POSITION_LOCK;
@@ -294,76 +320,44 @@ int CShowArea::getPositionType(const Vec2& inPos)
 
 
 
-//得到可行走区域指针
+//得到可行走方向
 void CShowArea::getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect)
-{  
+{
 
-	//log("dddddddddddddd");
-    for (int i = 0; i < m_oAllMargin.size();i++)
+    //节点上可行走方向
+    EndPointIterator iter = m_oAllEndPoint.find(inPoint);
+    if (iter != m_oAllEndPoint.end())
     {
-        CMargin* tpMagin = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));//
-
-
-//         //是否在节点上 
-       if (inPoint == tpMagin->m_oStart || inPoint == tpMagin->m_oTaget)
-       { 
-            //log("inNode ~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            outDirect.push_back(ANGLE_LEFT);
-            outDirect.push_back(ANGLE_RIGHT);
-            outDirect.push_back(ANGLE_DOWN);
-            outDirect.push_back(ANGLE_UP);
-
-            return;
-        }else
-        
-        if (CUtil::hasPointInLine(tpMagin->m_oStart, tpMagin->m_oTaget, inPoint))
-        {
-            //是否在边上                    
-            
-            int parm = m_Model == MODEL_IN ? 1 : -1;
-
-			//log("parm:%d ,mrotate:%d",parm, m_iRorate);
-			parm *=  m_iRorate;
-            int a1 = getNextAngle(tpMagin->m_Angle, parm);
-            int a2 = getNextAngle(a1, parm);
-			//log("~~~~~~~~~~~%d , %d, %d", tpMagin->m_Angle, a1, a2);
-            outDirect.push_back(tpMagin->m_Angle);
-            outDirect.push_back(a1);
-            outDirect.push_back(a2);
-            return;
-
-            
-        }
-    }      
-
-    switch (m_Model)
-    {
-    case MODEL_IN:
-        if (hasPointInArea(inPoint))
-        {
-            outDirect.push_back(ANGLE_LEFT);
-            outDirect.push_back(ANGLE_RIGHT);
-            outDirect.push_back(ANGLE_DOWN);
-            outDirect.push_back(ANGLE_UP);
-        }
-        break;
-    case MODEL_OUT:
-        if (!hasPointInArea(inPoint))
-        {
-            outDirect.push_back(ANGLE_LEFT);
-            outDirect.push_back(ANGLE_RIGHT);
-            outDirect.push_back(ANGLE_DOWN);
-            outDirect.push_back(ANGLE_UP);
-        }
-        break;
-    default:
-        break;
+        CUtil::getDirectFromFlag(iter->second, outDirect);
+        return;
     }
-    //是否在区域外         
-           
+
+    //边界上可行走方向
+    int positiontype = getPositionType(inPoint);    
+    if (positiontype == POSITION_LINE)
+    {
+        int marginIndex = hasPointInMargin(inPoint);       
+        CMargin* tpMagin = getMargin(marginIndex);         
+        CUtil::getDirectFromFlag(tpMagin->m_iAvable, outDirect);                  
+        return;
+    }
+
+    outDirect.push_back(ANGLE_LEFT);
+    outDirect.push_back(ANGLE_RIGHT);
+    outDirect.push_back(ANGLE_DOWN);
+    outDirect.push_back(ANGLE_UP);
 }
 
 
+int CShowArea::getMarginDirect(int direct)
+{
+    int parm = m_Model == MODEL_IN ? 1 : -1;  
+    parm *= m_iRorate;
+    int a1 = getNextAngle(direct, parm);
+
+
+    return a1;
+}
 int CShowArea::getNextAngle(int currentangle, int d)
 {
 #define MAX_ANGLE 4
@@ -479,7 +473,68 @@ void CShowArea::clearAreaIndex()
 
 
 void CShowArea::closedLine_End()
-{
+{                                               
+
+    const Vec2& vStart = m_pPath->m_oAllPoint[0]; 
+    const Vec2& vEnd = *(m_pPath->m_oAllPoint.end() - 1);     
+
+    EndPointIterator epIter = m_oAllEndPoint.find(vStart);
+
+    TPoint* pStartPoint;
+    TPoint* pEndPoint;
+
+    bool hasPointSameLine = false;
+
+
+    if (epIter != m_oAllEndPoint.end())
+    {
+        log("point in head");
+        int index = hasPointInMargin(vEnd); 
+        if (index != SELECTID_NULL)
+        {
+            CMargin* pMargin = getMargin(index); 
+            if (pMargin->m_oStart == vStart || pMargin->m_oTaget == vStart)
+            {
+                hasPointSameLine = true;
+            }
+        } 
+        pStartPoint = getPoint(vStart);
+        pStartPoint = pStartPoint->next;
+        pEndPoint = getPoint(m_Area[1]);
+        pEndPoint = pEndPoint->next;
+    }
+    else
+    {
+        log("point in brot");   
+        int index = hasPointInMargin(vStart);
+        if (index != SELECTID_NULL)
+        {
+            CMargin* pMargin = getMargin(index);
+            if (pMargin->m_oStart == vEnd || pMargin->m_oTaget == vEnd)
+            {
+                hasPointSameLine = true;
+            }
+        }      
+        pStartPoint = getPoint(m_Area[0]);
+        pStartPoint = pStartPoint->next;
+        pEndPoint = getPoint(*(m_pPath->m_oAllPoint.end() - 1));
+        //pEndPoint = pEndPoint->next;
+    }
+    log("has SameLine :%d", hasPointSameLine);
+
+    TPoint* pCurrentPoint = pStartPoint;   
+    while (pCurrentPoint->id != pEndPoint->id)
+    {
+        log("#%d", pCurrentPoint->id);
+        pCurrentPoint = pCurrentPoint->next;
+    }
+
+
+    while (pCurrentPoint->id != pStartPoint->id)
+    {
+        log("$%d", pCurrentPoint->id);
+        pCurrentPoint = pCurrentPoint->next;
+    }
 
 }
 
@@ -498,43 +553,33 @@ void CShowArea::closedLine_End()
 void CShowArea::closedEnd_End()
 {
 	std::vector<Vec2> toV1, toV2;
-	//衔接处 两端点都要删除
-	Vec2 start = m_pPath->m_oAllPoint[0];
+	
+	Vec2 start          = m_pPath->m_oAllPoint[0];
+	Vec2 end            = *(m_pPath->m_oAllPoint.end() - 1);
 
-	Vec2 end = *(m_pPath->m_oAllPoint.end() - 1);
+	TPoint* pStart	    = getPoint(start);
+	TPoint* pEnd	    = getPoint(end);
 
-	//log("m_pPath->m_oAllPoint Size:%d", m_pPath->m_oAllPoint.size());
-	//删除path
-	//m_pPath->m_oAllPoint.erase(m_pPath->m_oAllPoint.begin());
-	//m_pPath->m_oAllPoint.erase(m_pPath->m_oAllPoint.end() - 1);
-	//log("m_pPath->m_oAllPoint Size:%d", m_pPath->m_oAllPoint.size());
-	//删除
-
-	TPoint* pStart	= getPoint(start);
-	TPoint* pEnd	= getPoint(end);
-
-	TPoint* pCurrent = pStart;
+	TPoint* pCurrent    = pStart;
 
 	while (pCurrent->vec != pEnd->vec)
 	{
-		log("$%d", pCurrent->id);
+		
 		toV1.push_back(pCurrent->vec);
 		pCurrent = pCurrent->next;
 	}
 	toV1.push_back(pCurrent->vec);
-	log("$%d", pCurrent->id);
+	
 
 	while (pCurrent->vec != pStart->vec)
 	{
-		log("#%d", pCurrent->id);
+		
 		toV2.push_back(pCurrent->vec);
 		pCurrent = pCurrent->next;
-	}
-	log("#%d", pCurrent->id);
+	} 	
 	toV2.push_back(pCurrent->vec);
 	
 
-	//addArea.insert(addArea.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
 	int pathdirect = CUtil::getRotateDirect(m_pPath->m_oAllPoint);
 
 	if (pathdirect == DIRECT_CLOCKWISE)
@@ -553,6 +598,12 @@ void CShowArea::closedEnd_End()
 		toV1.insert(toV1.end(), m_pPath->m_oAllPoint.rbegin() + 1, m_pPath->m_oAllPoint.rend() - 1);
 		resultArea.insert(resultArea.begin(), toV1.begin(), toV1.end());
 	}
+    else{
+
+        //FIXME 反向模式下两点直连 方向值为0
+
+
+    }   
 	selectArea();
 }
 

@@ -79,8 +79,9 @@ bool CUtil::hasPointInLine(const Vec2& lineP1, const Vec2& lineP2, const Vec2& o
 //     distance[0] = static_cast<int>(ccpDistance(point[0], point[2]));
 //     distance[1] = static_cast<int>(ccpDistance(point[1], point[2]));
 //     distance[2] = static_cast<int>(ccpDistance(point[0], point[1]));
-       
-    if (getDisPointLine(lineP1, lineP2, outPoint) < 0.01f)
+    float dis = getDisPointLine(lineP1, lineP2, outPoint);
+    //log("line dis:%f", dis);
+    if (dis < 0.01f)
     {                                                  
         return true;
     }  
@@ -126,9 +127,7 @@ void CUtil::getSubVector(const std::vector<Vec2>& resource, int start, int end, 
 /*********************************************************************/
 int CUtil::getRevceDircet(int direct)
 {
-    //log("%d", (direct == ANGLE_UP) && (fixangle == ANGLE_DOWN));
-
-
+    //log("%d", (direct == ANGLE_UP) && (fixangle == ANGLE_DOWN)); 
     switch (direct)
     {
     case ANGLE_LEFT:
@@ -139,8 +138,7 @@ int CUtil::getRevceDircet(int direct)
         return ANGLE_UP;
     case ANGLE_UP:
         return ANGLE_DOWN;
-    }
-
+    }                
     return ANGLE_NONE;
 }
 
@@ -252,4 +250,73 @@ int CUtil::getRL(int currentDirect, int angle)
 			}
 		}
 	}
+}
+
+/*********************************************************************/
+/*
+* @brief        转换方向值为flag值
+* @param[in]    inDirect 方向值
+
+* @param[out]
+* @return       unsigned int flag
+                F F F F
+                上下左右 
+                90, -90, 180 ,0
+*/
+/*********************************************************************/
+unsigned int CUtil::converDirectToFlag(int inDirect)
+{                
+    switch (inDirect)
+    {
+    case ANGLE_UP:
+        return FLAG_UP;
+    case ANGLE_DOWN:
+        return FLAG_DOWN;
+    case ANGLE_LEFT:
+        return FLAG_LEFT;
+    case ANGLE_RIGHT:
+        return FLAG_RIGHT;
+    }
+    return ANGLE_NONE;
+}
+
+int CUtil::converFlagToDirect(unsigned int inFlag)
+{                 
+    switch (inFlag)
+    {
+    case FLAG_UP:
+        return ANGLE_UP;        
+    case FLAG_DOWN:
+        return ANGLE_DOWN;
+    case FLAG_LEFT:
+        return ANGLE_LEFT;
+    case FLAG_RIGHT:
+        return ANGLE_RIGHT;
+    }
+    return ANGLE_NONE;
+}
+
+
+/*********************************************************************/
+/*
+* @brief        从flag中得到方向集
+* @param[in]    inFlag      flag方向
+
+* @param[out]   outDirects  方向集合
+* @return       void  
+*/
+/*********************************************************************/
+void CUtil::getDirectFromFlag(unsigned int inFlag, std::vector<int>& outDirects)
+{
+    unsigned int vb = 0xF;
+    for (int i = 0; i < 4;i++)
+    {                
+        unsigned int parm = vb << (4 * i);
+        unsigned int result = inFlag & parm;
+
+        if (result != 0)
+        {
+            outDirects.push_back(converFlagToDirect(result));
+        }              
+    }
 }

@@ -28,6 +28,14 @@ using namespace cocos2d;
 
 ////////////////////////////////////////////////////////////
 
+#define FLAG_UP         0xF000
+#define FLAG_DOWN       0x0F00
+#define FLAG_LEFT       0x00F0
+#define FLAG_RIGHT      0x000F
+
+
+////////////////////////////////////////////////////////////
+
 #define RADINA_TOGAME( radina ) PI / 2 - radina  
 
 

@@ -3,14 +3,19 @@
 #include "util/Math.h"
 #include "util/Util.h"
 #include "Path.h"
+#include "ShowArea.h"
 
 
 
 using namespace liyan998;
 
 bool CMargin::init()
-{    
+{                            
     Sprite::init();
+
+    m_Angle = ANGLE_NONE;
+    m_iMarginAvable = ANGLE_NONE;
+    m_iAvable = 0;
 
     m_pDrawNode = DrawNode::create();
     addChild(m_pDrawNode); 
@@ -54,45 +59,62 @@ void CMargin::onDraw()
 //         m_pDrawNode->drawSegment(Vec2::ZERO, Vec2(dis, 0), 15, Color4F(1, 1, 0, 0.5));
 //     }
 }
+      
+/************************************************************************/
+/* 
+@brief          设置两端点的可行走方向，设置该边界的可行走方向
+@param[in]      inAllPoint      所有点集合  
+@param[out]     outAllEndPoint  所有端点可行走方向
+@return         void                                           
+*/
+/************************************************************************/
+void CMargin::getAvableDirect
+(
+    const std::vector<Vec2>&        inAllPoint,
+    std::map<Vec2, unsigned int>&   outAllEndPoint
+)
+{  
+    addPointToMap(m_oStart, outAllEndPoint);
+    addPointToMap(m_oTaget, outAllEndPoint); 
+}
 
+/************************************************************************/
+/*
+@brief          端点上可行走方向添加
+@param[in]      inPoint          端点
+@param[out]     outAllEndPoint  所有端点可行走方向
+@return         void
+*/
+/************************************************************************/
+void CMargin::addPointToMap(const Vec2& inPoint,std::map<Vec2, unsigned int>& outAllEndPoint)
+{                                                        
+    CShowArea::EndPointIterator endpIter = outAllEndPoint.find(inPoint);
+    unsigned int amargin = CUtil::converDirectToFlag(m_iMarginAvable);
 
+    if (endpIter != outAllEndPoint.end())
+    {
+        endpIter->second |= amargin;       
+    }
+    else
+    {              
+        outAllEndPoint.insert(CShowArea::EndPointPair(inPoint, amargin));   
+    }
+}
 
-
-//得到可行走区域 allpoint area
-//返回端点
-unsigned int CMargin::getAvableDirect(const std::vector<Vec2>& allPoint)
+/************************************************************************/
+/* 
+@brief          设置在边界上可行走方向
+@param[in]      indirect        边界可行走方向
+@param[out]     
+@return         void
+*/
+/************************************************************************/
+void CMargin::setAvableDirect(int direct)
 {
-    //两点距离
-    unsigned int dis = ccpDistance(m_oStart, m_oTaget);
-    //中点坐标
-    Vec2 mp = CMath::getVec2(m_oStart, dis / 2, (CMath::angleToRadian(m_Angle)));
-    CMath::getIntPoint(mp);
-   
-    //端点
-
-    //
-
-//     for (int i = 0; i < MAXDIRECT;i++)
-//     {
-//         int checkdirect = CPath::DIRECT[i][0];
-// 
-//         Vec2 dp = CMath::getVec2(mp, GRAD_CELL * 2, (CMath::angleToRadian(checkdirect)));
-//         CMath::getIntPoint(dp);
-
-//         if (checkdirect == m_Angle || CUtil::hasRevceDircet(checkdirect))
-//         {
-//         }
-
-//         if (CUtil::hasPointInPloyon(allPoint, dp))
-//         {
-//             log("inPloyon!!!!");
-//         }
-        
-        
-       // log("direct:%d , %f, %f", CPath::DIRECT[i][0], dp.x, dp.y);
-
-    //}
+    this->m_iMarginAvable = direct;
 
 
-    return 0;
+    m_iAvable |= CUtil::converDirectToFlag(direct);
+    m_iAvable |= CUtil::converDirectToFlag(m_Angle);
+    m_iAvable |= CUtil::converDirectToFlag(CUtil::getRevceDircet(m_Angle));
 }

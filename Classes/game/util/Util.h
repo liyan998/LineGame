@@ -30,6 +30,13 @@ public:
 	static int getRotateDirect(const std::vector<Vec2>& allpoint);
 	static int getRotateDirect(const std::vector<Vec2>&allpoint, const std::vector<Vec2>&path);	
 	static int getRL(int currentDirect, int angle);
+
+    //转换方向值
+    static unsigned int converDirectToFlag(int inDirect);
+    static int converFlagToDirect(unsigned int inFlag);
+
+    //得到方向集
+    static void getDirectFromFlag(unsigned int inFlag , std::vector<int>& outDirects);
 };
 
 

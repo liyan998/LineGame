@@ -160,7 +160,7 @@ void CMySprite::setSpStartPosition()
 @return        void
 */
 /************************************************************************/
-void CMySprite::setState(int state)
+void CMySprite::setState(int state)                                                                           
 {
     this->m_State = state;   
     switch (state)
@@ -305,11 +305,12 @@ void CMySprite::onMove(const Vec2& point)
 
         //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
 
-//         if (!hasMoveAction())
-//         {
-//             log("don't move it");
-//             return;
-//         }
+        if (!hasMoveAction())
+        {
+            log("don't move it");
+
+            return;
+        }
 
         onMoveToDraw();         
         //-----------------------------------  
@@ -378,9 +379,7 @@ bool CMySprite::hasMoveAction()
     //int postiontype = m_RefShowArea->getPositionType(m_oSpCurrentPos);
     //log("current type:%d", postiontype);  
                                            
-    //得到可行走方向
-
-
+    //得到可行走方向    
 
 
     std::vector<int> abv;
@@ -416,6 +415,8 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         CMargin* margin = m_RefShowArea->getMargin(index);
         Vec2 endp = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
 
+        endp.x = GRAD_NUMBER(endp.x);
+        endp.y = GRAD_NUMBER(endp.y);
 
         int type = m_RefShowArea->getPositionType(endp);
         log("type:%d" ,type);
@@ -432,10 +433,10 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         m_RefShowArea->setAreaIndex(1, index);
         m_curMarginIndex = index;
 
-        for (int i = 0; i < m_oTPath.size();i++)
-        {
-            log("vec:%f, %f", m_oTPath[i].x, m_oTPath[i].y);
-        }
+//         for (int i = 0; i < m_oTPath.size();i++)
+//         {
+//             log("vec:%f, %f", m_oTPath[i].x, m_oTPath[i].y);
+//         }
 
 
         setState(STATE_CLOSE);
@@ -517,6 +518,7 @@ void CMySprite::onMoveToDraw()
     else
     {
         //draw          
+        
         
         addGuide(m_oGuideLStart, true);
         
@@ -758,8 +760,8 @@ void CMySprite::print(DrawNode* dn)
 
 
     std::vector<int> abv;
-    //log("%f ,%f, %d", m_oSpCurrentPos.x, m_oSpCurrentPos.y, abv.size());
     m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
+   // log("%f ,%f, %d", m_oSpCurrentPos.x, m_oSpCurrentPos.y, abv.size());
 
     for (int i = 0; i < abv.size();i++)
     {

@@ -33,8 +33,17 @@ public:
 
     void setTaget(const Vec2&, const Vec2&);  
 
-    unsigned int getAvableDirect(const std::vector<Vec2>& allPoint);
+    void getAvableDirect(const std::vector<Vec2>& inAllPoint, 
+        std::map<Vec2, unsigned int>& outAllEndPoint);
 
+    void setAvableDirect(int direct);
+
+private:
+
+    void addPointToMap(const Vec2& inPoint,
+        std::map<Vec2, unsigned int>& outAllEndPoint);
+
+public:
   
     Vec2 m_oStart;
     Vec2 m_oTaget;
@@ -43,7 +52,8 @@ public:
 
     int                         m_Angle;
 
-    int                         m_iAvable;                  //可行走方向
+    int                         m_iMarginAvable;                  //与模式依赖边界可行走方向
+    int                         m_iAvable;                        //可行走方向
 
     
     
