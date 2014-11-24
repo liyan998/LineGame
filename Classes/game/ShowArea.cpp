@@ -475,67 +475,95 @@ void CShowArea::clearAreaIndex()
 void CShowArea::closedLine_End()
 {                                               
 
-    const Vec2& vStart = m_pPath->m_oAllPoint[0]; 
-    const Vec2& vEnd = *(m_pPath->m_oAllPoint.end() - 1);     
+    const Vec2& vStart		= m_pPath->m_oAllPoint[0]; 
+    const Vec2& vEnd		= *(m_pPath->m_oAllPoint.end() - 1);     
 
     EndPointIterator epIter = m_oAllEndPoint.find(vStart);
 
     TPoint* pStartPoint;
     TPoint* pEndPoint;
 
-    bool hasPointSameLine = false;
+    bool hasPointSameLine	= false;
+
+	std::vector<Vec2> tV1, tV2;
 
 
     if (epIter != m_oAllEndPoint.end())
     {
         log("point in head");
-        int index = hasPointInMargin(vEnd); 
+
+        pStartPoint				= getPoint(vStart);       
+        pEndPoint				= getPoint(m_Area[1]);  
+
+		TPoint* pCurrentPoint	= pStartPoint;
+
+        int index				= hasPointInMargin(vEnd); 
+
         if (index != SELECTID_NULL)
         {
             CMargin* pMargin = getMargin(index); 
             if (pMargin->m_oStart == vStart || pMargin->m_oTaget == vStart)
             {
                 hasPointSameLine = true;
+				//TODO ADD tv1
             }
-        } 
-        pStartPoint = getPoint(vStart);
-        pStartPoint = pStartPoint->next;
-        pEndPoint = getPoint(m_Area[1]);
-        pEndPoint = pEndPoint->next;
+			else
+			{
+				while (pCurrentPoint->id != pEndPoint->id)
+				{
+					pCurrentPoint = pCurrentPoint->next;
+					log("#%d", pCurrentPoint->id);
+					tV1.push_back(pCurrentPoint->vec);
+				}
+			}
+		}
+
+		pStartPoint = pStartPoint->preview;
+		while (pCurrentPoint->id != pStartPoint->id)
+		{
+			pCurrentPoint = pCurrentPoint->next;
+			log("$%d", pCurrentPoint->id);
+			tV2.push_back(pCurrentPoint->vec);
+		}
     }
     else
     {
         log("point in brot");   
-        int index = hasPointInMargin(vStart);
+        pStartPoint				= getPoint(m_Area[0]);        
+        pEndPoint				= getPoint(*(m_pPath->m_oAllPoint.end() - 1));
+
+		TPoint* pCurrentPoint	= pStartPoint->next;
+
+        int index				= hasPointInMargin(vStart);
         if (index != SELECTID_NULL)
         {
             CMargin* pMargin = getMargin(index);
             if (pMargin->m_oStart == vEnd || pMargin->m_oTaget == vEnd)
             {
                 hasPointSameLine = true;
+				//TODO ADD tv1
             }
-        }      
-        pStartPoint = getPoint(m_Area[0]);
-        pStartPoint = pStartPoint->next;
-        pEndPoint = getPoint(*(m_pPath->m_oAllPoint.end() - 1));
-        //pEndPoint = pEndPoint->next;
+			else
+			{
+				while (pCurrentPoint->id != pEndPoint->id)
+				{
+					log("#%d", pCurrentPoint->id);
+					tV1.push_back(pCurrentPoint->vec);
+
+					pCurrentPoint = pCurrentPoint->next;
+				}
+			}		
+		}
+
+		while (pCurrentPoint->id != pStartPoint->id)
+		{
+			pCurrentPoint = pCurrentPoint->next;
+
+			log("$%d", pCurrentPoint->id);
+			tV2.push_back(pCurrentPoint->vec);
+		}
     }
-    log("has SameLine :%d", hasPointSameLine);
-
-    TPoint* pCurrentPoint = pStartPoint;   
-    while (pCurrentPoint->id != pEndPoint->id)
-    {
-        log("#%d", pCurrentPoint->id);
-        pCurrentPoint = pCurrentPoint->next;
-    }
-
-
-    while (pCurrentPoint->id != pStartPoint->id)
-    {
-        log("$%d", pCurrentPoint->id);
-        pCurrentPoint = pCurrentPoint->next;
-    }
-
+	log("has SameLine :%d", hasPointSameLine);
 }
 
 /**********************************************************************/
@@ -601,8 +629,6 @@ void CShowArea::closedEnd_End()
     else{
 
         //FIXME 反向模式下两点直连 方向值为0
-
-
     }   
 	selectArea();
 }
