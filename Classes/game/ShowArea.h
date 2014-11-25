@@ -173,8 +173,7 @@ private:
     TPoint* getTempEnd(TPoint* head);                                         
     
 
-    int getDDirect(int start, int end);                             //
-
+  
 	void selectArea();
 
     void printPoint(TPoint* hp);                                                    

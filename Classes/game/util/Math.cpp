@@ -118,6 +118,7 @@ void CMath::getIntPoint(Vec2& point)
 
     point.x = x;
     point.y = y;
+
 }
 
 

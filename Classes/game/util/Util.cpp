@@ -320,3 +320,18 @@ void CUtil::getDirectFromFlag(unsigned int inFlag, std::vector<int>& outDirects)
         }              
     }
 }
+
+/*********************************************************************/
+/*
+* @brief        格式化坐标位置
+* @param[in]    inPoint     flag方向
+
+* @param[out]   
+* @return       void
+*/
+/*********************************************************************/
+void CUtil::formartGrid(Vec2& inPoint)
+{       
+    inPoint.x = GRAD_NUMBER(inPoint.x);
+    inPoint.y = GRAD_NUMBER(inPoint.y);
+}

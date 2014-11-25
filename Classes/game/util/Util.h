@@ -37,6 +37,8 @@ public:
 
     //得到方向集
     static void getDirectFromFlag(unsigned int inFlag , std::vector<int>& outDirects);
+
+    static void formartGrid(Vec2& inPoint);
 };
 
 

@@ -96,7 +96,7 @@ public:
     void run(float tm);			
     //            
 
-    void addGuide(const Vec2& point, bool hasinsertpath);
+    void addGuide(const Vec2& point);
 
     void clearGuide();
 

@@ -421,14 +421,7 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         int type = m_RefShowArea->getPositionType(endp);
         log("type:%d" ,type);
 
-//         if (type != POSITION_ENDPOINT)
-//         {
-            addGuide(endp, true);  
-//        }
-//         else
-//         {
-//             addGuide(endp, false);
-//         }
+        addGuide(endp);
 
         m_RefShowArea->setAreaIndex(1, index);
         m_curMarginIndex = index;
@@ -505,6 +498,8 @@ void CMySprite::onMoveToDraw()
 //        break;
 //     }  
 
+    CUtil::formartGrid(m_oSpCurrentPos);
+
     int tindex = m_RefShowArea->hasPointInMargin(m_oSpCurrentPos);
     CMargin* margin = m_RefShowArea->getMargin(m_curMarginIndex);
 
@@ -517,14 +512,13 @@ void CMySprite::onMoveToDraw()
     }
     else
     {
-        //draw          
-        
-        
-        addGuide(m_oGuideLStart, true);
-        
+        //draw           
+        addGuide(m_oGuideLStart);          
         m_RefShowArea->setAreaIndex(0, m_curMarginIndex);
         setState(STATE_DRAW);
     }
+
+    log("m_oGuideLStart:%f, %f", m_oGuideLStart.x, m_oGuideLStart.y);
 }
 
 /*********************************************************************/
@@ -578,17 +572,9 @@ void CMySprite::playerMove(const Vec2& spPosition)
 /*********************************************************************/
 void CMySprite::fixPosition(const Vec2& inPos, Vec2& outPos)
 {                                                                        
-    int distance = getAbsDistance();
-    //log("angle:%d , distance:%d", m_currentAngle, distance);
+    int distance = getAbsDistance();     
     outPos = CMath::getVec2(m_oSpStartPos, distance, CMath::angleToRadian(m_currentAngle)); 
-    CMath::getIntPoint(outPos);  
-
-    //log("outPos %f, %f", outPos.x , outPos.y);
-    outPos.x = GRAD_NUMBER(outPos.x);
-    outPos.y = GRAD_NUMBER(outPos.y);
-
-   //log("outPos1 %f, %f", outPos.x, outPos.y);
-    
+    CUtil::formartGrid(outPos);    
 }
 
 /*********************************************************************/
@@ -653,7 +639,7 @@ void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
 	    //m_RefPath->addPoint(pos);        //    路径
 
         
-         addGuide(m_oSpCurrentPos, true);
+         addGuide(m_oSpCurrentPos);
      }                                
 	
 
@@ -787,11 +773,9 @@ void CMySprite::print(DrawNode* dn)
 
 
 
-void CMySprite::addGuide(const Vec2& point, bool hasinsertpath)
-{
-
-    //同一个点不添加  
-
+void CMySprite::addGuide(const Vec2& point)
+{                            
+    //同一个点不添加            
     for (int i = 0; i < m_oTPath.size();i++)
     {
         if (m_oTPath[i] == point)
@@ -801,14 +785,9 @@ void CMySprite::addGuide(const Vec2& point, bool hasinsertpath)
         }
     }
     //同一条直线上不添加                        
-
-
+                               
     m_oTPath.push_back(point);
-
-    if (hasinsertpath)
-    {
-        m_RefPath->m_oAllPoint.push_back(point);
-    }
+    m_RefPath->m_oAllPoint.push_back(point);   
 
     m_RefPlayer->addFollow(point);
 }
@@ -819,7 +798,6 @@ void CMySprite::clearGuide()
     //log("guide clear");
     m_oTPath.clear();
     m_RefPath->clearPoint();
-
 }
 
 
