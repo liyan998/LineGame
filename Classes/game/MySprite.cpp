@@ -410,13 +410,19 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         {
             fixPosition(inPoint, m_oSpCurrentPos);                                                                                
             return;                                                 
-        }
+        }                       
+
+        //------------------------------------------------------
 
         CMargin* margin = m_RefShowArea->getMargin(index);
         Vec2 endp = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
+        CUtil::formartGrid(endp);    
 
-        endp.x = GRAD_NUMBER(endp.x);
-        endp.y = GRAD_NUMBER(endp.y);
+        if (endp == (*m_RefPath->m_oAllPoint.begin()))
+        {
+            log("start point == end point");
+            return;
+        }                               
 
         int type = m_RefShowArea->getPositionType(endp);
         log("type:%d" ,type);
@@ -424,19 +430,9 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         addGuide(endp);
 
         m_RefShowArea->setAreaIndex(1, index);
-        m_curMarginIndex = index;
-
-//         for (int i = 0; i < m_oTPath.size();i++)
-//         {
-//             log("vec:%f, %f", m_oTPath[i].x, m_oTPath[i].y);
-//         }
-
+        m_curMarginIndex = index;  
 
         setState(STATE_CLOSE);
-      
-    
-    
-
 }
 
 
@@ -518,7 +514,7 @@ void CMySprite::onMoveToDraw()
         setState(STATE_DRAW);
     }
 
-    log("m_oGuideLStart:%f, %f", m_oGuideLStart.x, m_oGuideLStart.y);
+    //log("m_oGuideLStart:%f, %f", m_oGuideLStart.x, m_oGuideLStart.y);
 }
 
 /*********************************************************************/

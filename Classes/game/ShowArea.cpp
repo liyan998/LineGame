@@ -267,10 +267,11 @@ CMargin* CShowArea::getMargin(int index)
 
 bool CShowArea::isCloseArea()
 {
-    if (m_pPath != NULL && m_pPath->m_oAllPoint.size() < 1)
+    if (m_pPath == nullptr || m_pPath->m_oAllPoint.size() < 2)
     {
         return false;
     } 
+
     return true;
 }
 
