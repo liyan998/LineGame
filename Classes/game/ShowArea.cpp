@@ -146,9 +146,8 @@ void CShowArea::checkMarginAvableDirect()
 
             Vec2 tPoint = CMath::getVec2(inPoint, GRAD_CELL, CMath::angleToRadian(revdirect));
 
-            tPoint.x = GRAD_NUMBER(tPoint.x);
-            tPoint.y = GRAD_NUMBER(tPoint.y);
-
+            CUtil::formartGrid(tPoint);
+         
             int gpt = getPositionType(tPoint);
             if (gpt == POSITION_LINE)
             {
@@ -307,7 +306,6 @@ int CShowArea::getPositionType(const Vec2& inPos)
         {
             return POSITION_LINE;
         }
-
     }  
 
     if (!hasPointInArea(inPos))
@@ -352,51 +350,13 @@ void CShowArea::getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect)
 
 int CShowArea::getMarginDirect(int direct)
 {
-    int parm = m_Model == MODEL_IN ? 1 : -1;  
-    parm *= m_iRorate;
-    int a1 = getNextAngle(direct, parm);
-
+    int parm    = m_Model == MODEL_IN ? 1 : -1;  
+    parm        *= m_iRorate;
+    int a1      = CUtil::getNextAngle(direct, parm); 
 
     return a1;
 }
 
-
-int CShowArea::getNextAngle(int currentangle, int d)
-{
-#define MAX_ANGLE 4
-    int anglelist[MAX_ANGLE] =
-    {
-        ANGLE_LEFT,
-        ANGLE_UP,
-        ANGLE_RIGHT,
-        ANGLE_DOWN
-    };              
-    int currentindex    = 0;
-    int selectindex     = 0;
-
-    for (int i = 0; i < MAX_ANGLE;i++)
-    {
-        if (currentangle == anglelist[i])
-        {
-            currentindex = i;
-        }
-    }
-
-    if (currentindex + d >= MAX_ANGLE)
-    {
-        selectindex = 0;
-    }else if (currentindex + d < 0)
-    {
-        selectindex = MAX_ANGLE - 1;
-    }
-    else
-    {
-        selectindex = currentindex + d;
-    }
-
-    //log("currentindex:%d, selectindex:%d", currentindex, selectindex);
-    return anglelist[selectindex];
-}
 
 
 void CShowArea::setState(int sta)
@@ -434,8 +394,6 @@ void CShowArea::setPath(CPath* path)
 {
     this->m_pPath = path;
 }
-
-
             
 
 void CShowArea::clearAreaIndex()
@@ -477,7 +435,7 @@ void CShowArea::clearAreaIndex()
 
 
 void CShowArea::closedLine_End()
-{                                               
+{                                          
 
     const Vec2& vStart		= m_pPath->m_oAllPoint[0]; 
     const Vec2& vEnd		= *(m_pPath->m_oAllPoint.end() - 1);     
@@ -558,8 +516,7 @@ void CShowArea::closedLine_End()
         addArea.insert(addArea.begin(), tV2.begin(), tV2.end());
         resultArea.insert(resultArea.begin(), tV1.begin(), tV1.end());
     }
-    else{
-        //两点直连时无法判别方向
+    else{       
         
         tV1.insert(tV1.begin(), m_pPath->m_oAllPoint.rbegin(), m_pPath->m_oAllPoint.rend());
         tV2.insert(tV2.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end()); 
@@ -731,14 +688,14 @@ void CShowArea::closedLine_Line()
         {
             current = current->next;
             tempV1.push_back(current->vec);
-            //log("# %d",current->id);
+            log("# %d",current->id);
         }
         tempV1.insert(tempV1.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
 
         current = startPoint;
         while (current->id != endPoint->id)
         {
-            //log("$ %d", current->id);    
+            log("$ %d", current->id);    
             tempV2.push_back(current->vec);
             current = current->preview;
         }
@@ -748,10 +705,13 @@ void CShowArea::closedLine_Line()
 
         int c1 = CUtil::getCountPointInPloyon(tempV1, tempV2);
         int c2 = CUtil::getCountPointInPloyon(tempV2, tempV1);
+        int rdirect = CUtil::getRotateDirect(m_pPath->m_oAllPoint);
 
+        log("c1:%d , c2:%d" , c1, c2);
         if (c1 > c2)
         {
-            if (m_pPath->getDirect() > 0)
+
+            if (rdirect > 0)
             {
                 resultArea.insert(resultArea.begin(), tempV1.rbegin(), tempV1.rend());
                 addArea.insert(addArea.begin(), tempV2.rbegin(), tempV2.rend());
@@ -764,7 +724,7 @@ void CShowArea::closedLine_Line()
         }
         else
         {
-            if (m_pPath->getDirect() > 0)
+            if (rdirect > 0)
             {
                 resultArea.insert(resultArea.begin(), tempV2.rbegin(), tempV2.rend());
                 addArea.insert(addArea.begin(), tempV1.rbegin(), tempV1.rend());

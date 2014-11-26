@@ -66,6 +66,13 @@ void CGamePlayer::addFollow(const Vec2& point)
 }
 
 
+void CGamePlayer::backFollow()
+{
+    if (m_oAllGuide.size() > 0)
+    {
+        m_oAllGuide.erase(m_oAllGuide.end() - 1);
+    }
+}
 
 int CGamePlayer::getStep()
 {

@@ -21,8 +21,7 @@ public:
 
     //得到子vector
     static void getSubVector(const std::vector<Vec2>& resource, int start, int end, std::vector<Vec2>& result);
-
-
+    
     //得到相向而行方向
     static int getRevceDircet(int direct);
 
@@ -38,7 +37,11 @@ public:
     //得到方向集
     static void getDirectFromFlag(unsigned int inFlag , std::vector<int>& outDirects);
 
+    //格式化坐标
     static void formartGrid(Vec2& inPoint);
+
+    //根据当前方向得到权值对应方向，权值为顺时1，逆时-1
+    static int getNextAngle(int currentangle, int d);
 };
 
 

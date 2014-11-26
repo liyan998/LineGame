@@ -59,7 +59,9 @@ using namespace cocos2d;
 #define DIRECT_CLOCKWISE        1		//闭合类型顺时针
 #define DIRECT_ANTICCLOCKWISE   -1		//闭合类型逆时针
 
-////////////////////////////////////////////////////////////S
+////////////////////////////////////////////////////////////
+
+typedef std::vector< Vec2 >::iterator           Vec2Iter;
 
 
 

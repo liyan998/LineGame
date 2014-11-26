@@ -42,6 +42,8 @@ public:
 
     void addFollow(const Vec2& point);
 
+    void backFollow();
+
     int getStrackSize();
 
 

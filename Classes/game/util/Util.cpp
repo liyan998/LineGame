@@ -177,6 +177,15 @@ int CUtil::getRotateDirect(const std::vector<Vec2>& allpoint, const std::vector<
 	return 0;
 }
 
+/*********************************************************************/
+/**
+* @brief        得到多边形方向
+* @param[in]    allpoint
+
+* @param[out]
+* @return       int 返回方向值 -1 or 1
+*/
+/*********************************************************************/
 int CUtil::getRotateDirect(const std::vector<Vec2>& allpoint)
 {
 	if (allpoint.size() == 0)
@@ -236,6 +245,15 @@ int CUtil::getRotateDirect(const std::vector<Vec2>& allpoint)
 	return 0;
 }
 
+/*********************************************************************/
+/**
+* @brief        得到方向权值
+* @param[in]    int currentDirect   当前方向
+int angle           下一个角度
+* @param[out]
+* @return       int 返回方向权值 -1 or 1
+*/
+/*********************************************************************/
 int CUtil::getRL(int currentDirect, int angle)
 {
 	for (int i = 0; i < 4;i++)
@@ -334,4 +352,42 @@ void CUtil::formartGrid(Vec2& inPoint)
 {       
     inPoint.x = GRAD_NUMBER(inPoint.x);
     inPoint.y = GRAD_NUMBER(inPoint.y);
+}
+
+
+//根据当前方向得到权值对应方向，权值为顺时1，逆时-1
+int CUtil::getNextAngle(int currentangle, int d)
+{
+#define MAX_ANGLE 4
+    int anglelist[MAX_ANGLE] =
+    {
+        ANGLE_LEFT,
+        ANGLE_UP,
+        ANGLE_RIGHT,
+        ANGLE_DOWN
+    };
+    int currentindex = 0;
+    int selectindex = 0;
+
+    for (int i = 0; i < MAX_ANGLE; i++)
+    {
+        if (currentangle == anglelist[i])
+        {
+            currentindex = i;
+        }
+    }
+
+    if (currentindex + d >= MAX_ANGLE)
+    {
+        selectindex = 0;
+    }
+    else if (currentindex + d < 0)
+    {
+        selectindex = MAX_ANGLE - 1;
+    }
+    else
+    {
+        selectindex = currentindex + d;
+    }
+    return anglelist[selectindex];
 }

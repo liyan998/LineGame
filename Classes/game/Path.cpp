@@ -1,5 +1,6 @@
 #include "Path.h"   
 #include "util/Math.h"
+#include "util/Util.h"
 #include "Margin.h"
 
 int CPath::DIRECT[MAXDIRECT][DIRECT_SELECT] =
@@ -13,27 +14,9 @@ int CPath::DIRECT[MAXDIRECT][DIRECT_SELECT] =
 
 
 
-void CPath::addPoint(const Vec2& vec2 )
-{
-    int x = static_cast<int>(vec2.x);
-    int y = static_cast<int>(vec2.y);
-
-    if (m_oAllPoint.size() > 0)
-    {
-        const Vec2& tv = m_oAllPoint[m_oAllPoint.size() - 1];
-
-        int tx = static_cast<int>(tv.x);
-        int ty = static_cast<int>(tv.y);
-        if (x == tx && y == ty)
-        {
-            return;
-        }
-    }     
-    log("=====new Point: %d, %d", x, y);
-	m_oAllPoint.push_back(Vec2(x, y));	
-}
 
 
+using namespace liyan998;
 
 void CPath::print( DrawNode* dn)
 {
@@ -62,66 +45,76 @@ void CPath::clearPoint()
 }
 
 
-// 大于0为顺时针
-// 小于0为逆时针
-int CPath::getDirect()
-{
-    std::vector<CMargin*> allMargin;
-    //log("size:%d", m_oAllPoint.size());
-    for (int i = 0; i < m_oAllPoint.size()-1; i++)
-    {
-        CMargin* tmarg = new CMargin();
-        if (i + 1 < m_oAllPoint.size())
-        {
-            tmarg->setTaget(m_oAllPoint[i], m_oAllPoint[i + 1]);
-        }      
-        allMargin.push_back(tmarg);
-    }
-    //----------------------------------------------------------------
-    int direct          = 0;
-    int currentDirect   = ANGLE_NONE;
-    for (int i = 0; i < allMargin.size();i++)
-    {
-        if (currentDirect == ANGLE_NONE)
-        {
-            currentDirect = allMargin[i]->m_Angle;
-        }
-        else{           
-            int rl = getRL(currentDirect, allMargin[i]->m_Angle);
 
-            if (rl == 1)
-            {
-                direct++;
-            }
-            else if(rl == -1){
-                direct--;
-            }              
-            /*log("direct: %d", direct);*/
-            currentDirect = allMargin[i]->m_Angle;
-        }
-        //log("%d --\t %d", i, allMargin[i]->m_Angle);
-    }    
-    
-    for (int i = 0; i < allMargin.size(); i++)
-    {
-       delete allMargin[i];
+
+
+/*********************************************************************/
+/**
+* @brief        得到当前位置 与PATH 关联的可行走方向
+* @param[in]    currentDirect 当前方向
+                inPoint       当前位置
+* @param[out]   outDirect     方向集合 
+* @return       void
+*/
+/*********************************************************************/
+void CPath::getMoveAble(int currentDirect, const Vec2& inPoint, std::vector<int>& outDirect)
+{ 
+    if (m_oAllPoint.size() > 3)
+    {               
+        //const Vec2& vD1         = *(m_oAllPoint.end() - 2);
+        //const Vec2& vD2         = *(m_oAllPoint.end() - 1);
+        //int pathCurrentDirect   = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(vD1, vD2)));      
+        //outDirect.push_back(CUtil::getRevceDircet(pathCurrentDirect));
+        //log("%d~~~~~~~%f, %f", pathCurrentDirect, inPoint.x, inPoint.y);
+
+        Vec2 nextStep = CMath::getVec2(inPoint, GRAD_CELL, CMath::angleToRadian(currentDirect));
+        CUtil::formartGrid(nextStep);
+
+        log("currentDirect:%d, nextStep:%f,%f", currentDirect, nextStep.x, nextStep.y);
+
+
+
+
+
+        if (!hasPointInLine(nextStep))
+        {
+            outDirect.push_back(currentDirect);
+        }    
+
+        return;
     }
-    return direct;
+
+
+    
+    outDirect.push_back(ANGLE_LEFT);
+    outDirect.push_back(ANGLE_RIGHT);
+    outDirect.push_back(ANGLE_DOWN);
+    outDirect.push_back(ANGLE_UP);
 }
 
 
-int CPath::getRL(int currentDirect, int angle)
+bool CPath::hasPointInLine(const Vec2& inPoint)
 {
-    for (int i = 0; i < 4;i++)
+
+//     if (CUtil::hasPointInLine())
+//     {
+//     }
+
+    if (inPoint == *(m_oAllPoint.end() - 1))
     {
-        if (currentDirect == DIRECT[i][0])
-        {
-            if (angle == DIRECT[i][1])
-            {
-                return -1;
-            }else if(angle == DIRECT[i][2]){
-                return 1;
-            }
-        }
+        return false;
     }
+
+    for (int i = 0; i < m_oAllPoint.size() - 1;i++)
+    {
+
+
+            if (CUtil::hasPointInLine(m_oAllPoint[i] ,m_oAllPoint[i + 1], inPoint))
+            {
+                return true;
+            }
+        //}
+    }
+
+    return false;
 }

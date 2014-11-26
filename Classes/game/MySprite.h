@@ -75,6 +75,8 @@ public:
 
     //------------------------------------------------------
 
+private:
+
     void fixPosition(const Vec2& inPos, Vec2& outPos);  //修正位置 
 
     void playerMove(const Vec2& spPosition);            //精灵移动 
@@ -86,20 +88,23 @@ public:
 	void checkDirect(const Vec2& inPos);				//方向检查
 
 	void changeDirect(const Vec2& inPos ,int angle);    //方向改变
-
     
 
     bool hasRevceDircet(int direct, int fixangle);      //是否相向运动
 
 	int getAbsDistance();								//得到相对距离
 
-    void run(float tm);			
-    //            
+    void run(float tm);	
+
+    //----------------------------------------------------------------------            
 
     void addGuide(const Vec2& point);
 
+    void backGuide();                                   //移除节点
+
     void clearGuide();
 
+    //---------------------------------------------------------------------- 
 
     void checkBack();
 
@@ -109,9 +114,7 @@ public:
 
     void runGo();
 
-
-    void adsorption(const Vec2& inPoint, Vec2& outPoint);//吸附
-
+    //---------------------------------------------------------------------- 
 
     void onMoveToDraw();
 
@@ -125,9 +128,7 @@ private:
 
 	int getFixAngle(int angle);                 //修正角度
 
-
-
-             
+    void fixPath(const Vec2& inPoint);
 
 private:                                             
 
@@ -135,32 +136,38 @@ private:
 
     CGamePlayer*            m_RefPlayer;
 
-    CShowArea*              m_RefShowArea;
-
+    CShowArea*              m_RefShowArea; 
 
     std::vector<Vec2>       m_oTPath;            	
 
     float                   m_fStep;				//步长
 
     int                     m_curMarginIndex;       //当前选择边
+
     //-----------------------------------------------------------------
 
     Vec2                    m_oSpCurrentPos;        //SP当前位置
+
     Vec2                    m_oSpStartPos;          //sp起始位置
 
     Vec2                    m_oSpTarget;            //spRebackTarget   
 
     //手势操作--------------------------------------------------------
+
 	int		                m_currentAngle;			//当前角度 | back currentAngle 
+
     Vec2                    m_oDirectStart;			//方向检查起始点 
 
 	Vec2					m_oAbsStartPos;	        //相对位置起始点
+
 	Vec2					m_oAbsEndPos;           //相对位置终点
 
     int                     m_iCountRecord;			//
+
     //----------------------------------------------------
 
     Vec2                    m_oGuideLStart;
+
     Vec2                    m_oGuideLEnd;
 
     

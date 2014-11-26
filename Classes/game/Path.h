@@ -13,20 +13,25 @@ class CPath : public CRander
 public:
 
     static int DIRECT[MAXDIRECT][DIRECT_SELECT];
+
 public:
 
     virtual void print(DrawNode* dn);
 
-    //--------------------------------------------
-
-	void addPoint( const Vec2& vec2 );
+    //-------------------------------------------- 	
 
 	void clearPoint();	
 
-    int getDirect();
+    //返回可行走区域
+    void getMoveAble(
+        int currentDirect,
+        const Vec2& inPoint,
+        std::vector<int>& outDirect
+        );
 
+private: 
 
-    int getRL(int currentDirect, int angle);
+    bool hasPointInLine(const Vec2& inPoint);
 
 public:
 	

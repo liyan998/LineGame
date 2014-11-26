@@ -13,9 +13,9 @@ bool CMargin::init()
 {                            
     Sprite::init();
 
-    m_Angle = ANGLE_NONE;
-    m_iMarginAvable = ANGLE_NONE;
-    m_iAvable = 0;
+    m_Angle             = ANGLE_NONE;
+    m_iMarginAvable     = ANGLE_NONE;
+    m_iAvable           = 0;
 
     m_pDrawNode = DrawNode::create();
     addChild(m_pDrawNode); 
