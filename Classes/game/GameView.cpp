@@ -1,6 +1,8 @@
 #include "GameView.h"
 #include "util/Math.h"
 
+#include "HelloWorldScene.h"
+
 
 void CGameView::onEnter()
 {
@@ -48,6 +50,7 @@ void CGameView::onEnter()
     m_pShowArea         = CShowArea::create();
     m_pGameLogic        = CGameLogic::create();
     
+    m_pSp->setGameView(this);
 	m_pSp->setPath(m_pPath);
     m_pSp->setPlayer(m_pPlayer);
     m_pSp->setShowArea(m_pShowArea);
@@ -81,8 +84,7 @@ void CGameView::onEnter()
 	
     //------------------------------------------  
 
-    setState(STATE_INIT);
-
+    setState(STATE_INIT);                         
 	schedule(schedule_selector(CGameView::run));
 
 }
@@ -92,11 +94,32 @@ void CGameView::setState(int stata)
     switch (stata)
     {
     case STATE_INIT:
-        log("STATE_INIT");
+        log("GAME STATE_INIT");
         schedule(schedule_selector(CGameView::initGame));
         break;      
     case STATE_RUN:
-        log("STATE_RUN");        
+        log("GAME STATE_RUN");        
+        break;
+    case STATE_WIN:
+    {
+                      log("GAME STATE_WIN");
+
+    unschedule(schedule_selector(CGameView::run));
+
+    m_pSp->released();
+    m_pPlayer->released();
+    m_pShowArea->released();
+
+    this->removeAllChildren();
+
+
+    auto gameover = HelloWorld::create();
+    addChild(gameover);
+
+    }
+        break;
+    case STATE_LOSE:
+        log("GAME STATE_LOSE");
         break;
     }
 
@@ -113,6 +136,10 @@ void CGameView::initGame(float)
 
 }
 
+void CGameView::released()
+{
+
+}
 
 void CGameView::run(float time)
 {
@@ -244,9 +271,8 @@ void CGameView::onExit()
     Layer::onExit();
 
 	m_oAllRander.clear();
-
     this->removeAllChildren();
-  
+
     delete m_pPath;
     m_pPath = nullptr;
 }

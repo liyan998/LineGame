@@ -57,7 +57,7 @@ bool HelloWorld::init()
     // create and initialize a label
 
     auto lisnter = EventListenerTouchOneByOne::create();    
-    auto label = LabelTTF::create("Hello World", "Arial", 24);
+    auto label = LabelTTF::create("YouWin!", "Arial", 24);
     
     lisnter->onTouchBegan = [=](Touch* touch, Event* event){
 

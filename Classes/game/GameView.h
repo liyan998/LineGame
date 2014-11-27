@@ -5,7 +5,7 @@
 #include "System.h" 
 
 #include "Rander.h"
-#include "State.h"
+#include "GameState.h"
 #include "ShowArea.h"
 #include "MySprite.h"  
 #include "Path.h"
@@ -17,7 +17,7 @@
 class CGameView : 
     //public liyan998::CAGameScene ,
     public Layer,
-    public CState
+    public CGameState
 {
 
 public:
@@ -31,7 +31,9 @@ public:
     enum State
     {
         STATE_INIT,     //初始
-        STATE_RUN       // 
+        STATE_RUN,      //运行
+        STATE_WIN,      //胜利
+        STATE_LOSE      //失败 
     };
        
 public:
@@ -50,19 +52,20 @@ public:
 
     void onTouchMove(Touch* touches, Event *event);
 
+    
+    virtual void released();
+
     //---------------------------------------------   -----
 
     void menuCloseCallback(Ref* ref);
 
     virtual void setState(int state);
 
-    void initGame(float);
+    void initGame(float); 
 
-    void drawLine();
+	void run(float time);      
 
-    void spriteRun(float);
-
-	void run(float time);             
+   
     
     //-----------------------------------------------------   
 

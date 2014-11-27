@@ -3,11 +3,12 @@
 
 #include "System.h"
 
-#include "State.h"
+#include "GameState.h"
 #include "Path.h"
 #include "Game1Player.h"
 
 
+class CGameView;
 class CShowArea;
 
 #define MAX_ANGLE 4
@@ -21,7 +22,7 @@ class CShowArea;
 /************************************************************************/
 class CMySprite : 
 public Sprite,
-public CState, 
+public CGameState, 
 public CRander
 {          
 
@@ -49,6 +50,8 @@ public:
 
 	virtual void print(DrawNode* dn);
 
+    virtual void released();
+
 	//----------------------------------------------------
 
     inline void setPath(CPath* path){ this->m_RefPath = path; };
@@ -56,6 +59,9 @@ public:
     inline void setPlayer(CGamePlayer* sp){ this->m_RefPlayer = sp; };
 
     inline void setShowArea(CShowArea* area){ this->m_RefShowArea = area; };
+
+    inline void setGameView(CGameView* pGameView){ this->m_RefGameView = pGameView;  }
+
                                                     
     inline void setPlayerPosition(const Vec2& pos)
     { 
@@ -137,6 +143,8 @@ private:
     CGamePlayer*            m_RefPlayer;
 
     CShowArea*              m_RefShowArea; 
+
+    CGameView*              m_RefGameView;
 
     std::vector<Vec2>       m_oTPath;            	
 

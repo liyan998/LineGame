@@ -6,6 +6,9 @@
 #include "Shape.h"
 #include "MySprite.h"  
 
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////                                          
 
 #define SELECTID_NULL           -1                                          //边界选择ID NULL
@@ -49,7 +52,7 @@ struct TPoint
 class CShowArea : 
     public Sprite , 
     public CRander , 
-    public CState
+    public CGameState
 {
 public:
 
@@ -86,20 +89,22 @@ public:
 
     virtual void setState(int state);                                   //设置状态
 
+    virtual void released();
+
     //---------------------------------------------------------------------------------     
 
-    void setPath(CPath* path); 
+    void setPath(CPath* path);
 
-    void setAreaIndex(int index, int areaIndex);                        //设置区间索引     
+    void setAreaIndex(int index, int areaIndex);                        //设置区间索引
 
-    //--------------------------------------------------------------------------------   
+    //-------------------------------------------------------------------------------- 
+
+    void clearAreaIndex();                                              //清除区间
 
     CMargin* getMargin(int index);                                      //得到边界对象
 
-    bool isCloseArea();                                                 //区域是否闭合  
+    bool isCloseArea();                                                 //区域是否闭合     
  
-    void clearAreaIndex();                                              //清除区间
-    
     int hasPointInMargin(const Vec2& point);                            //点是否在边界上
 
     bool hasPointInArea(const Vec2& point);                             //点是否在区域内  
@@ -122,7 +127,7 @@ public:
 
     int getTargetIndex(const  Vec2&);                                   //得到当前点位置的边界
 
-    std::vector< Vec2 >         m_oTempPoint, resultArea, addArea;
+    std::vector< Vec2 > resultArea, addArea;
 
 protected:
 
@@ -192,6 +197,8 @@ private:
 
     int                             m_Area[MAX_INDEX];                  //边界ID    
     std::map<int, CShape*>          m_oAllShape;                        //图形集合    
+
+    CGameView*                      m_pGameView;
 };                                              
 
 

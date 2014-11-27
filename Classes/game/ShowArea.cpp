@@ -3,6 +3,7 @@
 #include "util/Math.h"
 
 
+
 using namespace liyan998;   
 
 //#define DEBUG_LINE
@@ -75,12 +76,18 @@ bool CShowArea::init()
    m_iRorate = CUtil::getRotateDirect(m_oAllPoint);
 
    createShape(SHAPEID_AREA, m_oAllPoint)->setColor(Color4F(1, 1, 0.5, 1), Color4F(1, 1, 0.5, 1));
-   createShape(SHAPEID_TEMP, m_oTempPoint)->setColor(Color4F(0, 1, 0.5, 1), Color4F(0, 1, 0.5, 1));;
+   //createShape(SHAPEID_TEMP, m_oTempPoint)->setColor(Color4F(0, 1, 0.5, 1), Color4F(0, 1, 0.5, 1));;
 
    setState(STATE_CLOSE);          
     return true;
 }                                  
 
+void CShowArea::released()
+{
+    removeAllChildren();
+ 
+
+}
 
 void CShowArea::flushMargin()
 {                  
@@ -234,6 +241,8 @@ void CShowArea::print(DrawNode* dn)
     getShape(SHAPEID_AREA)->draw(dn);
     
 }
+
+
                                       
 
 int CShowArea::getTargetIndex(const Vec2& rec)
@@ -385,9 +394,14 @@ void CShowArea::setState(int sta)
         }
 
         flush();
+
+        
+
         break;      
     }    
 }
+
+
 
 
 void CShowArea::setPath(CPath* path)
@@ -428,9 +442,7 @@ void CShowArea::clearAreaIndex()
 	}
 	//----------------------------------------------
 	
-    //Scorpº∆À„ 
-    float area = getArea();
-    log(" Area :%f", area);
+    
 }
 
 

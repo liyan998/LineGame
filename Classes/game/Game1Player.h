@@ -2,12 +2,12 @@
 #define __GAME1PLAYER_H__
 
 #include "System.h"
-#include "State.h"
+#include "GameState.h"
 
 
 #define INDEX_NONE -1
 
-class CGamePlayer : public Node ,public CState
+class CGamePlayer : public Node ,public CGameState
 {
 
 public:
@@ -28,6 +28,7 @@ public:
 
     virtual void setState(int state);
 
+    virtual void released();
     //-----------------------------------------------------
 
     int getStep();

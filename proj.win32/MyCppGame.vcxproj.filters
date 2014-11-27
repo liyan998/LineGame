@@ -194,10 +194,10 @@
     <ClInclude Include="..\Classes\game\System.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\framework\State.h">
+    <ClInclude Include="..\Classes\game\GameElement.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\GameElement.h">
+    <ClInclude Include="..\Classes\game\GameState.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
   </ItemGroup>

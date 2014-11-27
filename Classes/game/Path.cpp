@@ -70,12 +70,8 @@ void CPath::getMoveAble(int currentDirect, const Vec2& inPoint, std::vector<int>
         Vec2 nextStep = CMath::getVec2(inPoint, GRAD_CELL, CMath::angleToRadian(currentDirect));
         CUtil::formartGrid(nextStep);
 
-        log("currentDirect:%d, nextStep:%f,%f", currentDirect, nextStep.x, nextStep.y);
-
-
-
-
-
+        //log("currentDirect:%d, nextStep:%f,%f", currentDirect, nextStep.x, nextStep.y);
+        
         if (!hasPointInLine(nextStep))
         {
             outDirect.push_back(currentDirect);

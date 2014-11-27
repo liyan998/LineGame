@@ -12,6 +12,7 @@
 #include "util/Util.h"
 #include "Margin.h"
 #include "ShowArea.h"
+#include "GameView.h"
 
 using namespace liyan998;
 
@@ -42,7 +43,8 @@ bool CMySprite::init()
     return true;
 }
 
-                                                                     
+                
+
 
 /************************************************************************/
 /*
@@ -185,8 +187,10 @@ void CMySprite::setState(int state)
     case STATE_STANDER:
         //m_currentAngle = ANGLE_NONE;
         //clearGuide();
+        clearGuide();
         this->unschedule(schedule_selector(CMySprite::run));       
         log("mysprite state STATE_STANDER");
+        m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
         //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
         break;
     case STATE_MOVE:     
@@ -257,9 +261,13 @@ void CMySprite::onPressed(const Vec2& vec2)
     case STATE_CLOSE:
         break;
     case STATE_STANDER: 
-        m_RefShowArea->m_oTempPoint.clear();
-        m_RefShowArea->resultArea.clear();
-        m_RefShowArea->addArea.clear();
+
+        if (m_RefShowArea != nullptr)
+        {
+            m_RefShowArea->resultArea.clear();
+            m_RefShowArea->addArea.clear();
+        }
+        
         onStander(vec2);
         break;
     case STATE_DRAW:
@@ -405,13 +413,13 @@ bool CMySprite::hasMoveAction()
 
 void CMySprite::onDrawToClose(const Vec2& inPoint)
 {                          
-
     fixPosition(inPoint, m_oSpCurrentPos); 
-
     if (m_oSpStartPos != m_oSpCurrentPos)
     {
         fixPath(inPoint);
     }
+
+
     //-----------------------------------------------------------
 
     int index = m_RefShowArea->getNearMargin(m_oSpCurrentPos);        
@@ -485,24 +493,7 @@ void CMySprite::onMoveToDraw()
     if (m_curMarginIndex == SELECTID_NULL)
     {
         return;
-    }         
-
-
-//     int positiontype = m_RefShowArea->getPositionType(m_oSpCurrentPos);
-//     switch (positiontype)
-//     {
-//     case POSITION_ENDPOINT:
-//         //在端点上     
-//         m_oGuideLStart = m_oSpCurrentPos;
-//         break;
-//     case POSITION_LINE:
-//         //在线上
-//         m_oGuideLStart = m_oSpCurrentPos;
-//         break;
-//       
-//     default:
-//        break;
-//     }  
+    }  
 
     CUtil::formartGrid(m_oSpCurrentPos);
 
@@ -520,11 +511,9 @@ void CMySprite::onMoveToDraw()
     {
         //draw           
         addGuide(m_oGuideLStart);          
-        m_RefShowArea->setAreaIndex(0, m_curMarginIndex);
+        m_RefShowArea->setAreaIndex(0, m_curMarginIndex); 
         setState(STATE_DRAW);
     }
-
-    //log("m_oGuideLStart:%f, %f", m_oGuideLStart.x, m_oGuideLStart.y);
 }
 
 /*********************************************************************/
@@ -549,9 +538,7 @@ void CMySprite::playerMove(const Vec2& spPosition)
         break;
     case STATE_BACK:
 
-
         int dis = ccpDistance(spPosition, m_RefPlayer->getPlsyerPosition());
-
         if (dis > m_fStep)
         {         
             //log("!!!!!!!!");
@@ -559,7 +546,6 @@ void CMySprite::playerMove(const Vec2& spPosition)
         }
         //log("ddddddddddd%d", dis);
         m_RefPlayer->setPlayerPosition(spPosition);
-
 
         break;
     }
@@ -579,7 +565,7 @@ void CMySprite::playerMove(const Vec2& spPosition)
 void CMySprite::fixPosition(const Vec2& inPos, Vec2& outPos)
 {                                                                        
     int distance = getAbsDistance();  
-    //log("distance:%d",distance);
+    //log("distance:%d, currentDirect:%d",distance, m_currentAngle);
     outPos = CMath::getVec2(m_oSpStartPos, distance, CMath::angleToRadian(m_currentAngle)); 
     CUtil::formartGrid(outPos);    
 }
@@ -603,24 +589,21 @@ void CMySprite::fixPath(const Vec2& inPoint)
     }
     //是否与路径尾节点重合
 
-    log("m_currentAngle:%d",m_currentAngle);
-  
     int lastIndex = m_oTPath.size() - 1;
     Vec2 lasNode = m_oTPath[lastIndex];
     if (m_oSpCurrentPos == lasNode)
     {
-        //TODO 手势系统缺陷待修复
+        m_oSpStartPos   = m_oSpCurrentPos;
 
-        m_oSpStartPos = m_oTPath[lastIndex - 1];
+        m_oAbsStartPos  = inPoint;
+        m_oAbsEndPos    = m_oAbsStartPos;
         
-        m_oAbsStartPos = m_oTPath[lastIndex - 1];
-        m_oAbsEndPos = m_oSpCurrentPos;
-        
-        m_oDirectStart = inPoint;
+        m_oDirectStart  = inPoint;
 
-        m_currentAngle = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(m_oAbsStartPos, m_oSpCurrentPos)));
+        m_currentAngle = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(m_oTPath[lastIndex -1], m_oSpCurrentPos)));
         //m_oSpStartPos = m_oTPath[lastIndex - 1];
         
+        fixPosition(inPoint, m_oSpCurrentPos);
 
         log("m_currentAngle:%d---------%f, %f", m_currentAngle, m_oSpCurrentPos.x, m_oSpCurrentPos.y);
         
@@ -661,6 +644,8 @@ void CMySprite::checkDirect(const Vec2& inPos)
 {
 	if (m_iCountRecord++ > 3)
 	{
+
+      
 		//
 		float radian	= RADINA_TOGAME(CMath::getRadian(m_oDirectStart, inPos));
 		int angle		= CMath::radianToAngle(radian);
@@ -699,7 +684,7 @@ void CMySprite::checkDirect(const Vec2& inPos)
 /*********************************************************************/
 void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
 {
-	//log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
+	log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
 	
 
 	//log("angle :%d , fixangle:%d" , angle, fixangle);
@@ -710,6 +695,9 @@ void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
      {
 	    //m_RefPath->addPoint(pos);        //    路径        
          addGuide(m_oSpCurrentPos);
+
+         m_oSpStartPos = m_oSpCurrentPos;
+         m_oSpCurrentPos = CMath::getVec2(m_oSpCurrentPos, GRAD_CELL, CMath::angleToRadian(fixangle));
      }                                
 	
 
@@ -722,7 +710,9 @@ void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
         //-----------------------------------------
         
 		m_oSpStartPos   = m_oSpCurrentPos;        
-	}                                
+       
+	}           
+
 }
 
 
@@ -813,6 +803,7 @@ void CMySprite::print(DrawNode* dn)
     }            
 
 
+    //可行走方向------------------------------------------
     std::vector<int> abv;
     switch (getState())
     {
@@ -822,8 +813,7 @@ void CMySprite::print(DrawNode* dn)
     case STATE_DRAW:
         m_RefPath->getMoveAble(m_currentAngle, m_oSpCurrentPos, abv);
         break;
-    }
-   // log("%f ,%f, %d", m_oSpCurrentPos.x, m_oSpCurrentPos.y, abv.size());
+    } 
 
     for (int i = 0; i < abv.size();i++)
     {
@@ -833,13 +823,14 @@ void CMySprite::print(DrawNode* dn)
         
     }
         
+    //手势系统
     switch (m_State)
     {                 
 	case STATE_MOVE:
-
-		dn->drawDot(m_oDirectStart, 3, Color4F(.03,0,1,1));
+    case STATE_DRAW:
+		dn->drawDot(m_oDirectStart, 10, Color4F(.03,0,1,1));
 		dn->drawSegment(m_oAbsStartPos, m_oAbsEndPos, 1, Color4F(0, 1, 1, 1));
-
+        dn->drawDot(m_oSpStartPos, 20, Color4F(1, 0, 0, .3));
 		break;
     }    
 }
@@ -961,21 +952,41 @@ void CMySprite::runback()
 }
 
 
-void CMySprite::checkGo()
-{
-
-   
-
-}
 
 
 void CMySprite::runGo()
 {
-    if (m_RefPlayer->getState() == CGamePlayer::STATE_STANDER)
+    if (m_RefPlayer != nullptr && m_RefPlayer->getState() == CGamePlayer::STATE_STANDER)
     {
         
         m_RefShowArea->setState(CShowArea::STATE_CLOSE);
-        clearGuide();
-        setState(STATE_STANDER);
+
+        float area = m_RefShowArea->getArea();
+        log(" Area :%f", area);
+      
+
+        if (area > WINPART)
+        {
+            //release  
+            m_RefGameView->setState(CGameView::STATE_WIN);
+        }
+        else
+        {
+
+            setState(STATE_STANDER);
+        }
+
+       
     } 
 } 
+           
+
+void CMySprite::released()
+{
+    m_RefPlayer = nullptr;
+    m_RefPath = nullptr;
+    m_RefShowArea = nullptr;
+    
+
+
+}

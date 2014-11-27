@@ -7,7 +7,7 @@ bool CGamePlayer::init()
 {
     Node::init();
 
-    m_iStep = 6;
+    m_iStep = 2;
 
     m_pSp = Sprite::create("CloseNormal.png");
     addChild(m_pSp);
@@ -18,6 +18,10 @@ bool CGamePlayer::init()
     return true;
 }
 
+void CGamePlayer::released()
+{
+
+}
 
 void CGamePlayer::setPlayerPosition(const Vec2& pos)
 {                               
