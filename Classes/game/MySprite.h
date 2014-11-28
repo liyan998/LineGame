@@ -130,6 +130,8 @@ private:
 
     bool hasMoveAction();
 
+    bool hasOverLoad(const Vec2& inPoint);              //是否闭合过界
+
 private:                                                        
 
 	int getFixAngle(int angle);                 //修正角度

@@ -127,6 +127,8 @@ public:
 
     int getTargetIndex(const  Vec2&);                                   //得到当前点位置的边界
 
+    bool hasOverLoad(const Vec2& inPoint);
+
     std::vector< Vec2 > resultArea, addArea;
 
 protected:

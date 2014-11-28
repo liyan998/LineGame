@@ -420,7 +420,22 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
     }
 
 
-    //-----------------------------------------------------------
+    //-----------------------------------------------------------       
+
+
+    //¹ý½çÅÐ¶Ï
+
+
+    if (hasOverLoad(m_oSpCurrentPos) || m_RefShowArea->hasOverLoad(inPoint))
+    {
+
+
+
+
+        log("over load~~~~~~~~~~~~~~~~~~~~~");
+    }
+
+
 
     int index = m_RefShowArea->getNearMargin(m_oSpCurrentPos);        
     if (index == SELECTID_NULL)     
@@ -440,7 +455,7 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         m_RefPath->m_oAllPoint.clear();
         setState(STATE_BACK);
         return;
-    }                               
+    }                          
 
     int type = m_RefShowArea->getPositionType(endp);
     log("type:%d" ,type);
@@ -694,10 +709,19 @@ void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
      if (!hasRevceDircet(m_currentAngle, fixangle)&& getState() == STATE_DRAW)
      {
 	    //m_RefPath->addPoint(pos);        //    Â·¾¶        
+//         Vec2 tVec2 = CMath::getVec2(m_oSpCurrentPos, GRAD_CELL, CMath::angleToRadian(fixangle));
+// 
+//         if (m_RefShowArea->getPositionType(tVec2) == POSITION_LINE)
+//         {
+//             return;
+//         }                    
+//         m_oSpCurrentPos = tVec2;
+
          addGuide(m_oSpCurrentPos);
 
-         m_oSpStartPos = m_oSpCurrentPos;
-         m_oSpCurrentPos = CMath::getVec2(m_oSpCurrentPos, GRAD_CELL, CMath::angleToRadian(fixangle));
+         //m_oSpStartPos = m_oSpCurrentPos;
+
+
      }                                
 	
 
