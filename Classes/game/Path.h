@@ -22,12 +22,16 @@ public:
 
 	void clearPoint();	
 
+    bool hasEndInBegin();
+
     //返回可行走区域
     void getMoveAble(
         int currentDirect,
         const Vec2& inPoint,
         std::vector<int>& outDirect
         );
+
+    bool hasOverLoad(const Vec2& inSP, Vec2& outCP, int angle);              //是否闭合过界
 
 private: 
 

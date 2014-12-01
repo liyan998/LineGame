@@ -45,8 +45,123 @@ void CPath::clearPoint()
 }
 
 
+/************************************************************************/
+/*
 
 
+
+*/
+/************************************************************************/
+bool CPath::hasOverLoad(const Vec2& inSP, Vec2& inCP, int angle)
+{
+
+    //log("CPath hasOverLoad:%f, %f, %d", inSP.x, inSP.y, angle);
+    Size visSize = Director::getInstance()->getVisibleSize();
+    Vec2 visVec = Director::getInstance()->getVisibleOrigin();
+
+    Vec2 tve(Vec2::ZERO);
+    switch (angle)
+    {
+    case ANGLE_DOWN:
+        tve.x = inSP.x;
+        break;
+    case ANGLE_LEFT:
+        tve.y = inSP.y;
+        break;
+    case ANGLE_RIGHT:
+        tve.x = visSize.width;
+        tve.y = inSP.y;
+        break;
+    case ANGLE_UP:
+        tve.x = inSP.x;
+        tve.y = visSize.height;
+        break;
+    default:
+        break;
+    }
+    std::vector<CMargin*> allMargin;
+    for (int i = 0; i < m_oAllPoint.size()-1;i++)
+    {          
+        CMargin* pMargin = new CMargin();
+        pMargin->setTaget(m_oAllPoint[i], m_oAllPoint[i + 1]);
+        allMargin.push_back(pMargin); 
+    }
+    //----------------------------------------------
+
+    //log("AllMaring:%d", allMargin.size());
+
+    int mindis = -1;
+    int tindex = SELECTID_NULL;
+    for (int i = 0; i < allMargin.size(); i++)
+    {
+        CMargin* pMargin = allMargin[i]; 
+
+        int r1 = CUtil::getNextAngle(angle, -1);
+        int r2 = CUtil::getNextAngle(angle, 1);
+
+        if (r1 != pMargin->m_Angle && r2 != pMargin->m_Angle)
+        {
+            continue;
+        }
+
+        if (CMath::hasLineMutlLine(pMargin->m_oStart, pMargin->m_oTaget, inSP, tve))
+        {
+            int dis = static_cast<int>(CMath::getPointToLineDis(pMargin->m_oStart, pMargin->m_oTaget, inSP));
+
+            if (dis == 0)
+            {
+                continue;
+            }
+
+            //log("dis:%d", dis);
+            if (mindis == -1 || dis < mindis)
+            {
+                mindis = dis;
+                tindex = i;
+            }
+        }        
+    }            
+
+    int currentdis = static_cast<int>(ccpDistance(inCP, inSP));
+
+    //log("MiniDis:%d  CurrentDis:%d", mindis, currentdis);
+
+    if (mindis != -1 && currentdis > mindis)
+    {
+
+        inCP = CMath::getVec2(inSP, mindis - GRAD_CELL, CMath::angleToRadian(angle));
+        CUtil::formartGrid(inCP);
+        //log("inCP:%f,%f", inCP.x, inCP.y);
+
+        return true;
+    }
+
+
+    //-----------------------------------------------
+    for (int i = 0; i < allMargin.size(); i++)
+    {
+        delete allMargin[i];
+    }                      
+    return false;
+}
+
+
+
+bool CPath::hasEndInBegin()
+{
+    if (m_oAllPoint.size() > 1)
+    {
+        const Vec2& startP = *(m_oAllPoint.begin());
+        const Vec2& endP = *(m_oAllPoint.end() - 1);
+
+        if (startP == endP)
+        {                                
+            return true;
+        }
+    }
+
+    return false;
+}
 
 /*********************************************************************/
 /**
@@ -59,26 +174,26 @@ void CPath::clearPoint()
 /*********************************************************************/
 void CPath::getMoveAble(int currentDirect, const Vec2& inPoint, std::vector<int>& outDirect)
 { 
-    if (m_oAllPoint.size() > 3)
-    {               
-        //const Vec2& vD1         = *(m_oAllPoint.end() - 2);
-        //const Vec2& vD2         = *(m_oAllPoint.end() - 1);
-        //int pathCurrentDirect   = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(vD1, vD2)));      
-        //outDirect.push_back(CUtil::getRevceDircet(pathCurrentDirect));
-        //log("%d~~~~~~~%f, %f", pathCurrentDirect, inPoint.x, inPoint.y);
-
-        Vec2 nextStep = CMath::getVec2(inPoint, GRAD_CELL, CMath::angleToRadian(currentDirect));
-        CUtil::formartGrid(nextStep);
-
-        //log("currentDirect:%d, nextStep:%f,%f", currentDirect, nextStep.x, nextStep.y);
-        
-        if (!hasPointInLine(nextStep))
-        {
-            outDirect.push_back(currentDirect);
-        }    
-
-        return;
-    }
+//     if (m_oAllPoint.size() > 3)
+//     {               
+//         //const Vec2& vD1         = *(m_oAllPoint.end() - 2);
+//         //const Vec2& vD2         = *(m_oAllPoint.end() - 1);
+//         //int pathCurrentDirect   = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(vD1, vD2)));      
+//         //outDirect.push_back(CUtil::getRevceDircet(pathCurrentDirect));
+//         //log("%d~~~~~~~%f, %f", pathCurrentDirect, inPoint.x, inPoint.y);
+// 
+//         Vec2 nextStep = CMath::getVec2(inPoint, GRAD_CELL, CMath::angleToRadian(currentDirect));
+//         CUtil::formartGrid(nextStep);
+// 
+//         //log("currentDirect:%d, nextStep:%f,%f", currentDirect, nextStep.x, nextStep.y);
+//         
+//         if (!hasPointInLine(nextStep))
+//         {
+//             outDirect.push_back(currentDirect);
+//         }    
+// 
+//         return;
+//     }
 
 
     

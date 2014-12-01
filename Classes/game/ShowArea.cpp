@@ -845,6 +845,96 @@ bool CShowArea::hasIncludeMaster()
     return CUtil::hasPointInPloyon(addArea, Vec2(100, 500));
 }
 
+
+/************************************************************************/
+/* 
+
+
+
+
+*/
+/************************************************************************/
+bool CShowArea::hasOverLoad(const Vec2& inSP ,Vec2& inCP, int angle, int& outIndex)
+{       
+    log("hasOverLoad:%f, %f, %d", inSP.x , inSP.y , angle);
+    Size visSize = Director::getInstance()->getVisibleSize();
+    Vec2 visVec = Director::getInstance()->getVisibleOrigin();
+
+    Vec2 tve(Vec2::ZERO);
+    switch (angle)
+    {
+    case ANGLE_DOWN:
+        tve.x = inSP.x;        
+        break;
+    case ANGLE_LEFT:       
+        tve.y = inSP.y;
+        break;
+    case ANGLE_RIGHT:
+        tve.x = visSize.width;
+        tve.y = inSP.y;
+        break;
+    case ANGLE_UP: 
+        tve.x = inSP.x;
+        tve.y = visSize.height;
+        break;
+    default:
+        break;
+    }             
+
+ 
+    int mindis = -1;
+    int tindex = SELECTID_NULL;
+    for (int i = 0; i < m_oAllMargin.size();i++)
+    {
+        CMargin* maring = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));
+        
+        int r1 = CUtil::getNextAngle(angle, -1);
+        int r2 = CUtil::getNextAngle(angle, 1);
+
+        if (r1 != maring->m_Angle && r2 != maring->m_Angle)
+        {
+            continue;
+        }    
+
+        if (CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inSP, tve))
+        {                                                    
+            int dis = static_cast<int>(CMath::getPointToLineDis(maring->m_oStart, maring->m_oTaget, inSP));
+
+            if (dis == 0)
+            {
+                continue;
+            }
+
+            //log("dis:%d", dis);
+            if (mindis == -1 || dis < mindis)
+            {
+                mindis = dis;
+                tindex = i;
+            }           
+        } 
+    }
+
+
+    int currentdis = static_cast<int>(ccpDistance(inCP, inSP));
+
+   // log("MiniDis:%d  CurrentDis:%d", mindis, currentdis);
+
+    if (mindis != -1 && currentdis > mindis)
+    {
+
+        inCP = CMath::getVec2(inSP, mindis, CMath::angleToRadian(angle));
+        CUtil::formartGrid(inCP);
+      // log("inCP:%f,%f", inCP.x , inCP.y);
+
+        outIndex = tindex;
+        return true;
+    }
+
+
+
+    return false;
+}
+
 int CShowArea::getNearMargin(const Vec2& point)
 {
     for (int i = 0; i < m_oAllMargin.size(); i++)
@@ -858,6 +948,9 @@ int CShowArea::getNearMargin(const Vec2& point)
     } 
     return SELECTID_NULL; 
 }
+
+
+
 
 int CShowArea::getMode()
 {

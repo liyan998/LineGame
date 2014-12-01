@@ -11,7 +11,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////                                          
 
-#define SELECTID_NULL           -1                                          //边界选择ID NULL
+
 
 #define MAX_INDEX               2                                           //连接节点数 起始， 终止
 
@@ -127,7 +127,7 @@ public:
 
     int getTargetIndex(const  Vec2&);                                   //得到当前点位置的边界
 
-    bool hasOverLoad(const Vec2& inPoint);
+    bool hasOverLoad(const Vec2& inSP, Vec2& inCP, int angle, int& outIndex);
 
     std::vector< Vec2 > resultArea, addArea;
 

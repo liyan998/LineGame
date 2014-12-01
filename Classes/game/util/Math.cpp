@@ -1,8 +1,10 @@
 #include "Math.h"
 #include <cstdlib>
 #include <time.h>
+#include <algorithm>
 
 using namespace liyan998;
+using namespace std;
 
 /************************************************************************/
 /* 
@@ -137,3 +139,85 @@ float CMath::getTraingleArea(const Vec2& p1, const Vec2& p2, const Vec2& p3)
     return sqrt(p * (p - allMargin[0]) * (p - allMargin[1]) * (p - allMargin[2]));
 
 }
+
+
+
+bool CMath::hasLineMutlLine(const Vec2& pa1, const Vec2& pa2, const Vec2& pb1, const Vec2& pb2)
+{ 
+    if (max(pa1.x, pa2.x) < min(pb1.x, pb2.x))
+    {
+        return false;
+    }
+    if (max(pa1.y, pa2.y) < min(pb1.y, pb2.y))
+    {
+        return false;
+    }
+    if (max(pb1.x, pb2.x) < min(pa1.x, pa2.x))
+    {
+        return false;
+    }
+    if (max(pb1.y, pb2.y) < min(pa1.y, pa2.y))
+    {
+        return false;
+    }
+    if (mult(pb1, pa2, pa1)*mult(pa2, pb2, pa1) < 0)
+    {
+        return false;
+    }
+    if (mult(pa1, pb2, pb1)*mult(pb2, pa2, pb1) < 0)
+    {
+        return false;
+    }
+    return true;
+
+
+}
+
+float CMath::mult(const Vec2& pa, const Vec2& pb, const Vec2& pc)
+{
+
+
+    return (pa.x - pc.x) * (pb.y - pc.y) - (pb.x - pc.x) * (pa.y - pc.y);
+}
+/************************************************************************/
+/* 
+///------------alg 2------------
+//叉积
+double mult(Point a, Point b, Point c)
+{
+return (a.x-c.x)*(b.y-c.y)-(b.x-c.x)*(a.y-c.y);
+}
+
+//aa, bb为一条线段两端点 cc, dd为另一条线段的两端点 相交返回true, 不相交返回false
+bool intersect(Point aa, Point bb, Point cc, Point dd)
+{
+if ( max(aa.x, bb.x)<min(cc.x, dd.x) )
+{
+return false;
+}
+if ( max(aa.y, bb.y)<min(cc.y, dd.y) )
+{
+return false;
+}
+if ( max(cc.x, dd.x)<min(aa.x, bb.x) )
+{
+return false;
+}
+if ( max(cc.y, dd.y)<min(aa.y, bb.y) )
+{
+return false;
+}
+if ( mult(cc, bb, aa)*mult(bb, dd, aa)<0 )
+{
+return false;
+}
+if ( mult(aa, dd, cc)*mult(dd, bb, cc)<0 )
+{
+return false;
+}
+return true;
+}
+///------------alg 2------------
+
+*/
+/************************************************************************/

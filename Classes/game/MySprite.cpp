@@ -301,15 +301,12 @@ void CMySprite::onMove(const Vec2& point)
     case STATE_STANDER:
         break;
     case STATE_DRAW: 
-        checkDirect(point);
-                            
+        checkDirect(point);                            
         if (!hasMoveAction())
         {
             log("don't move it");
-
             return;
-        }
-
+        }                        
         //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
         onDrawToClose(point); 
         playerMove(m_oSpCurrentPos);
@@ -318,7 +315,7 @@ void CMySprite::onMove(const Vec2& point)
     case STATE_MOVE:
     {                           
         checkDirect(point);
-        //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos)); 
+        //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
 
         if (!hasMoveAction())
         {
@@ -394,7 +391,7 @@ bool CMySprite::hasMoveAction()
         m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
         break;
     case STATE_DRAW:
-        m_RefPath->getMoveAble(m_currentAngle, m_oSpCurrentPos, abv);
+       m_RefPath->getMoveAble(m_currentAngle, m_oSpCurrentPos, abv);
         break;        
     }       
 
@@ -409,7 +406,8 @@ bool CMySprite::hasMoveAction()
     }                         
     return false;
 }
-                                                                                          
+
+
 
 void CMySprite::onDrawToClose(const Vec2& inPoint)
 {                          
@@ -419,53 +417,71 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         fixPath(inPoint);
     }
 
+    int index = SELECTID_NULL;
+
 
     //-----------------------------------------------------------       
 
-
-    //过界判断
-
-
-    if (hasOverLoad(m_oSpCurrentPos) || m_RefShowArea->hasOverLoad(inPoint))
+    if (m_RefPath->hasOverLoad(m_oSpStartPos, m_oSpCurrentPos, m_currentAngle))
     {
-
-
-
-
-        log("over load~~~~~~~~~~~~~~~~~~~~~");
+        //log("over load~~~~~~~~~~~~~~~~~~~~~");
+        return;
     }
 
-
-
-    int index = m_RefShowArea->getNearMargin(m_oSpCurrentPos);        
-    if (index == SELECTID_NULL)     
+    //过界判断 
+    if (m_RefShowArea->hasOverLoad(m_oSpStartPos, m_oSpCurrentPos, m_currentAngle, index))
     {
-        return;                                                 
-    }                       
+        log("over load in Area%d", index);
+        if (m_RefPath->m_oAllPoint.size() > 0 && m_oSpCurrentPos == (*m_RefPath->m_oAllPoint.begin()))
+        {
+            log("start point == end point");
+            m_RefPath->m_oAllPoint.clear();
+            setState(STATE_BACK);
+            return;
+        } 
+
+        addGuide(m_oSpCurrentPos);
+
+        m_RefShowArea->setAreaIndex(1, index);
+        m_curMarginIndex = index;
+                                     
+        setState(STATE_CLOSE);
+        return; 
+    }
+   
+
+
+
+   
+//     index = m_RefShowArea->getNearMargin(m_oSpCurrentPos);        
+//     if (index == SELECTID_NULL)     
+//     {
+//         return;                                                 
+//     }                       
 
     //------------------------------------------------------
 
-    CMargin* margin = m_RefShowArea->getMargin(index);
-    Vec2 endp = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpCurrentPos);
-    CUtil::formartGrid(endp);    
-    //
-    if (m_RefPath->m_oAllPoint.size() > 0 && endp == (*m_RefPath->m_oAllPoint.begin()))
-    {
-        log("start point == end point");
-        m_RefPath->m_oAllPoint.clear();
-        setState(STATE_BACK);
-        return;
-    }                          
-
-    int type = m_RefShowArea->getPositionType(endp);
-    log("type:%d" ,type);
-
-    addGuide(endp);
-
-    m_RefShowArea->setAreaIndex(1, index);
-    m_curMarginIndex = index;  
-
-    setState(STATE_CLOSE);
+//     CMargin* margin = m_RefShowArea->getMargin(index);
+//     Vec2 endp = CMath::getFootPoint(margin->m_oStart, margin->m_oTaget, m_oSpStartPos);
+//     CUtil::formartGrid(endp);    
+//     //
+//     if (m_RefPath->m_oAllPoint.size() > 0 && endp == (*m_RefPath->m_oAllPoint.begin()))
+//     {
+//         log("start point == end point");
+//         m_RefPath->m_oAllPoint.clear();
+//         setState(STATE_BACK);
+//         return;
+//     }                          
+// 
+//     int type = m_RefShowArea->getPositionType(endp);
+//     log("type:%d" ,type);
+// 
+//     addGuide(endp);
+// 
+//     m_RefShowArea->setAreaIndex(1, index);
+//     m_curMarginIndex = index;  
+// 
+//     setState(STATE_CLOSE);
 }
 
 
@@ -618,9 +634,9 @@ void CMySprite::fixPath(const Vec2& inPoint)
         m_currentAngle = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(m_oTPath[lastIndex -1], m_oSpCurrentPos)));
         //m_oSpStartPos = m_oTPath[lastIndex - 1];
         
-        fixPosition(inPoint, m_oSpCurrentPos);
+        //fixPosition(inPoint, m_oSpCurrentPos);
 
-        log("m_currentAngle:%d---------%f, %f", m_currentAngle, m_oSpCurrentPos.x, m_oSpCurrentPos.y);
+       // log("m_currentAngle:%d---------%f, %f", m_currentAngle, m_oSpCurrentPos.x, m_oSpCurrentPos.y);
         
         
         m_RefPath->m_oAllPoint.erase(m_RefPath->m_oAllPoint.end() - 1);       
@@ -875,7 +891,9 @@ void CMySprite::addGuide(const Vec2& point)
             return;
         }
     }
-    //同一条直线上不添加                        
+    //同一条直线上不添加  
+
+    m_oSpStartPos = point;
                           
     log("+++++addGuid:%f ,%f", point.x ,point.y);
     m_oTPath.push_back(point);

@@ -64,6 +64,12 @@ using namespace cocos2d;
 
 ////////////////////////////////////////////////////////////
 
+
+#define SELECTID_NULL           -1                                          //±ﬂΩÁ—°‘ÒID NULL
+
+
+//////////////////////////////////////////////////////////////////
+
 typedef std::vector< Vec2 >::iterator           Vec2Iter;
 
 
