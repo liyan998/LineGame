@@ -856,7 +856,7 @@ bool CShowArea::hasIncludeMaster()
 /************************************************************************/
 bool CShowArea::hasOverLoad(const Vec2& inSP ,Vec2& inCP, int angle, int& outIndex)
 {       
-    log("hasOverLoad:%f, %f, %d", inSP.x , inSP.y , angle);
+    //log("hasOverLoad:%f, %f, %d", inSP.x , inSP.y , angle);
     Size visSize = Director::getInstance()->getVisibleSize();
     Vec2 visVec = Director::getInstance()->getVisibleOrigin();
 

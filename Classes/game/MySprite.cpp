@@ -531,15 +531,35 @@ void CMySprite::onMoveToDraw()
     int tindex = m_RefShowArea->hasPointInMargin(m_oSpCurrentPos);
     CMargin* margin = m_RefShowArea->getMargin(m_curMarginIndex);
 
+//     int posType = m_RefShowArea->getPositionType(m_oSpCurrentPos);
+// 
+ log("currentMargin:%d",  m_curMarginIndex);
+
+//     switch (posType)
+//     {
+//     case POSITION_LINE:      
+//     case POSITION_ENDPOINT:
+//         m_oGuideLStart = m_oSpCurrentPos;
+//         break;
+//     }
+
     //是否在边界上
     if (tindex != SELECTID_NULL)
     {                
         m_curMarginIndex = tindex;
         m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
-        m_oGuideLStart = m_oSpCurrentPos;
+        m_oGuideLStart = m_oSpCurrentPos; 
     }
     else
     {
+
+
+        log("CurrentPostion:%f, %f", m_oSpCurrentPos.x, m_oSpCurrentPos.y);
+
+
+
+        m_oAbsStartPos = m_oAbsEndPos;
+        //log("%d __%d__ %d", margin->m_Angle, m_curMarginIndex, m_currentAngle);
         //draw           
         addGuide(m_oGuideLStart);          
         m_RefShowArea->setAreaIndex(0, m_curMarginIndex); 
