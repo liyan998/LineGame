@@ -531,18 +531,6 @@ void CMySprite::onMoveToDraw()
     int tindex = m_RefShowArea->hasPointInMargin(m_oSpCurrentPos);
     CMargin* margin = m_RefShowArea->getMargin(m_curMarginIndex);
 
-//     int posType = m_RefShowArea->getPositionType(m_oSpCurrentPos);
-// 
- log("currentMargin:%d",  m_curMarginIndex);
-
-//     switch (posType)
-//     {
-//     case POSITION_LINE:      
-//     case POSITION_ENDPOINT:
-//         m_oGuideLStart = m_oSpCurrentPos;
-//         break;
-//     }
-
     //是否在边界上
     if (tindex != SELECTID_NULL)
     {                
@@ -552,15 +540,26 @@ void CMySprite::onMoveToDraw()
     }
     else
     {
+        //draw   
+        int tangle1 = CUtil::getRevceDircet(margin->m_Angle);
 
+        if (m_currentAngle == tangle1 || m_currentAngle == margin->m_Angle)
+        {
+            int dis1 = ccpDistance(m_oSpCurrentPos, margin->m_oStart);
+            int dis2 = ccpDistance(m_oSpCurrentPos, margin->m_oTaget);
 
-        log("CurrentPostion:%f, %f", m_oSpCurrentPos.x, m_oSpCurrentPos.y);
-
-
+            if (dis1 < dis2)
+            {
+                m_oGuideLStart = margin->m_oStart;
+            }
+            else
+            {
+                m_oGuideLStart = margin->m_oTaget;
+            }
+        }
 
         m_oAbsStartPos = m_oAbsEndPos;
-        //log("%d __%d__ %d", margin->m_Angle, m_curMarginIndex, m_currentAngle);
-        //draw           
+       
         addGuide(m_oGuideLStart);          
         m_RefShowArea->setAreaIndex(0, m_curMarginIndex); 
         setState(STATE_DRAW);
