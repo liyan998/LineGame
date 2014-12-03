@@ -14,6 +14,9 @@
 #include "../Path.h"
 
 
+using namespace liyan998;
+
+
 bool CUtil::hasPointInPloyon(const std::vector<Vec2>& refVector,const Vec2& refPoint)
 { 
     unsigned int count = 0;
@@ -390,4 +393,77 @@ int CUtil::getNextAngle(int currentangle, int d)
         selectindex = currentindex + d;
     }
     return anglelist[selectindex];
+}
+
+
+/************************************************************************/
+/* 
+
+* @brief        得到与inSP最近障碍物距离
+* @param[in]    inSP            当前位置
+                inAllMargin     所有边
+                angle           角度
+* @param[out]
+* @return       void
+
+*/
+/************************************************************************/
+int CUtil::getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& inSP,int angle)
+{
+
+    Size visSize = Director::getInstance()->getVisibleSize();
+    Vec2 visVec = Director::getInstance()->getVisibleOrigin();
+
+    Vec2 tve(Vec2::ZERO);
+    switch (angle)
+    {
+    case ANGLE_DOWN:
+        tve.x = inSP.x;
+        break;
+    case ANGLE_LEFT:
+        tve.y = inSP.y;
+        break;
+    case ANGLE_RIGHT:
+        tve.x = visSize.width;
+        tve.y = inSP.y;
+        break;
+    case ANGLE_UP:
+        tve.x = inSP.x;
+        tve.y = visSize.height;
+        break;
+    default:
+        break;
+    }
+
+    int mindis = -1;
+   
+    for (int i = 0; i < inAllMargin.size(); i++)
+    {
+        CMargin* maring = inAllMargin[i];
+
+        int r1 = CUtil::getNextAngle(angle, -1);
+        int r2 = CUtil::getNextAngle(angle, 1);
+
+        if (r1 != maring->m_Angle && r2 != maring->m_Angle)
+        {
+            continue;
+        }
+
+        if (liyan998::CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inSP, tve))
+        {
+            int dis = static_cast<int>(CMath::getPointToLineDis(maring->m_oStart, maring->m_oTaget, inSP));
+
+            if (dis == 0)
+            {
+                continue;
+            }
+
+            log("CUtil dis:%d", dis);
+            if (mindis == -1 || dis < mindis)
+            {
+                mindis = dis;                 
+            }
+        }
+    }  
+    return mindis;
 }

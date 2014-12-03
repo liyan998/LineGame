@@ -307,16 +307,13 @@ void CMySprite::onMove(const Vec2& point)
             log("don't move it");
             return;
         }                        
-        //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
+        
         onDrawToClose(point); 
-        playerMove(m_oSpCurrentPos);
-        //fixPath();
+        playerMove(m_oSpCurrentPos);       
         break;
     case STATE_MOVE:
     {                           
         checkDirect(point);
-        //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
-
         if (!hasMoveAction())
         {
             log("don't move it");
@@ -367,8 +364,6 @@ void CMySprite::onReleased(const Vec2& pointer)
     default:
         break;
     }
-    
-
 }
 
 
@@ -388,7 +383,9 @@ bool CMySprite::hasMoveAction()
     switch (getState())
     {
     case STATE_MOVE:
-        m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
+    {
+       m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
+    }              
         break;
     case STATE_DRAW:
        m_RefPath->getMoveAble(m_currentAngle, m_oSpCurrentPos, abv);
@@ -442,10 +439,20 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
 
         addGuide(m_oSpCurrentPos);
 
-        m_RefShowArea->setAreaIndex(1, index);
-        m_curMarginIndex = index;
-                                     
-        setState(STATE_CLOSE);
+
+
+        switch (m_RefShowArea->getPathType())
+        {
+        case POSITION_ENDPOINT + POSITION_ENDPOINT:
+        case POSITION_LINE + POSITION_LINE:
+        case POSITION_LINE + POSITION_ENDPOINT:         
+            m_RefShowArea->setAreaIndex(1, index);
+            m_curMarginIndex = index;                                             
+            setState(STATE_CLOSE);                                      
+            break;
+        default:
+            break;
+        } 
         return; 
     }
    
@@ -528,42 +535,96 @@ void CMySprite::onMoveToDraw()
 
     CUtil::formartGrid(m_oSpCurrentPos);
 
-    int tindex = m_RefShowArea->hasPointInMargin(m_oSpCurrentPos);
-    CMargin* margin = m_RefShowArea->getMargin(m_curMarginIndex);
+    
+    
+    
+
+    switch (m_RefShowArea->getPositionType(m_oSpCurrentPos))
+    {
+    case POSITION_UNLOCK:
+        log("POSITION_UNLOCK%d", m_curMarginIndex);
+    
+        
+        break;
+    case POSITION_LOCK:
+        log("POSITION_LOCK");
+        {
+
+        }
+        break;
+    case POSITION_LINE:
+    case POSITION_ENDPOINT:       
+        log("POSITION_ENDPOINT + POSITION_LINE");
+        if (hasBreakMoveInLine())
+        {
+            log("@@@@@@@@@@@@@@@@@@@@@@@@");
+            return;
+        }
+        break;
+
+    }
+
+    //log("Start : %f, %f  , Current:%f, %f", m_oSpStartPos.x, m_oSpStartPos.y, m_oSpCurrentPos.x, m_oSpCurrentPos.y);
+    //     
+//     int tindex = m_RefShowArea->hasPointInMargin(m_oSpCurrentPos);
+//     CMargin* margin = m_RefShowArea->getMargin(m_curMarginIndex);
+
+
 
     //是否在边界上
-    if (tindex != SELECTID_NULL)
-    {                
-        m_curMarginIndex = tindex;
-        m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
-        m_oGuideLStart = m_oSpCurrentPos; 
-    }
-    else
+//         if (tindex != SELECTID_NULL)
+//         {                
+//             m_curMarginIndex = tindex;
+//             m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
+//             m_oGuideLStart = m_oSpCurrentPos; 
+//         }
+//         else
+//         {
+//             int tangle1 = CUtil::getRevceDircet(margin->m_Angle);
+//     
+//             if (m_currentAngle == tangle1 || m_currentAngle == margin->m_Angle)
+//             {
+//                 int dis1 = ccpDistance(m_oSpCurrentPos, margin->m_oStart);
+//                 int dis2 = ccpDistance(m_oSpCurrentPos, margin->m_oTaget);             
+//           
+//                 if (dis1 < dis2)
+//                 {
+//                     m_oGuideLStart = margin->m_oStart;
+//                 }
+//                 else
+//                 {
+//                     m_oGuideLStart = margin->m_oTaget;
+//                 }           
+//             }
+//             
+//             
+//             
+//     
+//             //------------------------------------------------
+//             //draw   
+//     
+//             m_oAbsStartPos = m_oAbsEndPos;       
+//             addGuide(m_oGuideLStart);          
+//             m_RefShowArea->setAreaIndex(0, m_curMarginIndex); 
+//             setState(STATE_DRAW);
+//         }
+}
+        
+
+bool CMySprite::hasBreakMoveInLine()
+{
+
+    int dis = m_RefShowArea->getMiniWallDis(m_oSpStartPos, m_currentAngle);
+
+    if (dis == -1)
     {
-        //draw   
-        int tangle1 = CUtil::getRevceDircet(margin->m_Angle);
-
-        if (m_currentAngle == tangle1 || m_currentAngle == margin->m_Angle)
-        {
-            int dis1 = ccpDistance(m_oSpCurrentPos, margin->m_oStart);
-            int dis2 = ccpDistance(m_oSpCurrentPos, margin->m_oTaget);
-
-            if (dis1 < dis2)
-            {
-                m_oGuideLStart = margin->m_oStart;
-            }
-            else
-            {
-                m_oGuideLStart = margin->m_oTaget;
-            }
-        }
-
-        m_oAbsStartPos = m_oAbsEndPos;
-       
-        addGuide(m_oGuideLStart);          
-        m_RefShowArea->setAreaIndex(0, m_curMarginIndex); 
-        setState(STATE_DRAW);
+        return false;
     }
+
+    int currentdis = ccpDistance(m_oSpCurrentPos, m_oSpStartPos);
+    log("Dis:%d, currentDis:%d", dis,currentdis);
+
+    return false;
 }
 
 /*********************************************************************/
@@ -740,23 +801,19 @@ void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
 	//log("angle :%d , fixangle:%d" , angle, fixangle);
 	//
 	//---------------------------------------------   
-
+    
      if (!hasRevceDircet(m_currentAngle, fixangle)&& getState() == STATE_DRAW)
      {
-	    //m_RefPath->addPoint(pos);        //    路径        
+	 
 //         Vec2 tVec2 = CMath::getVec2(m_oSpCurrentPos, GRAD_CELL, CMath::angleToRadian(fixangle));
 // 
 //         if (m_RefShowArea->getPositionType(tVec2) == POSITION_LINE)
 //         {
 //             return;
-//         }                    
-//         m_oSpCurrentPos = tVec2;
+//         }   
 
-         addGuide(m_oSpCurrentPos);
-
-         //m_oSpStartPos = m_oSpCurrentPos;
-
-
+        addGuide(m_oSpCurrentPos); 
+//        m_oSpCurrentPos = tVec2;
      }                                
 	
 
@@ -768,9 +825,8 @@ void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
 
         //-----------------------------------------
         
-		m_oSpStartPos   = m_oSpCurrentPos;        
-       
 	}           
+    m_oSpStartPos   = m_oSpCurrentPos;       
 
 }
 

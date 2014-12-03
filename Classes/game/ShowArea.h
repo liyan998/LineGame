@@ -125,9 +125,13 @@ public:
   
     int getPositionType(const Vec2& inPos);                             //得到当前位置的类型
 
+    int getPathType();                                                  //得到路径类型
+
     int getTargetIndex(const  Vec2&);                                   //得到当前点位置的边界
 
-    bool hasOverLoad(const Vec2& inSP, Vec2& inCP, int angle, int& outIndex);
+    bool hasOverLoad(const Vec2& inSP, Vec2& inCP, int angle, int& outIndex);   //是否过界
+
+    int getMiniWallDis(const Vec2& inSP, int angle);    //得到最近的障碍距离
 
     std::vector< Vec2 > resultArea, addArea;
 

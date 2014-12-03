@@ -58,15 +58,14 @@ int CGamePlayer::getStrackSize()
 }
 
 void CGamePlayer::addFollow(const Vec2& point)
-{              
-
-    if (m_State == STATE_RUN)
-    {
-        m_oAllGuide.push_back(point); 
-        log("add Target point %f,%f", point.x ,point.y);
-        return;
-    }
-    log("not target");
+{       
+//     if (m_State == STATE_RUN)
+//     {
+        m_oAllGuide.push_back(point);
+        log("add Target point %f,%f", point.x, point.y);
+//         return;
+//     }
+/*    log("not target");*/
 }
 
 

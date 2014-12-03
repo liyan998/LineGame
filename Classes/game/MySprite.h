@@ -54,20 +54,19 @@ public:
 
 	//----------------------------------------------------
 
-    inline void setPath(CPath* path){ this->m_RefPath = path; };
+    inline void setPath(CPath* path){ this->m_RefPath = path; }
 
-    inline void setPlayer(CGamePlayer* sp){ this->m_RefPlayer = sp; };
+    inline void setPlayer(CGamePlayer* sp){ this->m_RefPlayer = sp; }
 
-    inline void setShowArea(CShowArea* area){ this->m_RefShowArea = area; };
+    inline void setShowArea(CShowArea* area){ this->m_RefShowArea = area; }
 
     inline void setGameView(CGameView* pGameView){ this->m_RefGameView = pGameView;  }
-
                                                     
     inline void setPlayerPosition(const Vec2& pos)
     { 
         m_oSpCurrentPos = pos;
         m_RefPlayer->setPlayerPosition(pos);
-    };
+    }
 
     inline float getSpStep(){return this->m_fStep;}
 
@@ -79,7 +78,9 @@ public:
 
     void onReleased(const Vec2& pointer);
 
-    //------------------------------------------------------
+    //------------------------------------------------------  
+
+   
 
 private:
 
@@ -130,7 +131,9 @@ private:
 
     bool hasMoveAction();
 
+    bool hasBreakMoveInLine();
   
+
 
 private:                                                        
 

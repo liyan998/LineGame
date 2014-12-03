@@ -2,6 +2,7 @@
 #define __UTIL_H__
 
 #include "../System.h"
+#include "../Margin.h"
 
 class CUtil
 {
@@ -42,6 +43,10 @@ public:
 
     //根据当前方向得到权值对应方向，权值为顺时1，逆时-1
     static int getNextAngle(int currentangle, int d);
+
+    //得到最小障碍距离
+    static int getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& inSP,int angle);
+
 };
 
 

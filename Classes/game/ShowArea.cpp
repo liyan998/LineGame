@@ -410,6 +410,32 @@ void CShowArea::setPath(CPath* path)
 }
             
 
+int CShowArea::getPathType()
+{            
+    int startType = getPositionType(m_pPath->m_oAllPoint[0]);
+    int endType = getPositionType(*(m_pPath->m_oAllPoint.end() - 1));
+
+    log(" startType:%d endType:%d", startType, endType);
+
+    int pathType = startType + endType;
+    switch (pathType)
+    {
+    case POSITION_ENDPOINT + POSITION_ENDPOINT:
+        log(" End + End");       
+        break;
+    case POSITION_LINE + POSITION_LINE:
+        log("Line + LIne");        
+        break;
+    case POSITION_ENDPOINT + POSITION_LINE:
+        log("End + Line");        
+        break;
+    default:
+        log("No close!");
+        return 0;
+    }                    
+    return pathType;
+}
+
 void CShowArea::clearAreaIndex()
 {
     if (m_Area[0] == -1 || m_Area[1] == -1)
@@ -420,25 +446,25 @@ void CShowArea::clearAreaIndex()
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
 
-	int startType	= getPositionType( m_pPath->m_oAllPoint[0] );
-	int endType		= getPositionType( *(m_pPath->m_oAllPoint.end() - 1) );
-
-	log(" startType:%d endType:%d",startType, endType );
-
-	switch (startType + endType)	
+  
+    int pathType = getPathType();
+   
+    switch (pathType)
 	{
 	case POSITION_ENDPOINT + POSITION_ENDPOINT:
-		log(" End + End");
+		//log(" End + End");
 		closedEnd_End();
 		break;
 	case POSITION_LINE + POSITION_LINE:
-		log("Line + LIne");
+		//log("Line + LIne");
 		closedLine_Line();				
 		break;
 	case POSITION_ENDPOINT + POSITION_LINE:
-		log("End + Line");
+		//log("End + Line");
 		closedLine_End();
 		break;
+    default:
+        return;
 	}
 	//----------------------------------------------
 	
@@ -580,7 +606,7 @@ void CShowArea::closedEnd_End()
 
 	while (pCurrent->vec != pEnd->vec)
 	{
-		
+        log("#%d", pCurrent->id);
 		toV1.push_back(pCurrent->vec);
 		pCurrent = pCurrent->next;
 	}
@@ -589,7 +615,7 @@ void CShowArea::closedEnd_End()
 
 	while (pCurrent->vec != pStart->vec)
 	{
-		
+        log("$%d", pCurrent->id);
 		toV2.push_back(pCurrent->vec);
 		pCurrent = pCurrent->next;
 	} 	
@@ -857,8 +883,8 @@ bool CShowArea::hasIncludeMaster()
 bool CShowArea::hasOverLoad(const Vec2& inSP ,Vec2& inCP, int angle, int& outIndex)
 {       
     //log("hasOverLoad:%f, %f, %d", inSP.x , inSP.y , angle);
-    Size visSize = Director::getInstance()->getVisibleSize();
-    Vec2 visVec = Director::getInstance()->getVisibleOrigin();
+    Size visSize    = Director::getInstance()->getVisibleSize();
+    Vec2 visVec     = Director::getInstance()->getVisibleOrigin();
 
     Vec2 tve(Vec2::ZERO);
     switch (angle)
@@ -879,25 +905,24 @@ bool CShowArea::hasOverLoad(const Vec2& inSP ,Vec2& inCP, int angle, int& outInd
         break;
     default:
         break;
-    }             
+    }        
 
- 
     int mindis = -1;
     int tindex = SELECTID_NULL;
-    for (int i = 0; i < m_oAllMargin.size();i++)
+    for (int i = 0; i < m_oAllMargin.size(); i++)
     {
         CMargin* maring = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));
-        
+
         int r1 = CUtil::getNextAngle(angle, -1);
         int r2 = CUtil::getNextAngle(angle, 1);
 
         if (r1 != maring->m_Angle && r2 != maring->m_Angle)
         {
             continue;
-        }    
+        }
 
         if (CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inSP, tve))
-        {                                                    
+        {
             int dis = static_cast<int>(CMath::getPointToLineDis(maring->m_oStart, maring->m_oTaget, inSP));
 
             if (dis == 0)
@@ -910,21 +935,21 @@ bool CShowArea::hasOverLoad(const Vec2& inSP ,Vec2& inCP, int angle, int& outInd
             {
                 mindis = dis;
                 tindex = i;
-            }           
-        } 
+            }
+        }
     }
 
-
+    //µ±«∞æ‡¿Î
     int currentdis = static_cast<int>(ccpDistance(inCP, inSP));
 
-   // log("MiniDis:%d  CurrentDis:%d", mindis, currentdis);
+    //log("MiniDis:%d  CurrentDis:%d", mindis, currentdis);
 
     if (mindis != -1 && currentdis > mindis)
     {
 
         inCP = CMath::getVec2(inSP, mindis, CMath::angleToRadian(angle));
         CUtil::formartGrid(inCP);
-      // log("inCP:%f,%f", inCP.x , inCP.y);
+       //log("inCP:%f,%f", inCP.x , inCP.y);
 
         outIndex = tindex;
         return true;
@@ -933,6 +958,22 @@ bool CShowArea::hasOverLoad(const Vec2& inSP ,Vec2& inCP, int angle, int& outInd
 
 
     return false;
+}
+
+
+int CShowArea::getMiniWallDis(const Vec2& inSP, int angle)
+{
+
+    std::vector<CMargin*> tAllMargin;
+    for (int i = 0; i < m_oAllMargin.size(); i++)
+    {
+        CMargin* maring = static_cast<CMargin*>(this->getChildByTag(m_oAllMargin[i]));
+        tAllMargin.push_back(maring);
+    }
+
+
+   return  CUtil::getMinWallDis(tAllMargin, inSP, angle);
+
 }
 
 int CShowArea::getNearMargin(const Vec2& point)
