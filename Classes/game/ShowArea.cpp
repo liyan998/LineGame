@@ -411,9 +411,17 @@ void CShowArea::setPath(CPath* path)
             
 
 int CShowArea::getPathType()
-{            
-    int startType = getPositionType(m_pPath->m_oAllPoint[0]);
-    int endType = getPositionType(*(m_pPath->m_oAllPoint.end() - 1));
+{          
+    if (m_pPath->m_oAllPoint.size() < 1)
+    {
+        return 0;
+    }
+
+    const Vec2& tVStart = m_pPath->m_oAllPoint[0];
+    const Vec2& tVEnd   = *(m_pPath->m_oAllPoint.end() - 1);
+
+    int startType = getPositionType(tVStart);
+    int endType = getPositionType(tVEnd);
 
     log(" startType:%d endType:%d", startType, endType);
 
@@ -424,10 +432,28 @@ int CShowArea::getPathType()
         log(" End + End");       
         break;
     case POSITION_LINE + POSITION_LINE:
-        log("Line + LIne");        
+        {
+        log("Line + LIne");
+
+        int ts = hasPointInMargin(tVStart);
+        int tn = hasPointInMargin(tVEnd);
+
+        setAreaIndex(0, ts);
+        setAreaIndex(1, tn);
+        }
         break;
     case POSITION_ENDPOINT + POSITION_LINE:
-        log("End + Line");        
+        {
+            log("End + Line");
+            if (startType == POSITION_ENDPOINT)
+            {
+                setAreaIndex(1, hasPointInMargin(tVEnd));
+            }
+            else{
+                setAreaIndex(0, hasPointInMargin(tVStart));
+            }
+
+        } 
         break;
     default:
         log("No close!");

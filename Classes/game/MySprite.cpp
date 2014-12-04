@@ -552,9 +552,7 @@ void CMySprite::onMoveToDraw()
         {                           
 
             int startpostype = m_RefShowArea->getPositionType(m_oGuideLStart);
-
-            log("StartPositionType:%d", startpostype);
-
+            //log("StartPositionType:%d", startpostype);                   
             if (startpostype == POSITION_LINE)
             {                                        
                 int index = m_RefShowArea->getTargetIndex(m_oGuideLStart);
@@ -568,7 +566,6 @@ void CMySprite::onMoveToDraw()
     case POSITION_LINE:
     case POSITION_ENDPOINT:       
         log("POSITION_ENDPOINT + POSITION_LINE");
-
         //log("min %f, %f", m_oSpCurrentPos.x ,m_oSpCurrentPos.y);
         m_oGuideLStart = m_oSpCurrentPos;
         m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
@@ -636,16 +633,7 @@ bool CMySprite::hasBreakMoveInLine()
         m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
         return false;
     }
-    if(dis == GRAD_CELL)
-    {
-        //if (m_oGuideLStart != m_oSpCurrentPos)
-        //{
-            log("min dis~~~~~~~~~~~%f,%f", m_oSpCurrentPos.x, m_oSpCurrentPos.y);
-           // m_oGuideLStart = m_oSpCurrentPos;
-        //}
-        //return false;
-        
-    }
+    
 
     //------------------------------------------------------------------------
 
