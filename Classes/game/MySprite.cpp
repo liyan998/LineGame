@@ -23,7 +23,9 @@ bool CMySprite::init()
     m_currentAngle      = ANGLE_NONE;
     m_fStep				= 6.f;
     m_iCountRecord      = 0;
-    m_curMarginIndex    = SELECTID_NULL;
+    m_curMarginIndex    = SELECTID_NULL; 
+
+  
     //----------------------------------------------------- 
 
 
@@ -151,7 +153,9 @@ int CMySprite::getFixAngle(int angle)
 void CMySprite::setSpStartPosition()
 {
     log("sp Ready to Move");
-    this->m_oSpStartPos = this->m_oSpCurrentPos;
+    this->m_oSpStartPos = this->m_oSpCurrentPos; 
+    CUtil::formartGrid(m_oSpStartPos);
+   
 }
                                   
 /************************************************************************/
@@ -314,14 +318,15 @@ void CMySprite::onMove(const Vec2& point)
     case STATE_MOVE:
     {                           
         checkDirect(point);
+        hasBreakMoveInLine();
         if (!hasMoveAction())
         {
             log("don't move it");
             return;
         }                                                
-        onMoveToDraw();         
+        onMoveToDraw();     
         //-----------------------------------  
-        fixPosition(point, m_oSpCurrentPos);
+        fixPosition(point, m_oSpCurrentPos);        
         //---------------------------------   
         playerMove(m_oSpCurrentPos);      
         //---------------------------------------- 1
@@ -329,7 +334,9 @@ void CMySprite::onMove(const Vec2& point)
         break;
     default:
         break;
-    }       
+    }    
+
+   
 }
 
 
@@ -439,8 +446,6 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
 
         addGuide(m_oSpCurrentPos);
 
-
-
         switch (m_RefShowArea->getPathType())
         {
         case POSITION_ENDPOINT + POSITION_ENDPOINT:
@@ -533,36 +538,44 @@ void CMySprite::onMoveToDraw()
         return;
     }  
 
-    CUtil::formartGrid(m_oSpCurrentPos);
-
+    //CUtil::formartGrid(m_oSpCurrentPos); 
+       
+    int posType = m_RefShowArea->getPositionType(m_oSpCurrentPos);
     
-    
-    
-
-    switch (m_RefShowArea->getPositionType(m_oSpCurrentPos))
+    switch (posType)
     {
     case POSITION_UNLOCK:
-        log("POSITION_UNLOCK%d", m_curMarginIndex);
-    
-        
+        log("POSITION_UNLOCK");                                                                       
         break;
     case POSITION_LOCK:
         log("POSITION_LOCK");
-        {
+        {                           
 
+            int startpostype = m_RefShowArea->getPositionType(m_oGuideLStart);
+
+            log("StartPositionType:%d", startpostype);
+
+            if (startpostype == POSITION_LINE)
+            {                                        
+                int index = m_RefShowArea->getTargetIndex(m_oGuideLStart);
+                m_RefShowArea->setAreaIndex(0, index);
+            }
+
+            addGuide(m_oGuideLStart);          
+            setState(STATE_DRAW);
         }
         break;
     case POSITION_LINE:
     case POSITION_ENDPOINT:       
         log("POSITION_ENDPOINT + POSITION_LINE");
-        if (hasBreakMoveInLine())
-        {
-            log("@@@@@@@@@@@@@@@@@@@@@@@@");
-            return;
-        }
+
+        //log("min %f, %f", m_oSpCurrentPos.x ,m_oSpCurrentPos.y);
+        m_oGuideLStart = m_oSpCurrentPos;
+        m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
         break;
 
     }
+
 
     //log("Start : %f, %f  , Current:%f, %f", m_oSpStartPos.x, m_oSpStartPos.y, m_oSpCurrentPos.x, m_oSpCurrentPos.y);
     //     
@@ -612,18 +625,54 @@ void CMySprite::onMoveToDraw()
         
 
 bool CMySprite::hasBreakMoveInLine()
-{
+{                   
+    CUtil::formartGrid(m_oSpCurrentPos);
 
     int dis = m_RefShowArea->getMiniWallDis(m_oSpStartPos, m_currentAngle);
-
     if (dis == -1)
     {
+        //
+        m_oGuideLStart = m_oSpStartPos; 
+        m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
         return false;
     }
+    if(dis == GRAD_CELL)
+    {
+        //if (m_oGuideLStart != m_oSpCurrentPos)
+        //{
+            log("min dis~~~~~~~~~~~%f,%f", m_oSpCurrentPos.x, m_oSpCurrentPos.y);
+           // m_oGuideLStart = m_oSpCurrentPos;
+        //}
+        //return false;
+        
+    }
+
+    //------------------------------------------------------------------------
 
     int currentdis = ccpDistance(m_oSpCurrentPos, m_oSpStartPos);
-    log("Dis:%d, currentDis:%d", dis,currentdis);
+    //log("Dis:%d, currentDis:%d", dis,currentdis);
 
+     
+    
+    int postype = m_RefShowArea->getPositionType(m_oSpCurrentPos);
+
+    if (currentdis >= dis)
+    {          
+        m_oSpCurrentPos = CMath::getVec2(m_oSpStartPos,dis, CMath::angleToRadian(m_currentAngle));
+
+        CUtil::formartGrid(m_oSpCurrentPos);
+
+        m_oSpStartPos   = m_oSpCurrentPos; 
+        m_oAbsStartPos  = m_oAbsEndPos;
+        m_oGuideLStart  = m_oSpCurrentPos;
+        m_oSpTarget     = m_oSpCurrentPos;
+        
+        m_RefPlayer->setState(CGamePlayer::STATE_STANDER);
+        m_RefPlayer->setTarget(m_oSpCurrentPos);
+        m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
+
+        return true;
+    }
     return false;
 }
 
@@ -824,9 +873,9 @@ void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
 		m_oAbsEndPos    = m_oAbsStartPos;  
 
         //-----------------------------------------
+        m_oSpStartPos   = m_oSpCurrentPos;       
         
 	}           
-    m_oSpStartPos   = m_oSpCurrentPos;       
 
 }
 

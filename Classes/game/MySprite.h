@@ -163,8 +163,8 @@ private:
 
     Vec2                    m_oSpStartPos;          //sp起始位置
 
-    Vec2                    m_oSpTarget;            //spRebackTarget   
-
+    Vec2                    m_oSpTarget;            //spRebackTarget \
+   
     //手势操作--------------------------------------------------------
 
 	int		                m_currentAngle;			//当前角度 | back currentAngle 

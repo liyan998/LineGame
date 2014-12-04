@@ -438,11 +438,11 @@ int CShowArea::getPathType()
 
 void CShowArea::clearAreaIndex()
 {
-    if (m_Area[0] == -1 || m_Area[1] == -1)
-    {
-        log("no area %d | %d", m_Area[0], m_Area[1]);
-        return;
-    }   
+//     if (m_Area[0] == -1 || m_Area[1] == -1)
+//     {
+//         log("no area %d | %d", m_Area[0], m_Area[1]);
+//         return;
+//     }   
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
 
