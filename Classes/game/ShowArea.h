@@ -121,7 +121,9 @@ public:
 
     bool hasIncludeMaster();                                            //是否包含BOSS
 
-    void clearSameLineNode(std::vector<Vec2>& outputVec);               //清理同方向节点    
+    void clearSameDirectNode(std::vector<Vec2>& outputVec);             //清理同方向节点
+
+    void clearSamePointNode(std::vector<Vec2>& outPutVec);              //情理相同位置节点
   
     int getPositionType(const Vec2& inPos);                             //得到当前位置的类型
 
@@ -192,9 +194,9 @@ private:
 
     TPoint*                         m_pHandle;                          
     std::vector< Vec2 >             m_oAllPoint;
-    std::vector< int >              m_oAllMargin;                       //                                                                    
+    std::vector< int >              m_oAllMargin;                       // 
 
-    CPath*                          m_pPath;                            //路径
+    Rect                            m_oAreaSize;                        //解锁范围
 
 	int								m_iRorate;							//方向
     int                             m_Model;                            //模式
@@ -204,7 +206,8 @@ private:
     int                             m_Area[MAX_INDEX];                  //边界ID    
     std::map<int, CShape*>          m_oAllShape;                        //图形集合    
 
-    CGameView*                      m_pGameView;
+    CPath*                          m_RefPath;                          //路径
+    CGameView*                      m_RefGameView;
 };                                              
 
 

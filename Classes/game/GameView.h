@@ -12,6 +12,7 @@
 #include "Margin.h" 
 #include "Game1Player.h"
 #include "GameLogic.h"
+#include "Runnable.h"
 
 
 class CGameView : 
@@ -81,7 +82,9 @@ private:
 
 	DrawNode*					m_pDrawNode;		//
 
-	std::vector< CRander* >		m_oAllRander;     
+	std::vector< CRander* >		m_oAllRander;   
+
+    std::vector< CRunnable* >   m_oAllRunner;
 
     std::map< int , Vec2 >      m_oPointers;
 

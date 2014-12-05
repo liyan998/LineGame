@@ -65,6 +65,8 @@ void CGameView::onEnter()
     m_pGameLogic->m_refShowArea     = m_pShowArea;
     m_pGameLogic->m_refSp           = m_pSp;
 
+    m_pGameLogic->setAnchorPoint(Vec2::ZERO);
+
     //----------------------------
 		
     addChild(m_pShowArea);	
@@ -78,9 +80,10 @@ void CGameView::onEnter()
     m_oAllRander.push_back(m_pShowArea);
     m_oAllRander.push_back(m_pPath); 
 
-    //----------------------------------------
+    //----------------------------------------  
 
-     
+    m_oAllRunner.push_back(m_pSp);
+    m_oAllRunner.push_back(m_pPlayer);
 	
     //------------------------------------------  
 
@@ -103,6 +106,9 @@ void CGameView::setState(int stata)
     case STATE_WIN:
     {
                       log("GAME STATE_WIN");
+
+                      m_oAllRander.clear();
+                      m_oAllRunner.clear();
 
     unschedule(schedule_selector(CGameView::run));
 
@@ -148,6 +154,12 @@ void CGameView::run(float time)
     for (int i = 0; i < m_oAllRander.size(); i++)
     {
         m_oAllRander[i]->print(m_pDrawNode);
+    }                                           
+    //            
+    //log("runnable:%d", m_oAllRunner.size());
+    for (int i = 0; i < m_oAllRunner.size();i++)
+    {
+        m_oAllRunner[i]->run(time);
     }
 }
 

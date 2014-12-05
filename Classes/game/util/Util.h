@@ -14,6 +14,9 @@ public:
     //返回在ployon内的点个数
     static unsigned int getCountPointInPloyon(std::vector<Vec2>& refPloyon, std::vector<Vec2>& refAllPoint);
 
+    //返回一个集合包含另一个集合个数
+    static unsigned int getCountPointInRec(const std::vector<Vec2>& refRec1, const std::vector<Vec2>& refRec2);
+    
     //点是否在线段内
     static bool hasPointInLine(const Vec2& lineP1, const Vec2& lineP2, const Vec2& outPoint);
 

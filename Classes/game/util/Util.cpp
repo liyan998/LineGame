@@ -67,6 +67,27 @@ unsigned int CUtil::getCountPointInPloyon(std::vector<Vec2>& refPloyon, std::vec
     return count;
 }
 
+//inRect 被检测多边形
+//refRect2 检测多边形
+unsigned int CUtil::getCountPointInRec(const std::vector<Vec2>& inRect,const std::vector<Vec2>& refRec2)
+{          
+    unsigned int count = 0;
+    lab:for (int i = 0; i < inRect.size();i++)
+    {
+       for (int j = 0; j < refRec2.size();j++)
+       {
+          if (inRect[i] == refRec2[j])
+          {
+              count++;              
+          }
+          else if (hasPointInPloyon(refRec2, inRect[i]))
+          {
+              count++;
+          } 
+       } 
+    }
+    return count;
+}
 
 bool CUtil::hasPointInLine(const Vec2& lineP1, const Vec2& lineP2, const Vec2& outPoint)
 {          //     Vec2 point[MAX];
@@ -458,7 +479,7 @@ int CUtil::getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& i
                 continue;
             }
 
-            log("CUtil dis:%d", dis);
+            //log("CUtil dis:%d", dis);
             if (mindis == -1 || dis < mindis)
             {
                 mindis = dis;                 

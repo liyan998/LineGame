@@ -200,6 +200,9 @@
     <ClInclude Include="..\Classes\game\GameState.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\game\Runnable.h">
+      <Filter>Classes\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

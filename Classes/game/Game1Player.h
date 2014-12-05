@@ -3,11 +3,12 @@
 
 #include "System.h"
 #include "GameState.h"
+#include "Runnable.h"
 
 
 #define INDEX_NONE -1
 
-class CGamePlayer : public Node ,public CGameState
+class CGamePlayer : public Node ,public CGameState, public CRunnable
 {
 
 public:
@@ -29,6 +30,8 @@ public:
     virtual void setState(int state);
 
     virtual void released();
+
+    virtual void run(float time);
     //-----------------------------------------------------
 
     int getStep();
@@ -37,7 +40,7 @@ public:
    
     const Vec2& getPlsyerPosition();
 
-    void run(float time);
+   
 
     void setTarget(const Vec2& point);
 

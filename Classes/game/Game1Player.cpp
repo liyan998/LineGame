@@ -1,5 +1,6 @@
 #include "Game1Player.h"
 #include "util/Math.h"
+#include "util/Util.h"
 
 using namespace liyan998;
 
@@ -13,7 +14,7 @@ bool CGamePlayer::init()
     addChild(m_pSp);
                               
     setState(STATE_STOP); 
-    schedule(schedule_selector(CGamePlayer::run));
+    //schedule(schedule_selector(CGamePlayer::run));
 
     return true;
 }
@@ -90,37 +91,44 @@ void CGamePlayer::run(float time)
 	//log("plyer urn %d ,%d", m_State ,m_oAllGuide.size());
     switch (m_State)
     {
-    case STATE_RUN:                             
-
+    case STATE_RUN:
+    {
          int dis = ccpDistance(getPlsyerPosition(), m_oCurrentTarget);
 
          //log("target:%f,%f", m_oCurrentTarget.x, m_oCurrentTarget.y);
          if (dis < m_iStep)		 
          {               
-             //log("Distance:%d", dis);
-             if (m_oAllGuide.size() > 0)
-             {
-                 log("remove target %f, %f", m_oAllGuide[0].x, m_oAllGuide[0].y);
-                 m_oAllGuide.erase(m_oAllGuide.begin());
-             }
-            
-			 if (m_oAllGuide.size() < 1)
-			 {
-				 setState(STATE_STANDER);				
-			 }
-			 else
-			 { 	 
-                 setTarget(m_oAllGuide[0]);	
-             }	
-
+             setState(STATE_STANDER);
              return;
          }
-
+         
 		 m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
 		 Vec2 npos = CMath::getVec2(getPlsyerPosition(), m_iStep, CMath::angleToRadian(m_iCurrentDirect));
-		 m_pSp->setPosition(npos);  
-         //log("%d, %d" ,dis, m_oAllGuide.size());
+         //CUtil::formartGrid(npos); 
+
+         m_pSp->setPosition(npos);
+    }
                                            
+        break;
+    case STATE_STANDER:
+        if (m_oAllGuide.size() < 1)
+        {
+            setState(STATE_STOP);
+            break;
+        }        
+
+        Vec2 lasTarget = *m_oAllGuide.begin();
+
+        if (m_oCurrentTarget == lasTarget)
+        {
+            m_oAllGuide.erase(m_oAllGuide.begin());
+        }     
+
+        if (m_oAllGuide.size() < 1)
+        {
+            break;
+        }
+        setTarget(m_oAllGuide[0]);
         break;
     }
 }
@@ -132,19 +140,16 @@ void CGamePlayer::setState(int state)
     switch (state)
     {
     case STATE_RUN:
-        //log("Player is MoveSTATE!");
+        log("Player is MoveSTATE!");
         break;
     case STATE_STANDER:
-        m_oAllGuide.clear();
-        //log("Player is Stander");
-       
+        //m_oAllGuide.clear();
+        log("Player is Stander");       
         break;
-    case STATE_STOP:
-
+    case STATE_STOP:   
         m_oAllGuide.clear();
         log("Player is Stop");
         break;
-
     default:
         break;
     }

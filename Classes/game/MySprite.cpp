@@ -192,13 +192,13 @@ void CMySprite::setState(int state)
         //m_currentAngle = ANGLE_NONE;
         //clearGuide();
         clearGuide();
-        this->unschedule(schedule_selector(CMySprite::run));       
+        //this->unschedule(schedule_selector(CMySprite::run));       
         log("mysprite state STATE_STANDER");
-        m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
+        //m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
         //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
         break;
     case STATE_MOVE:     
-        this->unschedule(schedule_selector(CMySprite::run));
+        //this->unschedule(schedule_selector(CMySprite::run));
         m_currentAngle = ANGLE_NONE;
         
         log("mysprite state STATE_MOVE");
@@ -209,7 +209,7 @@ void CMySprite::setState(int state)
         //m_currentAngle = ANGLE_NONE;
        // clearGuide();  
         m_RefPlayer->setState(CGamePlayer::STATE_STOP);
-        schedule(schedule_selector(CMySprite::run));
+        //schedule(schedule_selector(CMySprite::run));
         checkBack();
         break;
     case STATE_CLOSE:      
@@ -222,7 +222,7 @@ void CMySprite::setState(int state)
         break;
     case STATE_DRAW:
         log("mysprite state STATE_DRAW");
-        schedule(schedule_selector(CMySprite::run));
+        //schedule(schedule_selector(CMySprite::run));
 
         break;
     }
@@ -1011,7 +1011,10 @@ void CMySprite::addGuide(const Vec2& point)
     m_oTPath.push_back(point);
     m_RefPath->m_oAllPoint.push_back(point);   
 
-    m_RefPlayer->addFollow(point);
+    if (m_State == STATE_DRAW)
+    {
+        m_RefPlayer->addFollow(point);
+    }
 }
 
 
@@ -1056,7 +1059,8 @@ void CMySprite::checkBack()
 
 
 void CMySprite::run(float tm)
-{                   
+{     
+    //log("mysprite run");
     switch (m_State)
     {
     case STATE_INIT:
@@ -1110,7 +1114,7 @@ void CMySprite::runback()
 
 void CMySprite::runGo()
 {
-    if (m_RefPlayer != nullptr && m_RefPlayer->getState() == CGamePlayer::STATE_STANDER)
+    if (m_RefPlayer != nullptr && m_RefPlayer->getState() == CGamePlayer::STATE_STOP)
     {
         
         m_RefShowArea->setState(CShowArea::STATE_CLOSE);

@@ -3,6 +3,7 @@
 
 #include "System.h"
 
+#include "Runnable.h"
 #include "GameState.h"
 #include "Path.h"
 #include "Game1Player.h"
@@ -23,7 +24,8 @@ class CShowArea;
 class CMySprite : 
 public Sprite,
 public CGameState, 
-public CRander
+public CRander ,
+public CRunnable
 {          
 
 public:         
@@ -51,6 +53,8 @@ public:
 	virtual void print(DrawNode* dn);
 
     virtual void released();
+
+    virtual void run(float time);        
 
 	//----------------------------------------------------
 
@@ -101,7 +105,7 @@ private:
 
 	int getAbsDistance();								//得到相对距离
 
-    void run(float tm);	
+   	
 
     //----------------------------------------------------------------------            
 

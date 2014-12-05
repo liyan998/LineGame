@@ -13,10 +13,13 @@ bool CShowArea::init()
     Sprite::init();   
     m_Model     = MODEL_OUT; 
 
-    m_pPath     = nullptr;        
+    m_RefPath   = nullptr;        
     m_pHandle   = nullptr;
 
-    Size visibleSize = Director::getInstance()->getVisibleSize();
+    //Size visibleSize = Director::getInstance()->getVisibleSize();
+
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    Size screen = Director::getInstance()->getVisibleSize();
 
     //--------------------------------------
 
@@ -30,7 +33,7 @@ bool CShowArea::init()
     log("CShowArea::init...");   
 
     auto pSprite = Sprite::create("HelloWorld.png");
-    pSprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+    pSprite->setPosition(screen.width / 2 + origin.x, screen.height / 2 + origin.y);
 	pSprite->setScale(2.0f); 
     addChild(pSprite);
                                         
@@ -53,17 +56,30 @@ bool CShowArea::init()
     //---------------------------------------------- 
 
     setMode(MODEL_OUT);
+
+    //------------------------------------------
+
+    unsigned int PARING = 40;
+    Size tBroader;
+    tBroader.width      = GRAD_NUMBER(screen.width - PARING * 2);
+    tBroader.height     = GRAD_NUMBER(screen.height - PARING * 2);
+
+    m_oAreaSize.size    = tBroader;
+
+    m_oAreaSize.origin = Vec2(
+        GRAD_NUMBER(screen.width / 2 + origin.x - tBroader.width / 2),
+        GRAD_NUMBER(screen.height / 2 + origin.y + tBroader.height / 2)
+        ); 
                                   
-   //----------------------------------------    
-	
-   Vec2 origin = Director::getInstance()->getVisibleOrigin();
-   Size screen = Director::getInstance()->getVisibleSize();
+   //----------------------------------------
+
+   unsigned int twh = 80;
 
    Rect rec(
-       GRAD_NUMBER(screen.width / 2 + origin.x - 40), 
-       GRAD_NUMBER(screen.height / 2 + origin.y + 40),
-       GRAD_NUMBER(80),       
-       GRAD_NUMBER(80)
+       GRAD_NUMBER(screen.width / 2 + origin.x - twh / 2),
+       GRAD_NUMBER(screen.height / 2 + origin.y + twh / 2),
+       GRAD_NUMBER(twh),
+       GRAD_NUMBER(twh)
        );
 
    addPoint(rec.origin);
@@ -224,9 +240,9 @@ void CShowArea::print(DrawNode* dn)
     {
         dn->drawDot(addArea[i], 10, Color4F(1, 1, 1, 0.2));
     }
-    for (int i = 0; i < m_pPath->m_oAllPoint.size(); i++)
+    for (int i = 0; i < m_RefPath->m_oAllPoint.size(); i++)
     {
-        dn->drawDot(m_pPath->m_oAllPoint[i], 10, Color4F(1, 1,0.5, 0.3));
+        dn->drawDot(m_RefPath->m_oAllPoint[i], 10, Color4F(1, 1,0.5, 0.3));
     }
 
 
@@ -239,6 +255,15 @@ void CShowArea::print(DrawNode* dn)
     getShape(SHAPEID_AREA)->setShape(addArea);
     getShape(SHAPEID_AREA)->setColor(Color4F(0, 1, 0.5, 1), Color4F(1, 1, 0, 0.2));
     getShape(SHAPEID_AREA)->draw(dn);
+
+
+    std::vector<Vec2> tRec;
+
+    tRec.push_back(m_oAreaSize.origin);
+    tRec.push_back(Vec2(m_oAreaSize.origin.x + m_oAreaSize.size.width, m_oAreaSize.origin.y));
+    tRec.push_back(Vec2(m_oAreaSize.origin.x + m_oAreaSize.size.width, m_oAreaSize.origin.y - m_oAreaSize.size.height));
+    tRec.push_back(Vec2(m_oAreaSize.origin.x, m_oAreaSize.origin.y - m_oAreaSize.size.height));
+    dn->drawPolygon(&tRec[0], 4, Color4F(1, 1, 1, 0), 1, Color4F(1, 1, 1, 1));
     
 }
 
@@ -275,7 +300,7 @@ CMargin* CShowArea::getMargin(int index)
 
 bool CShowArea::isCloseArea()
 {
-    if (m_pPath == nullptr || m_pPath->m_oAllPoint.size() < 2)
+    if (m_RefPath == nullptr || m_RefPath->m_oAllPoint.size() < 2)
     {
         return false;
     } 
@@ -383,9 +408,9 @@ void CShowArea::setState(int sta)
             clearAreaIndex();
         }     
         
-        if (m_pPath != NULL)
+        if (m_RefPath != NULL)
         {            
-            m_pPath->clearPoint();
+            m_RefPath->clearPoint();
         }        
 
         for (int i = 0; i < MAX_INDEX; i++)
@@ -406,19 +431,19 @@ void CShowArea::setState(int sta)
 
 void CShowArea::setPath(CPath* path)
 {
-    this->m_pPath = path;
+    this->m_RefPath = path;
 }
             
 
 int CShowArea::getPathType()
 {          
-    if (m_pPath->m_oAllPoint.size() < 1)
+    if (m_RefPath->m_oAllPoint.size() < 1)
     {
         return 0;
     }
 
-    const Vec2& tVStart = m_pPath->m_oAllPoint[0];
-    const Vec2& tVEnd   = *(m_pPath->m_oAllPoint.end() - 1);
+    const Vec2& tVStart = m_RefPath->m_oAllPoint[0];
+    const Vec2& tVEnd   = *(m_RefPath->m_oAllPoint.end() - 1);
 
     int startType = getPositionType(tVStart);
     int endType = getPositionType(tVEnd);
@@ -471,7 +496,7 @@ void CShowArea::clearAreaIndex()
 //     }   
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
-
+    log("currentDirect:%d", m_iRorate);
   
     int pathType = getPathType();
    
@@ -501,8 +526,8 @@ void CShowArea::clearAreaIndex()
 void CShowArea::closedLine_End()
 {                                          
 
-    const Vec2& vStart		= m_pPath->m_oAllPoint[0]; 
-    const Vec2& vEnd		= *(m_pPath->m_oAllPoint.end() - 1);     
+    const Vec2& vStart		= m_RefPath->m_oAllPoint[0]; 
+    const Vec2& vEnd		= *(m_RefPath->m_oAllPoint.end() - 1);     
 
     EndPointIterator epIter = m_oAllEndPoint.find(vStart);
 
@@ -510,7 +535,7 @@ void CShowArea::closedLine_End()
     TPoint* pEndPoint;            
 
 	std::vector<Vec2> tV1, tV2;
-    int pathdirect = CUtil::getRotateDirect(m_pPath->m_oAllPoint);   
+    int pathdirect = CUtil::getRotateDirect(m_RefPath->m_oAllPoint);   
 
     if (epIter != m_oAllEndPoint.end())
     {
@@ -525,7 +550,7 @@ void CShowArea::closedLine_End()
         while (pCurrentPoint->id != pEndPoint->id)
         {
             pCurrentPoint = pCurrentPoint->next;
-           // log("#%d", pCurrentPoint->id);
+           //log("#%d", pCurrentPoint->id);
             tV1.push_back(pCurrentPoint->vec);
         }
 
@@ -542,7 +567,7 @@ void CShowArea::closedLine_End()
     {
         log("point in brot");   
         pStartPoint				= getPoint(m_Area[0]);        
-        pEndPoint				= getPoint(*(m_pPath->m_oAllPoint.end() - 1));
+        pEndPoint				= getPoint(*(m_RefPath->m_oAllPoint.end() - 1));
 
 		TPoint* pCurrentPoint	= pStartPoint->next;       
 					
@@ -563,34 +588,37 @@ void CShowArea::closedLine_End()
 		}
     }
 
-    if (pathdirect == DIRECT_CLOCKWISE)
-    {
-        tV1.insert(tV1.begin(), m_pPath->m_oAllPoint.rbegin(), m_pPath->m_oAllPoint.rend());
-        tV2.insert(tV2.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-
-        addArea.insert(addArea.begin(), tV1.begin(), tV1.end());
-        resultArea.insert(resultArea.begin(), tV2.begin(), tV2.end());
-
-    }
-    else if (pathdirect == DIRECT_ANTICCLOCKWISE)
-    {
-        tV1.insert(tV1.begin(), m_pPath->m_oAllPoint.rbegin(), m_pPath->m_oAllPoint.rend());
-        tV2.insert(tV2.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
-
-        addArea.insert(addArea.begin(), tV2.begin(), tV2.end());
-        resultArea.insert(resultArea.begin(), tV1.begin(), tV1.end());
-    }
-    else{       
+    log("pathdirect:%d" ,pathdirect);
+//     if (pathdirect == DIRECT_CLOCKWISE)
+//     {
+//         tV1.insert(tV1.begin(), m_RefPath->m_oAllPoint.rbegin(), m_RefPath->m_oAllPoint.rend());
+//         tV2.insert(tV2.begin(), m_RefPath->m_oAllPoint.begin(), m_RefPath->m_oAllPoint.end());
+// 
+// //         addArea.insert(addArea.begin(), tV1.begin(), tV1.end());
+// //         resultArea.insert(resultArea.begin(), tV2.begin(), tV2.end());
+// 
+//     }
+//     else if (pathdirect == DIRECT_ANTICCLOCKWISE)
+//     {
+//         tV1.insert(tV1.begin(), m_RefPath->m_oAllPoint.rbegin(), m_RefPath->m_oAllPoint.rend());
+//         tV2.insert(tV2.begin(), m_RefPath->m_oAllPoint.begin(), m_RefPath->m_oAllPoint.end());
+// 
+// //         addArea.insert(addArea.begin(), tV2.begin(), tV2.end());
+// //         resultArea.insert(resultArea.begin(), tV1.begin(), tV1.end());
+//     }
+//     else{       
         
-        tV1.insert(tV1.begin(), m_pPath->m_oAllPoint.rbegin(), m_pPath->m_oAllPoint.rend());
-        tV2.insert(tV2.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end()); 
+        tV1.insert(tV1.begin(), m_RefPath->m_oAllPoint.rbegin(), m_RefPath->m_oAllPoint.rend());
+        tV2.insert(tV2.begin(), m_RefPath->m_oAllPoint.begin(), m_RefPath->m_oAllPoint.end()); 
         
-        int area1 = CUtil::getCountPointInPloyon(tV1, tV2);
-        int area2 = CUtil::getCountPointInPloyon(tV2, tV1);
+//    }
+        int area1 = CUtil::getCountPointInRec(tV1, tV2);
+        int area2 = CUtil::getCountPointInRec(tV2, tV1);
 
-        //log("area1:%d , area2:%d", area1, area2);
+        log("V1:%d , V2:%d", tV1.size(), tV2.size());
+        log("area1:%d , area2:%d", area1, area2);
 
-        if (area1 > area2)
+        if (area1 < area2)
         {
             addArea.insert(addArea.begin(), tV2.begin(), tV2.end());
             resultArea.insert(resultArea.begin(), tV1.begin(), tV1.end());
@@ -600,7 +628,6 @@ void CShowArea::closedLine_End()
             addArea.insert(addArea.begin(), tV1.begin(), tV1.end());
             resultArea.insert(resultArea.begin(), tV2.begin(), tV2.end());
         } 
-    }
 
   selectArea();
 
@@ -622,8 +649,8 @@ void CShowArea::closedEnd_End()
 {
 	std::vector<Vec2> toV1, toV2;
 	
-	Vec2 start          = m_pPath->m_oAllPoint[0];
-	Vec2 end            = *(m_pPath->m_oAllPoint.end() - 1);
+	Vec2 start          = m_RefPath->m_oAllPoint[0];
+	Vec2 end            = *(m_RefPath->m_oAllPoint.end() - 1);
 
 	TPoint* pStart	    = getPoint(start);
 	TPoint* pEnd	    = getPoint(end);
@@ -632,7 +659,7 @@ void CShowArea::closedEnd_End()
 
 	while (pCurrent->vec != pEnd->vec)
 	{
-        log("#%d", pCurrent->id);
+        //log("#%d", pCurrent->id);
 		toV1.push_back(pCurrent->vec);
 		pCurrent = pCurrent->next;
 	}
@@ -641,50 +668,53 @@ void CShowArea::closedEnd_End()
 
 	while (pCurrent->vec != pStart->vec)
 	{
-        log("$%d", pCurrent->id);
+        //log("$%d", pCurrent->id);
 		toV2.push_back(pCurrent->vec);
 		pCurrent = pCurrent->next;
 	} 	
 	toV2.push_back(pCurrent->vec);
 	
 
-	int pathdirect = CUtil::getRotateDirect(m_pPath->m_oAllPoint);
+	int pathdirect = CUtil::getRotateDirect(m_RefPath->m_oAllPoint);
 
-	if (pathdirect == DIRECT_CLOCKWISE)
-	{
-		toV1.insert(toV1.end(), m_pPath->m_oAllPoint.rbegin() + 1, m_pPath->m_oAllPoint.rend() - 1);	
-		toV2.insert(toV2.end(), m_pPath->m_oAllPoint.begin() + 1, m_pPath->m_oAllPoint.end() - 1);
-		//--------------------------------------------
-		addArea.insert(addArea.begin(), toV1.begin(), toV1.end());
-		resultArea.insert(resultArea.begin(), toV2.begin(), toV2.end() );
-	}
-	else if (pathdirect == DIRECT_ANTICCLOCKWISE)
-	{
-		toV1.insert(toV1.end(), m_pPath->m_oAllPoint.rbegin() + 1, m_pPath->m_oAllPoint.rend() - 1);
-		toV2.insert(toV2.end(), m_pPath->m_oAllPoint.begin() + 1, m_pPath->m_oAllPoint.end() - 1);
+	toV1.insert(toV1.end(), m_RefPath->m_oAllPoint.rbegin() + 1, m_RefPath->m_oAllPoint.rend() - 1);	
+	toV2.insert(toV2.end(), m_RefPath->m_oAllPoint.begin() + 1, m_RefPath->m_oAllPoint.end() - 1);
+// 	if (pathdirect == DIRECT_CLOCKWISE)
+// 	{
+// 		//--------------------------------------------
+// // 		addArea.insert(addArea.begin(), toV1.begin(), toV1.end());
+// // 		resultArea.insert(resultArea.begin(), toV2.begin(), toV2.end() );
+// 	}
+// 	else if (pathdirect == DIRECT_ANTICCLOCKWISE)
+// 	{
+// 		toV1.insert(toV1.end(), m_RefPath->m_oAllPoint.rbegin() + 1, m_RefPath->m_oAllPoint.rend() - 1);
+// 		toV2.insert(toV2.end(), m_RefPath->m_oAllPoint.begin() + 1, m_RefPath->m_oAllPoint.end() - 1);
+// 
+// // 		addArea.insert(addArea.begin(), toV2.begin(), toV2.end());
+// // 		resultArea.insert(resultArea.begin(), toV1.begin(), toV1.end());
+// 	}
+//     else
+//     {      
+//         toV2.insert(toV2.end(), m_RefPath->m_oAllPoint.begin() + 1, m_RefPath->m_oAllPoint.end() - 1);
+//         toV1.insert(toV1.end(), m_RefPath->m_oAllPoint.rbegin() + 1, m_RefPath->m_oAllPoint.rend() - 1);
+//            
+//     }   
 
-		addArea.insert(addArea.begin(), toV2.begin(), toV2.end());
-		resultArea.insert(resultArea.begin(), toV1.begin(), toV1.end());
-	}
+    int area1 = CUtil::getCountPointInRec(toV1, toV2);
+    int area2 = CUtil::getCountPointInRec(toV2, toV1);
+
+    log("V1:%d , V2:%d", toV1.size(), toV2.size());
+    log("area1:%d , area2:%d", area1, area2);
+    if (area1 < area2)
+    {
+        addArea.insert(addArea.begin(), toV2.begin(), toV2.end());
+        resultArea.insert(resultArea.begin(), toV1.begin(), toV1.end());
+    }
     else
-    {      
-        toV2.insert(toV2.end(), m_pPath->m_oAllPoint.begin() + 1, m_pPath->m_oAllPoint.end() - 1);
-        toV1.insert(toV1.end(), m_pPath->m_oAllPoint.rbegin() + 1, m_pPath->m_oAllPoint.rend() - 1);
-           
-        int area1 = CUtil::getCountPointInPloyon(toV1, toV2);
-        int area2 = CUtil::getCountPointInPloyon(toV2, toV1);
-
-        if (area1 > area2)
-        {
-            addArea.insert(addArea.begin(), toV2.begin(), toV2.end());
-            resultArea.insert(resultArea.begin(), toV1.begin(), toV1.end());
-        }
-        else
-        {
-            addArea.insert(addArea.begin(), toV1.begin(), toV1.end());
-            resultArea.insert(resultArea.begin(), toV2.begin(), toV2.end());
-        }       
-    }   
+    {
+        addArea.insert(addArea.begin(), toV1.begin(), toV1.end());
+        resultArea.insert(resultArea.begin(), toV2.begin(), toV2.end());
+    }
 	selectArea();
 }
 
@@ -702,19 +732,19 @@ void CShowArea::closedLine_Line()
         //------------------------------------------------------
         CMargin* margin = getMargin(start);
 
-        Vec2 sv = *m_pPath->m_oAllPoint.begin();
-        Vec2 ev = *(m_pPath->m_oAllPoint.end() - 1);
+        Vec2 sv = *m_RefPath->m_oAllPoint.begin();
+        Vec2 ev = *(m_RefPath->m_oAllPoint.end() - 1);
         int angle = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(sv, ev)));
 
         if (angle != margin->m_Angle)
         {
-            std::reverse(m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+            std::reverse(m_RefPath->m_oAllPoint.begin(), m_RefPath->m_oAllPoint.end());
         }
         //-----------------------------------------------------------------------------
 
-        tempV1.insert(tempV1.begin(), m_pPath->m_oAllPoint.begin(), m_pPath->m_oAllPoint.end());
+        tempV1.insert(tempV1.begin(), m_RefPath->m_oAllPoint.begin(), m_RefPath->m_oAllPoint.end());
 
-        TPoint* tlink = getTempHead(m_pPath->m_oAllPoint);
+        TPoint* tlink = getTempHead(m_RefPath->m_oAllPoint);
         TPoint* tend = getTempEnd(tlink);
 
         TPoint* next = current->next;
@@ -752,24 +782,24 @@ void CShowArea::closedLine_Line()
         {
             current = current->next;
             tempV1.push_back(current->vec);
-            log("# %d",current->id);
+            //log("# %d",current->id);
         }
-        tempV1.insert(tempV1.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+        tempV1.insert(tempV1.begin(), m_RefPath->m_oAllPoint.crbegin(), m_RefPath->m_oAllPoint.crend());
 
         current = startPoint;
         while (current->id != endPoint->id)
         {
-            log("$ %d", current->id);    
+            //log("$ %d", current->id);    
             tempV2.push_back(current->vec);
             current = current->preview;
         }
-        tempV2.insert(tempV2.begin(), m_pPath->m_oAllPoint.crbegin(), m_pPath->m_oAllPoint.crend());
+        tempV2.insert(tempV2.begin(), m_RefPath->m_oAllPoint.crbegin(), m_RefPath->m_oAllPoint.crend());
 
         //--------------------------------------------------------------
 
         int c1 = CUtil::getCountPointInPloyon(tempV1, tempV2);
         int c2 = CUtil::getCountPointInPloyon(tempV2, tempV1);
-        int rdirect = CUtil::getRotateDirect(m_pPath->m_oAllPoint);
+        int rdirect = CUtil::getRotateDirect(m_RefPath->m_oAllPoint);
 
         log("c1:%d , c2:%d" , c1, c2);
         if (c1 > c2)
@@ -807,8 +837,8 @@ void CShowArea::closedLine_Line()
 
 void CShowArea::selectArea()
 {
-    clearSameLineNode(addArea);
-    clearSameLineNode(resultArea);
+    clearSameDirectNode(addArea);
+    clearSameDirectNode(resultArea);
 
 
 	std::vector<Vec2>* pResult;
@@ -833,10 +863,17 @@ void CShowArea::selectArea()
 
 	getAllPoint(m_oAllPoint);
 
-    clearSameLineNode(m_oAllPoint);
+    clearSameDirectNode(m_oAllPoint);
 	m_iRorate = CUtil::getRotateDirect(m_oAllPoint);
 
 	log("Rotate:%d", m_iRorate);
+
+    if (m_iRorate == DIRECT_ANTICCLOCKWISE)
+    {
+        log("fan roate~~~~~~~~~~~~~~~~~~");
+    }
+
+
 	getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
 }
 
@@ -894,7 +931,8 @@ bool CShowArea::hasPointInArea(const Vec2& point)
 
 bool CShowArea::hasIncludeMaster()
 { 
-    return CUtil::hasPointInPloyon(addArea, Vec2(100, 500));
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    return CUtil::hasPointInPloyon(addArea, Vec2(100 + origin.x, 500 + origin.y));
 }
 
 
@@ -1081,7 +1119,7 @@ float CShowArea::getArea()
 
     //--------------------------------------------------------------------
 
-    Size visSize = Director::getInstance()->getVisibleSize();  
+    Size visSize = m_oAreaSize.size;  
 
     float totalarea = visSize.width * visSize.height;
     float currentarea = total;
@@ -1177,12 +1215,13 @@ void CShowArea::getAllPoint(std::vector<Vec2>& outputVec)
     }      
 
     log("Size : %d", outputVec.size());
-    clearSameLineNode(outputVec);
+    clearSamePointNode(outputVec);
+    clearSameDirectNode(outputVec);
     log("Size : %d" , outputVec.size());      
 }
 
 
-void CShowArea::clearSameLineNode(std::vector<Vec2>& outputVec)
+void CShowArea::clearSameDirectNode(std::vector<Vec2>& outputVec)
 {                       
     int direct = ANGLE_NONE;
     Vec2 prV(Vec2::ZERO);
@@ -1237,6 +1276,27 @@ void CShowArea::clearSameLineNode(std::vector<Vec2>& outputVec)
     {                
         addPoint(outputVec[i]);
     }
+}
+
+
+void CShowArea::clearSamePointNode(std::vector<Vec2>& outPutVec)
+{
+
+    std::vector<int> allDel;
+
+    for (int i = 0; i < outPutVec.size();i++)
+    {
+        for (int j = i; j < outPutVec.size();j++)
+        {               
+            if (i != j && outPutVec[i] == outPutVec[j])
+            {      
+                log("Del same node ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                allDel.push_back(i);                
+            }
+        }
+    }
+
+
 }
 
 
