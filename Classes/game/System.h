@@ -52,10 +52,12 @@ using namespace cocos2d;
 
 ////////////////////////////////////////////////////////////
 
-#define POSITION_ENDPOINT   10  //端点上
-#define POSITION_LINE       11  //直线上 
-#define POSITION_LOCK       20  //未解锁区域 
-#define POSITION_UNLOCK     30  //解锁区域
+#define POSITION_AREA_ENDPOINT              10  //端点上
+#define POSITION_AREA_LINE                  11  //直线上 
+#define POSITION_LOCK                       20  //未解锁区域 
+#define POSITION_UNLOCK                     30  //解锁区域
+#define POSITION_BORDER_ENDPOINT            40  //游戏边界端点上
+#define POSITION_BORDER_LINE                41  //游戏边界线上
 
 ////////////////////////////////////////////////////////////
 

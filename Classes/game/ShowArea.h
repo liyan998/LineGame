@@ -85,6 +85,8 @@ public:
 
     virtual bool init() override;
 
+    virtual void onExit() override;
+
     virtual void print(DrawNode* dn);                                   //
 
     virtual void setState(int state);                                   //设置状态
@@ -101,7 +103,9 @@ public:
 
     void clearAreaIndex();                                              //清除区间
 
-    CMargin* getMargin(int index);                                      //得到边界对象
+    CMargin* getAreaMargin(int index);                                  //得到area边界对象
+
+    CMargin* getBorderMargin(const Vec2& inPoint);                      //得到border边界对象
 
     bool isCloseArea();                                                 //区域是否闭合     
  
@@ -113,9 +117,11 @@ public:
 
     int getMode();                                                      //得到划线模式  
 
-    void getMoveAble(const Vec2& inPoint, std::vector<int>& outDirect); //返回可行走区域
+    void getAreaMoveAvable(const Vec2& inPoint, std::vector<int>& outDirect); //返回Area可行走方向
 
-    int getMarginDirect(int direct);                                    //得到边界上的可行走方向 
+    int getMiniAreaDis(const Vec2& inSP, int angle);                    //得到最近的解锁区域边界距离
+
+    int getMarginDirect(int direct);                                    //得到AreaMargin垂直可走方向 
 
     float getArea();                                                    //已解锁面积
 
@@ -133,7 +139,10 @@ public:
 
     bool hasOverLoad(const Vec2& inSP, Vec2& inCP, int angle, int& outIndex);   //是否过界
 
-    int getMiniWallDis(const Vec2& inSP, int angle);    //得到最近的障碍距离
+
+    int getBorderDis(const Vec2& inSP, int angle);                      //得到运动趋势距边界距离
+
+    void getBorderMoveAvable(const Vec2& inPoint, std::vector<int>& outDirect);
 
     std::vector< Vec2 > resultArea, addArea;
 
@@ -192,16 +201,19 @@ private:
     DrawNode*                       m_pDrawNode;                        //  
     ClippingNode*                   m_pClip;                            //
 
-    TPoint*                         m_pHandle;                          
-    std::vector< Vec2 >             m_oAllPoint;
-    std::vector< int >              m_oAllMargin;                       // 
+    TPoint*                         m_pHandle;                          //
+    std::vector< Vec2 >             m_oAllPoint;                        //解锁区域节点
+    std::vector< int >              m_oAllMargin;                       //解锁区域边界 
 
-    Rect                            m_oAreaSize;                        //解锁范围
+    Rect                            m_oAreaSize;                        //
+    std::vector< Vec2 >             m_oBorder;                          //
+    std::vector< CMargin* >         m_oBorderMargin;                    //border边界
+    std::map< Vec2, unsigned int>   m_oBorderEndPoint;                  //border边界端点可行走方向
 
 	int								m_iRorate;							//方向
     int                             m_Model;                            //模式
 
-    std::map<Vec2, unsigned int>    m_oAllEndPoint;                     //所有端点可行走区域
+    std::map<Vec2, unsigned int>    m_oAreaEndPoint;                    //端点可行走区域
 
     int                             m_Area[MAX_INDEX];                  //边界ID    
     std::map<int, CShape*>          m_oAllShape;                        //图形集合    

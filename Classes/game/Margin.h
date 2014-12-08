@@ -25,7 +25,11 @@ public:
 
 public:
 
-    CMargin():m_pDrawNode(nullptr){};
+    CMargin() :
+        m_pDrawNode(nullptr),
+        m_Angle(ANGLE_NONE),
+        m_iMarginAvable(ANGLE_NONE),
+        m_iAvable(0){};
     
     virtual bool init();
 
@@ -38,6 +42,8 @@ public:
 
     void setAvableDirect(int direct);
 
+    void setAvableDirect();
+
 private:
 
     void addPointToMap(const Vec2& inPoint,
@@ -45,15 +51,15 @@ private:
 
 public:
   
-    Vec2 m_oStart;
-    Vec2 m_oTaget;
+    Vec2          m_oStart;
+    Vec2          m_oTaget;
 
-    DrawNode*                   m_pDrawNode;
+    DrawNode*     m_pDrawNode;
 
-    int                         m_Angle;
+    int           m_Angle;                //angle
 
-    int                         m_iMarginAvable;                  //与模式依赖边界可行走方向
-    int                         m_iAvable;                        //可行走方向
+    int           m_iMarginAvable;        //与模式依赖边界可行走方向 ANGLE_XXX
+    int           m_iAvable;              //可行走方向 0000 FFFF 上下左右
 
     
     

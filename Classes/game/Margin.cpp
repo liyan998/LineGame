@@ -114,7 +114,25 @@ void CMargin::setAvableDirect(int direct)
     this->m_iMarginAvable = direct;
 
 
-    m_iAvable |= CUtil::converDirectToFlag(direct);
+    setAvableDirect();
+}
+
+
+
+/************************************************************************/
+/* 
+@brief          根据m_iMarginAvable设置在边界上可行走方向
+@param[in]      
+@param[out]
+@return         void
+
+*/
+/************************************************************************/
+void CMargin::setAvableDirect()
+{
+    m_iAvable |= CUtil::converDirectToFlag(m_iMarginAvable);
     m_iAvable |= CUtil::converDirectToFlag(m_Angle);
     m_iAvable |= CUtil::converDirectToFlag(CUtil::getRevceDircet(m_Angle));
+
+    log("%x", m_iAvable);
 }

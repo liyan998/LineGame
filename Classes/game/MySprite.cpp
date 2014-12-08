@@ -174,7 +174,7 @@ void CMySprite::setState(int state)
     case STATE_INIT:
     {                                                        
                        int setLine      = 0;     
-                       CMargin* margin  = m_RefShowArea->getMargin(setLine);
+                       CMargin* margin  = m_RefShowArea->getAreaMargin(setLine);
                        m_curMarginIndex = setLine;                                              
                        float dis        = ccpDistance(margin->m_oStart, margin->m_oTaget);
                        int ranint       = CMath::getRandom(0, dis);
@@ -304,20 +304,23 @@ void CMySprite::onMove(const Vec2& point)
         break;
     case STATE_STANDER:
         break;
-    case STATE_DRAW: 
-        checkDirect(point);                            
-        if (!hasMoveAction())
+    case STATE_DRAW:
+    {   
+        checkDirect(point);
+        ;
+        if (!hasInBorder()||!hasMoveAction())
         {
             log("don't move it");
             return;
-        }                        
-        
-        onDrawToClose(point); 
-        playerMove(m_oSpCurrentPos);       
+        }
+        onDrawToClose(point);
+        playerMove(m_oSpCurrentPos);
+    }
         break;
     case STATE_MOVE:
     {                           
         checkDirect(point);
+        //hasInBorder();
         hasBreakMoveInLine();
         if (!hasMoveAction())
         {
@@ -329,7 +332,7 @@ void CMySprite::onMove(const Vec2& point)
         fixPosition(point, m_oSpCurrentPos);        
         //---------------------------------   
         playerMove(m_oSpCurrentPos);      
-        //---------------------------------------- 1
+        //----------------------------------------
     }
         break;
     default:
@@ -386,31 +389,100 @@ void CMySprite::onReleased(const Vec2& pointer)
 bool CMySprite::hasMoveAction()
 {   
     std::vector<int> abv; 
+    //border
+    m_RefShowArea->getBorderMoveAvable(m_oSpCurrentPos, abv);
+    
+    if (!hasAccessBorder(abv))
+    {
+        return false;
+    }                          
+
+    log("zhuai11~~~~~%f,%f", m_oSpCurrentPos.x, m_oSpCurrentPos.y);
+    log("currentdirect:%d, %d", m_currentAngle, abv.size());
 
     switch (getState())
     {
-    case STATE_MOVE:
-    {
-       m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
-    }              
+    case STATE_MOVE:    
+       m_RefShowArea->getAreaMoveAvable(m_oSpCurrentPos, abv);               
         break;
     case STATE_DRAW:
        m_RefPath->getMoveAble(m_currentAngle, m_oSpCurrentPos, abv);
         break;        
-    }       
+    }     
 
-    //log("currentdirect:%d, %d", m_currentAngle, abv.size());
+
+
+
 //     
     for (int i = 0; i < abv.size();i++)
     {
         if (m_currentAngle == abv[i])
-        {
+        {    
+           
             return true;
         }
     }                         
     return false;
 }
 
+
+bool CMySprite::hasAccessBorder(const std::vector<int>& alldirect)
+{
+    if (alldirect.size() == 0)
+    {
+        return true;
+    }
+
+    for (int i = 0; i < alldirect.size(); i++)
+    {
+        log("~~%d", alldirect[i]);
+        if (m_currentAngle == alldirect[i])
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+/************************************************************************/
+/* 
+* @brief        是否与边界发生相交，限制在边界上
+* @param[in]    
+* @param[out]
+* @return       void
+*/
+/************************************************************************/
+bool CMySprite::hasInBorder()
+{
+
+    int dis = m_RefShowArea->getBorderDis(m_oSpStartPos, m_currentAngle);
+    if (dis == -1)
+    {
+        log("border = -1");
+        return false;
+    }                              
+
+    int currdis = ccpDistance(m_oSpStartPos, m_oSpCurrentPos);
+    log("border dis:%d  , current Dis:%d", dis, currdis); 
+
+    if (currdis + GRAD_CELL >= dis)
+    {
+
+        Vec2 stopVec2 = CMath::getVec2(m_oSpStartPos, currdis, CMath::angleToRadian(m_currentAngle));
+        CUtil::formartGrid(stopVec2);
+
+        m_oSpCurrentPos = stopVec2;
+
+
+
+        log("zhuai~~~~~%f,%f", m_oSpCurrentPos.x, m_oSpCurrentPos.y);
+        return false;
+    }
+
+    return true;
+}
 
 
 void CMySprite::onDrawToClose(const Vec2& inPoint)
@@ -448,9 +520,9 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
 
         switch (m_RefShowArea->getPathType())
         {
-        case POSITION_ENDPOINT + POSITION_ENDPOINT:
-        case POSITION_LINE + POSITION_LINE:
-        case POSITION_LINE + POSITION_ENDPOINT:         
+        case POSITION_AREA_ENDPOINT + POSITION_AREA_ENDPOINT:
+        case POSITION_AREA_LINE + POSITION_AREA_LINE:
+        case POSITION_AREA_LINE + POSITION_AREA_ENDPOINT:         
             m_RefShowArea->setAreaIndex(1, index);
             m_curMarginIndex = index;                                             
             setState(STATE_CLOSE);                                      
@@ -506,7 +578,7 @@ void CMySprite::onStander(const Vec2& inPoint)
 
         log("location position %d", selectindex);
 
-        CMargin* tMargin = m_RefShowArea->getMargin(selectindex);
+        CMargin* tMargin = m_RefShowArea->getAreaMargin(selectindex);
         Vec2 refp = CMath::getFootPoint(tMargin->m_oStart, tMargin->m_oTaget, inPoint);
         CMath::getIntPoint(refp);
 
@@ -553,7 +625,7 @@ void CMySprite::onMoveToDraw()
 
             int startpostype = m_RefShowArea->getPositionType(m_oGuideLStart);
             //log("StartPositionType:%d", startpostype);                   
-            if (startpostype == POSITION_LINE)
+            if (startpostype == POSITION_AREA_LINE)
             {                                        
                 int index = m_RefShowArea->getTargetIndex(m_oGuideLStart);
                 m_RefShowArea->setAreaIndex(0, index);
@@ -563,8 +635,8 @@ void CMySprite::onMoveToDraw()
             setState(STATE_DRAW);
         }
         break;
-    case POSITION_LINE:
-    case POSITION_ENDPOINT:       
+    case POSITION_AREA_LINE:
+    case POSITION_AREA_ENDPOINT:       
         log("POSITION_ENDPOINT + POSITION_LINE");
         //log("min %f, %f", m_oSpCurrentPos.x ,m_oSpCurrentPos.y);
         m_oGuideLStart = m_oSpCurrentPos;
@@ -619,27 +691,24 @@ void CMySprite::onMoveToDraw()
 //             setState(STATE_DRAW);
 //         }
 }
-        
 
 bool CMySprite::hasBreakMoveInLine()
 {                   
     CUtil::formartGrid(m_oSpCurrentPos);
 
-    int dis = m_RefShowArea->getMiniWallDis(m_oSpStartPos, m_currentAngle);
+    int dis = m_RefShowArea->getMiniAreaDis(m_oSpStartPos, m_currentAngle);
     if (dis == -1)
     {
         //
         m_oGuideLStart = m_oSpStartPos; 
         m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
         return false;
-    }
-    
+    }                                              
 
     //------------------------------------------------------------------------
 
     int currentdis = ccpDistance(m_oSpCurrentPos, m_oSpStartPos);
-    //log("Dis:%d, currentDis:%d", dis,currentdis);
-
+    //log("Dis:%d, currentDis:%d", dis,currentdis);  
      
     
     int postype = m_RefShowArea->getPositionType(m_oSpCurrentPos);
@@ -960,7 +1029,7 @@ void CMySprite::print(DrawNode* dn)
     switch (getState())
     {
     case STATE_MOVE:
-        m_RefShowArea->getMoveAble(m_oSpCurrentPos, abv);
+        m_RefShowArea->getAreaMoveAvable(m_oSpCurrentPos, abv);
         break;
     case STATE_DRAW:
         m_RefPath->getMoveAble(m_currentAngle, m_oSpCurrentPos, abv);
@@ -1043,8 +1112,7 @@ void CMySprite::checkBack()
         //adsorption(m_oSpCurrentPos, m_oSpCurrentPos);
         m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
 
-        clearGuide();
-
+        clearGuide(); 
         setState(STATE_STANDER);      
     }
 	else
@@ -1115,13 +1183,10 @@ void CMySprite::runback()
 void CMySprite::runGo()
 {
     if (m_RefPlayer != nullptr && m_RefPlayer->getState() == CGamePlayer::STATE_STOP)
-    {
-        
+    {                                          
         m_RefShowArea->setState(CShowArea::STATE_CLOSE);
-
         float area = m_RefShowArea->getArea();
-        log(" Area :%f", area);
-      
+        log(" Area :%f", area);     
 
         if (area > WINPART)
         {
@@ -1129,22 +1194,16 @@ void CMySprite::runGo()
             m_RefGameView->setState(CGameView::STATE_WIN);
         }
         else
-        {
-
+        {                       
             setState(STATE_STANDER);
-        }
-
-       
+        }     
     } 
 } 
            
 
 void CMySprite::released()
 {
-    m_RefPlayer = nullptr;
-    m_RefPath = nullptr;
-    m_RefShowArea = nullptr;
-    
-
-
+    m_RefPlayer     = nullptr;
+    m_RefPath       = nullptr;
+    m_RefShowArea   = nullptr;
 }

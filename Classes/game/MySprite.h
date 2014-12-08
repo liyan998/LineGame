@@ -98,13 +98,11 @@ private:
 
 	void checkDirect(const Vec2& inPos);				//方向检查
 
-	void changeDirect(const Vec2& inPos ,int angle);    //方向改变
-    
+	void changeDirect(const Vec2& inPos ,int angle);    //方向改变   
 
     bool hasRevceDircet(int direct, int fixangle);      //是否相向运动
 
 	int getAbsDistance();								//得到相对距离
-
    	
 
     //----------------------------------------------------------------------            
@@ -136,6 +134,12 @@ private:
     bool hasMoveAction();
 
     bool hasBreakMoveInLine();
+
+    bool hasInBorder();
+
+    bool hasAccessBorder(const std::vector<int>& alldirect);
+
+    void getBorderMoveAvable(const Vec2& inPoint, std::vector<int> outDirects); //得到在border上可行走方向
   
 
 
