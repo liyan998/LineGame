@@ -79,16 +79,39 @@ void CGameView::onEnter()
 	m_oAllRander.push_back(m_pSp);
     m_oAllRander.push_back(m_pShowArea);
     m_oAllRander.push_back(m_pPath); 
-
+    
     //----------------------------------------  
 
     m_oAllRunner.push_back(m_pSp);
     m_oAllRunner.push_back(m_pPlayer);
+    m_oAllRunner.push_back(m_pGameLogic);
 	
-    //------------------------------------------  
+    //------------------------------------------ 
+
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_TEST, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_TEST, this);
 
     setState(STATE_INIT);                         
 	schedule(schedule_selector(CGameView::run));
+
+}
+
+
+void CGameView::actionEvent(int eventid, EventParm data)
+{
+    switch (eventid)
+    {
+    case EVENT_TEST:
+    {
+                       int a = *(static_cast<int*>(data));
+                       log("GameView Event_Test:%d", a);
+
+    }
+        break;
+    default:
+        break;
+    }
+
 
 }
 

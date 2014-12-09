@@ -307,8 +307,12 @@ void CMySprite::onMove(const Vec2& point)
     case STATE_DRAW:
     {   
         checkDirect(point);
-        ;
-        if (!hasInBorder()||!hasMoveAction())
+        if (!hasInBorder())
+        {
+            log("draw _ inBorder~~~~~~");
+            return;
+        }
+        if (!hasMoveAction())
         {
             log("don't move it");
             return;
@@ -389,16 +393,8 @@ void CMySprite::onReleased(const Vec2& pointer)
 bool CMySprite::hasMoveAction()
 {   
     std::vector<int> abv; 
-    //border
-    m_RefShowArea->getBorderMoveAvable(m_oSpCurrentPos, abv);
-    
-    if (!hasAccessBorder(abv))
-    {
-        return false;
-    }                          
+                       
 
-    log("zhuai11~~~~~%f,%f", m_oSpCurrentPos.x, m_oSpCurrentPos.y);
-    log("currentdirect:%d, %d", m_currentAngle, abv.size());
 
     switch (getState())
     {
@@ -426,24 +422,6 @@ bool CMySprite::hasMoveAction()
 }
 
 
-bool CMySprite::hasAccessBorder(const std::vector<int>& alldirect)
-{
-    if (alldirect.size() == 0)
-    {
-        return true;
-    }
-
-    for (int i = 0; i < alldirect.size(); i++)
-    {
-        log("~~%d", alldirect[i]);
-        if (m_currentAngle == alldirect[i])
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
 
 
 /************************************************************************/
@@ -451,33 +429,41 @@ bool CMySprite::hasAccessBorder(const std::vector<int>& alldirect)
 * @brief        是否与边界发生相交，限制在边界上
 * @param[in]    
 * @param[out]
-* @return       void
+* @return       bool    
 */
 /************************************************************************/
 bool CMySprite::hasInBorder()
 {
 
-    int dis = m_RefShowArea->getBorderDis(m_oSpStartPos, m_currentAngle);
+    int dis = m_RefShowArea->getBorderDis(m_oSpStartPos, m_currentAngle); 
+    //log("dis = %d, angle:%d",dis,  m_currentAngle);
     if (dis == -1)
     {
-        log("border = -1");
         return false;
-    }                              
+    }
+
+                               
 
     int currdis = ccpDistance(m_oSpStartPos, m_oSpCurrentPos);
-    log("border dis:%d  , current Dis:%d", dis, currdis); 
+    //log("border dis:%d  , current Dis:%d", dis, currdis); 
 
     if (currdis + GRAD_CELL >= dis)
-    {
-
-        Vec2 stopVec2 = CMath::getVec2(m_oSpStartPos, currdis, CMath::angleToRadian(m_currentAngle));
+    {                              
+        Vec2 stopVec2 = CMath::getVec2(m_oSpStartPos, dis - GRAD_CELL, CMath::angleToRadian(m_currentAngle));
         CUtil::formartGrid(stopVec2);
 
-        m_oSpCurrentPos = stopVec2;
+        m_RefPlayer->fixTargetPostion(m_oSpCurrentPos, stopVec2);
+        m_oSpCurrentPos     = stopVec2;
+        m_oAbsStartPos      = m_oAbsEndPos;
 
 
+       // m_oSpStartPos       = m_oSpCurrentPos;
 
-        log("zhuai~~~~~%f,%f", m_oSpCurrentPos.x, m_oSpCurrentPos.y);
+        //m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
+        //m_RefPlayer->setTarget(m_oSpCurrentPos);
+
+        //log("dis < currentdis %f,%f", m_oSpCurrentPos.x, m_oSpCurrentPos.y);
+
         return false;
     }
 
@@ -497,14 +483,15 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
 
 
     //-----------------------------------------------------------       
-
+    //path over load
     if (m_RefPath->hasOverLoad(m_oSpStartPos, m_oSpCurrentPos, m_currentAngle))
     {
         //log("over load~~~~~~~~~~~~~~~~~~~~~");
         return;
     }
 
-    //过界判断 
+
+    //Area过界判断 
     if (m_RefShowArea->hasOverLoad(m_oSpStartPos, m_oSpCurrentPos, m_currentAngle, index))
     {
         log("over load in Area%d", index);
@@ -516,24 +503,59 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
             return;
         } 
 
+
         addGuide(m_oSpCurrentPos);
 
         switch (m_RefShowArea->getPathType())
         {
         case POSITION_AREA_ENDPOINT + POSITION_AREA_ENDPOINT:
         case POSITION_AREA_LINE + POSITION_AREA_LINE:
-        case POSITION_AREA_LINE + POSITION_AREA_ENDPOINT:         
+        case POSITION_AREA_LINE + POSITION_AREA_ENDPOINT:
             m_RefShowArea->setAreaIndex(1, index);
-            m_curMarginIndex = index;                                             
-            setState(STATE_CLOSE);                                      
-            break;
-        default:
-            break;
-        } 
-        return; 
+            m_curMarginIndex = index;
+            setState(STATE_CLOSE);
+            return;
+        }
     }
    
 
+
+
+    int postiontype = m_RefShowArea->getPositionType(m_oSpCurrentPos);
+
+    switch (postiontype)
+    {
+    case POSITION_AREA_ENDPOINT:       
+    case POSITION_AREA_LINE:
+        
+        if (postiontype == POSITION_AREA_ENDPOINT)
+        {
+            addGuide(m_oSpCurrentPos); 
+        }
+        else
+        {
+            index = m_RefShowArea->getNearMargin(m_oSpCurrentPos);
+            if (index == SELECTID_NULL)
+            {
+                m_RefPath->m_oAllPoint.clear();
+                setState(STATE_BACK);
+                return;
+            }
+            else if (m_RefPath->m_oAllPoint.size() > 0 && m_oSpCurrentPos == (*m_RefPath->m_oAllPoint.begin()))
+            {
+                log("start point == end point");
+                m_RefPath->m_oAllPoint.clear();
+                setState(STATE_BACK);
+                return;
+            }     
+
+            addGuide(m_oSpCurrentPos);
+            m_RefShowArea->setAreaIndex(1, index);
+            m_curMarginIndex = index;           
+        }                      
+        setState(STATE_CLOSE);
+        break;
+    }
 
 
    
@@ -860,16 +882,31 @@ void CMySprite::backGuide()
 void CMySprite::checkDirect(const Vec2& inPos)
 {
 	if (m_iCountRecord++ > 3)
-	{
-
-      
-		//
-		float radian	= RADINA_TOGAME(CMath::getRadian(m_oDirectStart, inPos));
+	{     
+        float radian	= RADINA_TOGAME(CMath::getRadian(m_oDirectStart, inPos));
 		int angle		= CMath::radianToAngle(radian);
 		int fixangle	= getFixAngle(angle); 
 
+
+        if (m_currentAngle == ANGLE_NONE)
+        {
+            Vec2 toNp = CMath::getVec2(m_oSpStartPos, GRAD_CELL, CMath::angleToRadian(fixangle));
+
+            int tPostiontype = m_RefShowArea->getPositionType(toNp);
+
+            log("Start next Postion:%d",  tPostiontype);
+
+            switch(tPostiontype)
+            {
+            case POSITION_BORDER_LINE:                
+                return;
+            }
+        
+        }
+
+
 		if (m_currentAngle == ANGLE_NONE || m_currentAngle != fixangle)
-		{
+		{  
 			changeDirect(inPos, fixangle);	
 			m_currentAngle = fixangle;
 			return;

@@ -139,10 +139,7 @@ public:
 
     bool hasOverLoad(const Vec2& inSP, Vec2& inCP, int angle, int& outIndex);   //是否过界
 
-
     int getBorderDis(const Vec2& inSP, int angle);                      //得到运动趋势距边界距离
-
-    void getBorderMoveAvable(const Vec2& inPoint, std::vector<int>& outDirect);
 
     std::vector< Vec2 > resultArea, addArea;
 

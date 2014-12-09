@@ -5,9 +5,15 @@
 #include "GameElement.h"
 #include "Game1Player.h"
 #include "MySprite.h"
-#include "Path.h"
+#include "Path.h"  
+#include "Runnable.h"
 
-class CGameLogic : public Node
+#include "EventSystem.h"
+
+class CGameLogic :
+    public Node,
+    public CRunnable,
+    public CEventHandler
 {
 
 public:
@@ -18,12 +24,11 @@ public:
 
     virtual bool init();
 
+    virtual void run(float time);
+
+    virtual void actionEvent(int evenid, void* pData);
+
     //-------------------------------------------
-
-    void run(float time);
-
-
-
 
 
 

@@ -154,3 +154,29 @@ void CGamePlayer::setState(int state)
         break;
     }
 }
+
+
+void CGamePlayer::fixTargetPostion(const Vec2& inResPosition, const Vec2& inTargetPostion)
+{
+
+
+
+
+    if (inResPosition == m_oCurrentTarget)
+    {
+        m_oCurrentTarget = inTargetPostion;    
+        log("Target is Update");
+        return;
+    }
+    
+    for (int i = 0; i < m_oAllGuide.size();i++)
+    {
+
+        if (m_oAllGuide[i] == inResPosition)
+        {
+            m_oAllGuide[i] = inTargetPostion;
+            log("Target is Update");
+            break;
+        }
+    }
+}

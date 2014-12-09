@@ -134,5 +134,5 @@ void CMargin::setAvableDirect()
     m_iAvable |= CUtil::converDirectToFlag(m_Angle);
     m_iAvable |= CUtil::converDirectToFlag(CUtil::getRevceDircet(m_Angle));
 
-    log("%x", m_iAvable);
+    //log("%x", m_iAvable);
 }

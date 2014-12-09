@@ -14,11 +14,14 @@
 #include "GameLogic.h"
 #include "Runnable.h"
 
+#include "EventSystem.h"
+
 
 class CGameView : 
     //public liyan998::CAGameScene ,
     public Layer,
-    public CGameState
+    public CGameState,
+    public CEventHandler
 {
 
 public:
@@ -55,6 +58,8 @@ public:
 
     
     virtual void released();
+
+    virtual void actionEvent(int eventid, EventParm data);
 
     //---------------------------------------------   -----
 

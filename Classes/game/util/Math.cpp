@@ -174,9 +174,7 @@ bool CMath::hasLineMutlLine(const Vec2& pa1, const Vec2& pa2, const Vec2& pb1, c
 }
 
 float CMath::mult(const Vec2& pa, const Vec2& pb, const Vec2& pc)
-{
-
-
+{                                
     return (pa.x - pc.x) * (pb.y - pc.y) - (pb.x - pc.x) * (pa.y - pc.y);
 }
 /************************************************************************/

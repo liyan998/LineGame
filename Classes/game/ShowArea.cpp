@@ -1,6 +1,7 @@
 #include "ShowArea.h"
 #include "util/Util.h"      
 #include "util/Math.h"
+#include "EventSystem.h"
 
 
 
@@ -61,7 +62,7 @@ bool CShowArea::init()
 
    unsigned int PARING = 40;
    Size tBroader;
-   tBroader.width      = GRAD_NUMBER(screen.width - PARING * 2);
+   tBroader.width      = GRAD_NUMBER(screen.width);
    tBroader.height     = GRAD_NUMBER(screen.height - PARING * 2);
    m_oAreaSize.size    = tBroader;
    m_oAreaSize.origin  = Vec2(
@@ -87,9 +88,9 @@ bool CShowArea::init()
            pBorderMargin->setTaget(m_oBorder[i] , m_oBorder[i + 1]);
        } 
        
-       int bordermarginAvDirect = CUtil::getNextAngle(pBorderMargin->m_Angle,1);
-       pBorderMargin->setAvableDirect(bordermarginAvDirect);
-       pBorderMargin->getAvableDirect(m_oBorder, m_oBorderEndPoint);      
+       //int bordermarginAvDirect = CUtil::getNextAngle(pBorderMargin->m_Angle,1);
+       //pBorderMargin->setAvableDirect(bordermarginAvDirect);
+       //pBorderMargin->getAvableDirect(m_oBorder, m_oBorderEndPoint);      
 
       
        m_oBorderMargin.push_back(pBorderMargin);       
@@ -459,34 +460,6 @@ void CShowArea::getAreaMoveAvable(const Vec2& inPoint, std::vector<int>& outDire
 
 
 
-/************************************************************************/
-/*
-* @brief        得到屏幕边界可行走方向
-* @param[in]    inPoint  
-* @param[out]   outDirect   
-* @return       void
-*/
-/************************************************************************/
-void CShowArea::getBorderMoveAvable(const Vec2& inPoint, std::vector<int>& outDirect)
-{
-    //节点上可行走方向
-    EndPointIterator iter = m_oBorderEndPoint.find(inPoint);
-    if (iter != m_oBorderEndPoint.end())
-    {
-        CUtil::getDirectFromFlag(iter->second, outDirect);
-        return;
-    }
-
-    //边界上可行走方向
-    int positiontype = getPositionType(inPoint);
-    if (positiontype == POSITION_BORDER_LINE)
-    {
-        
-        CMargin* tpMagin = getBorderMargin(inPoint);
-        CUtil::getDirectFromFlag(tpMagin->m_iAvable, outDirect);
-        return;
-    }
-}
 
 
 /************************************************************************/
@@ -602,6 +575,12 @@ void CShowArea::clearAreaIndex()
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
     log("currentDirect:%d", m_iRorate);
+
+
+    int* testparam = new int(120);
+   
+    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_TEST, testparam);
+   
   
     int pathType = getPathType();
    

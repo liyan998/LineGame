@@ -435,22 +435,41 @@ int CUtil::getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& i
     Size visSize = Director::getInstance()->getVisibleSize();
     Vec2 visVec = Director::getInstance()->getVisibleOrigin();
 
+    //log("-------------------------------------------");
+
+    //auto director = Director::getInstance();
+    //Size size;
+    //size = director->getWinSize();
+    //log("***IDONG: Director getWinSize:w=%f,h=%f", size.width, size.height);
+
+    //size = director->getWinSizeInPixels();
+    //log("***IDONG: Director getWinSizeInPixels:w=%f,h=%f", size.width, size.height);
+
+    //size = director->getVisibleSize();
+    //log("***IDONG: Director getVisibleSize:w=%f,h=%f", size.width, size.height);
+
+    //Point point = director->getVisibleOrigin();
+//     log("***IDONG: Director getVisibleOrigin:x=%f,y=%f", point.x, point.y);
+// 
+//     log("VisSize:%f, %f  Visibleorigin::%f, %f", visSize.width, visSize.height, visVec.x ,visVec.y);
     Vec2 tve(Vec2::ZERO);
     switch (angle)
     {
     case ANGLE_DOWN:
         tve.x = inSP.x;
+       // tve.y = visVec.y;
         break;
     case ANGLE_LEFT:
+        //tve.x = visVec.x;
         tve.y = inSP.y;
         break;
     case ANGLE_RIGHT:
-        tve.x = visSize.width;
+        tve.x = visSize.width + visVec.x;
         tve.y = inSP.y;
         break;
     case ANGLE_UP:
-        tve.x = inSP.x;
-        tve.y = visSize.height;
+        tve.x = inSP.x + visVec.x;
+        tve.y = visSize.height + visVec.y;
         break;
     default:
         break;
@@ -468,8 +487,8 @@ int CUtil::getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& i
         if (r1 != maring->m_Angle && r2 != maring->m_Angle)
         {
             continue;
-        }
-
+        } 
+       // log("p1: %f,%f \n  p2:%f,%f  \n p3:%f,%f \n p4:%f, %f", maring->m_oStart.x, maring->m_oStart.y, maring->m_oTaget.x, maring->m_oTaget.y, inSP.x, inSP.y, tve.x, tve.y);
         if (liyan998::CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inSP, tve))
         {
             int dis = static_cast<int>(CMath::getPointToLineDis(maring->m_oStart, maring->m_oTaget, inSP));

@@ -40,6 +40,8 @@ public:
    
     const Vec2& getPlsyerPosition();
 
+
+    void fixTargetPostion(const Vec2& inResPosition, const Vec2& inTargetPostion);
    
 
     void setTarget(const Vec2& point);

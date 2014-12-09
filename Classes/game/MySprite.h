@@ -137,7 +137,7 @@ private:
 
     bool hasInBorder();
 
-    bool hasAccessBorder(const std::vector<int>& alldirect);
+    //bool hasAccessBorder(const std::vector<int>& alldirect);
 
     void getBorderMoveAvable(const Vec2& inPoint, std::vector<int> outDirects); //得到在border上可行走方向
   
