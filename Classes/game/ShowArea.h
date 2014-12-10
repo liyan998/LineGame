@@ -125,7 +125,7 @@ public:
 
     float getArea();                                                    //已解锁面积
 
-    bool hasIncludeMaster();                                            //是否包含BOSS
+    bool hasIncludeMaster(const Vec2& bossPosition);                    //是否包含BOSS
 
     void clearSameDirectNode(std::vector<Vec2>& outputVec);             //清理同方向节点
 
@@ -140,6 +140,8 @@ public:
     bool hasOverLoad(const Vec2& inSP, Vec2& inCP, int angle, int& outIndex);   //是否过界
 
     int getBorderDis(const Vec2& inSP, int angle);                      //得到运动趋势距边界距离
+
+    void setClose(const Vec2& inBoss);
 
     std::vector< Vec2 > resultArea, addArea;
 
@@ -181,7 +183,7 @@ private:
 
     void printPoint(TPoint* hp); 
 
-    void selectArea();
+   
 
     //--------------------------------------------------------------
 

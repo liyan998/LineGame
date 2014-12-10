@@ -6,8 +6,7 @@ class CGameState
 
 public:
 
-    virtual void setState(int state) = 0;       //
-
+    virtual void setState(int state) = 0;       // 
 
     virtual void released() = 0;
 

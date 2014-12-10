@@ -69,11 +69,11 @@ public:
 
     void initGame(float); 
 
-	void run(float time);      
-
-   
+	void run(float time);                                   
     
-    //-----------------------------------------------------   
+    //----------------------------------------------------- 
+
+    void h_actionWin(EventParm pdadta);
 
 private:                                                       
 

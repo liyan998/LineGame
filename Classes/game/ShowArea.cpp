@@ -488,28 +488,69 @@ void CShowArea::setState(int sta)
     { 
     case STATE_INIT:                                       
         break;
-    case STATE_CLOSE:
-        if (isCloseArea())
-        {
-            clearAreaIndex();
-        }     
-        
+    case STATE_CLOSE: 
         if (m_RefPath != NULL)
-        {            
+        {
             m_RefPath->clearPoint();
-        }        
+        }
 
         for (int i = 0; i < MAX_INDEX; i++)
         {
             m_Area[i] = SELECTID_NULL;
         }
 
-        flush();  
+        flush();
         break;      
     }    
 }
 
 
+void CShowArea::setClose(const Vec2& inBoss)
+{                
+    if (isCloseArea())
+    {
+        clearAreaIndex();
+    }                                                 
+
+    ///////////////////////////
+    clearSameDirectNode(addArea);
+    clearSameDirectNode(resultArea); 
+
+    std::vector<Vec2>* pResult;
+    clearPoint();
+    if (hasIncludeMaster(inBoss))
+    {
+        pResult = &addArea;
+        if (this->m_Model != MODEL_IN)
+        {
+            setMode(MODEL_IN);
+        }
+    }
+    else
+    {
+        pResult = &resultArea;
+    }
+
+    for (int i = 0; i < pResult->size(); i++)
+    {
+        addPoint((*pResult)[i]);
+    }
+
+    getAllPoint(m_oAllPoint);
+
+    clearSameDirectNode(m_oAllPoint);
+    m_iRorate = CUtil::getRotateDirect(m_oAllPoint);
+
+    log("Rotate:%d", m_iRorate);
+
+    //     if (m_iRorate == DIRECT_ANTICCLOCKWISE)
+    //     {
+    //         log("fan roate~~~~~~~~~~~~~~~~~~");
+    //     }
+    getShape(SHAPEID_AREA)->setShape(m_oAllPoint); 
+
+    setState(STATE_CLOSE);
+}
 
 
 void CShowArea::setPath(CPath* path)
@@ -557,10 +598,10 @@ int CShowArea::getPathType()
             {
                 setAreaIndex(1, hasPointInMargin(tVEnd));
             }
-            else{
+            else
+            {
                 setAreaIndex(0, hasPointInMargin(tVStart));
-            }
-
+            } 
         } 
         break;
     default:
@@ -574,13 +615,7 @@ void CShowArea::clearAreaIndex()
 {                    
     log("-----------------------------------------------------");
     log("area -- %d , %d", m_Area[0], m_Area[1]);
-    log("currentDirect:%d", m_iRorate);
-
-
-    int* testparam = new int(120);
-   
-    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_TEST, testparam);
-   
+    log("currentDirect:%d", m_iRorate);   
   
     int pathType = getPathType();
    
@@ -608,7 +643,7 @@ void CShowArea::clearAreaIndex()
 
 
 void CShowArea::closedLine_End()
-{                                          
+{    
 
     const Vec2& vStart		= m_RefPath->m_oAllPoint[0]; 
     const Vec2& vEnd		= *(m_RefPath->m_oAllPoint.end() - 1);     
@@ -644,8 +679,7 @@ void CShowArea::closedLine_End()
 			pCurrentPoint = pCurrentPoint->next;
 			//log("$%d", pCurrentPoint->id);
 			tV2.push_back(pCurrentPoint->vec);
-		}
-
+		}     
     }
     else
     {
@@ -692,10 +726,8 @@ void CShowArea::closedLine_End()
     {
         addArea.insert(addArea.begin(), tV1.begin(), tV1.end());
         resultArea.insert(resultArea.begin(), tV2.begin(), tV2.end());
-    } 
-
-    selectArea();
-
+    }       
+    //selectArea();  
 }
 
 /**********************************************************************/
@@ -744,32 +776,13 @@ void CShowArea::closedEnd_End()
 
 	toV1.insert(toV1.end(), m_RefPath->m_oAllPoint.rbegin() + 1, m_RefPath->m_oAllPoint.rend() - 1);	
 	toV2.insert(toV2.end(), m_RefPath->m_oAllPoint.begin() + 1, m_RefPath->m_oAllPoint.end() - 1);
-// 	if (pathdirect == DIRECT_CLOCKWISE)
-// 	{
-// 		//--------------------------------------------
-// // 		addArea.insert(addArea.begin(), toV1.begin(), toV1.end());
-// // 		resultArea.insert(resultArea.begin(), toV2.begin(), toV2.end() );
-// 	}
-// 	else if (pathdirect == DIRECT_ANTICCLOCKWISE)
-// 	{
-// 		toV1.insert(toV1.end(), m_RefPath->m_oAllPoint.rbegin() + 1, m_RefPath->m_oAllPoint.rend() - 1);
-// 		toV2.insert(toV2.end(), m_RefPath->m_oAllPoint.begin() + 1, m_RefPath->m_oAllPoint.end() - 1);
-// 
-// // 		addArea.insert(addArea.begin(), toV2.begin(), toV2.end());
-// // 		resultArea.insert(resultArea.begin(), toV1.begin(), toV1.end());
-// 	}
-//     else
-//     {      
-//         toV2.insert(toV2.end(), m_RefPath->m_oAllPoint.begin() + 1, m_RefPath->m_oAllPoint.end() - 1);
-//         toV1.insert(toV1.end(), m_RefPath->m_oAllPoint.rbegin() + 1, m_RefPath->m_oAllPoint.rend() - 1);
-//            
-//     }   
 
     int area1 = CUtil::getCountPointInRec(toV1, toV2);
     int area2 = CUtil::getCountPointInRec(toV2, toV1);
 
-    log("V1:%d , V2:%d", toV1.size(), toV2.size());
-    log("area1:%d , area2:%d", area1, area2);
+    //log("V1:%d , V2:%d", toV1.size(), toV2.size());
+    //log("area1:%d , area2:%d", area1, area2);
+
     if (area1 < area2)
     {
         addArea.insert(addArea.begin(), toV2.begin(), toV2.end());
@@ -780,7 +793,7 @@ void CShowArea::closedEnd_End()
         addArea.insert(addArea.begin(), toV1.begin(), toV1.end());
         resultArea.insert(resultArea.begin(), toV2.begin(), toV2.end());
     }
-	selectArea();
+	
 }
 
 void CShowArea::closedLine_Line()
@@ -896,51 +909,10 @@ void CShowArea::closedLine_Line()
         }
     }
 	
-	selectArea();
+	
 }
 
 
-void CShowArea::selectArea()
-{
-    clearSameDirectNode(addArea);
-    clearSameDirectNode(resultArea);
-
-
-	std::vector<Vec2>* pResult;
-	clearPoint();
-	if (hasIncludeMaster())
-	{
-		pResult = &addArea;
-		if (this->m_Model != MODEL_IN)
-		{
-			setMode(MODEL_IN);
-		}
-	}
-	else
-	{
-		pResult = &resultArea;
-	}
-
-	for (int i = 0; i < pResult->size(); i++)
-	{
-		addPoint((*pResult)[i]);
-	}
-
-	getAllPoint(m_oAllPoint);
-
-    clearSameDirectNode(m_oAllPoint);
-	m_iRorate = CUtil::getRotateDirect(m_oAllPoint);
-
-	log("Rotate:%d", m_iRorate);
-
-    if (m_iRorate == DIRECT_ANTICCLOCKWISE)
-    {
-        log("fan roate~~~~~~~~~~~~~~~~~~");
-    }
-
-
-	getShape(SHAPEID_AREA)->setShape(m_oAllPoint);
-}
 
 CShape* CShowArea::createShape(int id ,std::vector<Vec2>& refAllPoint)
 {
@@ -994,10 +966,9 @@ bool CShowArea::hasPointInArea(const Vec2& point)
 
 
 
-bool CShowArea::hasIncludeMaster()
-{ 
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    return CUtil::hasPointInPloyon(addArea, Vec2(100 + origin.x, 500 + origin.y));
+bool CShowArea::hasIncludeMaster(const Vec2& bossPosition)
+{      
+    return CUtil::hasPointInPloyon(addArea, bossPosition);
 }
 
 

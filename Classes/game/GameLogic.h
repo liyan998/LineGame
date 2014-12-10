@@ -12,6 +12,7 @@
 
 class CGameLogic :
     public Node,
+    public CGameState,
     public CRunnable,
     public CEventHandler
 {
@@ -24,20 +25,27 @@ public:
 
     virtual bool init();
 
+    virtual void onExit() override;
+
     virtual void run(float time);
 
-    virtual void actionEvent(int evenid, void* pData);
+    virtual void setState(int state);
 
-    //-------------------------------------------
+    virtual void released();
 
+    virtual void actionEvent(int evenid, EventParm pData);
 
+    //------------------------------------------- 
 
+    void h_ActionClose(EventParm pData);
 
 private:
 
-    Sprite* m_pBoss;
+    CBoss*                          m_pBoss;
 
     std::vector< CGameElement* >    m_oAllElement;
+
+    std::vector< CActor* >          m_oAllActor;
 
 public:
 

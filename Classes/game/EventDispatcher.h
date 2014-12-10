@@ -14,9 +14,20 @@
 #include "EventSystem.h"
 
 
+struct T_Event
+{
+    int evenid;
+
+    EventParm ep;
+};
+
+
 class CEventDispatcher
 {
 public:
+
+    
+    ~CEventDispatcher();
 
     static CEventDispatcher* getInstrance();
 
@@ -24,7 +35,12 @@ public:
 
     void unRegsiterEvent(int eventid, CEventHandler* pHandler);
 
-    void dispatchEvent(int eventid, EventParm param);
+    void dispatchEvent(int eventid, EventParm param); 
+
+    void released();
+
+private:
+
 
 private:
 
@@ -32,8 +48,9 @@ private:
 
 private:
 
-    std::map<int, T_AllEventHandler* > m_oAllHandler;
+    std::map<int, T_AllEventHandler* >  m_oAllHandler;
 
+    std::vector<T_Event*>               m_oMessageQue;
 
 };
 

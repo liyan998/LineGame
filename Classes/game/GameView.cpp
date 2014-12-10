@@ -42,8 +42,7 @@ void CGameView::onEnter()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(lisnter, this);
 
     //--------------------------------------------------------------------
-    m_pPath = new CPath();
-
+    m_pPath             = new CPath();
 	m_pDrawNode			= DrawNode::create();    	      	
     m_pSp               = CMySprite::create();
     m_pPlayer           = CGamePlayer::create();
@@ -88,8 +87,8 @@ void CGameView::onEnter()
 	
     //------------------------------------------ 
 
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_TEST, this);
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_TEST, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_WIN, this);
+
 
     setState(STATE_INIT);                         
 	schedule(schedule_selector(CGameView::run));
@@ -101,18 +100,18 @@ void CGameView::actionEvent(int eventid, EventParm data)
 {
     switch (eventid)
     {
-    case EVENT_TEST:
-    {
-                       int a = *(static_cast<int*>(data));
-                       log("GameView Event_Test:%d", a);
-
-    }
+    case EVENT_WIN:
+       h_actionWin(data);
         break;
     default:
         break;
-    }
+    }   
+}
 
+void CGameView::h_actionWin(EventParm pdadta)
+{
 
+    setState(STATE_WIN);
 }
 
 void CGameView::setState(int stata)
@@ -128,23 +127,21 @@ void CGameView::setState(int stata)
         break;
     case STATE_WIN:
     {
-                      log("GAME STATE_WIN");
+        log("GAME STATE_WIN");
 
-                      m_oAllRander.clear();
-                      m_oAllRunner.clear();
+        m_oAllRander.clear();
+        m_oAllRunner.clear();
+        m_pDrawNode->clear();
 
-    unschedule(schedule_selector(CGameView::run));
+        unschedule(schedule_selector(CGameView::run));
 
-    m_pSp->released();
-    m_pPlayer->released();
-    m_pShowArea->released();
-
-    this->removeAllChildren();
-
-
-    auto gameover = HelloWorld::create();
-    addChild(gameover);
-
+        m_pSp->released();
+        m_pPlayer->released();
+        m_pShowArea->released();
+        m_pGameLogic->released();
+                                   
+        auto gameover = HelloWorld::create();
+        addChild(gameover);
     }
         break;
     case STATE_LOSE:
@@ -310,4 +307,8 @@ void CGameView::onExit()
 
     delete m_pPath;
     m_pPath = nullptr;
+
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_WIN, this);
+    CEventDispatcher::getInstrance()->released();
+
 }

@@ -58,16 +58,12 @@ public:
 private:    
 
     Sprite*             m_pSp;
-
     int                 m_iStep;
-
     int                 m_iCurrentDirect;
-
     Vec2                m_oCurrentTarget;
-
-    
-
     std::vector<Vec2>   m_oAllGuide;
+
+
 
     
 };

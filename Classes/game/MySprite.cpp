@@ -190,8 +190,7 @@ void CMySprite::setState(int state)
         break;
     case STATE_STANDER:
         //m_currentAngle = ANGLE_NONE;
-        //clearGuide();
-        clearGuide();
+        //clearGuide();  
         //this->unschedule(schedule_selector(CMySprite::run));       
         log("mysprite state STATE_STANDER");
         //m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
@@ -314,7 +313,7 @@ void CMySprite::onMove(const Vec2& point)
         }
         if (!hasMoveAction())
         {
-            log("don't move it");
+            log("STATE_DRAW don't move it");
             return;
         }
         onDrawToClose(point);
@@ -328,7 +327,7 @@ void CMySprite::onMove(const Vec2& point)
         hasBreakMoveInLine();
         if (!hasMoveAction())
         {
-            log("don't move it");
+            log("STATE_MOVE don't move it");
             return;
         }                                                
         onMoveToDraw();     
@@ -398,8 +397,23 @@ bool CMySprite::hasMoveAction()
 
     switch (getState())
     {
-    case STATE_MOVE:    
-       m_RefShowArea->getAreaMoveAvable(m_oSpCurrentPos, abv);               
+    case STATE_MOVE:
+    {
+                       
+                       m_RefShowArea->getAreaMoveAvable(m_oSpCurrentPos, abv);
+
+//     Vec2 nP = CMath::getVec2(m_oSpCurrentPos, GRAD_CELL, CMath::angleToRadian(m_currentAngle));
+//     CUtil::formartGrid(nP);
+// 
+//     int nPType = m_RefShowArea->getPositionType(nP);
+//     if (nPType == POSITION_BORDER_LINE)
+//     {
+//         log("next P Border_line");
+//     }
+
+    }
+
+
         break;
     case STATE_DRAW:
        m_RefPath->getMoveAble(m_currentAngle, m_oSpCurrentPos, abv);
@@ -1221,26 +1235,32 @@ void CMySprite::runGo()
 {
     if (m_RefPlayer != nullptr && m_RefPlayer->getState() == CGamePlayer::STATE_STOP)
     {                                          
-        m_RefShowArea->setState(CShowArea::STATE_CLOSE);
-        float area = m_RefShowArea->getArea();
-        log(" Area :%f", area);     
+        //m_RefShowArea->setState(CShowArea::STATE_CLOSE);
 
-        if (area > WINPART)
-        {
-            //release  
-            m_RefGameView->setState(CGameView::STATE_WIN);
-        }
-        else
-        {                       
-            setState(STATE_STANDER);
-        }     
+        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_CLOSE, 0);
+        setState(STATE_STANDER);
+//         float area = m_RefShowArea->getArea();
+//         log(" Area :%f", area);     
+// 
+//         if (area > WINPART)
+//         {
+//             //release  
+//             m_RefGameView->setState(CGameView::STATE_WIN);
+//         }
+//         else
+//         {                       
+//             setState(STATE_STANDER);
+//         }     
     } 
 } 
            
 
 void CMySprite::released()
 {
+   
     m_RefPlayer     = nullptr;
     m_RefPath       = nullptr;
     m_RefShowArea   = nullptr;
+
+    removeAllChildrenWithCleanup(true);
 }

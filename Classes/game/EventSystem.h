@@ -5,7 +5,11 @@
 #include <vector>   
 
 
-#define EVENT_TEST   0x1000001 
+#define EVENT_TEST      0x00000001
+
+#define EVENT_CLOSE     0x10000001      //±ÕºÏ
+#define EVENT_WIN       0x10000002      //
+
 
 
 class CEventHandler;             

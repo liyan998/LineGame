@@ -21,7 +21,7 @@ bool CGamePlayer::init()
 
 void CGamePlayer::released()
 {
-
+    this->removeAllChildren();
 }
 
 void CGamePlayer::setPlayerPosition(const Vec2& pos)
@@ -41,7 +41,7 @@ void CGamePlayer::setTarget(const Vec2& point)
     m_oCurrentTarget = point; 
     //m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
     
-    //log("SetTarget: %f, %f", point.x , point.y);
+    log("SetTarget: %f, %f", point.x , point.y);
     if (m_State != STATE_RUN)
     {
         setState(STATE_RUN);
@@ -111,24 +111,36 @@ void CGamePlayer::run(float time)
                                            
         break;
     case STATE_STANDER:
-        if (m_oAllGuide.size() < 1)
-        {
-            setState(STATE_STOP);
-            break;
-        }        
+    {
 
-        Vec2 lasTarget = *m_oAllGuide.begin();
+                          if (m_oAllGuide.size() < 1)
+                          {
+                              setState(STATE_STOP);
+                              break;
+                          }
 
-        if (m_oCurrentTarget == lasTarget)
-        {
-            m_oAllGuide.erase(m_oAllGuide.begin());
-        }     
+                          Vec2 lasTarget = *m_oAllGuide.begin();
 
-        if (m_oAllGuide.size() < 1)
+                          if (m_oCurrentTarget == lasTarget)
+                          {
+                              log("RemoveTarget:%f,%f", lasTarget.x, lasTarget.y);
+                              m_oAllGuide.erase(m_oAllGuide.begin());
+                          }
+
+                          if (m_oAllGuide.size() < 1)
+                          {
+                              break;
+                          }
+                          setTarget(m_oAllGuide[0]);
+    }
+        break;
+    case STATE_STOP:
+    
+        if (m_oAllGuide.size() > 0)
         {
-            break;
+            setTarget(m_oAllGuide[0]);
         }
-        setTarget(m_oAllGuide[0]);
+    
         break;
     }
 }
@@ -165,7 +177,7 @@ void CGamePlayer::fixTargetPostion(const Vec2& inResPosition, const Vec2& inTarg
     if (inResPosition == m_oCurrentTarget)
     {
         m_oCurrentTarget = inTargetPostion;    
-        log("Target is Update");
+        log("m_oCurrentTarget Target is Update");
         return;
     }
     
@@ -175,8 +187,8 @@ void CGamePlayer::fixTargetPostion(const Vec2& inResPosition, const Vec2& inTarg
         if (m_oAllGuide[i] == inResPosition)
         {
             m_oAllGuide[i] = inTargetPostion;
-            log("Target is Update");
-            break;
+            log("m_oAllGuide Target is Update");
+            return;
         }
     }
 }

@@ -44,6 +44,9 @@ public:
     //格式化坐标
     static void formartGrid(Vec2& inPoint);
 
+    //与屏幕匹配
+    //static Vec2 originPosition(const Vec2& inPoint);
+
     //根据当前方向得到权值对应方向，权值为顺时1，逆时-1
     static int getNextAngle(int currentangle, int d);
 
