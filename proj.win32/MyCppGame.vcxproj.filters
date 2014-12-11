@@ -114,6 +114,9 @@
     <ClCompile Include="..\Classes\game\Npc.cpp">
       <Filter>Classes\game\role</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\game\Enemy.cpp">
+      <Filter>Classes\game\role</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -185,9 +188,6 @@
     <ClInclude Include="..\Classes\game\GameLogic.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\System.h">
-      <Filter>Classes\game</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\GameState.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
@@ -241,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\GameView.h">
       <Filter>Classes\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\System.h">
+      <Filter>Classes\game\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

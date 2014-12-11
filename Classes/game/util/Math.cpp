@@ -45,7 +45,9 @@ float CMath::radianToAngle(float r)
 
 int CMath::getRandom(int startI, int endI)
 {
-    srand((unsigned)time(NULL));
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    srand(tv.tv_sec + tv.tv_usec);
     return (rand() % (endI - startI + 1)) + startI;
 }
 
@@ -81,9 +83,7 @@ Vec2 CMath::getFootPoint(const Vec2& lineP1, const Vec2& lineP2, const Vec2& lin
     ptCross.x = ((m - A * B) / (A * A + 1));
     ptCross.y = (A * ptCross.x + B);
 
-    return ptCross;
-    
-
+    return ptCross; 
 }
 
 /************************************************************************/

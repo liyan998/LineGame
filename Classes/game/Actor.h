@@ -7,11 +7,11 @@ class CActor : public CGameElement
 {   
 public:
 
-    virtual void run(float time) = 0;
+    
 
 protected:
 
-    int             m_iStep;
+    int             m_iStep; //ÒÆ¶¯ËÙ¶È
 
 };
 

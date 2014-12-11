@@ -44,6 +44,8 @@ public:
 
     void setAvableDirect();
 
+    int getCollWidthRandomDirect();
+
 private:
 
     void addPointToMap(const Vec2& inPoint,
@@ -59,10 +61,7 @@ public:
     int           m_Angle;                //angle
 
     int           m_iMarginAvable;        //与模式依赖边界可行走方向 ANGLE_XXX
-    int           m_iAvable;              //可行走方向 0000 FFFF 上下左右
-
-    
-    
+    int           m_iAvable;              //可行走方向 0000 FFFF 上下左右     
 };
 
 #endif//__MARGIN_H__

@@ -3,8 +3,7 @@
 #include "util/Math.h"
 #include "util/Util.h"
 #include "Path.h"
-#include "ShowArea.h"
-
+#include "ShowArea.h"    
 
 
 using namespace liyan998;
@@ -18,9 +17,7 @@ bool CMargin::init()
     m_iAvable           = 0;
 
     m_pDrawNode = DrawNode::create();
-    addChild(m_pDrawNode); 
-
-   
+    addChild(m_pDrawNode);     
    
     return true;
 }
@@ -135,4 +132,21 @@ void CMargin::setAvableDirect()
     m_iAvable |= CUtil::converDirectToFlag(CUtil::getRevceDircet(m_Angle));
 
     //log("%x", m_iAvable);
+}
+
+
+
+/************************************************************************/
+/*
+@brief          当BOSS碰撞边界，得到该边的随机行走方向
+@param[in]
+@param[out]
+@return         int
+*/
+/************************************************************************/
+int CMargin::getCollWidthRandomDirect()
+{
+
+
+    return m_iMarginAvable;
 }

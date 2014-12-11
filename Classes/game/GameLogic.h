@@ -12,6 +12,7 @@
 
 class CGameLogic :
     public Node,
+    public CRander,
     public CGameState,
     public CRunnable,
     public CEventHandler
@@ -25,6 +26,8 @@ public:
 
     virtual bool init();
 
+    virtual void onEnter();
+
     virtual void onExit() override;
 
     virtual void run(float time);
@@ -35,7 +38,10 @@ public:
 
     virtual void actionEvent(int evenid, EventParm pData);
 
+    virtual void print(DrawNode* dn);
+
     //------------------------------------------- 
+
 
     void h_ActionClose(EventParm pData);
 
@@ -46,6 +52,8 @@ private:
     std::vector< CGameElement* >    m_oAllElement;
 
     std::vector< CActor* >          m_oAllActor;
+
+    std::vector< CRander* >         m_oAllRander;
 
 public:
 

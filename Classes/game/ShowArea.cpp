@@ -360,10 +360,17 @@ CMargin* CShowArea::getBorderMargin(const Vec2& inPoint)
 
 bool CShowArea::isCloseArea()
 {
+
+
+
     if (m_RefPath == nullptr || m_RefPath->m_oAllPoint.size() < 2)
     {
         return false;
     } 
+
+
+
+
 
     return true;
 }
@@ -507,10 +514,11 @@ void CShowArea::setState(int sta)
 
 void CShowArea::setClose(const Vec2& inBoss)
 {                
-    if (isCloseArea())
+    if (!isCloseArea())
     {
-        clearAreaIndex();
+        return;
     }                                                 
+    clearAreaIndex();
 
     ///////////////////////////
     clearSameDirectNode(addArea);
@@ -549,6 +557,7 @@ void CShowArea::setClose(const Vec2& inBoss)
     //     }
     getShape(SHAPEID_AREA)->setShape(m_oAllPoint); 
 
+    log("ShowArea Set close");
     setState(STATE_CLOSE);
 }
 

@@ -568,8 +568,11 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
             m_curMarginIndex = index;           
         }                      
         setState(STATE_CLOSE);
-        break;
+        return;
     }
+
+
+    
 
 
    

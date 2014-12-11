@@ -1,14 +1,19 @@
 #ifndef __GAMEELEMENT_H__
 #define __GAMEELEMENT_H__
 
-#include "System.h"  
+#include "System.h" 
+#include "Rander.h"
+#include "ShowArea.h"
 
 /////////////////////////////////////////////////////
 
 class CGameElement : public Node
 {
+public:
 
-protected:
+    virtual void run(float time) = 0;
+
+protected:  
 
     Sprite* m_pSp;
 };

@@ -64,8 +64,9 @@ void CGameView::onEnter()
     m_pGameLogic->m_refShowArea     = m_pShowArea;
     m_pGameLogic->m_refSp           = m_pSp;
 
+    log("logic init ");
     m_pGameLogic->setAnchorPoint(Vec2::ZERO);
-
+   
     //----------------------------
 		
     addChild(m_pShowArea);	
@@ -73,11 +74,13 @@ void CGameView::onEnter()
 	addChild(m_pDrawNode);
     addChild(m_pPlayer);
     addChild(m_pGameLogic);
+
     //------------------------------------    	
 	
 	m_oAllRander.push_back(m_pSp);
     m_oAllRander.push_back(m_pShowArea);
     m_oAllRander.push_back(m_pPath); 
+    m_oAllRander.push_back(m_pGameLogic);
     
     //----------------------------------------  
 
@@ -92,7 +95,6 @@ void CGameView::onEnter()
 
     setState(STATE_INIT);                         
 	schedule(schedule_selector(CGameView::run));
-
 }
 
 

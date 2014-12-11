@@ -192,3 +192,27 @@ void CGamePlayer::fixTargetPostion(const Vec2& inResPosition, const Vec2& inTarg
         }
     }
 }
+
+//TODO 完成动画
+void CGamePlayer::animation_idle()
+{
+
+}
+
+//TODO 完成动画
+void CGamePlayer::animation_attack()
+{
+
+}
+
+//TODO 完成动画
+void CGamePlayer::animation_die()
+{
+
+}
+
+//TODO 完成动画
+void CGamePlayer::animation_move()
+{
+
+}

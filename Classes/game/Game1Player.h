@@ -53,6 +53,19 @@ public:
     int getStrackSize();
 
 
+    //TODO 完成动画
+    void animation_idle();
+
+    //TODO 完成动画
+    void animation_attack();  
+
+    //TODO 完成动画
+    void animation_die();
+
+    //TODO 完成动画
+    void animation_move();
+
+
 
 
 private:    

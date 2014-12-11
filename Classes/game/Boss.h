@@ -12,7 +12,7 @@
 #define __BOSS_H__
 
 
-class CBoss : public CEnemy
+class CBoss : public CEnemy , public CRander
 {
 
 public:
@@ -25,18 +25,19 @@ public:
 
     virtual void run(float time);
 
-    //----------------------------------------
+    virtual void print(DrawNode* dn);
 
-    //ÐÝÏÐ£¬ÒÆ¶¯£¬ÊÜ»÷£¬ËÀÍö
-    void animation_idle();
+    //----------------------------------------
 
     void animation_move();
 
-    void animation_die();
-
-    void animation_attack();
 
 
+    float               m_fCount;
+
+    int                 m_iDirect;
+
+    
 };
 
 
