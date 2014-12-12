@@ -20,13 +20,13 @@ using namespace liyan998;
 
 void CPath::print( DrawNode* dn)
 {
-	for (int i = 0; i < m_oAllPoint.size(); i++)
-	{
-		if (i + 1 < m_oAllPoint.size())
-		{
-			dn->drawSegment(m_oAllPoint[i], m_oAllPoint[i + 1], 2, Color4F(0, .5F, .5F, .5F));
-		}       
-	}
+// 	for (int i = 0; i < m_oAllPoint.size(); i++)
+// 	{
+// 		if (i + 1 < m_oAllPoint.size())
+// 		{
+// 			dn->drawSegment(m_oAllPoint[i], m_oAllPoint[i + 1], 2, Color4F(0, .5F, .5F, .5F));
+// 		}       
+// 	}
     float rC = liyan998::CMath::getRandom(1, 100) / 100.f;
     float gC = liyan998::CMath::getRandom(1, 100) / 100.f;
     float bC = liyan998::CMath::getRandom(1, 100) / 100.f;

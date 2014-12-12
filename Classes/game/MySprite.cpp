@@ -571,7 +571,7 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
 
 
 
-    playerGoWay();
+    //playerGoWay();
 
 
    
@@ -885,8 +885,8 @@ void CMySprite::playerGoWay()
 
     if (m_oTPathMargin.size() > 0)
     {
-        //m_oTPathMargin[0]->m_oTaget = m_RefPlayer->getPlsyerPosition();
-        m_oTPathMargin[0]->m_oTaget = m_oSpCurrentPos;
+        m_oTPathMargin[0]->m_oTaget = m_RefPlayer->getPlsyerPosition();
+       // m_oTPathMargin[0]->m_oTaget = m_oSpCurrentPos;
     }
 
 }
@@ -1062,26 +1062,26 @@ void CMySprite::print(DrawNode* dn)
 {                                       
     dn->drawDot(this->m_oSpCurrentPos, 10, Color4F(1, 0, 0, 0.5));
 
-//     for (int i = 0; i < m_oTPath.size();i++)
-//     {            
-//         if (i + 1 < m_oTPath.size())
-//         {
-//             dn->drawSegment(m_oTPath[i], m_oTPath[i + 1], 4, Color4F(1, .3, .3, 1));
-//         }
-//         else
-//         {
-//             dn->drawSegment(m_oTPath[i], m_oSpCurrentPos, 4, Color4F(1, .3, .3, 1));
-//         }    
-//         dn->drawDot(m_oTPath[i], 10, Color4F(0, 1, 1, 1));  
-//     }
+    for (int i = 0; i < m_oTPath.size();i++)
+    {            
+        if (i + 1 < m_oTPath.size())
+        {
+            dn->drawSegment(m_oTPath[i], m_oTPath[i + 1], 0.51, Color4F(1, .3, .3, 0.31));
+        }
+        else
+        {
+            dn->drawSegment(m_oTPath[i], m_oSpCurrentPos, 0.51, Color4F(1, .3, .3,0.31));
+        }   
+
+        dn->drawDot(m_oTPath[i], 10, Color4F(0, 1, 1, 1));  
+    }
          
     if (m_State != STATE_BACK)
     {
-    for (int i = 0; i < m_oTPathMargin.size();i++)
-    {
-        dn->drawSegment(m_oTPathMargin[i]->m_oStart, m_oTPathMargin[i]->m_oTaget, 1, Color4F(1, .3, .3, 1));
-    }
-
+        for (int i = 0; i < m_oTPathMargin.size();i++)
+        {
+            dn->drawSegment(m_oTPathMargin[i]->m_oStart, m_oTPathMargin[i]->m_oTaget, 1, Color4F(1, .3, .3, 1));
+        }
     }
 
 
@@ -1144,27 +1144,29 @@ void CMySprite::addGuide(const Vec2& point)
 
     m_oSpStartPos = point;
       
-    CMargin* tpathmargin = new CMargin();
-    if (m_oTPath.size() == 0)
-    {
-        tpathmargin->setTaget(point, point);
-        m_oTPathMargin.push_back(tpathmargin);
-    }
-    else if (m_oTPath.size() > 0)
-    {
-        const Vec2& lastVec2 = m_oTPath[m_oTPath.size() - 1];
-
-        tpathmargin->setTaget(lastVec2, point);
-        m_oTPathMargin.push_back(tpathmargin);
-
-        m_oTPathMargin[0]->m_oStart = point;
-    }
- 
-    
+   
 //     if (m_oTPath.size() == 0)
 //     {
-//         addRoad(point);
+//         CMargin* tpathmargin = new CMargin();
+//         tpathmargin->setTaget(point, point);
+//         m_oTPathMargin.push_back(tpathmargin);
 //     }
+//     else if (m_oTPath.size() > 0)
+//     {
+//         CMargin* tpathmargin = new CMargin();
+//         const Vec2& lastVec2 = m_oTPath[m_oTPath.size() - 1];
+// 
+//         tpathmargin->setTaget(lastVec2, point);
+//         m_oTPathMargin.push_back(tpathmargin);
+// 
+//         m_oTPathMargin[0]->m_oStart = point;
+//     }
+ 
+    
+    if (m_oTPath.size() == 0)
+    {
+        addRoad(point);
+    }
               
     //---------------------------
     log("+++++addGuid:%f ,%f", point.x ,point.y);
@@ -1388,26 +1390,13 @@ int CMySprite::getPathDis(const Vec2& inPoint, int direct)
     for (int i = 0; i < m_oTPathMargin.size(); i++)
     {
         CMargin* maring = m_oTPathMargin[i];
-
-        int r1 = CUtil::getNextAngle(direct, -1);
-        int r2 = CUtil::getNextAngle(direct, 1);
-
-        if (r1 != maring->m_Angle && r2 != maring->m_Angle)
-        {
-            continue;
-        }
-        // log("p1: %f,%f \n  p2:%f,%f  \n p3:%f,%f \n p4:%f, %f", maring->m_oStart.x, maring->m_oStart.y, maring->m_oTaget.x, maring->m_oTaget.y, inSP.x, inSP.y, tve.x, tve.y);
+     
         if (liyan998::CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inPoint, tve))
         {
 
             Vec2 zu = CMath::getFootPoint(maring->m_oStart, maring->m_oTaget, inPoint);
 
-            int dis = static_cast<int>(ccpDistance(inPoint, zu));
-
-            if (dis == 0)
-            {
-                continue;
-            }
+            int dis = static_cast<int>(ccpDistance(inPoint, zu));   
 
             //log("CUtil dis:%d", dis);
             if (mindis == -1 || dis < mindis)

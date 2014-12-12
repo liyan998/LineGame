@@ -6,6 +6,8 @@
 #include "Runnable.h"
 
 
+class CMySprite;
+
 
 #define INDEX_NONE -1
 
@@ -77,7 +79,8 @@ public:
 
     bool                m_bFlow;
 
-    //CMySprite*          m_refSp;
+    CMySprite*          m_refSp;
+
 private:    
 
     Sprite*             m_pSp;

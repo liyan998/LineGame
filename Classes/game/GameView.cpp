@@ -61,7 +61,7 @@ void CGameView::onEnter()
     m_pShowArea->setPosition(origin);
 
 
-    //m_pPlayer->m_refSp              = m_pSp;
+    m_pPlayer->m_refSp              = m_pSp;
 
     m_pGameLogic->m_refPath         = m_pPath;
     m_pGameLogic->m_refPlayer       = m_pPlayer;

@@ -132,7 +132,7 @@ void CGamePlayer::run(float time)
         {
             log("- RemoveTarget:%f,%f", lasTarget.x, lasTarget.y);
 
-            //m_refSp->addRoad(lasTarget);
+            m_refSp->addRoad(lasTarget);
 
             m_oAllGuide.erase(m_oAllGuide.begin());
         }
