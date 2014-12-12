@@ -6,15 +6,11 @@
 #include "Runnable.h"
 
 
-class CMySprite;
-
-
 #define INDEX_NONE -1
 
 
-
-
-
+class CMySprite;
+               
 class CGamePlayer : public Node ,public CGameState, public CRunnable
 {
 
@@ -89,11 +85,6 @@ private:
     Vec2                m_oCurrentTarget;
     std::vector<Vec2>   m_oAllGuide;
 
-
-
-
-
-    
 };
 
 

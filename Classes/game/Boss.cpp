@@ -11,7 +11,7 @@ bool CBoss::init()
 
     m_fCount    = 0.f;
     m_iDirect   = 0;
-    m_iStep     = 1;
+    m_iStep     = 2;
 
     //--------------------------------------------
 

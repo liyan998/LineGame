@@ -29,14 +29,10 @@ public:
 
     //----------------------------------------
 
-    void animation_move();
+    void animation_move();  
 
 
-
-    float               m_fCount;
-
-
-
+    float               m_fCount;   
     
 };
 

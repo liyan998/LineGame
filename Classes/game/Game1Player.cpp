@@ -48,8 +48,6 @@ void CGamePlayer::setTarget(const Vec2& point)
     {
         setState(STATE_RUN);
     }
-
-
 }
 
 

@@ -4,11 +4,7 @@
 #include "GameElement.h"
 
 class CActor : public CGameElement
-{   
-public:
-
-    
-
+{                            
 protected:
 
     int             m_iStep; //ÒÆ¶¯ËÙ¶È
