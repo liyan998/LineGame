@@ -35,7 +35,7 @@ public:
 
     float               m_fCount;
 
-    int                 m_iDirect;
+
 
     
 };

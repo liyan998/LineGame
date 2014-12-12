@@ -1,6 +1,7 @@
 #include "Game1Player.h"
 #include "util/Math.h"
 #include "util/Util.h"
+#include "MySprite.h"
 
 using namespace liyan998;
 
@@ -9,6 +10,7 @@ bool CGamePlayer::init()
     Node::init();
 
     m_iStep = 2;
+    m_bFlow = false;
 
     m_pSp = Sprite::create("CloseNormal.png");
     addChild(m_pSp);
@@ -41,7 +43,7 @@ void CGamePlayer::setTarget(const Vec2& point)
     m_oCurrentTarget = point; 
     //m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
     
-    log("SetTarget: %f, %f", point.x , point.y);
+    //log("SetTarget: %f, %f", point.x , point.y);
     if (m_State != STATE_RUN)
     {
         setState(STATE_RUN);
@@ -51,10 +53,18 @@ void CGamePlayer::setTarget(const Vec2& point)
 }
 
 
+void CGamePlayer::checkPosition(const Vec2& inPoint)
+{      
+    if (m_State == STATE_STOP && getPlsyerPosition() != inPoint)
+    {
+        setTarget(inPoint);
+    }         
+}
+
+
 
 int CGamePlayer::getStrackSize()
-{
-
+{                          
     return m_oAllGuide.size();
 }
 
@@ -63,7 +73,7 @@ void CGamePlayer::addFollow(const Vec2& point)
 //     if (m_State == STATE_RUN)
 //     {
         m_oAllGuide.push_back(point);
-        log("add Target point %f,%f", point.x, point.y);
+        log("+  add Target point %f,%f", point.x, point.y);
 //         return;
 //     }
 /*    log("not target");*/
@@ -79,9 +89,7 @@ void CGamePlayer::backFollow()
 }
 
 int CGamePlayer::getStep()
-{
-
-
+{                       
     return this->m_iStep;
 }
 
@@ -111,27 +119,29 @@ void CGamePlayer::run(float time)
                                            
         break;
     case STATE_STANDER:
-    {
+    {                                    
+        if (m_oAllGuide.size() < 1)
+        {
+            setState(STATE_STOP);
+            break;
+        }
 
-                          if (m_oAllGuide.size() < 1)
-                          {
-                              setState(STATE_STOP);
-                              break;
-                          }
+        Vec2 lasTarget = *m_oAllGuide.begin();
 
-                          Vec2 lasTarget = *m_oAllGuide.begin();
+        if (m_oCurrentTarget == lasTarget)
+        {
+            log("- RemoveTarget:%f,%f", lasTarget.x, lasTarget.y);
 
-                          if (m_oCurrentTarget == lasTarget)
-                          {
-                              log("RemoveTarget:%f,%f", lasTarget.x, lasTarget.y);
-                              m_oAllGuide.erase(m_oAllGuide.begin());
-                          }
+            //m_refSp->addRoad(lasTarget);
 
-                          if (m_oAllGuide.size() < 1)
-                          {
-                              break;
-                          }
-                          setTarget(m_oAllGuide[0]);
+            m_oAllGuide.erase(m_oAllGuide.begin());
+        }
+
+        if (m_oAllGuide.size() < 1)
+        {
+            break;
+        }
+        setTarget(m_oAllGuide[0]);
     }
         break;
     case STATE_STOP:
@@ -170,20 +180,17 @@ void CGamePlayer::setState(int state)
 
 void CGamePlayer::fixTargetPostion(const Vec2& inResPosition, const Vec2& inTargetPostion)
 {
-
-
-
-
     if (inResPosition == m_oCurrentTarget)
     {
         m_oCurrentTarget = inTargetPostion;    
         log("m_oCurrentTarget Target is Update");
         return;
     }
-    
-    for (int i = 0; i < m_oAllGuide.size();i++)
-    {
 
+    //----------------------------------------------
+
+    for (int i = 0; i < m_oAllGuide.size();i++)
+    {                                  
         if (m_oAllGuide[i] == inResPosition)
         {
             m_oAllGuide[i] = inTargetPostion;

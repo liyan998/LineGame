@@ -20,14 +20,15 @@ public:
 
     bool collwithArea(const Vec2& inPoint);                 //Area碰撞
 
+    bool collwithGuide(const Vec2& inPoint);                //Guide碰撞
+
 public:
 
     CShowArea*          m_refShowArea;
-
+    CMySprite*          m_refSp;
 
 protected:
-
-
+ 
     int m_iStart;   //星级
     int m_iLevel;   //等级
     int m_iAttick;  //攻击力    

@@ -7,7 +7,8 @@
 #include "MySprite.h"
 #include "Path.h"  
 #include "Runnable.h"
-
+#include "Rander.h"
+#include "GameState.h"
 #include "EventSystem.h"
 
 class CGameLogic :

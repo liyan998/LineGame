@@ -42,6 +42,7 @@ void CGameView::onEnter()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(lisnter, this);
 
     //--------------------------------------------------------------------
+
     m_pPath             = new CPath();
 	m_pDrawNode			= DrawNode::create();    	      	
     m_pSp               = CMySprite::create();
@@ -49,6 +50,8 @@ void CGameView::onEnter()
     m_pShowArea         = CShowArea::create();
     m_pGameLogic        = CGameLogic::create();
     
+    //------------------------------------
+
     m_pSp->setGameView(this);
 	m_pSp->setPath(m_pPath);
     m_pSp->setPlayer(m_pPlayer);
@@ -57,14 +60,13 @@ void CGameView::onEnter()
     m_pShowArea->setPath(m_pPath);
     m_pShowArea->setPosition(origin);
 
-    //------------------------------------
+
+    //m_pPlayer->m_refSp              = m_pSp;
 
     m_pGameLogic->m_refPath         = m_pPath;
     m_pGameLogic->m_refPlayer       = m_pPlayer;
     m_pGameLogic->m_refShowArea     = m_pShowArea;
-    m_pGameLogic->m_refSp           = m_pSp;
-
-    log("logic init ");
+    m_pGameLogic->m_refSp           = m_pSp; 
     m_pGameLogic->setAnchorPoint(Vec2::ZERO);
    
     //----------------------------

@@ -20,7 +20,9 @@ public:
 
     //-------------------------------------------- 	
 
-	void clearPoint();	
+	void clearPoint();
+
+    void addPoint(const Vec2& inPoint);
 
     bool hasEndInBegin();
 
@@ -41,7 +43,6 @@ public:
 	
 	std::vector< Vec2 >         m_oAllPoint;
 
-   
 };
 
 #endif//__PATH_H__

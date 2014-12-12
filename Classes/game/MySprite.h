@@ -6,11 +6,12 @@
 #include "Runnable.h"
 #include "GameState.h"
 #include "Path.h"
+#include "Margin.h"
 #include "Game1Player.h"
-
 
 class CGameView;
 class CShowArea;
+
 
 #define MAX_ANGLE 4
 
@@ -86,6 +87,10 @@ public:
 
     void clearGuide();
 
+    int getPathDis(const Vec2& inPoint, int direct);
+
+    void addRoad(const Vec2& inPoint);
+
 private:
 
     void fixPosition(const Vec2& inPos, Vec2& outPos);  //修正位置 
@@ -109,9 +114,7 @@ private:
 
     void addGuide(const Vec2& point);
 
-    void backGuide();                                   //移除节点
-
-   
+    void playerGoWay();                                   //移除节点   
 
     //---------------------------------------------------------------------- 
 
@@ -159,7 +162,14 @@ private:
 
     CGameView*              m_RefGameView;
 
-    std::vector<Vec2>       m_oTPath;            	
+    //---------------------------------------
+
+    std::vector<Vec2>       m_oTPath;
+    std::vector<CMargin*>   m_oTPathMargin;
+    std::vector<Vec2>       m_oTRoad;
+
+    //------------------------------------
+
 
     float                   m_fStep;				//步长
 
@@ -190,6 +200,8 @@ private:
     Vec2                    m_oGuideLStart;
 
     Vec2                    m_oGuideLEnd;
+
+    //------------------------------------------------------------
 
     
 

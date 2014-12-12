@@ -188,9 +188,6 @@
     <ClInclude Include="..\Classes\game\GameLogic.h">
       <Filter>Classes\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\GameState.h">
-      <Filter>Classes\game</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\EventDispatcher.h">
       <Filter>Classes\game\event</Filter>
     </ClInclude>
@@ -243,6 +240,9 @@
       <Filter>Classes\game</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\System.h">
+      <Filter>Classes\game\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\GameState.h">
       <Filter>Classes\game\core</Filter>
     </ClInclude>
   </ItemGroup>

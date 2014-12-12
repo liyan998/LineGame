@@ -21,8 +21,10 @@ void CGameLogic::onEnter()
 
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    m_pBoss = CBoss::create();
-    m_pBoss->m_refShowArea = m_refShowArea;
+    m_pBoss                 = CBoss::create();
+    m_pBoss->m_refShowArea  = m_refShowArea;
+    m_pBoss->m_refSp        = m_refSp;
+
     m_pBoss->setPosition(Vec2(100 + origin.x, 300 + origin.y));
     addChild(m_pBoss);
 

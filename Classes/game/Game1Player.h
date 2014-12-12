@@ -6,7 +6,12 @@
 #include "Runnable.h"
 
 
+
 #define INDEX_NONE -1
+
+
+
+
 
 class CGamePlayer : public Node ,public CGameState, public CRunnable
 {
@@ -41,6 +46,9 @@ public:
     const Vec2& getPlsyerPosition();
 
 
+    void checkPosition(const Vec2& inPoint);
+
+
     void fixTargetPostion(const Vec2& inResPosition, const Vec2& inTargetPostion);
    
 
@@ -67,7 +75,9 @@ public:
 
 
 
+    bool                m_bFlow;
 
+    //CMySprite*          m_refSp;
 private:    
 
     Sprite*             m_pSp;
@@ -75,6 +85,8 @@ private:
     int                 m_iCurrentDirect;
     Vec2                m_oCurrentTarget;
     std::vector<Vec2>   m_oAllGuide;
+
+
 
 
 

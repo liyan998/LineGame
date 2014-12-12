@@ -45,6 +45,11 @@ void CPath::clearPoint()
 }
 
 
+void CPath::addPoint(const Vec2& inPoint)
+{
+    m_oAllPoint.push_back(inPoint);
+}
+
 /************************************************************************/
 /*
 

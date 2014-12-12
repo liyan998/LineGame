@@ -12,7 +12,7 @@ public:
 protected:
 
     int             m_iStep; //ÒÆ¶¯ËÙ¶È
-
+    int             m_iDirect;
 };
 
 

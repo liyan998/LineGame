@@ -491,7 +491,10 @@ int CUtil::getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& i
        // log("p1: %f,%f \n  p2:%f,%f  \n p3:%f,%f \n p4:%f, %f", maring->m_oStart.x, maring->m_oStart.y, maring->m_oTaget.x, maring->m_oTaget.y, inSP.x, inSP.y, tve.x, tve.y);
         if (liyan998::CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inSP, tve))
         {
-            int dis = static_cast<int>(CMath::getPointToLineDis(maring->m_oStart, maring->m_oTaget, inSP));
+
+            Vec2 zu = CMath::getFootPoint(maring->m_oStart, maring->m_oTaget, inSP);         
+
+            int dis = static_cast<int>(ccpDistance(inSP, zu));
 
             if (dis == 0)
             {
