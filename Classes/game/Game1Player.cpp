@@ -27,8 +27,10 @@ void CGamePlayer::released()
 }
 
 void CGamePlayer::setPlayerPosition(const Vec2& pos)
-{                               
-    m_pSp->setPosition(pos);
+{                      
+    Vec2 tp = pos; 
+    CUtil::formartGrid(tp, m_iStep);
+    m_pSp->setPosition(tp);
 }
 
 
@@ -85,6 +87,7 @@ void CGamePlayer::backFollow()
         m_oAllGuide.erase(m_oAllGuide.end() - 1);
     }
 }
+
 
 int CGamePlayer::getStep()
 {                       

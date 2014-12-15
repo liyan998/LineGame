@@ -1,20 +1,22 @@
 #ifndef __GAMEVIEW_H__
 #define __GAMEVIEW_H__
 
-//#include "framework/ui/AGameScene.h"
+
+
 #include "System.h" 
-
-#include "Rander.h"
-#include "GameState.h"
-#include "ShowArea.h"
-#include "MySprite.h"  
-#include "Path.h"
-#include "Margin.h" 
-#include "Game1Player.h"
 #include "GameLogic.h"
-#include "Runnable.h"
-
 #include "EventSystem.h"
+
+
+class CRander;
+class CRunnable;
+class CGameState;
+
+class CMySprite;
+class CGamePlayer;
+class CShowArea;
+class CPath;
+class CMargin;  
 
 
 class CGameView : 

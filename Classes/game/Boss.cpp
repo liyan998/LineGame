@@ -34,12 +34,12 @@ void CBoss::run(float t)
 
    Vec2 nps = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
 
-
-   if (collwithGuide(nps))
-   {
-       m_refSp->setState(CMySprite::STATE_BACK);
-       //m_refSp->clearGuide();
-   }
+// 
+//    if (collwithGuide(nps))
+//    {
+//        m_refSp->setState(CMySprite::STATE_BACK);
+//        //m_refSp->clearGuide();
+//    }
    
    if (collwithArea(nps))
    {
@@ -68,8 +68,8 @@ void CBoss::print(DrawNode* dn)
     for (int i = 0; i < 4; i++)
     {
 
-        int borderdis = m_refShowArea->getBorderDis(getPosition(), CPath::DIRECT[i][0]);
-    
+        //int borderdis = m_refShowArea->getBorderDis(getPosition(), CPath::DIRECT[i][0]);
+        int borderdis = m_refSp->getPathDis(getPosition(), CPath::DIRECT[i][0]);
          if (borderdis == -1)
          {
              continue;
@@ -92,6 +92,7 @@ void CBoss::print(DrawNode* dn)
         dn->drawDot(endPoint, 10, Color4F(1, 0, 1,0.3));
     }
 
+    //log("################################################");
     for (int i = 0; i < 4; i++)
     {                                                          
         int borderdis = m_refSp->getPathDis(getPosition(), CPath::DIRECT[i][0]);       

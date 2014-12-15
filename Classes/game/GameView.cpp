@@ -3,6 +3,16 @@
 
 #include "HelloWorldScene.h"
 
+#include "Rander.h"
+#include "Runnable.h"
+#include "GameState.h"
+
+#include "ShowArea.h"
+#include "MySprite.h"  
+#include "Path.h"
+#include "Margin.h" 
+#include "Game1Player.h"
+
 
 void CGameView::onEnter()
 {

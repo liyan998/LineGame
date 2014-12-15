@@ -42,7 +42,9 @@ public:
     static void getDirectFromFlag(unsigned int inFlag , std::vector<int>& outDirects);
 
     //格式化坐标
-    static void formartGrid(Vec2& inPoint);
+    static void formartGrid(Vec2& inoutPoint);
+
+    static void formartGrid(Vec2& inoutPoint, int grid);
 
     //与屏幕匹配
     //static Vec2 originPosition(const Vec2& inPoint);
@@ -52,6 +54,10 @@ public:
 
     //得到最小障碍距离
     static int getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& inSP,int angle);
+
+    //得到FIX后的方向
+    static int getFixDirect(int currentdirect, int angle);
+
 
 };
 

@@ -35,6 +35,7 @@ public:
     virtual void released();
 
     virtual void run(float time);
+
     //-----------------------------------------------------
 
     int getStep();
@@ -53,6 +54,8 @@ public:
     void setTarget(const Vec2& point);
 
     void addFollow(const Vec2& point);
+
+    
 
     void backFollow();
 

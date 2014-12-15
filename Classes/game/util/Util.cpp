@@ -373,9 +373,14 @@ void CUtil::getDirectFromFlag(unsigned int inFlag, std::vector<int>& outDirects)
 */
 /*********************************************************************/
 void CUtil::formartGrid(Vec2& inPoint)
-{       
-    inPoint.x = GRAD_NUMBER(inPoint.x);
-    inPoint.y = GRAD_NUMBER(inPoint.y);
+{                                          
+    formartGrid(inPoint, GRAD_CELL);
+}
+
+void CUtil::formartGrid(Vec2& inoutPoint, int grid)
+{
+    inoutPoint.x = FTOI(inoutPoint.x) / grid * grid;
+    inoutPoint.y = FTOI(inoutPoint.y) / grid * grid;
 }
 
 
@@ -509,4 +514,99 @@ int CUtil::getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& i
         }
     }  
     return mindis;
+}
+
+
+/************************************************************************/
+/*
+
+* @brief        得到修正后的方向
+
+* @param[in]    currentdirect       向量方向
+* @param[in]    direct       向量方向
+
+* @return       int         修正后的方向
+
+*/
+/************************************************************************/
+int CUtil::getFixDirect(int currentdirect ,int angle)
+{                            
+    int errorMarign = 45;      
+    int angleList[] = { 90, 0, -90, 180, 270 };
+    int size = sizeof(angleList) / sizeof(angleList[0]);
+    for (int i = 0; i < size; i++)
+    {
+        if (angleList[i] == angle)
+        {
+            return angle;
+        }
+        else if (abs(angle - angleList[i]) < errorMarign)
+        {
+            if (angleList[i] == 270)
+            {
+                return -90;
+            }
+            return angleList[i];
+        }
+    }
+    switch (currentdirect)
+    {
+    case ANGLE_DOWN:
+        if (angle >= ANGLE_DOWN + errorMarign && angle <= ANGLE_RIGHT - errorMarign)
+        {
+            //->down | right
+            log("down | right");
+            return ANGLE_RIGHT;
+        }
+        else if (angle >= ANGLE_LEFT - errorMarign && angle <= ANGLE_LEFT * 2 - errorMarign)
+        {
+            //->down | left
+            log("down | left");
+            return ANGLE_LEFT;
+        }
+        break;
+    case ANGLE_UP:
+        if (angle >= ANGLE_RIGHT + errorMarign && angle <= ANGLE_UP - errorMarign)
+        {
+            //-> up | right
+            log("up | right");
+            return ANGLE_RIGHT;
+        }
+        else if (angle >= ANGLE_UP + errorMarign && angle <= ANGLE_LEFT - errorMarign)
+        {
+            //-> up | left
+            log("up | left");
+            return ANGLE_LEFT;
+        }
+        break;
+    case ANGLE_LEFT:
+        if (angle >= ANGLE_LEFT + errorMarign && angle <= ANGLE_LEFT + 90 - errorMarign)
+        {
+            //->left | down
+            log("left | down");
+            return ANGLE_DOWN;
+        }
+        else if (angle >= ANGLE_UP + errorMarign && angle <= ANGLE_LEFT - errorMarign)
+        {
+            //->left | up
+            log("left | up");
+            return ANGLE_UP;
+        }
+        break;
+    case ANGLE_RIGHT:
+        if (angle >= ANGLE_DOWN + errorMarign && angle <= ANGLE_RIGHT - errorMarign)
+        {
+            //-> right | down
+            log("right | down");
+            return ANGLE_DOWN;
+        }
+        else if (angle >= ANGLE_RIGHT + errorMarign && angle <= ANGLE_UP - errorMarign)
+        {
+            //-> right | up
+            log("right | up");
+            return ANGLE_UP;
+        }
+        break;
+    }
+    return ANGLE_ERROR;
 }

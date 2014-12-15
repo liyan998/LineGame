@@ -50,103 +50,6 @@ bool CMySprite::init()
                 
 
 
-/************************************************************************/
-/*
-@brief        得到修正角度值，修正范围 
-
-@param[in]     angle   向量方向角度值
-@param[out]
-
-@return        修正角度值
-
-                ANGLE_DOWN
-                ANGLE_RIGHT
-                ANGLE_UP
-                ANGLE_LEFT
-*/
-/************************************************************************/
-int CMySprite::getFixAngle(int angle)
-{
-	int errorMarign = 45;
-
-	int angleList[] = { 90, 0 , -90, 180 ,270 };
-
-	int size = sizeof(angleList) / sizeof(angleList[0]);
-	for (int i = 0;i < size;i++)
-	{
-		if (angleList[i] == angle)
-		{
-			return angle;
-		}else if(abs(angle - angleList[i]) < errorMarign)
-		{
-            if (angleList[i] == 270)
-            {
-                return -90;
-            }
-			return angleList[i];
-		}
-	}
-    switch (m_currentAngle)
-    {
-    case ANGLE_DOWN:       
-        if (angle >= ANGLE_DOWN + errorMarign && angle <= ANGLE_RIGHT - errorMarign)
-        {
-            //->down | right
-            log("down | right");
-            return ANGLE_RIGHT;
-        }
-        else if (angle >= ANGLE_LEFT - errorMarign && angle <= ANGLE_LEFT * 2 - errorMarign)
-        {
-            //->down | left
-            log("down | left");
-            return ANGLE_LEFT;
-        }
-        break;
-    case ANGLE_UP:
-        if (angle >= ANGLE_RIGHT + errorMarign && angle <= ANGLE_UP - errorMarign)
-        {
-            //-> up | right
-            log("up | right");
-            return ANGLE_RIGHT;
-        }
-        else if (angle >= ANGLE_UP + errorMarign && angle <= ANGLE_LEFT - errorMarign)
-        {
-            //-> up | left
-            log("up | left");
-            return ANGLE_LEFT;
-        }
-        break;
-    case ANGLE_LEFT:
-        if (angle >= ANGLE_LEFT + errorMarign && angle <= ANGLE_LEFT + 90 - errorMarign)
-        {
-            //->left | down
-            log("left | down");
-            return ANGLE_DOWN;
-        }
-        else if (angle >= ANGLE_UP + errorMarign && angle <= ANGLE_LEFT - errorMarign)
-        {
-            //->left | up
-            log("left | up");
-            return ANGLE_UP;
-        }
-        break;
-    case ANGLE_RIGHT:
-        if (angle >= ANGLE_DOWN + errorMarign && angle <= ANGLE_RIGHT - errorMarign)
-        {
-            //-> right | down
-            log("right | down");
-            return ANGLE_DOWN;
-        }
-        else if (angle >= ANGLE_RIGHT + errorMarign && angle <= ANGLE_UP - errorMarign)
-        {
-            //-> right | up
-            log("right | up");
-            return ANGLE_UP;
-        }
-        break;
-    }
-    return ANGLE_ERROR;
-}
 
 
 
@@ -305,7 +208,7 @@ void CMySprite::onMove(const Vec2& point)
         checkDirect(point);
         if (!hasInBorder())
         {
-            log("draw _ inBorder~~~~~~");
+            //log("draw _ inBorder~~~~~~");
             return;
         }
         if (!hasMoveAction())
@@ -883,9 +786,12 @@ void CMySprite::fixPath(const Vec2& inPoint)
 void CMySprite::playerGoWay()
 {
 
-    if (m_oTPathMargin.size() > 0)
-    {
-        m_oTPathMargin[0]->m_oTaget = m_RefPlayer->getPlsyerPosition();
+    if (m_RefPlayer->getPlsyerPosition() != m_oSpCurrentPos && m_oTPathMargin.size() > 0)
+    {                                            
+        Vec2 tp = m_RefPlayer->getPlsyerPosition();
+        //CUtil::formartGrid(tp, m_RefPlayer->getStep());
+        m_oTPathMargin[0]->setTaget(m_oTPathMargin[0]->m_oStart,tp);
+        //m_oTPathMargin[0]->m_oTaget = m_RefPlayer->getPlsyerPosition();
        // m_oTPathMargin[0]->m_oTaget = m_oSpCurrentPos;
     }
 
@@ -905,7 +811,7 @@ void CMySprite::checkDirect(const Vec2& inPos)
 	{     
         float radian	= RADINA_TOGAME(CMath::getRadian(m_oDirectStart, inPos));
 		int angle		= CMath::radianToAngle(radian);
-		int fixangle	= getFixAngle(angle);
+        int fixangle    = CUtil::getFixDirect(m_currentAngle,angle);
 
         if (m_currentAngle == ANGLE_NONE)
         {
@@ -1076,12 +982,18 @@ void CMySprite::print(DrawNode* dn)
         dn->drawDot(m_oTPath[i], 10, Color4F(0, 1, 1, 1));  
     }
          
-    if (m_State != STATE_BACK)
-    {
+//     if (m_State != STATE_BACK)
+//     {
         for (int i = 0; i < m_oTPathMargin.size();i++)
         {
             dn->drawSegment(m_oTPathMargin[i]->m_oStart, m_oTPathMargin[i]->m_oTaget, 1, Color4F(1, .3, .3, 1));
-        }
+        } 
+    //}
+
+
+    if (m_oTPathMargin.size() > 0)
+    {
+        dn->drawSegment(m_oTPathMargin[0]->m_oStart, m_oTPathMargin[0]->m_oTaget, 1, Color4F(1,1,1,1));
     }
 
 
@@ -1142,6 +1054,8 @@ void CMySprite::addGuide(const Vec2& point)
     }
     //同一条直线上不添加  
 
+
+
     m_oSpStartPos = point;
       
    
@@ -1190,6 +1104,9 @@ void CMySprite::addGuide(const Vec2& point)
 /*********************************************************************/
 void CMySprite::addRoad(const Vec2& inPoint)
 {  
+
+
+    log("addRoad Direct:%d",m_currentAngle);
     CMargin* tpathmargin = new CMargin();
     if (m_oTRoad.size() == 0)
     {
@@ -1367,10 +1284,10 @@ int CMySprite::getPathDis(const Vec2& inPoint, int direct)
     {
     case ANGLE_DOWN:
         tve.x = inPoint.x;
-        // tve.y = visVec.y;
+        tve.y = visVec.y;
         break;
     case ANGLE_LEFT:
-        //tve.x = visVec.x;
+        tve.x = 0;
         tve.y = inPoint.y;
         break;
     case ANGLE_RIGHT:
@@ -1387,26 +1304,44 @@ int CMySprite::getPathDis(const Vec2& inPoint, int direct)
 
     int mindis = -1;
 
+    //log("--------------------------------------",tve.x, tve.y);
     for (int i = 0; i < m_oTPathMargin.size(); i++)
     {
         CMargin* maring = m_oTPathMargin[i];
-     
+           
+        //log("%d==%d",i, maring->m_Angle);
+//         if (CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inPoint, tve))
+//         {
+//             log("%f,%f -- %f, %f", maring->m_oStart.x, maring->m_oStart.y, maring->m_oTaget.x, maring->m_oTaget.y);
+//             log("%d Maring:%d", m_oTPathMargin.size(), maring->m_Angle);
+//         }
+        //log("maring:%d", maring->m_Angle);
         if (liyan998::CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inPoint, tve))
-        {
-
+        {            
+            //log("%f,%f -- %f, %f", maring->m_oStart.x, maring->m_oStart.y ,maring->m_oTaget.x , maring->m_oTaget.y);
+           // log("%d Maring:%d", m_oTPathMargin.size(), maring->m_Angle);
             Vec2 zu = CMath::getFootPoint(maring->m_oStart, maring->m_oTaget, inPoint);
+            //log("maring->%d  %f, %f",maring->m_Angle, zu.x, zu.y);
+           // CUtil::formartGrid(zu);
+            int dis = static_cast<int>(ccpDistance(inPoint, zu));        
 
-            int dis = static_cast<int>(ccpDistance(inPoint, zu));   
 
-            //log("CUtil dis:%d", dis);
-            if (mindis == -1 || dis < mindis)
-            {
-                mindis = dis;
-            }
+            return dis;
+
+//             log("CUtil dis:%d", dis);
+//                         if (mindis == -1 || dis < mindis)
+//                         {
+//                             mindis = dis;
+//                         }
         }
+
+
+
     }
 
-    return mindis;
+   return mindis;
+
+   // return ccpDistance(inPoint, tve);
 }
 
 void CMySprite::released()
