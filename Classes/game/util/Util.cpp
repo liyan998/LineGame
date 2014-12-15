@@ -517,6 +517,44 @@ int CUtil::getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& i
 }
 
 
+int CUtil::getUDLR_atMarginDis(CMargin* pMaring, const Vec2& inPoint  , int direct)
+{
+    Size visSize = Director::getInstance()->getVisibleSize();
+    Vec2 visVec = Director::getInstance()->getVisibleOrigin();
+
+    Vec2 tve(Vec2::ZERO);
+    switch (direct)
+    {
+    case ANGLE_DOWN:
+        tve.x = inPoint.x;
+        // tve.y = visVec.y;
+        break;
+    case ANGLE_LEFT:
+        //tve.x = visVec.x;
+        tve.y = inPoint.y;
+        break;
+    case ANGLE_RIGHT:
+        tve.x = visSize.width + visVec.x;
+        tve.y = inPoint.y;
+        break;
+    case ANGLE_UP:
+        tve.x = inPoint.x + visVec.x;
+        tve.y = visSize.height + visVec.y;
+        break;
+    default:
+        break;
+    }
+    
+    if (CMath::hasLineMutlLine(pMaring->m_oStart, pMaring->m_oTaget, inPoint, tve))
+    { 
+        Vec2 zu = CMath::getFootPoint(pMaring->m_oStart, pMaring->m_oTaget, inPoint);
+        return ccpDistance(inPoint, zu);
+    } 
+
+    return -1;
+}
+
+
 /************************************************************************/
 /*
 
@@ -609,4 +647,30 @@ int CUtil::getFixDirect(int currentdirect ,int angle)
         break;
     }
     return ANGLE_ERROR;
+}
+
+
+int CUtil::getFixDictance(int direct, const Vec2& startP, const Vec2& endP)
+{
+
+    //根据方向得到 距离
+
+    if (direct == ANGLE_NONE || direct == ANGLE_ERROR)
+    {
+        return 0;
+    }
+    int distance = 0;
+
+    if (ANGLE_UP == abs(direct))
+    {
+        //log("up down");        
+        distance = static_cast<int>(abs(startP.y - endP.y));
+    }
+    else{
+        //log("right left");
+        distance = static_cast<int>(abs(startP.x - endP.x));
+    }
+    return distance;
+
+
 }

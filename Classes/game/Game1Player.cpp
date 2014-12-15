@@ -104,7 +104,7 @@ void CGamePlayer::run(float time)
     {
          int dis = ccpDistance(getPlsyerPosition(), m_oCurrentTarget);
 
-         //log("target:%f,%f", m_oCurrentTarget.x, m_oCurrentTarget.y);
+         //log("%d  target:%f,%f", dis, m_oCurrentTarget.x, m_oCurrentTarget.y);
          if (dis < m_iStep)		 
          {               
              setState(STATE_STANDER);
@@ -113,7 +113,7 @@ void CGamePlayer::run(float time)
          
 		 m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
 		 Vec2 npos = CMath::getVec2(getPlsyerPosition(), m_iStep, CMath::angleToRadian(m_iCurrentDirect));
-         //CUtil::formartGrid(npos); 
+         CUtil::formartGrid(npos, m_iStep);
 
          m_pSp->setPosition(npos);
     }

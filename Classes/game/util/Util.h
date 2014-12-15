@@ -54,9 +54,13 @@ public:
 
     //得到最小障碍距离
     static int getMinWallDis(const std::vector<CMargin*>& inAllMargin, const Vec2& inSP,int angle);
+    static int getUDLR_atMarginDis(CMargin* pMaring ,const Vec2& inPoint, int direct);
 
     //得到FIX后的方向
     static int getFixDirect(int currentdirect, int angle);
+
+    //得到距离
+    static int getFixDictance(int direct, const Vec2& startP, const Vec2& endP);
 
 
 };

@@ -27,16 +27,16 @@ void CPath::print( DrawNode* dn)
 // 			dn->drawSegment(m_oAllPoint[i], m_oAllPoint[i + 1], 2, Color4F(0, .5F, .5F, .5F));
 // 		}       
 // 	}
-    float rC = liyan998::CMath::getRandom(1, 100) / 100.f;
-    float gC = liyan998::CMath::getRandom(1, 100) / 100.f;
-    float bC = liyan998::CMath::getRandom(1, 100) / 100.f;
+//     float rC = liyan998::CMath::getRandom(1, 100) / 100.f;
+//     float gC = liyan998::CMath::getRandom(1, 100) / 100.f;
+//     float bC = liyan998::CMath::getRandom(1, 100) / 100.f;
 
 
-	for (int i = 0 ;i < m_oAllPoint.size();i++)
-    {
-        dn->drawDot(m_oAllPoint[i], 4, Color4F(1, 0, 0, 1));
-        dn->drawDot(m_oAllPoint[i], 3, Color4F(rC, gC, bC, 1));        
-	}
+// 	for (int i = 0 ;i < m_oAllPoint.size();i++)
+//     {
+//         dn->drawDot(m_oAllPoint[i], 4, Color4F(1, 0, 0, 1));
+//         dn->drawDot(m_oAllPoint[i], 3, Color4F(rC, gC, bC, 1));        
+// 	}
 }
 
 void CPath::clearPoint()

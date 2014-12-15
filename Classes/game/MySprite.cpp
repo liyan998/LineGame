@@ -558,10 +558,10 @@ void CMySprite::onMoveToDraw()
     switch (posType)
     {
     case POSITION_UNLOCK:
-        log("POSITION_UNLOCK");                                                                       
+        //log("POSITION_UNLOCK");                                                                       
         break;
     case POSITION_LOCK:
-        log("POSITION_LOCK");
+       // log("POSITION_LOCK");
         {                           
 
             int startpostype = m_RefShowArea->getPositionType(m_oGuideLStart);
@@ -578,7 +578,7 @@ void CMySprite::onMoveToDraw()
         break;
     case POSITION_AREA_LINE:
     case POSITION_AREA_ENDPOINT:       
-        log("POSITION_ENDPOINT + POSITION_LINE");
+       // log("POSITION_ENDPOINT + POSITION_LINE");
         //log("min %f, %f", m_oSpCurrentPos.x ,m_oSpCurrentPos.y);
         m_oGuideLStart = m_oSpCurrentPos;
         m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
@@ -786,12 +786,53 @@ void CMySprite::fixPath(const Vec2& inPoint)
 void CMySprite::playerGoWay()
 {
 
+//     log("m_oTPathMargin:%d", m_oTPathMargin.size());
+// 
+//     for (int i = 0; i < m_oTPathMargin.size();i++)
+//     {
+//         log("start;%f, %f", m_oTPathMargin[i]->m_oStart.x, m_oTPathMargin[i]->m_oStart.y);
+//         log("target;%f, %f", m_oTPathMargin[i]->m_oTaget.x, m_oTPathMargin[i]->m_oTaget.y);
+//     }
     if (m_RefPlayer->getPlsyerPosition() != m_oSpCurrentPos && m_oTPathMargin.size() > 0)
-    {                                            
-        Vec2 tp = m_RefPlayer->getPlsyerPosition();
+    {    
+
+        Vec2 t_oSp(Vec2::ZERO);
+        Vec2 t_oEp(Vec2::ZERO);
+        if (m_oTPathMargin.size() > 0)
+        {
+            t_oSp = m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oStart;
+        }
+        else if (m_oTRoad.size() > 0)
+        {
+            t_oSp = m_oTRoad[m_oTRoad.size() - 1];
+        }
+        int t_iDis = CUtil::getFixDictance(m_RefPlayer->m_iCurrentDirect,t_oSp, m_RefPlayer->getPlsyerPosition());
+       // log("t_iDis:%d", t_iDis);
+        t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
+
+        CUtil::formartGrid(t_oEp ,m_RefPlayer->getStep());
+        m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oTaget = t_oEp;
+
+      
+        
+
+//         Vec2 tp = m_RefPlayer->getPlsyerPosition(); 
+//         Vec2 tsp = m_oTPathMargin[0]->m_oStart;
+//         
+//         m_oTPathMargin[0]->m_Angle = m_RefPlayer->m_iCurrentDirect;   
+// 
+// 
+//         int dis = static_cast<int>(ccpDistance(tsp, tp));
+//        
+//         
+//         m_oTPathMargin[0]->m_oTaget = CMath::getVec2(tsp, dis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
+// 
+//         CUtil::formartGrid(m_oTPathMargin[0]->m_oTaget);
+
         //CUtil::formartGrid(tp, m_RefPlayer->getStep());
-        m_oTPathMargin[0]->setTaget(m_oTPathMargin[0]->m_oStart,tp);
-        //m_oTPathMargin[0]->m_oTaget = m_RefPlayer->getPlsyerPosition();
+
+        //log("current Target :", m_RefPlayer->m_iCurrentDirect);
+        //m_oTPathMargin[0]->setTaget(m_oTPathMargin[0]->m_oStart,tp);
        // m_oTPathMargin[0]->m_oTaget = m_oSpCurrentPos;
     }
 
@@ -979,7 +1020,7 @@ void CMySprite::print(DrawNode* dn)
             dn->drawSegment(m_oTPath[i], m_oSpCurrentPos, 0.51, Color4F(1, .3, .3,0.31));
         }   
 
-        dn->drawDot(m_oTPath[i], 10, Color4F(0, 1, 1, 1));  
+        //dn->drawDot(m_oTPath[i], 1, Color4F(0, 1, 1, 1));  
     }
          
 //     if (m_State != STATE_BACK)
@@ -990,12 +1031,39 @@ void CMySprite::print(DrawNode* dn)
         } 
     //}
 
-
+// 
     if (m_oTPathMargin.size() > 0)
-    {
-        dn->drawSegment(m_oTPathMargin[0]->m_oStart, m_oTPathMargin[0]->m_oTaget, 1, Color4F(1,1,1,1));
-    }
+    {                                             
+       
+        Vec2 t_oSp = m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oStart;
 
+        Vec2 tt = m_RefPlayer->getPlsyerPosition();
+        CUtil::formartGrid(tt, m_RefPlayer->getStep());
+        log("%f , %f -- %d", tt.x, tt.y, m_RefPlayer->m_iCurrentDirect);
+
+        int t_iDis = FTOI(ccpDistance(t_oSp, tt));
+        Vec2 t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
+        
+        CUtil::formartGrid(t_oEp , m_RefPlayer->getStep());
+        dn->drawSegment(t_oSp, t_oEp, 1, Color4F(1, 1, 1, 1));
+        dn->drawDot(t_oSp, 5, Color4F(1, 1, 1, 1));
+    }
+    else if (m_oTRoad.size() > 0)
+    {
+        
+       
+       Vec2 t_oSp = m_oTRoad[m_oTRoad.size() - 1];
+
+
+        int t_iDis = FTOI(ccpDistance(t_oSp, m_RefPlayer->getPlsyerPosition()));
+        Vec2 t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
+       
+
+        dn->drawSegment(t_oSp, t_oEp, 1, Color4F(1, 1, 1, 1));
+        dn->drawDot(t_oSp, 5, Color4F(1, 1, 1, 1));
+    }
+ 
+    
 
     //可行走方向------------------------------------------
 //     std::vector<int> abv;
@@ -1022,8 +1090,8 @@ void CMySprite::print(DrawNode* dn)
     {                 
 	case STATE_MOVE:
     case STATE_DRAW:
-		dn->drawDot(m_oDirectStart, 10, Color4F(.03,0,1,1));
 		dn->drawSegment(m_oAbsStartPos, m_oAbsEndPos, 1, Color4F(0, 1, 1, 1));
+		dn->drawDot(m_oDirectStart, 10, Color4F(.03,0,1,1));
         dn->drawDot(m_oSpStartPos, 20, Color4F(1, 0, 0, .3));
 		break;
     }    
@@ -1075,12 +1143,11 @@ void CMySprite::addGuide(const Vec2& point)
 // 
 //         m_oTPathMargin[0]->m_oStart = point;
 //     }
- 
-    
+
     if (m_oTPath.size() == 0)
     {
         addRoad(point);
-    }
+    } 
               
     //---------------------------
     log("+++++addGuid:%f ,%f", point.x ,point.y);
@@ -1103,27 +1170,45 @@ void CMySprite::addGuide(const Vec2& point)
 */
 /*********************************************************************/
 void CMySprite::addRoad(const Vec2& inPoint)
-{  
-
-
+{      
     log("addRoad Direct:%d",m_currentAngle);
+
+
     CMargin* tpathmargin = new CMargin();
-    if (m_oTRoad.size() == 0)
+    if (m_oTRoad.size() > 0)
+    {              
+        const Vec2& lastVec2 = m_oTRoad[m_oTRoad.size() - 1];
+        tpathmargin->setTaget(lastVec2, inPoint);
+        m_oTPathMargin.push_back(tpathmargin); 
+
+        m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oStart = inPoint;
+    }
+    else if (m_oTRoad.size() == 0)
     {
         tpathmargin->setTaget(inPoint, inPoint);
         m_oTPathMargin.push_back(tpathmargin);
     }
-    else if (m_oTRoad.size() > 0)
-    {
-        const Vec2& lastVec2 = m_oTRoad[m_oTRoad.size() - 1];
-       
-        tpathmargin->setTaget(lastVec2, inPoint);
-        m_oTPathMargin.push_back(tpathmargin);
 
-        m_oTPathMargin[0]->m_oStart = inPoint;
-    }
+    m_oTRoad.push_back(inPoint);
 
-    m_oTRoad.push_back(inPoint);                                  
+ 
+//     CMargin* tpathmargin = new CMargin();
+//     if (m_oTRoad.size() == 0)
+//     {
+//         tpathmargin->setTaget(inPoint, inPoint);
+//         m_oTPathMargin.push_back(tpathmargin);
+//     }
+//     else if (m_oTRoad.size() > 0)
+//     {
+//         const Vec2& lastVec2 = m_oTRoad[m_oTRoad.size() - 1];
+//        
+//         tpathmargin->setTaget(lastVec2, inPoint);
+//         m_oTPathMargin.push_back(tpathmargin);
+// 
+//         m_oTPathMargin[0]->m_oStart = inPoint;
+//     }
+
+   // m_oTRoad.push_back(inPoint);                                  
 }
 
 
@@ -1272,22 +1357,82 @@ void CMySprite::runGo()
 /*********************************************************************/
 int CMySprite::getPathDis(const Vec2& inPoint, int direct)
 {         
-   // return  CUtil::getMinWallDis(m_oTPathMargin, inPoint, direct); 
+   
+   //int mindis = CUtil::getMinWallDis(m_oTPathMargin, inPoint, direct); 
+
+
+
+//    if (m_oTPathMargin.size() > 0)
+//    {
+//         CMargin t_oLast;
+//         Vec2 t_oSp = m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oTaget;
+//         int t_iDis = FTOI(ccpDistance(t_oSp, m_RefPlayer->getPlsyerPosition()));
+//         Vec2 t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect)); 
+//         t_oLast.setTaget(t_oSp, t_oEp);
+// 
+// 
+//         int dis = CUtil::getUDLR_atMarginDis(&t_oLast, inPoint, direct);
+//         
+//         log("dis:%d", dis);
+// 
+//       
+//    }
+
+
+//    Vec2 t_oSp(Vec2::ZERO);
+//    Vec2 t_oEp(Vec2::ZERO);
+// 
+//    if (m_oTPathMargin.size() > 0)
+//    {
+//        t_oSp = m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oTaget;
+//    }
+//    else if (m_oTRoad.size() > 0)
+//    {
+//        t_oSp = m_oTRoad[m_oTRoad.size() - 1];
+//    }  
+// 
+//    int t_iDis = FTOI(ccpDistance(t_oSp, m_RefPlayer->getPlsyerPosition()));
+//    t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
+//     
+//     
+//    CMargin t_oLast;
+//    t_oLast.m_oStart = t_oSp;
+//    t_oLast.m_oTaget = t_oEp;
+// 
+//    int dis = CUtil::getUDLR_atMarginDis(&t_oLast, inPoint, direct);
+//    //         
+//    log("dis:%d", dis);
+    
 
     Size visSize = Director::getInstance()->getVisibleSize();
     Vec2 visVec = Director::getInstance()->getVisibleOrigin();
 
-   
+    //log("-------------------------------------------");
+
+    //auto director = Director::getInstance();
+    //Size size;
+    //size = director->getWinSize();
+    //log("***IDONG: Director getWinSize:w=%f,h=%f", size.width, size.height);
+
+    //size = director->getWinSizeInPixels();
+    //log("***IDONG: Director getWinSizeInPixels:w=%f,h=%f", size.width, size.height);
+
+    //size = director->getVisibleSize();
+    //log("***IDONG: Director getVisibleSize:w=%f,h=%f", size.width, size.height);
+
+    //Point point = director->getVisibleOrigin();
+    //     log("***IDONG: Director getVisibleOrigin:x=%f,y=%f", point.x, point.y);
+    // 
     //     log("VisSize:%f, %f  Visibleorigin::%f, %f", visSize.width, visSize.height, visVec.x ,visVec.y);
     Vec2 tve(Vec2::ZERO);
     switch (direct)
     {
     case ANGLE_DOWN:
         tve.x = inPoint.x;
-        tve.y = visVec.y;
+        // tve.y = visVec.y;
         break;
     case ANGLE_LEFT:
-        tve.x = 0;
+        //tve.x = visVec.x;
         tve.y = inPoint.y;
         break;
     case ANGLE_RIGHT:
@@ -1304,44 +1449,26 @@ int CMySprite::getPathDis(const Vec2& inPoint, int direct)
 
     int mindis = -1;
 
-    //log("--------------------------------------",tve.x, tve.y);
     for (int i = 0; i < m_oTPathMargin.size(); i++)
     {
         CMargin* maring = m_oTPathMargin[i];
-           
-        //log("%d==%d",i, maring->m_Angle);
-//         if (CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inPoint, tve))
-//         {
-//             log("%f,%f -- %f, %f", maring->m_oStart.x, maring->m_oStart.y, maring->m_oTaget.x, maring->m_oTaget.y);
-//             log("%d Maring:%d", m_oTPathMargin.size(), maring->m_Angle);
-//         }
-        //log("maring:%d", maring->m_Angle);
+
+        
+        // log("p1: %f,%f \n  p2:%f,%f  \n p3:%f,%f \n p4:%f, %f", maring->m_oStart.x, maring->m_oStart.y, maring->m_oTaget.x, maring->m_oTaget.y, inSP.x, inSP.y, tve.x, tve.y);
         if (liyan998::CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inPoint, tve))
-        {            
-            //log("%f,%f -- %f, %f", maring->m_oStart.x, maring->m_oStart.y ,maring->m_oTaget.x , maring->m_oTaget.y);
-           // log("%d Maring:%d", m_oTPathMargin.size(), maring->m_Angle);
+        {      
             Vec2 zu = CMath::getFootPoint(maring->m_oStart, maring->m_oTaget, inPoint);
-            //log("maring->%d  %f, %f",maring->m_Angle, zu.x, zu.y);
-           // CUtil::formartGrid(zu);
-            int dis = static_cast<int>(ccpDistance(inPoint, zu));        
 
+            int dis = static_cast<int>(ccpDistance(inPoint, zu)); 
 
-            return dis;
-
-//             log("CUtil dis:%d", dis);
-//                         if (mindis == -1 || dis < mindis)
-//                         {
-//                             mindis = dis;
-//                         }
+            if (mindis == -1 || dis < mindis)
+            {
+                mindis = dis;
+            }
         }
-
-
-
     }
-
-   return mindis;
-
-   // return ccpDistance(inPoint, tve);
+    return mindis;
+                     
 }
 
 void CMySprite::released()

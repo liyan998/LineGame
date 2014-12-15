@@ -275,10 +275,10 @@ void CShowArea::print(DrawNode* dn)
     {
         dn->drawDot(addArea[i], 10, Color4F(1, 1, 1, 0.2));
     }
-    for (int i = 0; i < m_RefPath->m_oAllPoint.size(); i++)
-    {
-        dn->drawDot(m_RefPath->m_oAllPoint[i], 10, Color4F(1, 1,0.5, 0.3));
-    }
+//     for (int i = 0; i < m_RefPath->m_oAllPoint.size(); i++)
+//     {
+//         dn->drawDot(m_RefPath->m_oAllPoint[i], 10, Color4F(1, 1,0.5, 0.3));
+//     }
 
 
 
