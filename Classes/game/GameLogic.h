@@ -46,6 +46,15 @@ public:
 
     void h_ActionClose(EventParm pData);
 
+    void clearGameElement();
+
+    void clearNpc(CNpc* pNpc, int mode);
+
+
+    //----------------------------------------
+
+    inline void createGameElement();            //根据出战配置创建Enemey
+
 private:
 
     CBoss*                          m_pBoss;

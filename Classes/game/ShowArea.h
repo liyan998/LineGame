@@ -99,9 +99,7 @@ public:
 
     void setAreaIndex(int index, int areaIndex);                        //设置区间索引
 
-    //-------------------------------------------------------------------------------- 
-
-    void clearAreaIndex();                                              //清除区间
+    //--------------------------------------------------------------------------------   
 
     CMargin* getAreaMargin(int index);                                  //得到area边界对象
 
@@ -127,10 +125,6 @@ public:
 
     bool hasIncludeMaster(const Vec2& bossPosition);                    //是否包含BOSS
 
-    void clearSameDirectNode(std::vector<Vec2>& outputVec);             //清理同方向节点
-
-    void clearSamePointNode(std::vector<Vec2>& outPutVec);              //情理相同位置节点
-  
     int getPositionType(const Vec2& inPos);                             //得到当前位置的类型
 
     int getPathType();                                                  //得到路径类型
@@ -140,16 +134,27 @@ public:
     bool hasOverLoad(const Vec2& inSP, Vec2& inCP, int angle, int& outIndex);   //是否过界
 
     int getBorderDis(const Vec2& inSP, int angle);                      //得到运动趋势距边界距离
+    
+    
+    void getRandVec2(Vec2& outPoint);                                   //得到未解锁区域随机位置
+    
+    //----------------------------------------------------------------------------    
+    
+    void setClose(const Vec2& inBoss);                                  //设置闭合
 
-    void setClose(const Vec2& inBoss);
+    void clearSameDirectNode(std::vector<Vec2>& outputVec);             //清理同方向节点
 
-    std::vector< Vec2 > resultArea, addArea;
+    void clearSamePointNode(std::vector<Vec2>& outPutVec);              //情理相同位置节点
+
+    void clearAreaIndex();                                              //清除区间
+
+    
 
 protected:
 
-    void flushMargin();                                                 //刷新边界对象集合   
+    inline void flushMargin();                                          //刷新边界对象集合   
 
-    void flush();                                                            
+    inline void flush();
 
     CShape* createShape(int id, std::vector<Vec2>& refAllPoint);        //
 
@@ -194,6 +199,10 @@ private:
     void closedEnd_End();
 
  //////////////////////////////////////////////////////////////////////////
+
+public:
+
+    std::vector< Vec2 >             resultArea, addArea;
 
 private:
 

@@ -145,6 +145,7 @@ private:
     void getBorderMoveAvable(const Vec2& inPoint, std::vector<int> outDirects); //得到在border上可行走方向
   
 
+    inline void clearRoad();
 
 private:                                                        
 

@@ -62,6 +62,8 @@ public:
     //µ√µΩæ‡¿Î
     static int getFixDictance(int direct, const Vec2& startP, const Vec2& endP);
 
+    
+
 
 };
 

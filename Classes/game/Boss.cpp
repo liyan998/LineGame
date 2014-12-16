@@ -2,7 +2,11 @@
 #include "GameElement.h"
 #include "util/Math.h"
 
+#include <CCArmatureDataManager.h>
+#include <CCArmature.h>   
+
 using namespace liyan998;
+using namespace cocostudio;
 
 
 bool CBoss::init()
@@ -12,12 +16,21 @@ bool CBoss::init()
     m_fCount    = 0.f;
     m_iDirect   = 0;
     m_iStep     = 2;
+    m_iCategory = CGameElement::CATEGORY_BOSS;
 
     //--------------------------------------------
 
-    m_pSp = Sprite::create("CloseNormal.png");
-    m_pSp->setScale(1.5f); 
-    addChild(m_pSp); 
+//     m_pSp = Sprite::create("CloseNormal.png");
+//     m_pSp->setScale(1.5f); 
+//     addChild(m_pSp); 
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo("animation/Qicaidie_Walk_PNG/Qicaidie_Walk.png", "animation/Qicaidie_Walk_PNG/Qicaidie_Walk.plist", "animation/Qicaidie_Walk_PNG/Qicaidie_Walk.ExportJson");
+
+    
+    Armature* arm = Armature::create("Qicaidie_Walk");
+    arm->getAnimation()->playByIndex(0);
+//     arm->getAnimation()->setSpeedScale(0.5);
+addChild(arm);
 
     return true;
 }
@@ -32,33 +45,7 @@ void CBoss::run(float t)
 //    } 
    //---------------------------- 
 
-   Vec2 nps = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
-
-// 
-//    if (collwithGuide(nps))
-//    {
-//        m_refSp->setState(CMySprite::STATE_BACK);
-//        //m_refSp->clearGuide();
-//    }
-   
-   if (collwithArea(nps))
-   {
-       int index = m_refShowArea->getNearMargin(nps);
-       if (index != SELECTID_NULL)
-       {
-           CMargin* margin = m_refShowArea->getAreaMargin(index);
-           m_iDirect = margin->getCollWidthRandomDirect() + CMath::getRandom(-50 , 50);
-       }
-
-   }
-
-   if (collwithBorder(nps))
-   {
-       m_iDirect = CMath::getRandom(0, 360);
-       return;
-   }                
-
-   this->setPosition(nps);
+    CEnemy::checkWith();
 }
 
 
@@ -92,7 +79,6 @@ void CBoss::print(DrawNode* dn)
         dn->drawDot(endPoint, 10, Color4F(1, 0, 1,0.3));
     }
 
-    //log("################################################");
     for (int i = 0; i < 4; i++)
     {                                                          
         int borderdis = m_refSp->getPathDis(getPosition(), CPath::DIRECT[i][0]);       
@@ -103,11 +89,18 @@ void CBoss::print(DrawNode* dn)
         Vec2 endPoint = CMath::getVec2(getPosition(), borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
     
         dn->drawDot(endPoint, 10, Color4F(0, 1, 1, .5));
-    }
+    }                       
+}      
 
-
+void CBoss::setState(int state)
+{
+    this->m_State = state;
 }
 
+void CBoss::released()
+{
+
+}
 
 void CBoss::animation_move()
 {

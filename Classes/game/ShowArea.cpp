@@ -359,19 +359,11 @@ CMargin* CShowArea::getBorderMargin(const Vec2& inPoint)
 
 
 bool CShowArea::isCloseArea()
-{
-
-
-
+{ 
     if (m_RefPath == nullptr || m_RefPath->m_oAllPoint.size() < 2)
     {
         return false;
-    } 
-
-
-
-
-
+    }
     return true;
 }
 
@@ -393,7 +385,19 @@ int CShowArea::hasPointInMargin(const Vec2& point)
 }
 
 
-
+/************************************************************************/
+/*
+@brief          得到当前坐标在游戏区域内的类型 
+@param[in]		inPos   输入坐标
+@return			int 位置类型      
+                POSITION_AREA_ENDPOINT      在解锁安全区端点上
+                POSITION_AREA_LINE          在解锁安全区线上
+                POSITION_BORDER_ENDPOINT    在边界端点上
+                POSITION_BORDER_LINE        在边界线上
+                POSITION_LOCK               在锁定区域内
+                POSITION_UNLOCK             在已解锁区域内 
+*/
+/************************************************************************/
 int CShowArea::getPositionType(const Vec2& inPos)
 {
     //area
@@ -517,13 +521,15 @@ void CShowArea::setClose(const Vec2& inBoss)
     if (!isCloseArea())
     {
         return;
-    }                                                 
-    clearAreaIndex();
+    }       
+
+    //clearAreaIndex();
 
     ///////////////////////////
     clearSameDirectNode(addArea);
     clearSameDirectNode(resultArea); 
 
+    //BOSS位置确定最终解锁区域
     std::vector<Vec2>* pResult;
     clearPoint();
     if (hasIncludeMaster(inBoss))
@@ -1062,10 +1068,7 @@ bool CShowArea::hasOverLoad(const Vec2& inSP ,Vec2& inCP, int angle, int& outInd
 
         outIndex = tindex;
         return true;
-    }
-
-
-
+    } 
     return false;
 }
 
@@ -1183,6 +1186,42 @@ float CShowArea::getArea()
     return area;
 }
 
+
+
+/************************************************************************/
+/*
+@brief          得到在未解锁区域内的随机坐标    
+@param[out]		outPoint    随机位置坐标  
+@return			void
+*/
+/************************************************************************/
+void CShowArea::getRandVec2(Vec2& outPoint)
+{ 
+    Vec2 tP(Vec2::ZERO);
+    bool reCreate = false;
+    do 
+    {  
+        tP.x = CMath::getRandom(m_oAreaSize.origin.x, m_oAreaSize.size.width);
+        tP.y = CMath::getRandom(m_oAreaSize.origin.y - m_oAreaSize.size.height, m_oAreaSize.size.height);
+        
+        CUtil::formartGrid(tP);
+
+        int postiontype = getPositionType(tP);
+
+        switch (postiontype)
+        {
+        case POSITION_AREA_ENDPOINT:
+        case POSITION_AREA_LINE:
+        case POSITION_UNLOCK:
+        case POSITION_BORDER_ENDPOINT:
+        case POSITION_BORDER_LINE:
+            reCreate = true;
+            break;
+        } 
+    } while (reCreate);
+
+    outPoint = tP;
+}
 
 
 

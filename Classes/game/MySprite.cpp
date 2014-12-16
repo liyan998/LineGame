@@ -91,38 +91,25 @@ void CMySprite::setState(int state)
         log("!!!!!%f , %f", ps.x, ps.y);  
     }
         break;
-    case STATE_STANDER:
-        //m_currentAngle = ANGLE_NONE;
-        //clearGuide();  
-        //this->unschedule(schedule_selector(CMySprite::run));       
-        log("mysprite state STATE_STANDER");
-        //m_RefPlayer->setPlayerPosition(m_oSpCurrentPos);
-        //log("current type:%d", m_RefShowArea->getPositionType(m_oSpCurrentPos));
+    case STATE_STANDER:          
+        log("mysprite state STATE_STANDER");   
         break;
     case STATE_MOVE:     
-        //this->unschedule(schedule_selector(CMySprite::run));
-        m_currentAngle = ANGLE_NONE;
-        
-        log("mysprite state STATE_MOVE");
+        log("mysprite state STATE_MOVE");    
+        m_currentAngle = ANGLE_NONE;            
         setSpStartPosition();       
         break;            
     case STATE_BACK:
-        log("mysprite state STATE_BACK");
-        //m_currentAngle = ANGLE_NONE;
-       // clearGuide();  
+        log("mysprite state STATE_BACK"); 
+        clearRoad();
         m_RefPlayer->setState(CGamePlayer::STATE_STOP);
-        //schedule(schedule_selector(CMySprite::run));
         checkBack();
         break;
     case STATE_CLOSE:      
         log("mysprite state STATE_CLOSE");
-        //m_RefShowArea->setState(CShowArea::STATE_CLOSE); 
-        //clearGuide();                 
-        //setState(STATE_STANDER); 
         break;
     case STATE_DRAW:
-        log("mysprite state STATE_DRAW");
-        //schedule(schedule_selector(CMySprite::run));
+        log("mysprite state STATE_DRAW"); 
         break;
     }
 }                
@@ -1023,45 +1010,45 @@ void CMySprite::print(DrawNode* dn)
         //dn->drawDot(m_oTPath[i], 1, Color4F(0, 1, 1, 1));  
     }
          
-//     if (m_State != STATE_BACK)
-//     {
+    if (m_State != STATE_BACK)
+    {
         for (int i = 0; i < m_oTPathMargin.size();i++)
         {
             dn->drawSegment(m_oTPathMargin[i]->m_oStart, m_oTPathMargin[i]->m_oTaget, 1, Color4F(1, .3, .3, 1));
         } 
-    //}
+    }
 
 // 
-    if (m_oTPathMargin.size() > 0)
-    {                                             
-       
-        Vec2 t_oSp = m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oStart;
-
-        Vec2 tt = m_RefPlayer->getPlsyerPosition();
-        CUtil::formartGrid(tt, m_RefPlayer->getStep());
-        log("%f , %f -- %d", tt.x, tt.y, m_RefPlayer->m_iCurrentDirect);
-
-        int t_iDis = FTOI(ccpDistance(t_oSp, tt));
-        Vec2 t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
-        
-        CUtil::formartGrid(t_oEp , m_RefPlayer->getStep());
-        dn->drawSegment(t_oSp, t_oEp, 1, Color4F(1, 1, 1, 1));
-        dn->drawDot(t_oSp, 5, Color4F(1, 1, 1, 1));
-    }
-    else if (m_oTRoad.size() > 0)
-    {
-        
-       
-       Vec2 t_oSp = m_oTRoad[m_oTRoad.size() - 1];
-
-
-        int t_iDis = FTOI(ccpDistance(t_oSp, m_RefPlayer->getPlsyerPosition()));
-        Vec2 t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
-       
-
-        dn->drawSegment(t_oSp, t_oEp, 1, Color4F(1, 1, 1, 1));
-        dn->drawDot(t_oSp, 5, Color4F(1, 1, 1, 1));
-    }
+//     if (m_oTPathMargin.size() > 0)
+//     {                                            
+//        
+//         Vec2 t_oSp = m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oStart;
+// 
+//         Vec2 tt = m_RefPlayer->getPlsyerPosition();
+//         CUtil::formartGrid(tt, m_RefPlayer->getStep());
+//         //log("%f , %f -- %d", tt.x, tt.y, m_RefPlayer->m_iCurrentDirect);
+// 
+//         int t_iDis = FTOI(ccpDistance(t_oSp, tt));
+//         Vec2 t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
+//         
+//         CUtil::formartGrid(t_oEp , m_RefPlayer->getStep());
+//         dn->drawSegment(t_oSp, t_oEp, 1, Color4F(1, 1, 1, 1));
+//         dn->drawDot(t_oSp, 5, Color4F(1, 1, 1, 1));
+//     }
+//     else if (m_oTRoad.size() > 0)
+//     {
+//         
+//        
+//        Vec2 t_oSp = m_oTRoad[m_oTRoad.size() - 1];
+// 
+// 
+//         int t_iDis = FTOI(ccpDistance(t_oSp, m_RefPlayer->getPlsyerPosition()));
+//         Vec2 t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
+//        
+// 
+//         dn->drawSegment(t_oSp, t_oEp, 1, Color4F(1, 1, 1, 1));
+//         dn->drawDot(t_oSp, 5, Color4F(1, 1, 1, 1));
+//     }
  
     
 
@@ -1228,13 +1215,20 @@ void CMySprite::clearGuide()
     m_oTRoad.clear();
     m_RefPath->clearPoint();
 
-    for (int i = 0; i < m_oTPathMargin.size();i++)
+    
+    clearRoad();
+}
+
+
+inline
+void CMySprite::clearRoad()
+{
+    for (int i = 0; i < m_oTPathMargin.size(); i++)
     {
         delete m_oTPathMargin[i];
     }
     m_oTPathMargin.clear();
 }
-
 
 /*********************************************************************/
 /**

@@ -3,19 +3,33 @@
 
 #include "System.h" 
 #include "Rander.h"
+#include "GameState.h"
 #include "ShowArea.h"
 
 /////////////////////////////////////////////////////
 
-class CGameElement : public Node
+class CGameElement : public Node 
 {
+public:
+
+    enum Category
+    {
+        CATEGORY_AWARD, //奖励物品
+        CATEGORY_BOSS,  //首领
+        CATEGORY_NPC    //护卫
+    };
+
 public:
 
     virtual void run(float time) = 0;
 
+    inline int getCategory(){ return m_iCategory; };
+
 protected:  
 
-    Sprite* m_pSp;
+    Sprite*         m_pSp;
+
+    int             m_iCategory;    //类型
 };
 
 /////////////////////////////////////////////////////

@@ -14,11 +14,18 @@ class CEnemy : public CActor
                             
 public:
 
+
+
+protected:
+
     bool collwithBorder(const Vec2& inPoint);               //border碰撞
 
     bool collwithArea(const Vec2& inPoint);                 //Area碰撞
 
     bool collwithGuide(const Vec2& inPoint);                //Guide碰撞
+
+
+    void checkWith();
 
 public:
 
@@ -31,6 +38,8 @@ protected:
     int m_iLevel;   //等级
     int m_iAttick;  //攻击力    
     int m_iLeader;  //领导力  
+
+    
 };
 
 #endif//__ENEMEY_H__

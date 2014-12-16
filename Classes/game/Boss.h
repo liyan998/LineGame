@@ -27,6 +27,12 @@ public:
 
     virtual void print(DrawNode* dn);
 
+    virtual void setState(int state);
+
+    virtual void released();
+
+
+
     //----------------------------------------
 
     void animation_move();  

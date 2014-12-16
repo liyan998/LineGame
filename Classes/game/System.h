@@ -47,7 +47,7 @@ using namespace cocos2d;
 
 #define FTOI( fn ) static_cast<int>(fn)
 
-#define GRAD_CELL 10
+#define GRAD_CELL 4
 #define GRAD_NUMBER( x ) FTOI( x ) / GRAD_CELL * GRAD_CELL 
 
 ////////////////////////////////////////////////////////////

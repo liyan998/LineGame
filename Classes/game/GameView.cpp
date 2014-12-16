@@ -92,13 +92,12 @@ void CGameView::onEnter()
 	m_oAllRander.push_back(m_pSp);
     m_oAllRander.push_back(m_pShowArea);
     m_oAllRander.push_back(m_pPath); 
-    m_oAllRander.push_back(m_pGameLogic);
     
     //----------------------------------------  
 
     m_oAllRunner.push_back(m_pSp);
     m_oAllRunner.push_back(m_pPlayer);
-    m_oAllRunner.push_back(m_pGameLogic);
+   
 	
     //------------------------------------------ 
 
@@ -137,7 +136,9 @@ void CGameView::setState(int stata)
         schedule(schedule_selector(CGameView::initGame));
         break;      
     case STATE_RUN:
-        log("GAME STATE_RUN");        
+        log("GAME STATE_RUN");
+        m_oAllRander.push_back(m_pGameLogic);
+        m_oAllRunner.push_back(m_pGameLogic);
         break;
     case STATE_WIN:
     {

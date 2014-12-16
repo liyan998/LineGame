@@ -28,11 +28,11 @@
     <Filter Include="Classes\game\core">
       <UniqueIdentifier>{a3b869ed-41fd-440b-bc08-997e77834d7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\game\role">
-      <UniqueIdentifier>{97eef75c-704f-456a-954f-f1f8276ddead}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Classes\game\event">
       <UniqueIdentifier>{71b2951a-69e2-400d-b534-b0908b5ad3b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\game\element">
+      <UniqueIdentifier>{97eef75c-704f-456a-954f-f1f8276ddead}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -88,7 +88,7 @@
       <Filter>Classes\game\event</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\Game1Player.cpp">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\Margin.cpp">
       <Filter>Classes\game\core</Filter>
@@ -109,13 +109,13 @@
       <Filter>Classes\game</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\Boss.cpp">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\Npc.cpp">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\Enemy.cpp">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,7 +198,7 @@
       <Filter>Classes\game\event</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Game1Player.h">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\ShowArea.h">
       <Filter>Classes\game\core</Filter>
@@ -222,19 +222,19 @@
       <Filter>Classes\game\core</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\GameElement.h">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Boss.h">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Actor.h">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Enemy.h">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Npc.h">
-      <Filter>Classes\game\role</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\GameView.h">
       <Filter>Classes\game</Filter>
