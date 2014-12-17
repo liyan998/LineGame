@@ -12,7 +12,7 @@ void CNpc::onEnter()
    
     m_iDirect   = liyan998::CMath::getRandom(0, 360);
     m_iStep     = 2;
-    m_iCollR = 50;
+    m_iCollR = 20;
 
     m_iCategory = CGameElement::CATEGORY_NPC;
     //m_pSp       = Sprite::create("CloseNormal.png");

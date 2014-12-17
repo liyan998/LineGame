@@ -5,8 +5,10 @@
 #include "GameState.h"
 #include "Runnable.h"
 
-#include <CCArmatureDataManager.h>
-#include <CCArmature.h>   
+
+#include "cocostudio/CCArmatureDataManager.h"
+#include "cocostudio/CCArmature.h"   
+
 
 
 #define INDEX_NONE -1

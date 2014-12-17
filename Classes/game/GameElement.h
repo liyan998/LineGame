@@ -6,8 +6,8 @@
 #include "GameState.h"
 #include "ShowArea.h"
 
-#include <CCArmatureDataManager.h>
-#include <CCArmature.h>   
+#include "cocostudio/CCArmatureDataManager.h"
+#include "cocostudio/CCArmature.h"   
 
 /////////////////////////////////////////////////////
 
