@@ -2,6 +2,8 @@
 
 #include "util/Math.h"
 
+#include "GameResMacros.h"
+
 void CNpc::onEnter()
 {
     Node::onEnter();
@@ -12,8 +14,18 @@ void CNpc::onEnter()
     m_iStep     = 2;
 
     m_iCategory = CGameElement::CATEGORY_NPC;
-    m_pSp       = Sprite::create("CloseNormal.png");
+    //m_pSp       = Sprite::create("CloseNormal.png");
    // m_pSp->setScale(1.5f);
+    //addChild(m_pSp);
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DYB,
+        RES_ANIMA_PLS_DYB,
+        RES_ANIMA_JSO_DYB
+        );
+
+    m_pSp = Armature::create("DYB_Walk");
+    m_pSp->getAnimation()->playByIndex(0);
     addChild(m_pSp);
 
 }
@@ -30,10 +42,10 @@ void CNpc::setState(int state)
 
     switch (state){
     case STATE_LIVE:        
-        m_pSp->setVisible(true);
+        //m_pSp->setVisible(true);
         break;
     case STATE_DIE:
-        m_pSp->setVisible(false);
+       // m_pSp->setVisible(false);
         break;
     }
 }

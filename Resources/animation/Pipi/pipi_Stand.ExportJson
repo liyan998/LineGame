@@ -1754,7 +1754,7 @@
         },
         {
           "name": "Pipi_Left_Bide_Stand",
-          "dr": 24,
+          "dr": 23,
           "lp": true,
           "to": 0,
           "drTW": 0,
@@ -2131,7 +2131,7 @@
         },
         {
           "name": "Pipi_Right_Bide_Stand",
-          "dr": 24,
+          "dr": 23,
           "lp": true,
           "to": 0,
           "drTW": 0,
@@ -2508,7 +2508,7 @@
         },
         {
           "name": "Pipi_Back_Stand",
-          "dr": 12,
+          "dr": 11,
           "lp": true,
           "to": 0,
           "drTW": 0,

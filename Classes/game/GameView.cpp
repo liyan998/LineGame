@@ -66,12 +66,14 @@ void CGameView::onEnter()
 	m_pSp->setPath(m_pPath);
     m_pSp->setPlayer(m_pPlayer);
     m_pSp->setShowArea(m_pShowArea);
+    m_pSp->setVisible(false);
           
     m_pShowArea->setPath(m_pPath);
     m_pShowArea->setPosition(origin);
 
 
     m_pPlayer->m_refSp              = m_pSp;
+    m_pPlayer->setVisible(false);
 
     m_pGameLogic->m_refPath         = m_pPath;
     m_pGameLogic->m_refPlayer       = m_pPlayer;
@@ -84,8 +86,8 @@ void CGameView::onEnter()
     addChild(m_pShowArea);	
 	addChild(m_pSp);
 	addChild(m_pDrawNode);
-    addChild(m_pPlayer);
     addChild(m_pGameLogic);
+    addChild(m_pPlayer);
 
     //------------------------------------    	
 	
@@ -137,6 +139,10 @@ void CGameView::setState(int stata)
         break;      
     case STATE_RUN:
         log("GAME STATE_RUN");
+
+        m_pSp->setVisible(true);
+        m_pPlayer->setVisible(true);
+
         m_oAllRander.push_back(m_pGameLogic);
         m_oAllRunner.push_back(m_pGameLogic);
         break;

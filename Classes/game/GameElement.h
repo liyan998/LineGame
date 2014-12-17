@@ -6,7 +6,12 @@
 #include "GameState.h"
 #include "ShowArea.h"
 
+#include <CCArmatureDataManager.h>
+#include <CCArmature.h>   
+
 /////////////////////////////////////////////////////
+
+using namespace cocostudio;
 
 class CGameElement : public Node 
 {
@@ -27,7 +32,9 @@ public:
 
 protected:  
 
-    Sprite*         m_pSp;
+    //Sprite*         m_pSp;
+
+    Armature*         m_pSp;
 
     int             m_iCategory;    //¿‡–Õ
 };

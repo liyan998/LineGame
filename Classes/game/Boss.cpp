@@ -3,11 +3,10 @@
 #include "util/Math.h"
 
 #include "GameResMacros.h"
-#include <CCArmatureDataManager.h>
-#include <CCArmature.h>   
+
 
 using namespace liyan998;
-using namespace cocostudio;
+
 
 
 bool CBoss::init()
@@ -32,10 +31,10 @@ bool CBoss::init()
         );
 
     
-    Armature* arm = Armature::create("Qicaidie_Walk");
-    arm->getAnimation()->playByIndex(0);
+    m_pSp = Armature::create("Qicaidie_Walk");
+    m_pSp->getAnimation()->playByIndex(1);
 //     arm->getAnimation()->setSpeedScale(0.5);
-addChild(arm);
+    addChild(m_pSp);
 
     return true;
 }
@@ -51,6 +50,13 @@ void CBoss::run(float t)
    //---------------------------- 
 
     CEnemy::checkWith();
+
+
+//     int count = m_pArmature->getAnimation()->getMovementCount();
+// 
+//     std::string str = m_pArmature->getAnimation()->getCurrentMovementID();
+//     log("%d  , %s" ,count, str.c_str());
+  
 }
 
 

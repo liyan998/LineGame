@@ -5,6 +5,9 @@
 #include "GameState.h"
 #include "Runnable.h"
 
+#include <CCArmatureDataManager.h>
+#include <CCArmature.h>   
+
 
 #define INDEX_NONE -1
 
@@ -45,17 +48,13 @@ public:
     const Vec2& getPlsyerPosition();
 
 
-    void checkPosition(const Vec2& inPoint);
+    void checkPosition(const Vec2& inPoint); 
 
-
-    void fixTargetPostion(const Vec2& inResPosition, const Vec2& inTargetPostion);
-   
+    void fixTargetPostion(const Vec2& inResPosition, const Vec2& inTargetPostion);   
 
     void setTarget(const Vec2& point);
 
-    void addFollow(const Vec2& point);
-
-    
+    void addFollow(const Vec2& point);    
 
     void backFollow();
 
@@ -72,8 +71,7 @@ public:
     void animation_die();
 
     //TODO Íê³É¶¯»­
-    void animation_move();
-
+    void animation_move();         
 
 
     bool                m_bFlow;
@@ -81,12 +79,14 @@ public:
     CMySprite*          m_refSp;
 
     int                 m_iCurrentDirect;
+
 private:    
 
-    Sprite*             m_pSp;
-    int                 m_iStep;
-    Vec2                m_oCurrentTarget;
-    std::vector<Vec2>   m_oAllGuide;
+    cocostudio::Armature*               m_pSp;
+
+    int                                 m_iStep;
+    Vec2                                m_oCurrentTarget;
+    std::vector<Vec2>                   m_oAllGuide;
 
 };
 

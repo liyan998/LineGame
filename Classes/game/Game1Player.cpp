@@ -3,7 +3,12 @@
 #include "util/Util.h"
 #include "MySprite.h"
 
+
+
+#include "GameResMacros.h"
+
 using namespace liyan998;
+using namespace cocostudio;
 
 bool CGamePlayer::init()
 {
@@ -12,7 +17,21 @@ bool CGamePlayer::init()
     m_iStep = 2;
     m_bFlow = false;
 
-    m_pSp = Sprite::create("CloseNormal.png");
+//     m_pSp = Sprite::create("CloseNormal.png");
+//     addChild(m_pSp);
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_PIPI,
+        RES_ANIMA_PLS_PIPI,
+        RES_ANIMA_JSO_PIPI
+        );
+
+
+    m_pSp = Armature::create("pipi_Stand");
+    m_pSp->getAnimation()->playByIndex(0);
+    m_pSp->setAnchorPoint(Vec2(0.5f, 0.2f));
+   //m_pSp->setPosition(Vec2(0, 30));
+
     addChild(m_pSp);
                               
     setState(STATE_STOP); 

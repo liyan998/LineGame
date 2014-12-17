@@ -38,7 +38,11 @@ public:
     void animation_move();  
 
 
-    float               m_fCount;   
+    float               m_fCount;
+
+private:
+
+    cocostudio::Armature* m_pArmature;
     
 };
 
