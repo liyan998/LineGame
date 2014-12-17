@@ -38,7 +38,7 @@ bool CEnemy::collwithArea(const Vec2& inPoint)
 {
     for (int i = 0; i < 4; i++)
     {
-        int areaDis = m_refShowArea->getMiniAreaDis(getPosition(), CPath::DIRECT[i][0]);
+        int areaDis = m_refShowArea->getMiniAreaDis(inPoint, CPath::DIRECT[i][0]);
         if (areaDis == -1)
         {
             continue;
@@ -63,7 +63,7 @@ bool CEnemy::collwithGuide(const Vec2& inPoint)
 {   
     for (int i = 0; i < 4; i++)
     {
-        int borderdis = m_refSp->getPathDis(getPosition(), CPath::DIRECT[i][0]);
+        int borderdis = m_refSp->getPathDis(inPoint, CPath::DIRECT[i][0]);
         if (borderdis == -1)
         {
             continue;
@@ -83,14 +83,17 @@ void CEnemy::checkWith()
 {
     Vec2 nps = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
 
-    if (collwithGuide(nps))
+    m_iCollR = 10;
+    Vec2 t_oColl = CMath::getVec2(nps, m_iCollR, CMath::angleToRadian(m_iDirect));
+
+    if (collwithGuide(t_oColl))
     {
         m_refSp->setState(CMySprite::STATE_BACK);
     }
 
-    if (collwithArea(nps))
+    if (collwithArea(t_oColl))
     {
-        int index = m_refShowArea->getNearMargin(nps);
+        int index = m_refShowArea->getNearMargin(t_oColl);
         if (index != SELECTID_NULL)
         {
             CMargin* margin = m_refShowArea->getAreaMargin(index);
@@ -98,7 +101,7 @@ void CEnemy::checkWith()
         }
     }
 
-    if (collwithBorder(nps))
+    if (collwithBorder(t_oColl))
     {
         m_iDirect = CMath::getRandom(0, 360);
         return;

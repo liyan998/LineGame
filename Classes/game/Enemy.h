@@ -39,6 +39,8 @@ protected:
     int m_iAttick;  //攻击力    
     int m_iLeader;  //领导力  
 
+
+    int m_iCollR;   //碰撞半径
     
 };
 

@@ -2,6 +2,7 @@
 #include "GameElement.h"
 #include "util/Math.h"
 
+#include "GameResMacros.h"
 #include <CCArmatureDataManager.h>
 #include <CCArmature.h>   
 
@@ -24,7 +25,11 @@ bool CBoss::init()
 //     m_pSp->setScale(1.5f); 
 //     addChild(m_pSp); 
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo("animation/Qicaidie_Walk_PNG/Qicaidie_Walk.png", "animation/Qicaidie_Walk_PNG/Qicaidie_Walk.plist", "animation/Qicaidie_Walk_PNG/Qicaidie_Walk.ExportJson");
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_QINCAIDIE, 
+        RES_ANIMA_PLS_QINCAIDIE, 
+        RES_ANIMA_JSO_QINCAIDIE
+        );
 
     
     Armature* arm = Armature::create("Qicaidie_Walk");
