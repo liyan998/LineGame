@@ -1109,6 +1109,8 @@ int CShowArea::getNearMargin(const Vec2& point)
 
 
 
+
+
 int CShowArea::getMode()
 {
     return this->m_Model;
@@ -1218,6 +1220,7 @@ void CShowArea::getRandVec2(Vec2& outPoint)
             reCreate = true;
             break;
         } 
+          
     } while (reCreate);
 
     outPoint = tP;

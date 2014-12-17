@@ -16,6 +16,7 @@ bool CBoss::init()
     m_fCount    = 0.f;
     m_iDirect   = 0;
     m_iStep     = 2;
+    m_iCollR = 10;
     m_iCategory = CGameElement::CATEGORY_BOSS;
 
     //--------------------------------------------
@@ -33,8 +34,9 @@ bool CBoss::init()
     
     m_pSp = Armature::create("Qicaidie_Walk");
     m_pSp->getAnimation()->playByIndex(1);
+    m_pSp->setScale(0.5);
 //     arm->getAnimation()->setSpeedScale(0.5);
-    addChild(m_pSp);
+    //addChild(m_pSp);
 
     return true;
 }
@@ -62,42 +64,49 @@ void CBoss::run(float t)
 
 void CBoss::print(DrawNode* dn)
 {
-    dn->drawDot(getPosition(), 20, Color4F(1, 1, 1, 0.6));
+
+    CEnemy::print(dn);
+
+    Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+
+  
+    Vec2 t_oColl = getPosition();
+    
     for (int i = 0; i < 4; i++)
     {
 
-        //int borderdis = m_refShowArea->getBorderDis(getPosition(), CPath::DIRECT[i][0]);
-        int borderdis = m_refSp->getPathDis(getPosition(), CPath::DIRECT[i][0]);
+        int borderdis = m_refShowArea->getBorderDis(t_oColl, CPath::DIRECT[i][0]);
+
          if (borderdis == -1)
          {
              continue;
          }
         
-        Vec2 endPoint = CMath::getVec2(getPosition(), borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+         Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
 
-        dn->drawSegment(getPosition(), endPoint, 1, Color4F(1, 1, 0, 0.3));
+        dn->drawSegment(t_oColl, endPoint, 1, Color4F(1, 1, 0, 0.3));
     }
 
     for (int i = 0; i < 4; i++)
     {                                                          
-        int borderdis = m_refShowArea->getMiniAreaDis(getPosition(), CPath::DIRECT[i][0]);
+        int borderdis = m_refShowArea->getMiniAreaDis(t_oColl, CPath::DIRECT[i][0]);
         if (borderdis == -1)
         {
             continue;
         }
-        Vec2 endPoint = CMath::getVec2(getPosition(), borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+        Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
     
         dn->drawDot(endPoint, 10, Color4F(1, 0, 1,0.3));
     }
 
     for (int i = 0; i < 4; i++)
     {                                                          
-        int borderdis = m_refSp->getPathDis(getPosition(), CPath::DIRECT[i][0]);       
+        int borderdis = m_refSp->getPathDis(t_oColl, CPath::DIRECT[i][0]);
         if (borderdis == -1)
         {
             continue;
         }
-        Vec2 endPoint = CMath::getVec2(getPosition(), borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+        Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
     
         dn->drawDot(endPoint, 10, Color4F(0, 1, 1, .5));
     }                       

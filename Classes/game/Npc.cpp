@@ -12,6 +12,7 @@ void CNpc::onEnter()
    
     m_iDirect   = liyan998::CMath::getRandom(0, 360);
     m_iStep     = 2;
+    m_iCollR = 50;
 
     m_iCategory = CGameElement::CATEGORY_NPC;
     //m_pSp       = Sprite::create("CloseNormal.png");
@@ -43,9 +44,13 @@ void CNpc::setState(int state)
     switch (state){
     case STATE_LIVE:        
         //m_pSp->setVisible(true);
+        log("LIVE");
         break;
     case STATE_DIE:
+        log("DIE");
        // m_pSp->setVisible(false);
+      
+        removeChild(m_pSp);
         break;
     }
 }
@@ -54,4 +59,10 @@ void CNpc::setState(int state)
 void CNpc::released()
 {
 
+}
+
+void CNpc::print(DrawNode* dn)
+{
+    CEnemy::print(dn);
+    
 }

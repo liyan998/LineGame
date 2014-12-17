@@ -33,6 +33,8 @@ public:
 
     virtual void released();
 
+    virtual void print(DrawNode* dn);
+
     //--------------------------------------
 
 

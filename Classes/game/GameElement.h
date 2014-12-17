@@ -13,7 +13,7 @@
 
 using namespace cocostudio;
 
-class CGameElement : public Node 
+class CGameElement : public Node, public CRander
 {
 public:
 
@@ -29,6 +29,8 @@ public:
     virtual void run(float time) = 0;
 
     inline int getCategory(){ return m_iCategory; };
+
+    //virtual void print(DrawNode* dn) =0;
 
 protected:  
 

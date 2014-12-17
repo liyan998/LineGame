@@ -14,18 +14,29 @@ class CEnemy : public CActor
                             
 public:
 
+    CEnemy() :m_iCollR(30){};
 
+
+public:
+    
+    bool checkRandPosition(const Vec2& inPoint);                             //¼ì²é×ø±êÊÇ·ñ·ûºÏÓÎÏ·Âß¼­±ê×¼
 
 protected:
 
-    bool collwithBorder(const Vec2& inPoint);               //borderÅö×²
+    bool collwithBorder(const Vec2& inPoint, Vec2& outPoint);               //borderÅö×²
 
-    bool collwithArea(const Vec2& inPoint);                 //AreaÅö×²
+    bool collwithArea(const Vec2& inPoint, Vec2& outPoint);                 //AreaÅö×²
 
-    bool collwithGuide(const Vec2& inPoint);                //GuideÅö×²
+    bool collwithGuide(const Vec2& inPoint, Vec2& outPoint);                //GuideÅö×²
 
 
     void checkWith();
+
+
+    virtual void print(DrawNode* dn);
+
+
+
 
 public:
 

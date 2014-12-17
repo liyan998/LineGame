@@ -37,11 +37,10 @@ void CGameLogic::createGameElement()
     m_pBoss->m_refShowArea  = m_refShowArea;
     m_pBoss->m_refSp        = m_refSp;
 
-    Vec2 tp;
-    m_refShowArea->getRandVec2(tp);
-    m_pBoss->setPosition(tp);
+    getRandVec2(m_pBoss);
 
     addChild(m_pBoss);
+
     m_oAllElement.push_back(m_pBoss);
     m_oAllRander.push_back(m_pBoss); 
 
@@ -53,17 +52,31 @@ void CGameLogic::createGameElement()
         auto npc = CNpc::create();
         npc->m_refShowArea  = m_refShowArea;
         npc->m_refSp        = m_refSp;
-        m_refShowArea->getRandVec2(tp);
-        npc->setPosition(tp);
+
+        getRandVec2(npc);
+
         addChild(npc);
 
       m_oAllElement.push_back(npc);
+      m_oAllRander.push_back(npc);
     }
 
     //------------------------------------------
 
 }
 
+
+void CGameLogic::getRandVec2(CEnemy* pEnemy)
+{
+    Vec2 tp;
+
+    do 
+    {
+        m_refShowArea->getRandVec2(tp);
+    } while (!pEnemy->checkRandPosition(tp));
+
+    pEnemy->setPosition(tp);
+}
 
 
 
@@ -141,13 +154,16 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
     bool hasIn = m_refShowArea->hasIncludeMaster(pNpc->getPosition());
     switch (mode)
     {
-    case MODEL_IN:
+    case MODEL_IN:      
+        //
+        log("MODEL_IN");
         if (!hasIn)
         {
             pNpc->setState(CNpc::STATE_DIE);
         }
         break;
     case MODEL_OUT:
+        log("MODEL_OUT");
         if (hasIn)
         {
             pNpc->setState(CNpc::STATE_DIE);

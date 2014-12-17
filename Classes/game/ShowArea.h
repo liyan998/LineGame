@@ -135,7 +135,6 @@ public:
 
     int getBorderDis(const Vec2& inSP, int angle);                      //得到运动趋势距边界距离
     
-    
     void getRandVec2(Vec2& outPoint);                                   //得到未解锁区域随机位置
     
     //----------------------------------------------------------------------------    

@@ -55,6 +55,8 @@ public:
 
     inline void createGameElement();            //根据出战配置创建Enemey
 
+    void getRandVec2(CEnemy* pEnemy);           //得到随机坐标
+
 private:
 
     CBoss*                          m_pBoss;
