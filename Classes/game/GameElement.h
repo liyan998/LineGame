@@ -13,7 +13,7 @@
 
 using namespace cocostudio;
 
-class CGameElement : public Node, public CRander
+class CGameElement : public Layer, public CRander
 {
 public:
 
@@ -32,13 +32,16 @@ public:
 
     //virtual void print(DrawNode* dn) =0;
 
+
 protected:  
 
     //Sprite*         m_pSp;
 
-    Armature*         m_pSp;
+    float               m_fCount;
 
-    int             m_iCategory;    //类型
+    Armature*           m_pSp;
+
+    int                 m_iCategory;    //类型
 };
 
 /////////////////////////////////////////////////////

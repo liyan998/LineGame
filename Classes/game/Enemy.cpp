@@ -96,6 +96,7 @@ bool CEnemy::collwithGuide(const Vec2& inPoint,Vec2& outPoint)
 /************************************************************************/
 void CEnemy::checkWith()
 {
+
     Vec2 t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
 
     Vec2 endPoint;
@@ -112,18 +113,21 @@ void CEnemy::checkWith()
         {                
             CMargin* margin = m_refShowArea->getAreaMargin(index);
             m_iDirect = margin->getCollWidthRandomDirect() + CMath::getRandom(-50, 50);
+            changeDirect(m_iDirect);
         }
     }
 
     if (collwithBorder(t_oColl, endPoint))
-    {                                  
+    {                             
+        setPosition(endPoint);
         CMargin* pMargin = m_refShowArea->getBorderMargin(endPoint); 
         if (pMargin != nullptr)
         {
             m_iDirect = CUtil::getNextAngle(pMargin->m_Angle, 1) + CMath::getRandom(-80, 80);
+            changeDirect(m_iDirect);
         }     
 
-        log("border die!!!!");
+        //log("border die!!!!");
         
     }
 
@@ -147,12 +151,13 @@ bool CEnemy::checkRandPosition(const Vec2& inPoint)
     //不能与边界碰撞
     if (collwithBorder(inPoint, endPoint))
     {                
-        log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Border!");
+       log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Border!");
         return false;
     }        
     //不能与解锁区域发生碰撞
     if (collwithArea(inPoint, endPoint))
     {
+       log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!collwithArea!");
         return false;
     }
     return true;
@@ -163,4 +168,18 @@ void CEnemy::print(DrawNode* dn)
 {
     dn->drawDot(getPosition(), m_iCollR, Color4F(1, 1, 1, 0.6));
     dn->drawDot(getPosition(), 2, Color4F(1, 0, 0, 1)); 
+}
+
+
+void CEnemy::randPosition()
+{
+    Vec2 tp;
+   
+    do
+    {
+        m_refShowArea->getRandVec2(tp);
+
+    } while (!checkRandPosition(tp));
+
+    setPosition(tp);
 }

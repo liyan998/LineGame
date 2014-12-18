@@ -15,8 +15,9 @@ public:
 
     enum State
     {      
-        STATE_LIVE,     //活动
-        STATE_DIE       //死亡
+        STATE_LIVE,         //活动
+        STATE_DIE,          //死亡
+        STATE_REBACK        //复活
     };
 
 public:
@@ -24,6 +25,8 @@ public:
     CREATE_FUNC(CNpc)
 
 public:
+
+    virtual bool init();
 
     virtual void onEnter() override;
 
@@ -35,11 +38,27 @@ public:
 
     virtual void print(DrawNode* dn);
 
+    virtual void changeDirect(int direct);
+
     //--------------------------------------
 
+    inline void clearCurrentAnimation();
+
+    inline void setCurrentAnimation(const char* arname);
+
+    void movementCallback(Armature * armature, MovementEventType type,const std::string& name);
+    
+    //-------------------------------------------------------
+
+    inline void animation_reBack();             //复活
+
+    inline void animation_Die();                //死亡
+
+    inline void animation_move();               //移动
 
 private:
 
     
+    int m_iReLive;         //复活时间
 };
 #endif//__NPC_H__

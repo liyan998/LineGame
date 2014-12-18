@@ -37,7 +37,7 @@ void CGameLogic::createGameElement()
     m_pBoss->m_refShowArea  = m_refShowArea;
     m_pBoss->m_refSp        = m_refSp;
 
-    getRandVec2(m_pBoss);
+    m_pBoss->randPosition();
 
     addChild(m_pBoss);
 
@@ -46,14 +46,14 @@ void CGameLogic::createGameElement()
 
     //------------------------------------------------
 
-    const int numNpc = 2;
+    const int numNpc = 1;
     for (int i = 0; i < numNpc;i++)
     {
         auto npc = CNpc::create();
         npc->m_refShowArea  = m_refShowArea;
         npc->m_refSp        = m_refSp;
 
-        getRandVec2(npc);
+        npc->randPosition();
 
         addChild(npc);
 
@@ -65,18 +65,6 @@ void CGameLogic::createGameElement()
 
 }
 
-
-void CGameLogic::getRandVec2(CEnemy* pEnemy)
-{
-    Vec2 tp;
-
-    do 
-    {
-        m_refShowArea->getRandVec2(tp);
-    } while (!pEnemy->checkRandPosition(tp));
-
-    pEnemy->setPosition(tp);
-}
 
 
 

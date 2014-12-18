@@ -18,8 +18,17 @@ public:
 
 
 public:
+
+    virtual void print(DrawNode* dn);
+
+    virtual void changeDirect(int direct) = 0;
+
+    //---------------------------------------------------------
     
     bool checkRandPosition(const Vec2& inPoint);                             //检查坐标是否符合游戏逻辑标准
+
+    void randPosition();
+
 
 protected:
 
@@ -33,7 +42,8 @@ protected:
     void checkWith();
 
 
-    virtual void print(DrawNode* dn);
+
+
 
 
 

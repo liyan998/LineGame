@@ -33,12 +33,16 @@ public:
 
     virtual void print(DrawNode* dn);
 
+    virtual void changeDirect(int direct);
+
     //----------------------------------------
 
     void animation_move();  
 
 
-    float               m_fCount;
+
+
+    
 
 private:
 

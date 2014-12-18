@@ -129,3 +129,9 @@ void CBoss::animation_move()
 
 
 }
+
+
+void CBoss::changeDirect(int direct)
+{
+
+}

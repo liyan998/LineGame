@@ -1219,7 +1219,11 @@ void CShowArea::getRandVec2(Vec2& outPoint)
         case POSITION_BORDER_LINE:
             reCreate = true;
             break;
+        default:
+            reCreate = false;
+            break;
         } 
+        log("is complete random:%d" ,reCreate);
           
     } while (reCreate);
 
