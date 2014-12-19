@@ -43,18 +43,12 @@ protected:
 
 
     void checkWith();
-
-
-
-
-
-
-
+    
 
 public:
 
     CShowArea*          m_refShowArea;
-    CMySprite*          m_refSp;
+
 
 protected:
  

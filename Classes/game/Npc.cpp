@@ -90,7 +90,7 @@ void CNpc::print(DrawNode* dn)
 inline
 void CNpc::animation_Die()
 {
-    setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
+    CGameElement::setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
     m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
     m_pSp->getAnimation()->play(PLAYLAB_GUARD_DIE);
 }
@@ -99,7 +99,7 @@ void CNpc::animation_Die()
 inline
 void CNpc::animation_move()
 {   
-    setCurrentAnimation(ARMATURE_DYB_WALK);
+    CGameElement::setCurrentAnimation(ARMATURE_DYB_WALK);
     m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
     m_pSp->getAnimation()->play(PLAYLAB_DYB_FRONT_WALK);
 }
@@ -107,7 +107,7 @@ void CNpc::animation_move()
 inline
 void CNpc::animation_reBack()
 {
-    setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
+    CGameElement::setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
     m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
     m_pSp->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
 }
@@ -120,7 +120,7 @@ void CNpc::movementCallback(Armature * armature, MovementEventType type,const st
     {
         if (strcmp(name.c_str(), PLAYLAB_GUARD_DIE) == 0)
         {
-            clearCurrentAnimation();        
+            CGameElement::clearCurrentAnimation();
             CEnemy::randPosition();
             m_fCount = 0.0f;
             setState(STATE_REBACK);        

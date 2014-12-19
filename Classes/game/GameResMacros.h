@@ -34,10 +34,14 @@
 //Íæ¼Ò#####################################################################
 
 //Æ¤Æ¤------------------------------------------------
+
 //stand
 #define RES_ANIMA_PNG_PIPI                  "animation/Pipi/Pipi_Stand_PNG/Pipi_Stand.png"
 #define RES_ANIMA_PLS_PIPI                  "animation/Pipi/Pipi_Stand_PNG/Pipi_Stand.plist"
 #define RES_ANIMA_JSO_PIPI                  "animation/Pipi/pipi_Stand.ExportJson"
+
+#define ARMATURE_PIPI_STANDER               "pipi_Stand"
+
 
 //die
 #define RES_ANIMA_JSO_PIPI_DIE              "animation/Pipi/pipi_Die.ExportJson"

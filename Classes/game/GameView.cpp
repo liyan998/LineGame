@@ -62,7 +62,7 @@ void CGameView::onEnter()
     
     //------------------------------------
 
-    m_pSp->setGameView(this);
+
 	m_pSp->setPath(m_pPath);
     m_pSp->setPlayer(m_pPlayer);
     m_pSp->setShowArea(m_pShowArea);

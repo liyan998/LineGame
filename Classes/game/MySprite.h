@@ -7,11 +7,11 @@
 #include "GameState.h"
 #include "Path.h"
 #include "Margin.h"
-#include "Game1Player.h"
+
 
 class CGameView;
 class CShowArea;
-
+class CGamePlayer;
 
 #define MAX_ANGLE 4
 
@@ -65,14 +65,9 @@ public:
 
     inline void setShowArea(CShowArea* area){ this->m_RefShowArea = area; }
 
-    inline void setGameView(CGameView* pGameView){ this->m_RefGameView = pGameView;  }
                                                     
-    inline void setPlayerPosition(const Vec2& pos)
-    { 
-        m_oSpCurrentPos = pos;
-        m_RefPlayer->setPlayerPosition(pos);
-    }
-
+    inline void setPlayerPosition(const Vec2& pos);
+   
     inline float getSpStep(){return this->m_fStep;}
 
     //------------------------------------------------------
@@ -156,13 +151,9 @@ private:
 private:                                             
 
     CPath*                  m_RefPath;
-
     CGamePlayer*            m_RefPlayer;
-
-    CShowArea*              m_RefShowArea; 
-
-    CGameView*              m_RefGameView;
-
+    CShowArea*              m_RefShowArea;
+  
     //---------------------------------------
 
     std::vector<Vec2>       m_oTPath;
@@ -171,35 +162,26 @@ private:
 
     //------------------------------------
 
-
     float                   m_fStep;				//步长
-
     int                     m_curMarginIndex;       //当前选择边
 
     //-----------------------------------------------------------------
 
     Vec2                    m_oSpCurrentPos;        //SP当前位置
-
     Vec2                    m_oSpStartPos;          //sp起始位置
-
     Vec2                    m_oSpTarget;            //spRebackTarget \
    
     //手势操作--------------------------------------------------------
 
-	int		                m_currentAngle;			//当前角度 | back currentAngle 
-
+	int		                m_currentAngle;			//当前角度 | back currentAngle
     Vec2                    m_oDirectStart;			//方向检查起始点 
-
 	Vec2					m_oAbsStartPos;	        //相对位置起始点
-
 	Vec2					m_oAbsEndPos;           //相对位置终点
-
     int                     m_iCountRecord;			//
 
     //----------------------------------------------------
 
     Vec2                    m_oGuideLStart;
-
     Vec2                    m_oGuideLEnd;
 
     //------------------------------------------------------------

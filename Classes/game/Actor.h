@@ -5,12 +5,14 @@
 
 class CActor : public CGameElement, public CGameState
 {                            
+public:
 
+    CMySprite*          m_refSp;
 
 protected:
 
-    int             m_iStep;        //移动速度
-    int             m_iDirect;      //方向     
+    int                 m_iStep;        //移动速度
+    int                 m_iDirect;      //方向     
 };
 
 

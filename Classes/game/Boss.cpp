@@ -121,7 +121,7 @@ void CBoss::released()
 void CBoss::animation_move()
 {
 
-    setCurrentAnimation(ARMATURE_QINGCAI);
+    CGameElement::setCurrentAnimation(ARMATURE_QINGCAI);
     m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CBoss::movementCallback));
     m_pSp->getAnimation()->playByIndex(0);
 

@@ -1,22 +1,12 @@
 #ifndef __GAME1PLAYER_H__
 #define __GAME1PLAYER_H__
 
-#include "System.h"
-#include "GameState.h"
-#include "Runnable.h"
-
-
-#include "cocostudio/CCArmatureDataManager.h"
-#include "cocostudio/CCArmature.h"   
-
-
+#include "GameElement.h"
 
 #define INDEX_NONE -1
 
 
-class CMySprite;
-               
-class CGamePlayer : public Node ,public CGameState, public CRunnable
+class CGamePlayer : public CActor
 {
 
 public:
@@ -40,6 +30,9 @@ public:
     virtual void released();
 
     virtual void run(float time);
+
+    virtual void print(DrawNode* dn);
+
 
     //-----------------------------------------------------
 
@@ -78,15 +71,15 @@ public:
 
     bool                m_bFlow;
 
-    CMySprite*          m_refSp;
+   // CMySprite*          m_refSp;
 
     int                 m_iCurrentDirect;
 
 private:    
 
-    cocostudio::Armature*               m_pSp;
+    //cocostudio::Armature*               m_pSp;
 
-    int                                 m_iStep;
+    //int                                 m_iStep;
     Vec2                                m_oCurrentTarget;
     std::vector<Vec2>                   m_oAllGuide;
 

@@ -1,10 +1,10 @@
+
 #include "Game1Player.h"
+
 #include "util/Math.h"
 #include "util/Util.h"
-#include "MySprite.h"
 
-
-
+// #include "MySprite.h"
 #include "GameResMacros.h"
 
 using namespace liyan998;
@@ -27,12 +27,13 @@ bool CGamePlayer::init()
         );
 
 
-    m_pSp = Armature::create("pipi_Stand");
-    m_pSp->getAnimation()->playByIndex(0);
+    setCurrentAnimation(ARMATURE_PIPI_STANDER);
+
     m_pSp->setAnchorPoint(Vec2(0.5f, 0.2f));
+    m_pSp->getAnimation()->playByIndex(0);
+
    //m_pSp->setPosition(Vec2(0, 30));
 
-    addChild(m_pSp);
                               
     setState(STATE_STOP); 
     //schedule(schedule_selector(CGamePlayer::run));
@@ -175,6 +176,11 @@ void CGamePlayer::run(float time)
     }
 }
 
+
+void CGamePlayer::print(DrawNode* dn)
+{
+
+}
 
 void CGamePlayer::setState(int state)
 {

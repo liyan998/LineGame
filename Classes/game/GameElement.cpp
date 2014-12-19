@@ -25,6 +25,7 @@ void CGameElement::clearCurrentAnimation()
     if (m_pSp != nullptr)
     {
         m_pSp->getAnimation()->setMovementEventCallFunc(this, nullptr);
+        m_pSp->getAnimation()->setFrameEventCallFunc(nullptr);
         removeChild(m_pSp);
         m_pSp = nullptr;
     }

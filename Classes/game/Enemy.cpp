@@ -22,6 +22,7 @@ bool CEnemy::collwithBorder(const Vec2& inPoint, Vec2& outPoint)
         {
 
             outPoint = CMath::getVec2(inPoint, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+            //CUtil::formartGrid(outPoint, m_iStep);
             return true;
         }
     }
@@ -49,6 +50,7 @@ bool CEnemy::collwithArea(const Vec2& inPoint, Vec2& outPoint)
         if (areaDis <= m_iStep + m_iCollR)
         {                   
             outPoint = CMath::getVec2(inPoint, areaDis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+            CUtil::formartGrid(outPoint, m_iStep);
             return true;
         }
     }
@@ -76,6 +78,7 @@ bool CEnemy::collwithGuide(const Vec2& inPoint,Vec2& outPoint)
         if (borderdis <= m_iStep + m_iCollR)
         {
             outPoint = CMath::getVec2(inPoint, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+            CUtil::formartGrid(outPoint, m_iStep);
             return true;
         }
     }
@@ -102,8 +105,9 @@ void CEnemy::checkWith()
     if (collwithGuide(t_oColl, endPoint))
     {                                  
         m_refSp->setState(CMySprite::STATE_BACK);
+        return;
     }
-          
+            
     if (collwithArea(t_oColl, endPoint))
     {            
         int index = m_refShowArea->getNearMargin(endPoint);
@@ -112,21 +116,28 @@ void CEnemy::checkWith()
             CMargin* margin = m_refShowArea->getAreaMargin(index);
             m_iDirect = margin->getCollWidthRandomDirect() + CMath::getRandom(-50, 50);
             changeDirect(m_iDirect);
+            //return;
+            //t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
         }
     }
-
+   
     if (collwithBorder(t_oColl, endPoint))
     {                             
-        setPosition(endPoint);
+       setPosition(endPoint);
+       //log("1>>>"); 
         CMargin* pMargin = m_refShowArea->getBorderMargin(endPoint); 
         if (pMargin != nullptr)
         {
+           // log("2<<<");
             m_iDirect = CUtil::getNextAngle(pMargin->m_Angle, 1) + CMath::getRandom(-80, 80);
             changeDirect(m_iDirect);
+            //return;
+            //t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+        
+//             setPosition(t_oColl);
+//return;
         }     
 
-        //log("border die!!!!");
-        
     }
 
     this->setPosition(t_oColl);

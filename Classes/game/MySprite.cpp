@@ -11,9 +11,12 @@
 
 #include "util/Math.h"
 #include "util/Util.h"
+
 #include "Margin.h"
-#include "ShowArea.h"
+
 #include "EventSystem.h" 
+
+#include "GameElement.h"
 
 
 using namespace liyan998;
@@ -50,6 +53,12 @@ bool CMySprite::init()
                 
 
 
+inline
+void CMySprite::setPlayerPosition(const Vec2& pos)
+{
+    m_oSpCurrentPos = pos;
+    m_RefPlayer->setPlayerPosition(pos);
+}
 
 
 
@@ -147,6 +156,7 @@ void CMySprite::onPressed(const Vec2& vec2)
     case STATE_INIT:
         break;
     case STATE_BACK:
+       // onStander(vec2);
         break;
     case STATE_CLOSE:
         break;
