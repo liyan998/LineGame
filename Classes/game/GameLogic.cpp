@@ -1,13 +1,38 @@
 #include "GameLogic.h"
 
 #include "ShowArea.h"
+#include "GameResMacros.h"
 
 bool CGameLogic::init()
 {
     Node::init();
     log("Gamelogic init..."); 
 
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CLOSE, this);     
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CLOSE, this);  
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_QINCAIDIE,
+        RES_ANIMA_PLS_QINCAIDIE,
+        RES_ANIMA_JSO_QINCAIDIE
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DYB,
+        RES_ANIMA_PLS_DYB,
+        RES_ANIMA_JSO_DYB
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_PIPI_DIE,
+        RES_ANIMA_PLS_PIPI_DIE,
+        RES_ANIMA_JSO_PIPI_DIE
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_EFFE_DIEREBACK,
+        RES_ANIMA_PLS_EFFE_DIEREBACK,
+        RES_ANIMA_JSO_EFFE_DIEREBACK
+        );
 
     
     return true;

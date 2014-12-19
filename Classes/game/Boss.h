@@ -23,9 +23,9 @@ public:
 
     virtual bool init();
 
-    virtual void run(float time);
+    virtual void onEnter();
 
- 
+    virtual void run(float time); 
 
     virtual void setState(int state);
 
@@ -37,13 +37,9 @@ public:
 
     //----------------------------------------
 
-    void animation_move();  
+    void animation_move();      
 
-
-
-
-    
-
+    void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
 private:
 
     cocostudio::Armature* m_pArmature;

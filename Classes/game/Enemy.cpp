@@ -48,7 +48,6 @@ bool CEnemy::collwithArea(const Vec2& inPoint, Vec2& outPoint)
         }
         if (areaDis <= m_iStep + m_iCollR)
         {                   
-
             outPoint = CMath::getVec2(inPoint, areaDis, CMath::angleToRadian(CPath::DIRECT[i][0]));
             return true;
         }
@@ -76,7 +75,6 @@ bool CEnemy::collwithGuide(const Vec2& inPoint,Vec2& outPoint)
 
         if (borderdis <= m_iStep + m_iCollR)
         {
-
             outPoint = CMath::getVec2(inPoint, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
             return true;
         }
@@ -183,3 +181,5 @@ void CEnemy::randPosition()
 
     setPosition(tp);
 }
+
+

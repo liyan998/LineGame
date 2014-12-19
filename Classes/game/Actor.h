@@ -5,6 +5,8 @@
 
 class CActor : public CGameElement, public CGameState
 {                            
+
+
 protected:
 
     int             m_iStep;        //ÒÆ¶¯ËÙ¶È

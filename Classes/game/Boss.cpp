@@ -13,32 +13,28 @@ bool CBoss::init()
 {
     Node::init();
 
+    m_iCategory = CGameElement::CATEGORY_BOSS;
+    
     m_fCount    = 0.f;
     m_iDirect   = 0;
     m_iStep     = 2;
-    m_iCollR = 10;
-    m_iCategory = CGameElement::CATEGORY_BOSS;
+    m_iCollR    = 10;
 
     //--------------------------------------------
 
 //     m_pSp = Sprite::create("CloseNormal.png");
 //     m_pSp->setScale(1.5f); 
 //     addChild(m_pSp); 
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_QINCAIDIE, 
-        RES_ANIMA_PLS_QINCAIDIE, 
-        RES_ANIMA_JSO_QINCAIDIE
-        );
-
-    
-    m_pSp = Armature::create("Qicaidie_Walk");
-    m_pSp->getAnimation()->playByIndex(1);
-    m_pSp->setScale(0.5);
-//     arm->getAnimation()->setSpeedScale(0.5);
-    //addChild(m_pSp);
-
     return true;
+}
+
+
+void CBoss::onEnter()
+{
+    Node::onEnter();
+
+
+    animation_move();
 }
 
 void CBoss::run(float t)
@@ -124,14 +120,22 @@ void CBoss::released()
 
 void CBoss::animation_move()
 {
- 
 
-
+    setCurrentAnimation(ARMATURE_QINGCAI);
+    m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CBoss::movementCallback));
+    m_pSp->getAnimation()->playByIndex(0);
 
 }
 
 
 void CBoss::changeDirect(int direct)
 {
+
+}
+
+
+void CBoss::movementCallback(Armature * armature, MovementEventType type, const std::string& name)
+{
+
 
 }

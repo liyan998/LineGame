@@ -24,23 +24,7 @@ bool CNpc::init()
     // m_pSp->setScale(1.5f);
     //addChild(m_pSp);
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_DYB,
-        RES_ANIMA_PLS_DYB,
-        RES_ANIMA_JSO_DYB
-        );
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_PIPI_DIE,
-        RES_ANIMA_PLS_PIPI_DIE,
-        RES_ANIMA_JSO_PIPI_DIE
-        );
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_EFFE_DIEREBACK,
-        RES_ANIMA_PLS_EFFE_DIEREBACK,
-        RES_ANIMA_JSO_EFFE_DIEREBACK
-        );
 
 
     return true;
@@ -48,14 +32,8 @@ bool CNpc::init()
 
 void CNpc::onEnter()
 {
-    Node::onEnter();
-
-
-   
-   
+    Node::onEnter();   
     animation_reBack();
-    //setState(STATE_LIVE);
-
 }
 
 void CNpc::run(float time)
@@ -66,9 +44,8 @@ void CNpc::run(float time)
     case STATE_LIVE:
         CEnemy::checkWith();
         break;
-    case STATE_REBACK:
-        //
-            
+    case STATE_REBACK://
+        //            
         m_fCount += time;
         if (m_fCount >= m_iReLive)
         {
@@ -113,44 +90,44 @@ void CNpc::print(DrawNode* dn)
 inline
 void CNpc::animation_Die()
 {
-    setCurrentAnimation("Guard_Die_Revive");    
-    m_pSp->getAnimation()->play("Guard_Die");
+    setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
+    m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
+    m_pSp->getAnimation()->play(PLAYLAB_GUARD_DIE);
 }
 
 
 inline
 void CNpc::animation_move()
 {   
-    setCurrentAnimation("DYB_Walk");    
-    m_pSp->getAnimation()->playByIndex(0);
+    setCurrentAnimation(ARMATURE_DYB_WALK);
+    m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
+    m_pSp->getAnimation()->play(PLAYLAB_DYB_FRONT_WALK);
 }
 
 inline
 void CNpc::animation_reBack()
 {
-    setCurrentAnimation("Guard_Die_Revive");
-    m_pSp->getAnimation()->play("Guard_Revive");
+    setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
+    m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
+    m_pSp->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
 }
 
 
 void CNpc::movementCallback(Armature * armature, MovementEventType type,const std::string& name)
 {
-    log("type %d  name:%s", type, name.c_str());
-  
+    //log("type %d  name:%s", type, name.c_str());  
     if (type == MovementEventType::COMPLETE)
     {
-        if (strcmp(name.c_str(), "Guard_Die") == 0)
+        if (strcmp(name.c_str(), PLAYLAB_GUARD_DIE) == 0)
         {
             clearCurrentAnimation();        
             CEnemy::randPosition();
             m_fCount = 0.0f;
             setState(STATE_REBACK);        
         }
-        else if (strcmp(name.c_str(),"Guard_Revive")== 0)
+        else if (strcmp(name.c_str(),PLAYLAB_GUARD_REVIVE) == 0)
         {
-            setState(STATE_LIVE);
-
-      
+            setState(STATE_LIVE);      
         }
     }
 }
@@ -161,32 +138,4 @@ void CNpc::changeDirect(int direct)
 
 
 
-}
-
-inline
-void CNpc::setCurrentAnimation(const char* arname)
-{
-    if (
-        m_pSp != nullptr && 
-        strcmp(arname, m_pSp->getAnimation()->getCurrentMovementID().c_str()) == 0
-        )
-    {
-        return;
-    }
-
-    clearCurrentAnimation();
-    m_pSp = Armature::create(arname);
-    m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
-    addChild(m_pSp);
-}
-
-inline
-void CNpc::clearCurrentAnimation()
-{
-    if (m_pSp != nullptr)
-    {
-        m_pSp->getAnimation()->setMovementEventCallFunc(this, nullptr);
-        removeChild(m_pSp);
-        m_pSp = nullptr;
-    }
 }

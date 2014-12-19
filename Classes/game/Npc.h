@@ -42,12 +42,8 @@ public:
 
     //--------------------------------------
 
-    inline void clearCurrentAnimation();
+    void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
 
-    inline void setCurrentAnimation(const char* arname);
-
-    void movementCallback(Armature * armature, MovementEventType type,const std::string& name);
-    
     //-------------------------------------------------------
 
     inline void animation_reBack();             //¸´»î

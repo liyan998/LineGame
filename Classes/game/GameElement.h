@@ -19,6 +19,7 @@ public:
 
     enum Category
     {
+        CATEGORY_ELEMENT,
         CATEGORY_AWARD, //奖励物品
         CATEGORY_BOSS,  //首领
         CATEGORY_NPC    //护卫
@@ -26,13 +27,25 @@ public:
 
 public:
 
+    CGameElement():
+        m_pSp(nullptr),
+        m_fCount(0.0f),
+        m_iCategory(CATEGORY_ELEMENT)
+    {};
+
+    //------------------------------------
+
     virtual void run(float time) = 0;
 
     inline int getCategory(){ return m_iCategory; };
 
-    //virtual void print(DrawNode* dn) =0;
+    //-------------------------------------------------
 
+    void clearCurrentAnimation();
 
+    void setCurrentAnimation(const char* arname);
+
+   
 protected:  
 
     //Sprite*         m_pSp;
