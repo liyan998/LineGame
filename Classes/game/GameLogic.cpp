@@ -88,6 +88,21 @@ void CGameLogic::createGameElement()
 
     //------------------------------------------
 
+    const int numArticle = 1;
+    for (int i = 0; i < numArticle; i++)
+    {
+        auto article = CGameArticle::create();
+        article->m_refShowArea = m_refShowArea;
+        //article->m_refSp = m_refSp;
+        article->setState(CGameArticle::STATE_DISP);
+
+        
+        addChild(article);
+
+        m_oAllElement.push_back(article);
+       m_oAllRander.push_back(article);
+    }
+
 }
 
 
@@ -154,8 +169,16 @@ void CGameLogic::clearGameElement()
         switch (category)
         {
         case CGameElement::CATEGORY_NPC:
-            CNpc* tpNpc = static_cast<CNpc*>(t_pEelment);
-            clearNpc(tpNpc, rmode);
+        {
+                                           CNpc* tpNpc = static_cast<CNpc*>(t_pEelment);
+                                           clearNpc(tpNpc, rmode);
+
+        }
+            break;
+        case CGameElement::CATEGORY_AWARD:
+            log("drop object");
+            CGameArticle* tpGameArticle = static_cast<CGameArticle*>(t_pEelment);
+            tpGameArticle->setState(CGameArticle::STATE_DISP);
             break;
         }
 

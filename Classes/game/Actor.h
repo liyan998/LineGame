@@ -3,7 +3,7 @@
 
 //#include "GameElement.h"
 
-class CActor : public CGameElement, public CGameState
+class CActor : public CGameElement
 {                            
 public:
 
@@ -11,7 +11,7 @@ public:
 
 protected:
 
-    int                 m_iStep;        //移动速度
+    
     int                 m_iDirect;      //方向     
 };
 

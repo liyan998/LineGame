@@ -120,6 +120,9 @@
     <ClCompile Include="..\Classes\game\GameElement.cpp">
       <Filter>Classes\game\element</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\game\GameArticle.cpp">
+      <Filter>Classes\game\element</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -249,6 +252,9 @@
       <Filter>Classes\game\core</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\GameResMacros.h" />
+    <ClInclude Include="..\Classes\game\GameArticle.h">
+      <Filter>Classes\game\element</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

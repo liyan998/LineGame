@@ -18,7 +18,7 @@ bool CBoss::init()
     m_fCount    = 0.f;
     m_iDirect   = 0;
     m_iStep     = 2;
-    m_iCollR    = 10;
+    m_iCollR    = 1;
 
     //--------------------------------------------
 
@@ -61,7 +61,7 @@ void CBoss::run(float t)
 void CBoss::print(DrawNode* dn)
 {
 
-    CEnemy::print(dn);
+    CGameElement::print(dn);
 
     Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
 
