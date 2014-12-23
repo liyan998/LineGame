@@ -57,7 +57,6 @@ bool HelloWorld::init()
     // create and initialize a label
 
     auto lisnter = EventListenerTouchOneByOne::create();    
-    auto label = LabelTTF::create("YouWin!", "Arial", 24);
     
     lisnter->onTouchBegan = [=](Touch* touch, Event* event){
 
@@ -74,15 +73,10 @@ bool HelloWorld::init()
         }
         return false;
     };
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(lisnter, label);
+    //_eventDispatcher->addEventListenerWithSceneGraphPriority(lisnter, label);
    
     
-    // position the label on the center of the screen
-    label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height / 2));
-
-    // add the label as a child to this layer
-    this->addChild(label, 1);
+    
 
     // add "HelloWorld" splash screen"
     //auto sprite = Sprite::create("HelloWorld.png");
@@ -94,6 +88,21 @@ bool HelloWorld::init()
     //this->addChild(sprite, 0);
     
     return true;
+}
+
+
+void HelloWorld::setString(const std::string& str)
+{
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    auto label = LabelTTF::create(str, "Arial", 24);
+    // position the label on the center of the screen
+    label->setPosition(Vec2(origin.x + visibleSize.width / 2,
+        origin.y + visibleSize.height / 2));
+
+    // add the label as a child to this layer
+    this->addChild(label, 1);
+
 }
 
 

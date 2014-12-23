@@ -14,8 +14,9 @@ bool CGamePlayer::init()
 {
     Node::init();
 
-    m_iStep = 2;
-    m_bFlow = false;
+    m_iStep     = 2;
+    m_bFlow     = false;
+    m_iPower    = 3;
 
 //     m_pSp = Sprite::create("CloseNormal.png");
 //     addChild(m_pSp);

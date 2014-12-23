@@ -1,8 +1,6 @@
 #include "GameView.h"
 #include "util/Math.h"
 
-#include "HelloWorldScene.h"
-
 #include "Rander.h"
 #include "Runnable.h"
 #include "GameState.h"
@@ -12,6 +10,7 @@
 #include "Path.h"
 #include "Margin.h" 
 #include "Game1Player.h"
+#include "HelloWorldScene.h"
 
 
 void CGameView::onEnter()
@@ -62,7 +61,6 @@ void CGameView::onEnter()
     
     //------------------------------------
 
-
 	m_pSp->setPath(m_pPath);
     m_pSp->setPlayer(m_pPlayer);
     m_pSp->setShowArea(m_pShowArea);
@@ -104,7 +102,7 @@ void CGameView::onEnter()
     //------------------------------------------ 
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_WIN, this);
-
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_TIMEOUT, this);
 
     setState(STATE_INIT);                         
 	schedule(schedule_selector(CGameView::run));
@@ -118,6 +116,9 @@ void CGameView::actionEvent(int eventid, EventParm data)
     case EVENT_WIN:
        h_actionWin(data);
         break;
+    case EVENT_TIMEOUT:
+        setState(STATE_LOSE);
+        break;
     default:
         break;
     }   
@@ -125,7 +126,6 @@ void CGameView::actionEvent(int eventid, EventParm data)
 
 void CGameView::h_actionWin(EventParm pdadta)
 {
-
     setState(STATE_WIN);
 }
 
@@ -162,11 +162,27 @@ void CGameView::setState(int stata)
         m_pGameLogic->released();
                                    
         auto gameover = HelloWorld::create();
+        gameover->setString("You Win!");
         addChild(gameover);
     }
         break;
     case STATE_LOSE:
         log("GAME STATE_LOSE");
+
+        m_oAllRander.clear();
+        m_oAllRunner.clear();
+        m_pDrawNode->clear();
+
+        unschedule(schedule_selector(CGameView::run));
+
+        m_pSp->released();
+        m_pPlayer->released();
+        m_pShowArea->released();
+        m_pGameLogic->released();
+
+        auto gameover = HelloWorld::create();
+        gameover->setString("Time out you lose!");
+        addChild(gameover);
         break;
     }
 

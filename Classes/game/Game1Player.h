@@ -42,7 +42,6 @@ public:
    
     const Vec2& getPlsyerPosition();
 
-
     void checkPosition(const Vec2& inPoint); 
 
     void fixTargetPostion(const Vec2& inResPosition, const Vec2& inTargetPostion);   
@@ -54,6 +53,8 @@ public:
     void backFollow();
 
     int getStrackSize();
+
+   // void setHit();
 
 
     //TODO 完成动画
@@ -79,7 +80,7 @@ private:
 
     //cocostudio::Armature*               m_pSp;
 
-    //int                                 m_iStep;
+    int                                 m_iPower;//生命值
     Vec2                                m_oCurrentTarget;
     std::vector<Vec2>                   m_oAllGuide;
 

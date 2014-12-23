@@ -9,6 +9,7 @@
 
 #define EVENT_CLOSE     0x10000001      //±ÕºÏ
 #define EVENT_WIN       0x10000002      //
+#define EVENT_TIMEOUT   0x10000003      //³¬Ê±
 
 
 

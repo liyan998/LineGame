@@ -8,6 +8,7 @@ bool CGameLogic::init()
     Node::init();
     log("Gamelogic init..."); 
 
+
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CLOSE, this);  
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
@@ -34,6 +35,19 @@ bool CGameLogic::init()
         RES_ANIMA_JSO_EFFE_DIEREBACK
         );
 
+    Size size = Director::getInstance()->getWinSize();
+    TTFConfig config("fonts/Marker Felt.ttf", 20);
+
+    auto label1 = Label::createWithTTF(config, "00");
+    label1->setAnchorPoint(Vec2(0.0f, 1));
+    addChild(label1, 0, 200);
+    label1->setPosition(Vec2(size.width - 200, size.height));
+
+    auto label2 = Label::createWithTTF(config, "00");
+    label2->setAnchorPoint(Vec2(0.5f, 1));
+    addChild(label2, 0, 100);
+
+    label2->setPosition(Vec2(size.width / 2.0f, size.height ));
     
     return true;
 }   
@@ -49,6 +63,7 @@ void CGameLogic::onExit()
 {
     Node::onExit();
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_CLOSE, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_TIMEOUT, this);
 }
 
 
@@ -101,10 +116,7 @@ void CGameLogic::createGameElement()
         m_oAllElement.push_back(article);
         m_oAllRander.push_back(article);
     }
-
 }
-
-
 
 
 void CGameLogic::actionEvent(int evenid, EventParm pData)
@@ -126,22 +138,24 @@ void CGameLogic::h_ActionClose(EventParm pData)
     case POSITION_AREA_ENDPOINT + POSITION_AREA_ENDPOINT:
     case POSITION_AREA_LINE + POSITION_AREA_LINE:
     case POSITION_AREA_LINE + POSITION_AREA_ENDPOINT:
-    {                      
-                        
-
+    {
         if (!m_refShowArea->isCloseArea())
         {
             return;
         }
         m_refShowArea->clearAreaIndex();
 
-
-
         clearGameElement();
         m_refShowArea->setClose(m_pBoss->getPosition());
         m_refSp->clearGuide();
         float area = m_refShowArea->getArea();
-        log(" Area :%f", area); 
+       // log(" Area :%f", area); 
+        Label* lab = (Label*)getChildByTag(200);
+
+        char str[15] = {0};
+        sprintf(str, "Are:%3.0f%%", area * 100);
+        lab->setString(str);
+
         if (area > WINPART)
         {         
             CEventDispatcher::getInstrance()->dispatchEvent(EVENT_WIN, 0);
@@ -169,9 +183,8 @@ void CGameLogic::clearGameElement()
         {
         case CGameElement::CATEGORY_NPC:
         {
-                                           CNpc* tpNpc = static_cast<CNpc*>(t_pEelment);
-                                           clearNpc(tpNpc, rmode);
-
+            CNpc* tpNpc = static_cast<CNpc*>(t_pEelment);
+            clearNpc(tpNpc, rmode);
         }
             break;
         case CGameElement::CATEGORY_AWARD:
@@ -209,10 +222,27 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
 
 void CGameLogic::run(float time)
 {
-
     for (int i = 0; i < m_oAllElement.size();i++)
     {
         m_oAllElement[i]->run(time);
+    }
+
+
+    if ((m_fCounter += time) > 1)
+    {
+        Label* lab = (Label*)this->getChildByTag(100);
+
+        char str[15] = { 0 };
+        sprintf(str, "timer :%dM", m_iTimer);
+        lab->setString(str);
+        //log("m_iTimer %d", m_iTimer);
+
+        if (m_iTimer++ >= TIMEOUT)
+        {
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_TIMEOUT, 0);
+            m_iTimer = 0;
+        }
+        m_fCounter = 0.0f;
     }
 }
 

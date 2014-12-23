@@ -472,7 +472,6 @@ void CShowArea::getAreaMoveAvable(const Vec2& inPoint, std::vector<int>& outDire
 
 
 
-
 /************************************************************************/
 /*
 * @brief        根据当前边界方向，依赖边界解锁模式得到 在边界垂直方向上可行走方向
@@ -923,8 +922,6 @@ void CShowArea::closedLine_Line()
             }
         }
     }
-	
-	
 }
 
 
@@ -1286,9 +1283,7 @@ void CShowArea::addPoint(const Vec2& point)
 void CShowArea::getAllPoint(std::vector<Vec2>& outputVec)
 {
     outputVec.clear();
-
-   
-
+    
     TPoint* head        = m_pHandle;
     TPoint* realhead    = m_pHandle;
     bool skip           = false;
@@ -1321,7 +1316,6 @@ void CShowArea::clearSameDirectNode(std::vector<Vec2>& outputVec)
     int direct = ANGLE_NONE;
     Vec2 prV(Vec2::ZERO);
     std::vector<Vec2> alldelid;  
-
 
     for (int i = 0; i < outputVec.size(); i++)
     {  
@@ -1376,7 +1370,6 @@ void CShowArea::clearSameDirectNode(std::vector<Vec2>& outputVec)
 
 void CShowArea::clearSamePointNode(std::vector<Vec2>& outPutVec)
 {
-
     std::vector<int> allDel;
 
     for (int i = 0; i < outPutVec.size();i++)
@@ -1390,8 +1383,6 @@ void CShowArea::clearSamePointNode(std::vector<Vec2>& outPutVec)
             }
         }
     }
-
-
 }
 
 

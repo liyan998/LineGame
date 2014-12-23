@@ -147,7 +147,5 @@ void CMargin::setAvableDirect()
 /************************************************************************/
 int CMargin::getCollWidthRandomDirect()
 {
-
-
     return m_iMarginAvable;
 }

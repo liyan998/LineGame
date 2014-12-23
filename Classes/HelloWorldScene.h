@@ -11,6 +11,8 @@ public:
 
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();  
+
+    void setString(const std::string& str);
     
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);

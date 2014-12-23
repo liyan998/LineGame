@@ -1220,7 +1220,7 @@ void CMySprite::addRoad(const Vec2& inPoint)
 /*********************************************************************/
 void CMySprite::clearGuide()
 {
-    //log("guide clear");
+    log("guide clear");
     m_oTPath.clear();
     m_oTRoad.clear();
     m_RefPath->clearPoint();
@@ -1233,6 +1233,7 @@ void CMySprite::clearGuide()
 inline
 void CMySprite::clearRoad()
 {
+    log("clearRoad");
     for (int i = 0; i < m_oTPathMargin.size(); i++)
     {
         delete m_oTPathMargin[i];

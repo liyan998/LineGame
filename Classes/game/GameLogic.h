@@ -11,6 +11,8 @@
 #include "GameState.h"
 #include "EventSystem.h"
 
+#define TIMEOUT  60             //计时周期
+
 class CGameLogic :
     public Node,
     public CRander,
@@ -24,6 +26,8 @@ public:
     CREATE_FUNC(CGameLogic)
 
 public:
+
+    CGameLogic() : m_iTimer(0), m_fCounter(0.0f){}
 
     virtual bool init();
 
@@ -66,6 +70,11 @@ private:
     std::vector< CActor* >          m_oAllActor;
 
     std::vector< CRander* >         m_oAllRander;
+
+    //-----------------------------------------------------
+
+    int                             m_iTimer;
+    float                           m_fCounter;
 
 public:
 
