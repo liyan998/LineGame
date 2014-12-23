@@ -30,6 +30,7 @@ bool CMySprite::init()
     m_iCountRecord      = 0;
     m_curMarginIndex    = SELECTID_NULL; 
 
+    m_iHealth           = 3;
   
     //----------------------------------------------------- 
 
@@ -52,6 +53,12 @@ bool CMySprite::init()
 
                 
 
+
+
+int CMySprite::getHealth()
+{
+    return this->m_iHealth;
+}
 
 inline
 void CMySprite::setPlayerPosition(const Vec2& pos)
@@ -1477,11 +1484,29 @@ int CMySprite::getPathDis(const Vec2& inPoint, int direct)
 }
 
 void CMySprite::released()
-{
-   
+{   
     m_RefPlayer     = nullptr;
     m_RefPath       = nullptr;
     m_RefShowArea   = nullptr;
 
     removeAllChildrenWithCleanup(true);
+}
+
+bool CMySprite::attiack(int value)
+{
+    if (m_iHealth - value <= 0)
+    {
+        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERDIE, 0);
+        return false;
+    }
+
+    
+
+    log("attack! %d", m_iHealth);
+
+    m_iHealth -= value;
+    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_HIT, (EventParm)m_iHealth);
+
+    setState(CMySprite::STATE_BACK);
+    return true;
 }

@@ -19,6 +19,7 @@ bool CBoss::init()
     m_iDirect   = 0;
     m_iStep     = 2;
     m_iCollR    = 1;
+    m_iAttick   = 1;
 
     //--------------------------------------------
 

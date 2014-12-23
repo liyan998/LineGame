@@ -13,6 +13,10 @@
 
 #define TIMEOUT  60             //计时周期
 
+#define CHARSEQUEN_HEALTH       "player:%00d"
+#define CHARSEQUEN_TIME         "Time:%ds"
+#define CHARSEQUEN_AREA         "AREA:%3.0f%%"
+
 class CGameLogic :
     public Node,
     public CRander,
@@ -54,6 +58,8 @@ public:
 
     void clearNpc(CNpc* pNpc, int mode);
 
+
+    void h_ActionHit(EventParm pDate);
 
     //----------------------------------------
 

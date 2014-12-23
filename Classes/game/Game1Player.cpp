@@ -16,7 +16,7 @@ bool CGamePlayer::init()
 
     m_iStep     = 2;
     m_bFlow     = false;
-    m_iPower    = 3;
+    
 
 //     m_pSp = Sprite::create("CloseNormal.png");
 //     addChild(m_pSp);
@@ -176,6 +176,10 @@ void CGamePlayer::run(float time)
         break;
     }
 }
+
+
+
+
 
 
 void CGamePlayer::print(DrawNode* dn)

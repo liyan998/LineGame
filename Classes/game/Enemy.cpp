@@ -3,8 +3,16 @@
 #include "util/Math.h"
 #include "util/Util.h"
 
+#include "EventSystem.h"
+
 using namespace liyan998;
 
+
+inline
+int CEnemy::getAttack()
+{
+    return this->m_iAttick;
+}
 
 /************************************************************************/
 /*
@@ -52,8 +60,12 @@ void CEnemy::checkWith()
     Vec2 endPoint;
 
     if (collwithGuide(t_oColl, endPoint))
-    {                                  
-        m_refSp->setState(CMySprite::STATE_BACK);
+    {            
+        
+        if (!m_refSp->attiack(getAttack()))
+        {
+            
+        }
         return;
     }
             

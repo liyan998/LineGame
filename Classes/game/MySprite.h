@@ -64,11 +64,11 @@ public:
     inline void setPlayer(CGamePlayer* sp){ this->m_RefPlayer = sp; }
 
     inline void setShowArea(CShowArea* area){ this->m_RefShowArea = area; }
-
                                                     
     inline void setPlayerPosition(const Vec2& pos);
    
     inline float getSpStep(){return this->m_fStep;}
+
 
     //------------------------------------------------------
 
@@ -85,6 +85,10 @@ public:
     int getPathDis(const Vec2& inPoint, int direct);
 
     void addRoad(const Vec2& inPoint);
+
+    bool attiack(int value);            //收到攻击
+
+    int getHealth();
 
 private:
 
@@ -187,7 +191,7 @@ private:
     //------------------------------------------------------------
 
     
-
+    int                                 m_iHealth;//生命值
 };
 
 #endif//__MYSPRITE_H__

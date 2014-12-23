@@ -77,6 +77,10 @@ public:
 
     void h_actionWin(EventParm pdadta);
 
+    //----------------------------------------------------
+
+    void gameFinal();//
+
 private:                                                       
 
     CShowArea*                  m_pShowArea;        //ÇøÓò   

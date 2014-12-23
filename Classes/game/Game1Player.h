@@ -15,7 +15,8 @@ public:
     {
         STATE_STOP,
         STATE_RUN,
-        STATE_STANDER
+        STATE_STANDER,
+        STATE_DIE           //死亡
     };
 
 
@@ -54,7 +55,6 @@ public:
 
     int getStrackSize();
 
-   // void setHit();
 
 
     //TODO 完成动画
@@ -80,7 +80,7 @@ private:
 
     //cocostudio::Armature*               m_pSp;
 
-    int                                 m_iPower;//生命值
+   
     Vec2                                m_oCurrentTarget;
     std::vector<Vec2>                   m_oAllGuide;
 

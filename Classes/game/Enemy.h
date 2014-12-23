@@ -23,27 +23,16 @@ public:
 
     //---------------------------------------------------------
     
-//     bool checkRandPosition(const Vec2& inPoint);                             //检查坐标是否符合游戏逻辑标准
-// 
-    //void randPosition();
+    inline int getAttack();                                                 //攻击力
 
     //----------------------------------------------
-
-  
-
+    
 protected:
-
-                //Area碰撞
 
     bool collwithGuide(const Vec2& inPoint, Vec2& outPoint);                //Guide碰撞
 
-
     void checkWith();
     
-
-public:
-
-
 
 protected:
  

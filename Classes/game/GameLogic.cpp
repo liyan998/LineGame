@@ -3,13 +3,18 @@
 #include "ShowArea.h"
 #include "GameResMacros.h"
 
+
+
 bool CGameLogic::init()
 {
     Node::init();
     log("Gamelogic init..."); 
 
 
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CLOSE, this);  
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CLOSE, this); 
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_HIT, this);
+
+    //-------------------------------------------------------------------------
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
         RES_ANIMA_PNG_QINCAIDIE,
@@ -35,19 +40,7 @@ bool CGameLogic::init()
         RES_ANIMA_JSO_EFFE_DIEREBACK
         );
 
-    Size size = Director::getInstance()->getWinSize();
-    TTFConfig config("fonts/Marker Felt.ttf", 20);
-
-    auto label1 = Label::createWithTTF(config, "00");
-    label1->setAnchorPoint(Vec2(0.0f, 1));
-    addChild(label1, 0, 200);
-    label1->setPosition(Vec2(size.width - 200, size.height));
-
-    auto label2 = Label::createWithTTF(config, "00");
-    label2->setAnchorPoint(Vec2(0.5f, 1));
-    addChild(label2, 0, 100);
-
-    label2->setPosition(Vec2(size.width / 2.0f, size.height ));
+  
     
     return true;
 }   
@@ -56,6 +49,41 @@ void CGameLogic::onEnter()
 {
     Node::onEnter();    
     log("Gamelogic onEnter.."); 
+
+    Size size = Director::getInstance()->getWinSize();
+    TTFConfig config("fonts/Marker Felt.ttf", 20);
+
+
+    char str[15] = { 0 };
+    sprintf(str, CHARSEQUEN_AREA,m_refShowArea->getArea() * 100 );
+
+    auto label1 = Label::createWithTTF(config, str);
+    label1->setAnchorPoint(Vec2(0.0f, 1));
+    addChild(label1, 0, 200);
+    label1->setPosition(Vec2(size.width - 200, size.height));
+
+
+    //str[15] = { 0 };
+    sprintf(str, CHARSEQUEN_TIME, m_iTimer);
+
+    auto label2 = Label::createWithTTF(config, str);
+    label2->setAnchorPoint(Vec2(0.5f, 1));
+    addChild(label2, 0, 100);
+
+    label2->setPosition(Vec2(size.width / 2.0f, size.height));
+
+
+    //str[15] = { 0 };
+    sprintf(str, CHARSEQUEN_HEALTH, m_refSp->getHealth());
+    auto label3 = Label::createWithTTF(config, str);
+    label3->setAnchorPoint(Vec2(0, 1));
+    addChild(label3, 0, 300);
+
+    label3->setPosition(Vec2(0, size.height));
+
+
+    //-----------------------------------------------------------
+
     createGameElement();    
 }
 
@@ -63,7 +91,8 @@ void CGameLogic::onExit()
 {
     Node::onExit();
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_CLOSE, this);
-    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_TIMEOUT, this);
+    
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_HIT, this);
 }
 
 
@@ -126,6 +155,9 @@ void CGameLogic::actionEvent(int evenid, EventParm pData)
     case EVENT_CLOSE:
         h_ActionClose(pData);
         break; 
+    case EVENT_HIT:
+        h_ActionHit(pData);
+        break;
     default:
         break;
     }
@@ -152,8 +184,8 @@ void CGameLogic::h_ActionClose(EventParm pData)
        // log(" Area :%f", area); 
         Label* lab = (Label*)getChildByTag(200);
 
-        char str[15] = {0};
-        sprintf(str, "Are:%3.0f%%", area * 100);
+        char str[15] = { 0 };
+        sprintf(str, CHARSEQUEN_AREA, area  * 100);
         lab->setString(str);
 
         if (area > WINPART)
@@ -168,7 +200,6 @@ void CGameLogic::h_ActionClose(EventParm pData)
         
     }     
 }
-
 
 void CGameLogic::clearGameElement()
 {
@@ -220,6 +251,18 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
     }
 }
 
+
+void CGameLogic::h_ActionHit(EventParm pDate)
+{
+
+    int health = (int)pDate;
+    Label* lab = (Label*)this->getChildByTag(300);
+    char str[15] = { 0 };
+    sprintf(str, CHARSEQUEN_HEALTH, m_refSp->getHealth());
+    lab->setString(str);
+
+}
+
 void CGameLogic::run(float time)
 {
     for (int i = 0; i < m_oAllElement.size();i++)
@@ -233,7 +276,7 @@ void CGameLogic::run(float time)
         Label* lab = (Label*)this->getChildByTag(100);
 
         char str[15] = { 0 };
-        sprintf(str, "timer :%dM", m_iTimer);
+        sprintf(str, CHARSEQUEN_TIME, m_iTimer);
         lab->setString(str);
         //log("m_iTimer %d", m_iTimer);
 
@@ -263,5 +306,8 @@ void CGameLogic::setState(int state)
 
 void CGameLogic::released()
 {
+    m_oAllElement.clear();
+    m_oAllRander.clear();
+
     this->removeAllChildren();
 }

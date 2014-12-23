@@ -18,6 +18,7 @@ bool CNpc::init()
     m_iCollR    = 20;
     m_fCount    = 0.0f;
     m_iReLive   = 3;
+    m_iAttick   = 1;
 
 
     //m_pSp       = Sprite::create("CloseNormal.png");

@@ -93,6 +93,9 @@
     <ClCompile Include="..\Classes\game\Margin.cpp">
       <Filter>Classes\game\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\game\MySprite.cpp">
+      <Filter>Classes\game\core</Filter>
+    </ClCompile>
     <ClCompile Include="..\Classes\game\Path.cpp">
       <Filter>Classes\game\core</Filter>
     </ClCompile>
@@ -119,9 +122,6 @@
     </ClCompile>
     <ClCompile Include="..\Classes\game\GameElement.cpp">
       <Filter>Classes\game\element</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\game\MySprite.cpp">
-      <Filter>Classes\game\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +212,9 @@
     <ClInclude Include="..\Classes\game\Margin.h">
       <Filter>Classes\game\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\game\MySprite.h">
+      <Filter>Classes\game\core</Filter>
+    </ClInclude>
     <ClInclude Include="..\Classes\game\Path.h">
       <Filter>Classes\game\core</Filter>
     </ClInclude>
@@ -248,12 +251,8 @@
     <ClInclude Include="..\Classes\game\GameState.h">
       <Filter>Classes\game\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\GameResMacros.h" />
     <ClInclude Include="..\Classes\game\GameArticle.h">
       <Filter>Classes\game\element</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\game\MySprite.h">
-      <Filter>Classes\game\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

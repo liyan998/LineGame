@@ -103,6 +103,7 @@ void CGameView::onEnter()
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_WIN, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_TIMEOUT, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PLAYERDIE, this);
 
     setState(STATE_INIT);                         
 	schedule(schedule_selector(CGameView::run));
@@ -119,6 +120,14 @@ void CGameView::actionEvent(int eventid, EventParm data)
     case EVENT_TIMEOUT:
         setState(STATE_LOSE);
         break;
+    case EVENT_PLAYERDIE:
+    {
+                            gameFinal();
+
+                            auto gameover = HelloWorld::create();
+                            gameover->setString("Player is died you lose!");
+                            addChild(gameover);
+    }   break;
     default:
         break;
     }   
@@ -150,17 +159,8 @@ void CGameView::setState(int stata)
     {
         log("GAME STATE_WIN");
 
-        m_oAllRander.clear();
-        m_oAllRunner.clear();
-        m_pDrawNode->clear();
+        gameFinal();
 
-        unschedule(schedule_selector(CGameView::run));
-
-        m_pSp->released();
-        m_pPlayer->released();
-        m_pShowArea->released();
-        m_pGameLogic->released();
-                                   
         auto gameover = HelloWorld::create();
         gameover->setString("You Win!");
         addChild(gameover);
@@ -169,16 +169,7 @@ void CGameView::setState(int stata)
     case STATE_LOSE:
         log("GAME STATE_LOSE");
 
-        m_oAllRander.clear();
-        m_oAllRunner.clear();
-        m_pDrawNode->clear();
-
-        unschedule(schedule_selector(CGameView::run));
-
-        m_pSp->released();
-        m_pPlayer->released();
-        m_pShowArea->released();
-        m_pGameLogic->released();
+        gameFinal();
 
         auto gameover = HelloWorld::create();
         gameover->setString("Time out you lose!");
@@ -189,6 +180,21 @@ void CGameView::setState(int stata)
     this->m_State = stata;
 }
           
+
+void CGameView::gameFinal()
+{
+    m_pGameLogic->released();
+
+    unschedule(schedule_selector(CGameView::run));
+
+    m_oAllRander.clear();
+    m_oAllRunner.clear();
+    m_pDrawNode->clear();
+
+    m_pSp->released();
+    m_pPlayer->released();
+    m_pShowArea->released();
+}
 
 
 void CGameView::initGame(float)
