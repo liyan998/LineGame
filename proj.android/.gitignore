@@ -1,0 +1,24 @@
+#cat .gitignore
+bin
+gen
+src
+libs
+obj
+assets
+res
+jni/hellocpp/main.cpp
+jni/Appliction.mk
+AndroidManifest.xml
+build-cfg.json
+build.xml
+build_native.py
+.settings
+.classpath
+.cproject
+.project
+project.properties
+local.properties
+lint.xml
+ant.properties
+proguard-project.txt
+README.md

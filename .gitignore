@@ -4,7 +4,7 @@ cocos2d
 proj.linux/
 proj.ios_mac/
 proj.wp8-xaml/
-proj.android/
+#proj.android/
 .cocos-project.json
 CMakeLists.txt
 proj.win32/

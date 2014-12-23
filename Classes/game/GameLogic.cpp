@@ -71,7 +71,7 @@ void CGameLogic::createGameElement()
 
     //------------------------------------------------
 
-    const int numNpc = 1;
+    const int numNpc = 3;
     for (int i = 0; i < numNpc;i++)
     {
         auto npc = CNpc::create();
@@ -96,11 +96,10 @@ void CGameLogic::createGameElement()
         //article->m_refSp = m_refSp;
         article->setState(CGameArticle::STATE_DISP);
 
-        
         addChild(article);
 
         m_oAllElement.push_back(article);
-       m_oAllRander.push_back(article);
+        m_oAllRander.push_back(article);
     }
 
 }

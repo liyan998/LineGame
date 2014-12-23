@@ -117,10 +117,10 @@
     <ClCompile Include="..\Classes\game\Enemy.cpp">
       <Filter>Classes\game\element</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\GameElement.cpp">
+    <ClCompile Include="..\Classes\game\GameArticle.cpp">
       <Filter>Classes\game\element</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\GameArticle.cpp">
+    <ClCompile Include="..\Classes\game\GameElement.cpp">
       <Filter>Classes\game\element</Filter>
     </ClCompile>
   </ItemGroup>
