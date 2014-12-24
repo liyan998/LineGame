@@ -28,7 +28,7 @@
 #ifndef __GAMEARTICLE_H__
 #define __GAMEARTICLE_H__
 
-#define TIME_DIS_ARTICLE    8   //消失时间
+#define TIME_DIS_ARTICLE    80   //消失时间
 #define TIME_CREATE_ARTICLE 10  //创建道具时间
 
 class CGameArticle : public CGameElement
@@ -68,6 +68,9 @@ public:
     int getDrop();
 
     void animation_effe();//道具特效
+
+
+    void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
 
 private:
 

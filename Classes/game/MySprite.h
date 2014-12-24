@@ -8,8 +8,10 @@
 #include "Path.h"
 #include "Margin.h"
 
+#include "EventSystem.h"
+#include "AnimaAxis.h"
 
-class CGameView;
+
 class CShowArea;
 class CGamePlayer;
 
@@ -23,10 +25,11 @@ class CGamePlayer;
 */
 /************************************************************************/
 class CMySprite : 
-public Sprite,
+public CAnimationAxis,
 public CGameState, 
 public CRander ,
-public CRunnable
+public CRunnable,
+public CEventHandler
 {          
 
 public:         
@@ -55,15 +58,17 @@ public:
 
     virtual void released();
 
-    virtual void run(float time);        
+    virtual void run(float time); 
+
+    virtual void actionEvent(int eventid, EventParm pData);
 
 	//----------------------------------------------------
 
-    inline void setPath(CPath* path){ this->m_RefPath = path; }
+    inline void setPath(CPath* path){ this->m_refPath = path; }
 
-    inline void setPlayer(CGamePlayer* sp){ this->m_RefPlayer = sp; }
+    inline void setPlayer(CGamePlayer* sp){ this->m_refPlayer = sp; }
 
-    inline void setShowArea(CShowArea* area){ this->m_RefShowArea = area; }
+    inline void setShowArea(CShowArea* area){ this->m_refShowArea = area; }
                                                     
     inline void setPlayerPosition(const Vec2& pos);
    
@@ -154,9 +159,9 @@ private:
 
 private:                                             
 
-    CPath*                  m_RefPath;
-    CGamePlayer*            m_RefPlayer;
-    CShowArea*              m_RefShowArea;
+    CPath*                  m_refPath;
+    CGamePlayer*            m_refPlayer;
+    CShowArea*              m_refShowArea;
   
     //---------------------------------------
 
@@ -192,6 +197,8 @@ private:
 
     
     int                                 m_iHealth;//ÉúÃüÖµ
+    int                                 m_iMaxHealth;
+
 };
 
 #endif//__MYSPRITE_H__

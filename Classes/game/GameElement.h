@@ -3,6 +3,9 @@
 
 #include "System.h" 
 
+// #include "cocostudio/CCArmatureDataManager.h"
+// #include "cocostudio/CCArmature.h"   
+
 #include "util/Math.h"
 #include "util/Util.h"
 
@@ -13,17 +16,16 @@
 #include "ShowArea.h"
 #include "MySprite.h"
 
-#include "cocostudio/CCArmatureDataManager.h"
-#include "cocostudio/CCArmature.h"   
+#include "AnimaAxis.h"
 
 /////////////////////////////////////////////////////
 
-using namespace cocostudio;
+//using namespace cocostudio;
 using namespace liyan998;
 
 
 class CGameElement : 
-    public Layer, 
+    public CAnimationAxis,
     public CRander, 
     public CRunnable, 
     public CGameState
@@ -36,13 +38,11 @@ public:
         CATEGORY_AWARD, //物品
         CATEGORY_BOSS,  //首领
         CATEGORY_NPC    //护卫
-
     };
 
 public:
 
-    CGameElement():
-        m_pSp(nullptr),
+    CGameElement():   
         m_fCount(0.0f),
         m_iCategory(CATEGORY_ELEMENT),
         m_iCollR(20),
@@ -60,9 +60,9 @@ public:
 
     //-------------------------------------------------
 
-    void clearCurrentAnimation();
-
-    void setCurrentAnimation(const char* arname);
+//     void clearCurrentAnimation();
+// 
+//     void setCurrentAnimation(const char* arname);
 
     //-------------------------------------
 
@@ -81,16 +81,15 @@ public:
     int                 m_iCollR;       //碰撞半径
     int                 m_iStep;        //移动速度
 
+    float               m_fCount;
+    int                 m_iCategory;    //类型
+
+    //Armature*           m_pSp;
 
 protected:  
 
     //Sprite*         m_pSp;
 
-    float               m_fCount;
-
-    Armature*           m_pSp;
-
-    int                 m_iCategory;    //类型
 
     //----------------------------------
 
@@ -105,6 +104,7 @@ class CEnemy;       //
 class CBoss;        //首领
 class CNpc;         //护卫    
 class CGamePlayer;
+//class CMySprite;
 
 #include "Actor.h"
 #include "Enemy.h"
@@ -112,6 +112,7 @@ class CGamePlayer;
 #include "Npc.h"
 #include "Game1Player.h"
 #include "GameArticle.h"
+//#include "MySprite.h"
 
 //////////////////////////////////////////////////////
 

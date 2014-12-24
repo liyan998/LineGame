@@ -97,8 +97,13 @@ void CEventDispatcher::dispatchEvent(int eventid, EventParm parm)
          
     }
 
-    //delete parm;
-   // parm = nullptr;
+
+    if (parm != PARM_NULL)
+    {
+        delete parm;
+        //parm = nullptr;
+    }
+
     
 }
 

@@ -59,6 +59,17 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
+//道具
+#define RES_ANIMA_JSO_PROPERTY              "animation/Daoju_tubiao/Daoju_tubiao.ExportJson"
+#define RES_ANIMA_PNG_PROPERTY              "animation/Daoju_tubiao/Props_Icon_PNG/Props_Icon.png"
+#define RES_ANIMA_PLS_PROPERTY              "animation/Daoju_tubiao/Props_Icon_PNG/Props_Icon.plist"
+
+#define ARMATURE_PROPERTY                   "Daoju_tubiao"
+#define PLAYLAB_PROPERTY_ADDTIME            "bushi"     //补时
+#define PLAYLAB_PROPERTY_ADDSPEED           "jiasu"     //加速
+#define PLAYLAB_PROPERTY_ADDHEALTH          "huifu"     //恢复
+#define PLAYLAB_PROPERTY_ADDPROTECT         "hudun"     //护盾
+
 
 
 

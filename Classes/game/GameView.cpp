@@ -118,16 +118,23 @@ void CGameView::actionEvent(int eventid, EventParm data)
        h_actionWin(data);
         break;
     case EVENT_TIMEOUT:
-        setState(STATE_LOSE);
+    {
+                          setState(STATE_LOSE);    
+                          gameFinal();    
+                          auto gameover = HelloWorld::create();    
+                          gameover->setString("Time out you lose!");    
+                          addChild(gameover);
+    } 
         break;
     case EVENT_PLAYERDIE:
     {
+                            setState(STATE_LOSE);
                             gameFinal();
-
                             auto gameover = HelloWorld::create();
                             gameover->setString("Player is died you lose!");
                             addChild(gameover);
-    }   break;
+    }   
+        break;
     default:
         break;
     }   
@@ -169,11 +176,7 @@ void CGameView::setState(int stata)
     case STATE_LOSE:
         log("GAME STATE_LOSE");
 
-        gameFinal();
-
-        auto gameover = HelloWorld::create();
-        gameover->setString("Time out you lose!");
-        addChild(gameover);
+       
         break;
     }
 

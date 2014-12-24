@@ -41,6 +41,11 @@ bool CGameLogic::init()
         );
 
   
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_PROPERTY,
+        RES_ANIMA_PLS_PROPERTY,
+        RES_ANIMA_JSO_PROPERTY
+        );
     
     return true;
 }   
@@ -90,8 +95,7 @@ void CGameLogic::onEnter()
 void CGameLogic::onExit()
 {
     Node::onExit();
-    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_CLOSE, this);
-    
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_CLOSE, this);    
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_HIT, this);
 }
 
@@ -190,7 +194,7 @@ void CGameLogic::h_ActionClose(EventParm pData)
 
         if (area > WINPART)
         {         
-            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_WIN, 0);
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_WIN, PARM_NULL);
         } 
     }
         break;
@@ -208,8 +212,8 @@ void CGameLogic::clearGameElement()
     
     for (int i = 0; i < m_oAllElement.size();i++)
     {
-        int category = m_oAllElement[i]->getCategory();
         CGameElement* t_pEelment = m_oAllElement[i];
+        int category = t_pEelment->getCategory();
         switch (category)
         {
         case CGameElement::CATEGORY_NPC:
@@ -218,10 +222,9 @@ void CGameLogic::clearGameElement()
             clearNpc(tpNpc, rmode);
         }
             break;
-        case CGameElement::CATEGORY_AWARD:
-            log("drop object");
-            CGameArticle* tpGameArticle = static_cast<CGameArticle*>(t_pEelment);
-            tpGameArticle->setState(CGameArticle::STATE_DISP);
+        case CGameElement::CATEGORY_AWARD:           
+            CGameArticle* tpGameArticle = static_cast<CGameArticle*>(t_pEelment);           
+            clearGameObject(tpGameArticle, rmode);
             break;
         }
 
@@ -235,14 +238,14 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
     {
     case MODEL_IN:      
         //
-        log("MODEL_IN");
+        //log("MODEL_IN");
         if (!hasIn)
         {
             pNpc->setState(CNpc::STATE_DIE);
         }
         break;
     case MODEL_OUT:
-        log("MODEL_OUT");
+        //log("MODEL_OUT");
         if (hasIn)
         {
             pNpc->setState(CNpc::STATE_DIE);
@@ -252,10 +255,43 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
 }
 
 
+void CGameLogic::clearGameObject(CGameArticle* pGameAricle, int mode)
+{
+
+    if (pGameAricle->getState() != CGameArticle::STATE_ACTIVE)
+    {
+        return;
+    }
+    
+
+    bool hasIn = m_refShowArea->hasIncludeMaster(pGameAricle->getPosition());
+    switch (mode)
+    {
+    case MODEL_IN:
+        //
+        //log("MODEL_IN");
+        if (!hasIn)
+        {
+            pGameAricle->animation_effe();
+            //pGameAricle->setState(CGameArticle::STATE_EFFE);
+        }
+        break;
+    case MODEL_OUT:
+        //log("MODEL_OUT");
+        if (hasIn)
+        {
+            pGameAricle->animation_effe();
+            //pGameAricle->setState(CGameArticle::STATE_EFFE);
+        }
+        break;
+    }
+}
+
+
 void CGameLogic::h_ActionHit(EventParm pDate)
 {
 
-    int health = (int)pDate;
+    
     Label* lab = (Label*)this->getChildByTag(300);
     char str[15] = { 0 };
     sprintf(str, CHARSEQUEN_HEALTH, m_refSp->getHealth());
@@ -282,7 +318,7 @@ void CGameLogic::run(float time)
 
         if (m_iTimer++ >= TIMEOUT)
         {
-            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_TIMEOUT, 0);
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_TIMEOUT, PARM_NULL);
             m_iTimer = 0;
         }
         m_fCounter = 0.0f;

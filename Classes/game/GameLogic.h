@@ -11,7 +11,7 @@
 #include "GameState.h"
 #include "EventSystem.h"
 
-#define TIMEOUT  60             //计时周期
+#define TIMEOUT                 160             //计时周期
 
 #define CHARSEQUEN_HEALTH       "player:%00d"
 #define CHARSEQUEN_TIME         "Time:%ds"
@@ -58,14 +58,16 @@ public:
 
     void clearNpc(CNpc* pNpc, int mode);
 
+    void clearGameObject(CGameArticle* pGameArticle, int mode);       //道具清理
+
 
     void h_ActionHit(EventParm pDate);
 
     //----------------------------------------
 
-    inline void createGameElement();            //根据出战配置创建Enemey
+    inline void createGameElement();                        //根据出战配置创建Enemey
 
-    void getRandVec2(CEnemy* pEnemy);           //得到随机坐标
+    void getRandVec2(CEnemy* pEnemy);                       //得到随机坐标
 
 private:
 

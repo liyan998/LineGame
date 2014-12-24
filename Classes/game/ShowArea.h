@@ -226,7 +226,7 @@ private:
     std::map<int, CShape*>          m_oAllShape;                        //图形集合    
 
     CPath*                          m_RefPath;                          //路径
-    CGameView*                      m_RefGameView;
+    //CGameView*                      m_RefGameView;
 };                                              
 
 
