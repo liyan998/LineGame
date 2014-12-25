@@ -35,9 +35,9 @@ public:
     enum Category
     {
         CATEGORY_ELEMENT,
-        CATEGORY_AWARD, //物品
-        CATEGORY_BOSS,  //首领
-        CATEGORY_NPC    //护卫
+        CATEGORY_PROERTY = 0x100,   //道具
+        CATEGORY_BOSS    = 0x200,   //首领
+        CATEGORY_NPC     = 0x300    //护卫
     };
 
 public:

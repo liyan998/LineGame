@@ -34,6 +34,9 @@
     <Filter Include="Classes\game\element">
       <UniqueIdentifier>{97eef75c-704f-456a-954f-f1f8276ddead}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\game\element\property">
+      <UniqueIdentifier>{90031b80-b0ff-4e94-988c-02cad5f613bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -114,17 +117,17 @@
     <ClCompile Include="..\Classes\game\Enemy.cpp">
       <Filter>Classes\game\element</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\GameArticle.cpp">
-      <Filter>Classes\game\element</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\game\GameElement.cpp">
-      <Filter>Classes\game\element</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\game\MySprite.cpp">
       <Filter>Classes\game\element</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\AnimaAxis.cpp">
       <Filter>Classes\game\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\GameElement.cpp">
+      <Filter>Classes\game\element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\GameArticle.cpp">
+      <Filter>Classes\game\element\property</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,14 +254,17 @@
     <ClInclude Include="..\Classes\game\GameState.h">
       <Filter>Classes\game\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\GameArticle.h">
-      <Filter>Classes\game\element</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\MySprite.h">
       <Filter>Classes\game\element</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\AnimaAxis.h">
       <Filter>Classes\game\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\GameResMacros.h">
+      <Filter>Classes\game\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\GameArticle.h">
+      <Filter>Classes\game\element\property</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

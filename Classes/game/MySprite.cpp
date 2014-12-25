@@ -49,7 +49,7 @@ bool CMySprite::init()
     //Rect& rec = this->getBoundingBox();     
     //log("bundBox:%f, %f, %f, %f", rec.origin.x, rec.origin.y, rec.size.width , rec.size.height);     
 
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PRORETY_ADDHEALTH, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDHEALTH, this);
 
     return true;
 }
@@ -57,6 +57,30 @@ bool CMySprite::init()
                 
 void CMySprite::actionEvent(int eventid, EventParm pData)
 {
+    switch (eventid)
+    {
+    case EVENT_PROPERTY_ADDHEALTH:       
+        h_actionAddHealth(pData);
+        break;
+    default:
+        break;
+    }
+}
+
+void CMySprite::h_actionAddHealth(EventParm pData)
+{
+    float addpart = *(float*)pData;
+
+    int addv = (int)(m_iMaxHealth * addpart);
+
+    if (m_iHealth + addv >= m_iMaxHealth)
+    {
+        m_iHealth = m_iMaxHealth;
+    }
+    else
+    {
+        m_iHealth += addv;
+    }
 }
 
 
@@ -259,7 +283,7 @@ void CMySprite::onMove(const Vec2& point)
 
 /**********************************************************************/
 /*
-* @brief        ÆÁÄ»Ö¸ÕëÊÍ·Å
+* @brief        ÆÁÄ»Ö¸ÕëÊÍ·Å-
 * @param[in]    point   ÊäÈë×ø±ê
 * @param[out]
 * @return       void
@@ -1490,6 +1514,8 @@ int CMySprite::getPathDis(const Vec2& inPoint, int direct)
 
 void CMySprite::released()
 {   
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDHEALTH, this);
+
     m_refPlayer     = nullptr;
     m_refPath       = nullptr;
     m_refShowArea   = nullptr;

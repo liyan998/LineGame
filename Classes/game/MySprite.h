@@ -157,6 +157,8 @@ private:
 
     void fixPath(const Vec2& inPoint);
 
+    void h_actionAddHealth(EventParm pData);
+
 private:                                             
 
     CPath*                  m_refPath;

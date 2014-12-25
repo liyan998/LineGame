@@ -67,6 +67,8 @@ public:
 
     inline void createGameElement();                        //根据出战配置创建Enemey
 
+    void removeGameElement(CGameElement* pElement);
+
     void getRandVec2(CEnemy* pEnemy);                       //得到随机坐标
 
 private:

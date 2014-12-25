@@ -13,7 +13,7 @@ bool CGameLogic::init()
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CLOSE, this); 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_HIT, this);
-
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDTIME, this);
     //-------------------------------------------------------------------------
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
@@ -97,6 +97,7 @@ void CGameLogic::onExit()
     Node::onExit();
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_CLOSE, this);    
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_HIT, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDTIME, this);
 }
 
 
@@ -136,13 +137,24 @@ void CGameLogic::createGameElement()
 
     //------------------------------------------
 
-    const int numArticle = 1;
+    const int numArticle = 3;
     for (int i = 0; i < numArticle; i++)
     {
         auto article = CGameArticle::create();
-        article->m_refShowArea = m_refShowArea;
-        //article->m_refSp = m_refSp;
-        article->setState(CGameArticle::STATE_DISP);
+        article->m_refShowArea = m_refShowArea;  
+        
+        
+
+        article->setProperty(article->randProperty());
+
+        if (i == 0)
+        {
+            article->setCreateType(CGameArticle::SYSTEM);
+        }
+        else
+        {
+            article->setCreateType(CGameArticle::PAY);
+        }
 
         addChild(article);
 
@@ -161,6 +173,21 @@ void CGameLogic::actionEvent(int evenid, EventParm pData)
         break; 
     case EVENT_HIT:
         h_ActionHit(pData);
+        break;
+    case EVENT_PROPERTY_ADDTIME:
+    {
+
+                                   int time = *((int*)pData);
+                                   if (m_iTimer - time > 0)
+                                   {
+                                       m_iTimer -= time;
+                                   }
+                                   else
+                                   {
+                                       m_iTimer = 0;
+                                   }
+
+    }
         break;
     default:
         break;
@@ -222,7 +249,7 @@ void CGameLogic::clearGameElement()
             clearNpc(tpNpc, rmode);
         }
             break;
-        case CGameElement::CATEGORY_AWARD:           
+        case CGameElement::CATEGORY_PROERTY:           
             CGameArticle* tpGameArticle = static_cast<CGameArticle*>(t_pEelment);           
             clearGameObject(tpGameArticle, rmode);
             break;
@@ -346,4 +373,28 @@ void CGameLogic::released()
     m_oAllRander.clear();
 
     this->removeAllChildren();
+}
+
+
+void CGameLogic::removeGameElement(CGameElement* pElement)
+{
+    for (int i = 0; i < m_oAllRander.size();i++)
+    {
+        if (m_oAllRander[i] == pElement)
+        {
+            m_oAllRander.erase(m_oAllRander.begin() + i);
+            break;
+        }        
+    }
+    for (int i = 0; i < m_oAllElement.size(); i++)
+    {
+        if (m_oAllElement[i] == pElement)
+        {
+            m_oAllElement.erase(m_oAllElement.begin() + i);
+            break;
+        }
+    }
+    pElement->released();
+
+    removeChild(pElement);
 }
