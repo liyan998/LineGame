@@ -37,6 +37,12 @@
     <Filter Include="Classes\game\element\property">
       <UniqueIdentifier>{90031b80-b0ff-4e94-988c-02cad5f613bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\game\element\enemy">
+      <UniqueIdentifier>{e31a92a9-a072-4256-a925-f1cae436ba0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\game\element\role">
+      <UniqueIdentifier>{e5fbef46-2a78-4af3-98a5-c9c3671f57eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -90,9 +96,6 @@
     <ClCompile Include="..\Classes\game\EventDispatcher.cpp">
       <Filter>Classes\game\event</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\Game1Player.cpp">
-      <Filter>Classes\game\element</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\game\Margin.cpp">
       <Filter>Classes\game\core</Filter>
     </ClCompile>
@@ -108,18 +111,6 @@
     <ClCompile Include="..\Classes\game\GameView.cpp">
       <Filter>Classes\game</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\Boss.cpp">
-      <Filter>Classes\game\element</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\game\Npc.cpp">
-      <Filter>Classes\game\element</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\game\Enemy.cpp">
-      <Filter>Classes\game\element</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\game\MySprite.cpp">
-      <Filter>Classes\game\element</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\game\AnimaAxis.cpp">
       <Filter>Classes\game\element</Filter>
     </ClCompile>
@@ -128,6 +119,21 @@
     </ClCompile>
     <ClCompile Include="..\Classes\game\GameArticle.cpp">
       <Filter>Classes\game\element\property</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\Boss.cpp">
+      <Filter>Classes\game\element\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\Enemy.cpp">
+      <Filter>Classes\game\element\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\Npc.cpp">
+      <Filter>Classes\game\element\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\Game1Player.cpp">
+      <Filter>Classes\game\element\role</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\MySprite.cpp">
+      <Filter>Classes\game\element\role</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,9 +215,6 @@
     <ClInclude Include="..\Classes\game\EventSystem.h">
       <Filter>Classes\game\event</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\Game1Player.h">
-      <Filter>Classes\game\element</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\ShowArea.h">
       <Filter>Classes\game\core</Filter>
     </ClInclude>
@@ -233,16 +236,7 @@
     <ClInclude Include="..\Classes\game\GameElement.h">
       <Filter>Classes\game\element</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\Boss.h">
-      <Filter>Classes\game\element</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\Actor.h">
-      <Filter>Classes\game\element</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\game\Enemy.h">
-      <Filter>Classes\game\element</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\game\Npc.h">
       <Filter>Classes\game\element</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\GameView.h">
@@ -254,9 +248,6 @@
     <ClInclude Include="..\Classes\game\GameState.h">
       <Filter>Classes\game\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\MySprite.h">
-      <Filter>Classes\game\element</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\AnimaAxis.h">
       <Filter>Classes\game\element</Filter>
     </ClInclude>
@@ -265,6 +256,21 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\GameArticle.h">
       <Filter>Classes\game\element\property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\Boss.h">
+      <Filter>Classes\game\element\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\Enemy.h">
+      <Filter>Classes\game\element\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\Npc.h">
+      <Filter>Classes\game\element\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\Game1Player.h">
+      <Filter>Classes\game\element\role</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\MySprite.h">
+      <Filter>Classes\game\element\role</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
