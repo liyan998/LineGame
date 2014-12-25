@@ -8,6 +8,7 @@ proj.wp8-xaml/
 .cocos-project.json
 CMakeLists.txt
 proj.win32/
+!proj.win32/MyCppGame.vcxproj
 !proj.win32/MyCppGame.vcxproj.filters
 Win32Test/
 
