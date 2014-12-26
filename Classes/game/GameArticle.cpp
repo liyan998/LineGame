@@ -170,7 +170,7 @@ void CGameArticle::setProperty(int catetory)
     //---------------------------------------------------------------
 
     struct T_EventPropertyAddSpeed* pProAddsp = new struct T_EventPropertyAddSpeed;
-    pProAddsp->addPart  = .6f;  //增加速度百分比
+    pProAddsp->addPart  = .3f;  //增加速度百分比
     pProAddsp->time     = 102;   //持续时间
 
     //---------------------------------------------------

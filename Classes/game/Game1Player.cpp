@@ -105,14 +105,17 @@ void CGamePlayer::backFollow()
 
 int CGamePlayer::getStep()
 {                       
+
     int step = this->m_iStep;
 
     if (m_iEffect == Effect::EFFECT_ADDSPEED)
     {
-        float tf = m_iStep * m_pEventAddSpeed->addPart;
-        step = static_cast<int>(tf + m_iStep);
-       // log("step : %d  - %f", step   ,tf);
+//         float tf = m_iStep * m_pEventAddSpeed->addPart;
+        step = GRAD_NUMBER(m_iStep * 3);
+        //log("step : %d %f", step);
+        //step = GRAD_NUMBER(step);
     }
+
     return step;
 }
 
@@ -161,6 +164,7 @@ void CGamePlayer::playerStander(float time)
         log("- RemoveTarget:%f,%f", lasTarget.x, lasTarget.y);
 
         m_refSp->addRoad(lasTarget);
+
         m_oAllGuide.erase(m_oAllGuide.begin());
     }
 
@@ -187,6 +191,7 @@ void CGamePlayer::playerRun(float time)
     m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlayerPosition(), m_oCurrentTarget)));
     Vec2 npos = CMath::getVec2(getPlayerPosition(), getStep(), CMath::angleToRadian(m_iCurrentDirect));
     CUtil::formartGrid(npos, getStep());
+    //CUtil::formartGrid(npos);
 
     m_pSp->setPosition(npos);
 }

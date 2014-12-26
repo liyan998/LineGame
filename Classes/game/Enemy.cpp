@@ -57,6 +57,8 @@ void CEnemy::checkWith()
 
     Vec2 t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
 
+    //CUtil::formartGrid(t_oColl, m_iStep);
+
     Vec2 endPoint;
 
 
