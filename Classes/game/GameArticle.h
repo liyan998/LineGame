@@ -53,9 +53,12 @@ struct T_Property
     int         category;               //道具类型
     int         eventid;                //事件ID
     EventParm   pData;                  //事件参数 
-    //---------------------------------------------
+
+    //--------------------------------------------
+    
     const char* armtruename;            //动画集合
     const char* playlab;                //动画
+
     //--------------------------------------------
 
     int         liveTime;               //存在时间
@@ -138,7 +141,7 @@ public:
 
     //-----------------------------------------------
 
-    int randProperty();//随机产生
+    int randProperty();                         //随机产生
 
 private:
 

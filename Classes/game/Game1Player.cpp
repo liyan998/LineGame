@@ -1,5 +1,5 @@
 
-#include "Game1Player.h"
+#include "GameElement.h"
 
 #include "util/Math.h"
 #include "util/Util.h"
@@ -14,48 +14,41 @@ bool CGamePlayer::init()
 {
     Node::init();
 
-    m_iStep     = 2;
-    m_bFlow     = false;
-    
+    m_iStep             = 2;
+    m_bFlow             = false;
+    m_pEventAddSpeed    = nullptr;
 
-//     m_pSp = Sprite::create("CloseNormal.png");
-//     addChild(m_pSp);
+    //-------------------------------------------
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_PIPI,
-        RES_ANIMA_PLS_PIPI,
-        RES_ANIMA_JSO_PIPI
-        );
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
 
+    //-----------------------------------------------------
 
     setCurrentAnimation(ARMATURE_PIPI_STANDER);
-
     m_pSp->setAnchorPoint(Vec2(0.5f, 0.2f));
     m_pSp->getAnimation()->playByIndex(0);
-
-   //m_pSp->setPosition(Vec2(0, 30));
-
-                              
+                                  
     setState(STATE_STOP); 
-    //schedule(schedule_selector(CGamePlayer::run));
 
     return true;
 }
 
 void CGamePlayer::released()
 {
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
+
     this->removeAllChildren();
 }
 
 void CGamePlayer::setPlayerPosition(const Vec2& pos)
 {                      
     Vec2 tp = pos; 
-    CUtil::formartGrid(tp, m_iStep);
+    CUtil::formartGrid(tp, getStep());
     m_pSp->setPosition(tp);
 }
 
 
-const Vec2& CGamePlayer::getPlsyerPosition()
+const Vec2& CGamePlayer::getPlayerPosition()
 {
     return m_pSp->getPosition();
 }
@@ -76,7 +69,7 @@ void CGamePlayer::setTarget(const Vec2& point)
 
 void CGamePlayer::checkPosition(const Vec2& inPoint)
 {      
-    if (m_State == STATE_STOP && getPlsyerPosition() != inPoint)
+    if (m_State == STATE_STOP && getPlayerPosition() != inPoint)
     {
         setTarget(inPoint);
     }         
@@ -112,79 +105,103 @@ void CGamePlayer::backFollow()
 
 int CGamePlayer::getStep()
 {                       
-    return this->m_iStep;
+    int step = this->m_iStep;
+
+    if (m_iEffect == Effect::EFFECT_ADDSPEED)
+    {
+        float tf = m_iStep * m_pEventAddSpeed->addPart;
+        step = static_cast<int>(tf + m_iStep);
+       // log("step : %d  - %f", step   ,tf);
+    }
+    return step;
 }
 
 void CGamePlayer::run(float time)
 {
+
     //log("-------------------------------");
 	//log("plyer urn %d ,%d", m_State ,m_oAllGuide.size());
     switch (m_State)
     {
-    case STATE_RUN:
-    {
-         int dis = ccpDistance(getPlsyerPosition(), m_oCurrentTarget);
-
-         //log("%d  target:%f,%f", dis, m_oCurrentTarget.x, m_oCurrentTarget.y);
-         if (dis < m_iStep)		 
-         {               
-             setState(STATE_STANDER);
-             return;
-         }
-         
-		 m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
-		 Vec2 npos = CMath::getVec2(getPlsyerPosition(), m_iStep, CMath::angleToRadian(m_iCurrentDirect));
-         CUtil::formartGrid(npos, m_iStep);
-
-         m_pSp->setPosition(npos);
-    }
-                                           
+    case STATE_RUN:   
+        playerRun(time);                                          
         break;
     case STATE_STANDER:
-    {                                    
-        if (m_oAllGuide.size() < 1)
-        {
-            setState(STATE_STOP);
-            break;
-        }
-
-        Vec2 lasTarget = *m_oAllGuide.begin();
-
-        if (m_oCurrentTarget == lasTarget)
-        {
-            log("- RemoveTarget:%f,%f", lasTarget.x, lasTarget.y);
-
-            m_refSp->addRoad(lasTarget);
-
-            m_oAllGuide.erase(m_oAllGuide.begin());
-        }
-
-        if (m_oAllGuide.size() < 1)
-        {
-            break;
-        }
-        setTarget(m_oAllGuide[0]);
-    }
+        playerStander(time);
         break;
-    case STATE_STOP:
-    
+    case STATE_STOP:    
         if (m_oAllGuide.size() > 0)
         {
             setTarget(m_oAllGuide[0]);
-        }
-    
+        }    
         break;
     }
+
+    m_fCount += time;
+    if (m_fCount >= 1)
+    {
+        checkEffect();
+        m_fCount = 0;
+    }
+
+}
+
+void CGamePlayer::playerStander(float time)
+{
+    if (m_oAllGuide.size() < 1)
+    {
+        setState(STATE_STOP);
+        return;
+    }
+
+    Vec2 lasTarget = *m_oAllGuide.begin();
+
+    if (m_oCurrentTarget == lasTarget)
+    {
+        log("- RemoveTarget:%f,%f", lasTarget.x, lasTarget.y);
+
+        m_refSp->addRoad(lasTarget);
+        m_oAllGuide.erase(m_oAllGuide.begin());
+    }
+
+    if (m_oAllGuide.size() < 1)
+    {
+        return;
+    }
+    setTarget(m_oAllGuide[0]);
 }
 
 
+
+void CGamePlayer::playerRun(float time)
+{
+    int dis = ccpDistance(getPlayerPosition(), m_oCurrentTarget);
+
+    //log("%d  target:%f,%f", dis, m_oCurrentTarget.x, m_oCurrentTarget.y);
+    if (dis < getStep())
+    {
+        setState(STATE_STANDER);
+        return;
+    }
+
+    m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlayerPosition(), m_oCurrentTarget)));
+    Vec2 npos = CMath::getVec2(getPlayerPosition(), getStep(), CMath::angleToRadian(m_iCurrentDirect));
+    CUtil::formartGrid(npos, getStep());
+
+    m_pSp->setPosition(npos);
+}
 
 
 
 
 void CGamePlayer::print(DrawNode* dn)
-{
-
+{    
+    switch (m_iEffect)
+    {
+    case EFFECT_ADDSPEED:    
+        dn->drawDot(getPlayerPosition(), 10, Color4F(1,0,1,0.6));
+        break;
+    }
 }
 
 void CGamePlayer::setState(int state)
@@ -252,5 +269,46 @@ void CGamePlayer::animation_die()
 //TODO Íê³É¶¯»­
 void CGamePlayer::animation_move()
 {
+
+}
+
+
+void CGamePlayer::checkEffect()
+{
+    if (m_iEffect == Effect::EFFECT_ADDSPEED)
+    {
+        if (m_pEventAddSpeed->time-- <= 0)
+        {
+            m_iEffect = Effect::EFFECT_NONE;
+
+            delete m_pEventAddSpeed;
+            m_pEventAddSpeed = nullptr;
+        }
+    }
+}
+
+void CGamePlayer::actionEvent(int eventid, EventParm pData)
+{
+    switch (eventid)
+    {
+    case EVENT_PROPERTY_ADDSPEED:
+        h_actionAddSpeed(pData);
+        break;
+    default:
+        break;
+    }
+}
+
+void CGamePlayer::h_actionAddSpeed(EventParm pData)
+{
+    struct T_EventPropertyAddSpeed* pEffAdd = (struct T_EventPropertyAddSpeed*)pData;
+
+    m_pEventAddSpeed    = T_EventPropertyAddSpeed::clone(pEffAdd);
+
+    m_iEffect           = Effect::EFFECT_ADDSPEED;
+
+
+
+
 
 }

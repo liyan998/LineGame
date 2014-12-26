@@ -111,14 +111,8 @@
     <ClCompile Include="..\Classes\game\GameView.cpp">
       <Filter>Classes\game</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\game\AnimaAxis.cpp">
-      <Filter>Classes\game\element</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\game\GameElement.cpp">
       <Filter>Classes\game\element</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\game\GameArticle.cpp">
-      <Filter>Classes\game\element\property</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\Boss.cpp">
       <Filter>Classes\game\element\enemy</Filter>
@@ -134,6 +128,12 @@
     </ClCompile>
     <ClCompile Include="..\Classes\game\MySprite.cpp">
       <Filter>Classes\game\element\role</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\GameArticle.cpp">
+      <Filter>Classes\game\element\property</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\AnimaAxis.cpp">
+      <Filter>Classes\game\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -248,14 +248,8 @@
     <ClInclude Include="..\Classes\game\GameState.h">
       <Filter>Classes\game\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\game\AnimaAxis.h">
-      <Filter>Classes\game\element</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\game\GameResMacros.h">
       <Filter>Classes\game\element</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\game\GameArticle.h">
-      <Filter>Classes\game\element\property</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Boss.h">
       <Filter>Classes\game\element\enemy</Filter>
@@ -271,6 +265,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\MySprite.h">
       <Filter>Classes\game\element\role</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\GameArticle.h">
+      <Filter>Classes\game\element\property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\AnimaAxis.h">
+      <Filter>Classes\game\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -51,8 +51,12 @@ public:
 
     //------------------------------------------- 
 
-
     void h_ActionClose(EventParm pData);
+
+    void h_ActionHit(EventParm pDate);
+
+    void h_ActionAddHealth(EventParm pData);
+
 
     void clearGameElement();
 
@@ -60,8 +64,12 @@ public:
 
     void clearGameObject(CGameArticle* pGameArticle, int mode);       //道具清理
 
+    
+    void flushArea(float area);
 
-    void h_ActionHit(EventParm pDate);
+    void flushTime(int time);
+
+    void flushHealth(int health);
 
     //----------------------------------------
 

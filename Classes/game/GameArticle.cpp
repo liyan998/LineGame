@@ -166,13 +166,21 @@ void CGameArticle::setProperty(int catetory)
         T_Property::CATEGORY_ADDTIME,
         T_Property::CATEGORY_ADDDPROTECT    
     };
-    
+
+    //---------------------------------------------------------------
+
+    struct T_EventPropertyAddSpeed* pProAddsp = new struct T_EventPropertyAddSpeed;
+    pProAddsp->addPart  = .6f;  //增加速度百分比
+    pProAddsp->time     = 102;   //持续时间
+
+    //---------------------------------------------------
+
     T_Property allProperty[] = 
     {
-        { 
+        {
             T_Property::CATEGORY_ADDSPEED,
             EVENT_PROPERTY_ADDSPEED, 
-            PARM_NULL,
+            pProAddsp,
             ARMATURE_PROPERTY,
             PLAYLAB_PROPERTY_ADDSPEED,
             0
@@ -243,7 +251,8 @@ int CGameArticle::randProperty()
     int link[] =
     {        
         T_Property::CATEGORY_ADDHEALTH,
-        T_Property::CATEGORY_ADDTIME       
+        T_Property::CATEGORY_ADDTIME ,
+        T_Property::CATEGORY_ADDSPEED
     };
 
     int size = sizeof(link) / sizeof(link[0]);

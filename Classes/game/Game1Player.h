@@ -1,12 +1,12 @@
 #ifndef __GAME1PLAYER_H__
 #define __GAME1PLAYER_H__
 
-#include "GameElement.h"
+#include "EventSystem.h"
 
 #define INDEX_NONE -1
 
 
-class CGamePlayer : public CActor
+class CGamePlayer : public CActor, public CEventHandler
 {
 
 public:
@@ -19,11 +19,18 @@ public:
         STATE_DIE           //死亡
     };
 
+    enum Effect
+    {
+        EFFECT_NONE,        //
+        EFFECT_ADDSPEED,    //加速
+    };
 
 public:
 
     CREATE_FUNC( CGamePlayer )
 
+public:
+    
     virtual bool init();
 
     virtual void setState(int state);
@@ -34,14 +41,16 @@ public:
 
     virtual void print(DrawNode* dn);
 
+    virtual int getStep();
 
     //-----------------------------------------------------
+    
+    int getStrackSize();
 
-    int getStep();
+    const Vec2& getPlayerPosition();
 
-    void setPlayerPosition(const Vec2& pos);
-   
-    const Vec2& getPlsyerPosition();
+
+    void setPlayerPosition(const Vec2& pos);   
 
     void checkPosition(const Vec2& inPoint); 
 
@@ -49,13 +58,23 @@ public:
 
     void setTarget(const Vec2& point);
 
-    void addFollow(const Vec2& point);    
+    void addFollow(const Vec2& point);
 
     void backFollow();
 
-    int getStrackSize();
+    //---------------------------------------------
 
+    void actionEvent(int eventid, EventParm pData);
 
+    void h_actionAddSpeed(EventParm pData);
+
+private:
+
+    void checkEffect();
+
+    void playerRun(float time);
+
+    void playerStander(float time);
 
     //TODO 完成动画
     void animation_idle();
@@ -67,22 +86,25 @@ public:
     void animation_die();
 
     //TODO 完成动画
-    void animation_move();         
+    void animation_move();   
 
 
-    bool                m_bFlow;
+public:
+    
+    bool                                m_bFlow;
 
-   // CMySprite*          m_refSp;
+    int                                 m_iCurrentDirect;    
 
-    int                 m_iCurrentDirect;
+private:   
 
-private:    
+    int                                 m_iEffect;        //  道具使用
 
-    //cocostudio::Armature*               m_pSp;
-
-   
     Vec2                                m_oCurrentTarget;
+
     std::vector<Vec2>                   m_oAllGuide;
+
+
+    T_EventPropertyAddSpeed*            m_pEventAddSpeed;
 
 };
 

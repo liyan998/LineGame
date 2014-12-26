@@ -14,6 +14,8 @@ bool CGameLogic::init()
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CLOSE, this); 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_HIT, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDTIME, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDHEALTH, this);
+
     //-------------------------------------------------------------------------
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
@@ -95,9 +97,12 @@ void CGameLogic::onEnter()
 void CGameLogic::onExit()
 {
     Node::onExit();
+
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_CLOSE, this);    
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_HIT, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDTIME, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDHEALTH, this);
+
 }
 
 
@@ -141,9 +146,7 @@ void CGameLogic::createGameElement()
     for (int i = 0; i < numArticle; i++)
     {
         auto article = CGameArticle::create();
-        article->m_refShowArea = m_refShowArea;  
-        
-        
+        article->m_refShowArea = m_refShowArea;          
 
         article->setProperty(article->randProperty());
 
@@ -175,23 +178,29 @@ void CGameLogic::actionEvent(int evenid, EventParm pData)
         h_ActionHit(pData);
         break;
     case EVENT_PROPERTY_ADDTIME:
-    {
-
-                                   int time = *((int*)pData);
-                                   if (m_iTimer - time > 0)
-                                   {
-                                       m_iTimer -= time;
-                                   }
-                                   else
-                                   {
-                                       m_iTimer = 0;
-                                   }
-
-    }
+        h_ActionAddHealth(pData);
+        break;
+    case EVENT_PROPERTY_ADDHEALTH:
+        flushHealth(m_refSp->getHealth());
         break;
     default:
         break;
     }
+}
+
+void CGameLogic::h_ActionAddHealth(EventParm pData)
+{
+    int time = *((int*)pData);
+    if (m_iTimer - time > 0)
+    {
+        m_iTimer -= time;
+    }
+    else
+    {
+        m_iTimer = 0;
+    }
+
+    flushTime(m_iTimer);
 }
 
 void CGameLogic::h_ActionClose(EventParm pData)
@@ -213,11 +222,7 @@ void CGameLogic::h_ActionClose(EventParm pData)
         m_refSp->clearGuide();
         float area = m_refShowArea->getArea();
        // log(" Area :%f", area); 
-        Label* lab = (Label*)getChildByTag(200);
-
-        char str[15] = { 0 };
-        sprintf(str, CHARSEQUEN_AREA, area  * 100);
-        lab->setString(str);
+        flushArea(area);
 
         if (area > WINPART)
         {         
@@ -299,16 +304,14 @@ void CGameLogic::clearGameObject(CGameArticle* pGameAricle, int mode)
         //log("MODEL_IN");
         if (!hasIn)
         {
-            pGameAricle->animation_effe();
-            //pGameAricle->setState(CGameArticle::STATE_EFFE);
+            pGameAricle->animation_effe();           
         }
         break;
     case MODEL_OUT:
         //log("MODEL_OUT");
         if (hasIn)
         {
-            pGameAricle->animation_effe();
-            //pGameAricle->setState(CGameArticle::STATE_EFFE);
+            pGameAricle->animation_effe();           
         }
         break;
     }
@@ -317,13 +320,34 @@ void CGameLogic::clearGameObject(CGameArticle* pGameAricle, int mode)
 
 void CGameLogic::h_ActionHit(EventParm pDate)
 {
+    flushHealth(m_refSp->getHealth());
+}
 
-    
+
+void CGameLogic::flushArea(float area)
+{
+    Label* lab = (Label*)getChildByTag(200);
+
+    char str[15] = { 0 };
+    sprintf(str, CHARSEQUEN_AREA, area * 100);
+    lab->setString(str);
+}
+
+void CGameLogic::flushHealth(int health)
+{
     Label* lab = (Label*)this->getChildByTag(300);
     char str[15] = { 0 };
-    sprintf(str, CHARSEQUEN_HEALTH, m_refSp->getHealth());
+    sprintf(str, CHARSEQUEN_HEALTH, health);
     lab->setString(str);
+}
 
+void CGameLogic::flushTime(int time)
+{
+    Label* lab = (Label*)this->getChildByTag(100);
+
+    char str[15] = { 0 };
+    sprintf(str, CHARSEQUEN_TIME,time);
+    lab->setString(str);
 }
 
 void CGameLogic::run(float time)
@@ -336,11 +360,7 @@ void CGameLogic::run(float time)
 
     if ((m_fCounter += time) > 1)
     {
-        Label* lab = (Label*)this->getChildByTag(100);
-
-        char str[15] = { 0 };
-        sprintf(str, CHARSEQUEN_TIME, m_iTimer);
-        lab->setString(str);
+        flushTime(m_iTimer);
         //log("m_iTimer %d", m_iTimer);
 
         if (m_iTimer++ >= TIMEOUT)

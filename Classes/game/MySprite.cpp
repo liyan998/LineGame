@@ -16,6 +16,8 @@
 
 #include "EventSystem.h" 
 
+
+
 #include "GameElement.h"
 
 
@@ -34,6 +36,13 @@ bool CMySprite::init()
     m_iHealth           = m_iMaxHealth;
   
     //----------------------------------------------------- 
+
+    
+    
+    setCurrentAnimation(ARMATURE_PIPI_STANDER);
+    m_pSp->setAnchorPoint(Vec2(0.5f, 0.2f));
+    m_pSp->setOpacity(255 * 0.4);
+    m_pSp->getAnimation()->playByIndex(0);
 
 
     //----------------------------------------------------
@@ -419,7 +428,8 @@ bool CMySprite::hasInBorder()
 
 
 void CMySprite::onDrawToClose(const Vec2& inPoint)
-{                          
+{                   
+    //log("Draw To Close====================");
     fixPosition(inPoint, m_oSpCurrentPos); 
     if (m_oSpStartPos != m_oSpCurrentPos)
     {
@@ -478,6 +488,14 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         
         if (postiontype == POSITION_AREA_ENDPOINT)
         {
+            if (m_refPath->m_oAllPoint.size() > 0 && m_oSpCurrentPos == (*m_refPath->m_oAllPoint.begin()))
+            {
+                log("start point == end point");
+                m_refPath->m_oAllPoint.clear();
+                setState(STATE_BACK);
+                return;
+            }
+
             addGuide(m_oSpCurrentPos); 
         }
         else
@@ -734,7 +752,7 @@ void CMySprite::playerMove(const Vec2& spPosition)
         }
         else
         {
-            int dis = ccpDistance(spPosition, m_refPlayer->getPlsyerPosition());
+            int dis = ccpDistance(spPosition, m_refPlayer->getPlayerPosition());
             if (dis < m_fStep )
             {             
                 m_refPlayer->m_bFlow = true;           
@@ -826,7 +844,7 @@ void CMySprite::playerGoWay()
 //         log("start;%f, %f", m_oTPathMargin[i]->m_oStart.x, m_oTPathMargin[i]->m_oStart.y);
 //         log("target;%f, %f", m_oTPathMargin[i]->m_oTaget.x, m_oTPathMargin[i]->m_oTaget.y);
 //     }
-    if (m_refPlayer->getPlsyerPosition() != m_oSpCurrentPos && m_oTPathMargin.size() > 0)
+    if (m_refPlayer->getPlayerPosition() != m_oSpCurrentPos && m_oTPathMargin.size() > 0)
     {    
 
         Vec2 t_oSp(Vec2::ZERO);
@@ -839,7 +857,7 @@ void CMySprite::playerGoWay()
         {
             t_oSp = m_oTRoad[m_oTRoad.size() - 1];
         }
-        int t_iDis = CUtil::getFixDictance(m_refPlayer->m_iCurrentDirect,t_oSp, m_refPlayer->getPlsyerPosition());
+        int t_iDis = CUtil::getFixDictance(m_refPlayer->m_iCurrentDirect,t_oSp, m_refPlayer->getPlayerPosition());
        // log("t_iDis:%d", t_iDis);
         t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_refPlayer->m_iCurrentDirect));
 
@@ -1310,7 +1328,8 @@ void CMySprite::checkBack()
 
 
 void CMySprite::run(float tm)
-{     
+{
+    m_pSp->setPosition(m_oSpCurrentPos);
     //log("mysprite run");
     switch (m_State)
     {

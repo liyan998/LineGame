@@ -92,6 +92,7 @@ void CGameView::onEnter()
 	m_oAllRander.push_back(m_pSp);
     m_oAllRander.push_back(m_pShowArea);
     m_oAllRander.push_back(m_pPath); 
+    m_oAllRander.push_back(m_pPlayer);
     
     //----------------------------------------  
 

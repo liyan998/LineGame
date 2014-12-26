@@ -59,14 +59,21 @@ void CEnemy::checkWith()
 
     Vec2 endPoint;
 
-    if (collwithGuide(t_oColl, endPoint))
-    {            
-        m_refSp->attiack(getAttack());
-//         if (!)
-//         {
-//             
-//         }
-        return;
+
+    switch (m_refSp->getState())
+    {
+    case CMySprite::STATE_DRAW:
+    case CMySprite::STATE_CLOSE:
+
+        if (collwithGuide(t_oColl, endPoint))
+        {                   
+            m_refSp->attiack(getAttack());
+            return;
+        }
+
+        break;
+    default:
+        break;
     }
             
     if (collwithArea(t_oColl, endPoint))

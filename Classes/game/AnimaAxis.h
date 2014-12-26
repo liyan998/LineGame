@@ -7,6 +7,7 @@
 #include "cocostudio/CCArmatureDataManager.h"
 #include "cocostudio/CCArmature.h" 
 
+#include "GameResMacros.h"
 
 using namespace cocostudio;
 
@@ -15,7 +16,15 @@ class CAnimationAxis :public Layer
 
 public:
 
-    CAnimationAxis() :m_pSp(nullptr){}
+    CAnimationAxis() :m_pSp(nullptr)
+    {
+        ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+            RES_ANIMA_PNG_PIPI,
+            RES_ANIMA_PLS_PIPI,
+            RES_ANIMA_JSO_PIPI
+            );
+    
+    }
 
     void clearCurrentAnimation();
 
