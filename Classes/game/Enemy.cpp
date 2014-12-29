@@ -69,7 +69,7 @@ void CEnemy::checkWith()
 
         if (collwithGuide(t_oColl, endPoint))
         {                   
-            m_refSp->attiack(getAttack());
+            m_refSp->attiack(getAttack(),this);
             return;
         }
 

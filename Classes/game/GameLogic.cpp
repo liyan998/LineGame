@@ -320,7 +320,9 @@ void CGameLogic::clearGameObject(CGameArticle* pGameAricle, int mode)
 
 void CGameLogic::h_ActionHit(EventParm pDate)
 {
+    
     flushHealth(m_refSp->getHealth());
+    
 }
 
 

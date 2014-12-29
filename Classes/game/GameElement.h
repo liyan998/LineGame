@@ -19,6 +19,7 @@
 
 using namespace liyan998;
 
+
 class CGameElement : 
     public CAnimationAxis,
     public CRander, 

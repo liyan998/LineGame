@@ -40,12 +40,12 @@ void CBoss::onEnter()
 
 void CBoss::run(float t)
 {                    
-//    (m_fCount += t);
-// 
-//    if (m_fCount > 1.0f)
-//    {                
-//        m_fCount = 0;
-//    } 
+   (m_fCount += t);
+
+   if (m_fCount > 1.0f)
+   {                
+       m_fCount = 0;
+   } 
    //---------------------------- 
 
     CEnemy::checkWith();
@@ -64,49 +64,49 @@ void CBoss::print(DrawNode* dn)
 
     CGameElement::print(dn);
 
-    Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+//     Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+// 
+//   
+//     Vec2 t_oColl = getPosition();
+//     
+//     for (int i = 0; i < 4; i++)
+//     {
+// 
+//         int borderdis = m_refShowArea->getBorderDis(t_oColl, CPath::DIRECT[i][0]);
+// 
+//          if (borderdis == -1)
+//          {
+//              continue;
+//          }
+//         
+//          Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+// 
+//         dn->drawSegment(t_oColl, endPoint, 1, Color4F(1, 1, 0, 0.3));
+//     }
 
-  
-    Vec2 t_oColl = getPosition();
-    
-    for (int i = 0; i < 4; i++)
-    {
+//     for (int i = 0; i < 4; i++)
+//     {                                                          
+//         int borderdis = m_refShowArea->getMiniAreaDis(t_oColl, CPath::DIRECT[i][0]);
+//         if (borderdis == -1)
+//         {
+//             continue;
+//         }
+//         Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+//     
+//         dn->drawDot(endPoint, 10, Color4F(1, 0, 1,0.3));
+//     }
 
-        int borderdis = m_refShowArea->getBorderDis(t_oColl, CPath::DIRECT[i][0]);
-
-         if (borderdis == -1)
-         {
-             continue;
-         }
-        
-         Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
-
-        dn->drawSegment(t_oColl, endPoint, 1, Color4F(1, 1, 0, 0.3));
-    }
-
-    for (int i = 0; i < 4; i++)
-    {                                                          
-        int borderdis = m_refShowArea->getMiniAreaDis(t_oColl, CPath::DIRECT[i][0]);
-        if (borderdis == -1)
-        {
-            continue;
-        }
-        Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
-    
-        dn->drawDot(endPoint, 10, Color4F(1, 0, 1,0.3));
-    }
-
-    for (int i = 0; i < 4; i++)
-    {                                                          
-        int borderdis = m_refSp->getPathDis(t_oColl, CPath::DIRECT[i][0]);
-        if (borderdis == -1)
-        {
-            continue;
-        }
-        Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
-    
-        dn->drawDot(endPoint, 10, Color4F(0, 1, 1, .5));
-    }                       
+//     for (int i = 0; i < 4; i++)
+//     {                                                          
+//         int borderdis = m_refSp->getPathDis(t_oColl, CPath::DIRECT[i][0]);
+//         if (borderdis == -1)
+//         {
+//             continue;
+//         }
+//         Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+//     
+//         dn->drawDot(endPoint, 10, Color4F(0, 1, 1, .5));
+//     }                       
 }      
 
 void CBoss::setState(int state)

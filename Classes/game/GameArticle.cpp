@@ -191,7 +191,7 @@ void CGameArticle::setProperty(int catetory)
             new float(0.3f), 
             ARMATURE_PROPERTY, 
             PLAYLAB_PROPERTY_ADDHEALTH,
-            13                                   //存活时间
+            13                                   //系统刷新存活时间
         },
         { 
             T_Property::CATEGORY_ADDTIME,
@@ -207,7 +207,7 @@ void CGameArticle::setProperty(int catetory)
             PARM_NULL,
             ARMATURE_PROPERTY,
             PLAYLAB_PROPERTY_ADDPROTECT,
-            0
+            20
         }
     };
 
@@ -252,7 +252,8 @@ int CGameArticle::randProperty()
     {        
         T_Property::CATEGORY_ADDHEALTH,
         T_Property::CATEGORY_ADDTIME ,
-        T_Property::CATEGORY_ADDSPEED
+        T_Property::CATEGORY_ADDSPEED,
+        T_Property::CATEGORY_ADDDPROTECT
     };
 
     int size = sizeof(link) / sizeof(link[0]);

@@ -17,10 +17,13 @@ bool CGamePlayer::init()
     m_iStep             = 2;
     m_bFlow             = false;
     m_pEventAddSpeed    = nullptr;
+    m_iEffectAddProtect = EFFECT_NONE;
+    m_iEffectAddSpeed   = EFFECT_NONE;
 
     //-------------------------------------------
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDPROTECT, this);
 
     //-----------------------------------------------------
 
@@ -36,6 +39,7 @@ bool CGamePlayer::init()
 void CGamePlayer::released()
 {
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDPROTECT, this);
 
     this->removeAllChildren();
 }
@@ -108,7 +112,7 @@ int CGamePlayer::getStep()
 
     int step = this->m_iStep;
 
-    if (m_iEffect == Effect::EFFECT_ADDSPEED)
+    if (m_iEffectAddSpeed == Effect::EFFECT_ADDSPEED)
     {
 //         float tf = m_iStep * m_pEventAddSpeed->addPart;
         step = GRAD_NUMBER(m_iStep * 3);
@@ -201,12 +205,18 @@ void CGamePlayer::playerRun(float time)
 
 void CGamePlayer::print(DrawNode* dn)
 {    
-    switch (m_iEffect)
-    {
-    case EFFECT_ADDSPEED:    
-        dn->drawDot(getPlayerPosition(), 10, Color4F(1,0,1,0.6));
-        break;
+    if (m_iEffectAddSpeed == EFFECT_ADDSPEED)
+    {    
+        dn->drawDot(getPlayerPosition(), 10, Color4F(1,0,1,0.6)); 
     }
+
+    if (m_iEffectAddProtect == EFFECT_ADDPROTECTED)
+    {
+        Vec2 tPos = getPlayerPosition();
+        tPos.x += 10;
+        dn->drawDot( tPos, 10, Color4F(1, 1, 1, 0.6));
+    }
+
 }
 
 void CGamePlayer::setState(int state)
@@ -280,11 +290,11 @@ void CGamePlayer::animation_move()
 
 void CGamePlayer::checkEffect()
 {
-    if (m_iEffect == Effect::EFFECT_ADDSPEED)
+    if (m_iEffectAddSpeed == Effect::EFFECT_ADDSPEED)
     {
         if (m_pEventAddSpeed->time-- <= 0)
         {
-            m_iEffect = Effect::EFFECT_NONE;
+            m_iEffectAddSpeed = Effect::EFFECT_NONE;
 
             delete m_pEventAddSpeed;
             m_pEventAddSpeed = nullptr;
@@ -299,21 +309,38 @@ void CGamePlayer::actionEvent(int eventid, EventParm pData)
     case EVENT_PROPERTY_ADDSPEED:
         h_actionAddSpeed(pData);
         break;
+    case EVENT_PROPERTY_ADDPROTECT:
+        h_actionAddProtect(pData);
+        break;
     default:
         break;
     }
 }
+
+void CGamePlayer::h_actionAddProtect(EventParm pData)
+{
+    m_iEffectAddProtect = Effect::EFFECT_ADDPROTECTED;
+}
+
+bool CGamePlayer::hasInProtected()
+{
+    if (m_iEffectAddProtect == EFFECT_ADDPROTECTED)
+    {
+        return true;
+    }
+    return false;
+}
+
+void CGamePlayer::setProtectReleased()
+{
+    this->m_iEffectAddProtect = Effect::EFFECT_NONE;
+}
+
 
 void CGamePlayer::h_actionAddSpeed(EventParm pData)
 {
     struct T_EventPropertyAddSpeed* pEffAdd = (struct T_EventPropertyAddSpeed*)pData;
 
     m_pEventAddSpeed    = T_EventPropertyAddSpeed::clone(pEffAdd);
-
-    m_iEffect           = Effect::EFFECT_ADDSPEED;
-
-
-
-
-
+    m_iEffectAddSpeed   = Effect::EFFECT_ADDSPEED;
 }

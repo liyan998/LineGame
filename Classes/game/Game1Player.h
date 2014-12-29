@@ -23,6 +23,7 @@ public:
     {
         EFFECT_NONE,        //
         EFFECT_ADDSPEED,    //加速
+        EFFECT_ADDPROTECTED,//护盾
     };
 
 public:
@@ -62,11 +63,20 @@ public:
 
     void backFollow();
 
+
+    bool hasInProtected();
+
+    void setProtectReleased();
+
     //---------------------------------------------
 
     void actionEvent(int eventid, EventParm pData);
 
     void h_actionAddSpeed(EventParm pData);
+
+    void h_actionAddProtect(EventParm pData);
+
+
 
 private:
 
@@ -92,19 +102,19 @@ private:
 public:
     
     bool                                m_bFlow;
-
     int                                 m_iCurrentDirect;    
 
 private:   
 
-    int                                 m_iEffect;        //  道具使用
-
     Vec2                                m_oCurrentTarget;
-
     std::vector<Vec2>                   m_oAllGuide;
 
-
+    int                                 m_iEffectAddSpeed;          //加速道具使用
     T_EventPropertyAddSpeed*            m_pEventAddSpeed;
+
+    int                                 m_iEffectAddProtect;        //防护道具作用
+
+
 
 };
 

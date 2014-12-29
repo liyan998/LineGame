@@ -16,8 +16,6 @@
 
 #include "EventSystem.h" 
 
-
-
 #include "GameElement.h"
 
 
@@ -1542,24 +1540,37 @@ void CMySprite::released()
     removeAllChildrenWithCleanup(true);
 }
 
-bool CMySprite::attiack(int value)
+bool CMySprite::attiack(int value, CEnemy* pEnemy)
 {
     if (m_iHealth - value <= 0)
     {
         CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERDIE, PARM_NULL);
         return false;
+    }    
+ 
+    if (m_refPlayer->hasInProtected())
+    {
+        switch (pEnemy->m_iCategory)
+        {
+        case CEnemy::CATEGORY_BOSS:
+            log("Boss is attack protect player");
+            setState(CMySprite::STATE_BACK);
+            break;
+        case CEnemy::CATEGORY_NPC:
+            log("npc is attack protect player");
+            pEnemy->setState(CNpc::STATE_DIE);           
+            break;
+        }
+        m_refPlayer->setProtectReleased();
     }
+    else
+    {
+        m_iHealth -= value;
+        log("attack! %d", m_iHealth);
+        setState(CMySprite::STATE_BACK);
+    }
+               
 
-    
-
-    log("attack! %d", m_iHealth);
-
-    m_iHealth -= value;
-
-    
-
-    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_HIT, PARM_NULL);
-
-    setState(CMySprite::STATE_BACK);
+    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_HIT, new int((int)pEnemy));
     return true;
 }

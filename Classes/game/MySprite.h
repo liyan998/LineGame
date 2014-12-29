@@ -12,6 +12,7 @@
 #include "AnimaAxis.h"
 
 
+class CEnemy;
 class CShowArea;
 class CGamePlayer;
 
@@ -91,7 +92,7 @@ public:
 
     void addRoad(const Vec2& inPoint);
 
-    bool attiack(int value);            //ÊÕµ½¹¥»÷
+    bool attiack(int value, CEnemy* pEnemy);            //Ôâµ½¹¥»÷
 
     int getHealth();
 
