@@ -18,8 +18,11 @@ bool CBoss::init()
     m_fCount    = 0.f;
     m_iDirect   = 0;
     m_iStep     = 2;
-    m_iCollR    = 1;
+    m_iCollR    = 20;
     m_iAttick   = 1;
+
+    m_iSkillTimer   = -1;
+    m_iSkillCd      = 0;
 
     //--------------------------------------------
 
@@ -34,18 +37,21 @@ void CBoss::onEnter()
 {
     Node::onEnter();
 
+   
+    //创建随机技能
+    createSkillTimer();
 
-    animation_move();
+    //animation_move();
 }
 
 void CBoss::run(float t)
 {                    
-   (m_fCount += t);
+    m_fCount += t;
 
-   if (m_fCount > 1.0f)
-   {                
-       m_fCount = 0;
-   } 
+    
+    randSkillTimer();
+   
+   
    //---------------------------- 
 
     CEnemy::checkWith();
@@ -58,31 +64,77 @@ void CBoss::run(float t)
   
 }
 
+void CBoss::randSkillTimer()
+{
+    switch (m_iSkillState)
+    {
+    case RANDSKILL_STATE_WAITE:
+        if (m_fCount > 1.0f)
+        {
+            //log("m_iSkillTim1er:%d", m_iSkillTimer);
+            if (m_iSkillTimer-- <= 0)
+            {      
+                log("skill releas!");
+                m_iSkillState = RandSkill_State::RANDSKILL_STATE_RELEAS;
+            }    
+            m_fCount = 0;
+        }
+        break;
+    case RANDSKILL_STATE_RELEAS:
+        //log("m_iSkillCd:%f", m_fCount);
+        if (m_fCount > m_iSkillCd)
+        {
+            createSkillTimer();
+            m_fCount = 0.0f;
+        }
+        break;
+    }        
+}
+
+void CBoss::createSkillTimer()
+{
+    m_iSkillTimer   = CMath::getRandom(15, 35);//
+    //log("m_iSkillTimer:%d", m_iSkillTimer);
+    m_iSkillCd      = 13.8;
+    m_iSkillState   = RandSkill_State::RANDSKILL_STATE_WAITE;
+
+}
+
 
 void CBoss::print(DrawNode* dn)
 {
 
-    CGameElement::print(dn);
 
-//     Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
-// 
-//   
-//     Vec2 t_oColl = getPosition();
+    if (m_iSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS)
+    {
+
+        dn->drawDot(getPosition(), m_iCollR * 6, Color4F(1, 1, 0, 0.5));
+    }
+    else 
+    {
+        CGameElement::print(dn);
+    }
+
+    Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+
+  
+    Vec2 t_oColl = getPosition();
 //     
-//     for (int i = 0; i < 4; i++)
-//     {
-// 
-//         int borderdis = m_refShowArea->getBorderDis(t_oColl, CPath::DIRECT[i][0]);
-// 
-//          if (borderdis == -1)
-//          {
-//              continue;
-//          }
-//         
-//          Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
-// 
-//         dn->drawSegment(t_oColl, endPoint, 1, Color4F(1, 1, 0, 0.3));
-//     }
+    for (int i = 0; i < 4; i++)
+    {
+
+        int borderdis = m_refShowArea->getBorderDis(t_oColl, CPath::DIRECT[i][0]);
+
+         if (borderdis == -1)
+         {
+             continue;
+         }
+        
+         Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+
+        dn->drawSegment(t_oColl, endPoint, 1, Color4F(1, 1, 0, 0.3));
+        dn->drawDot(endPoint, 10, Color4F(1, 0, 1, 0.3));
+    }
 
 //     for (int i = 0; i < 4; i++)
 //     {                                                          

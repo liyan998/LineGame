@@ -25,6 +25,8 @@ public:
     
     inline int getAttack();                                                 //¹¥»÷Á¦
 
+    inline int getCollR();
+
     //----------------------------------------------
     
 protected:

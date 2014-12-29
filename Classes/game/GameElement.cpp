@@ -88,9 +88,9 @@ bool CGameElement::collwithBorder(const Vec2& inPoint, Vec2& outPoint)
     for (int i = 0; i < 4; i++)
     {
         int borderdis = m_refShowArea->getBorderDis(inPoint, CPath::DIRECT[i][0]);
+       
         if (borderdis <= m_iStep + m_iCollR)
         {
-
             outPoint = CMath::getVec2(inPoint, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
             CUtil::formartGrid(outPoint);
             return true;

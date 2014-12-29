@@ -116,7 +116,11 @@ void CEnemy::checkWith()
 
 
 
-
+inline
+int CEnemy::getCollR()
+{
+    return this->m_iCollR;
+}
 
 // void CEnemy::print(DrawNode* dn)
 // {

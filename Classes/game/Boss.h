@@ -21,6 +21,22 @@ public:
 
 public:
 
+    //随机技能状态
+    enum RandSkill_State
+    {
+        RANDSKILL_STATE_WAITE,//等到倒计时
+        RANDSKILL_STATE_RELEAS//释放
+    };
+
+    enum Skill
+    {
+        SKILL_NONE,
+        SKILL_T_BIGAREA,    //炫彩蝶粉
+        SKILL_T_FLUSH       //虚影蝶舞
+    };
+
+public:
+
     virtual bool init();
 
     virtual void onEnter();
@@ -35,15 +51,27 @@ public:
 
     virtual void changeDirect(int direct);
 
+
     //----------------------------------------
 
     void animation_move();      
 
     void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
+
+    //-----------------------------------------
+
+    void randSkillTimer();      //随机技能
+
+    void createSkillTimer();
+
 private:
 
-    cocostudio::Armature* m_pArmature;
-    
+    int m_iSkillTimer;              //随机技能创建时间
+
+    float m_iSkillCd;               //随机技能持续时间
+
+    int m_iSkillState;              //技能状态
+
 };
 
 
