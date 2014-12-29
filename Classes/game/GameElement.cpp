@@ -85,9 +85,20 @@ void CGameElement::randPosition()
 /************************************************************************/
 bool CGameElement::collwithBorder(const Vec2& inPoint, Vec2& outPoint)
 {
+    if (m_iCategory == CEnemy::CATEGORY_BOSS)
+    log("--------------------------------==============================");
     for (int i = 0; i < 4; i++)
     {
         int borderdis = m_refShowArea->getBorderDis(inPoint, CPath::DIRECT[i][0]);
+
+        if (borderdis == -1)
+        {
+            continue;
+        }
+        if (m_iCategory == CEnemy::CATEGORY_BOSS)
+        
+        log(" %d m_iStep + m_iCollR:%d",borderdis, m_iStep + m_iCollR);
+       
        
         if (borderdis <= m_iStep + m_iCollR)
         {

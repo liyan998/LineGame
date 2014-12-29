@@ -123,7 +123,7 @@ void CBoss::print(DrawNode* dn)
     for (int i = 0; i < 4; i++)
     {
 
-        int borderdis = m_refShowArea->getBorderDis(t_oColl, CPath::DIRECT[i][0]);
+        int borderdis = m_refShowArea->getBorderDis(t_oColl, CPath::DIRECT[i][0]) - m_iCollR;
 
          if (borderdis == -1)
          {

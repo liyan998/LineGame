@@ -62,7 +62,7 @@ bool CShowArea::init()
 
    unsigned int PARING = 40;
    Size tBroader;
-   tBroader.width      = GRAD_NUMBER(screen.width);
+   tBroader.width       = GRAD_NUMBER(screen.width - PARING * 2);
    tBroader.height     = GRAD_NUMBER(screen.height - PARING * 2);
    m_oAreaSize.size    = tBroader;
    m_oAreaSize.origin  = Vec2(
@@ -310,6 +310,53 @@ void CShowArea::print(DrawNode* dn)
 int CShowArea::getBorderDis(const Vec2& inSP, int angle)
 {      
     return  CUtil::getMinWallDis(m_oBorderMargin, inSP, angle);
+
+//     Size visSize = Director::getInstance()->getVisibleSize();
+//     Vec2 visVec = Director::getInstance()->getVisibleOrigin();
+//   
+//     Vec2 tve(Vec2::ZERO);
+//     switch (angle)
+//     {
+//     case ANGLE_DOWN:
+//         tve.x = inSP.x;
+//         // tve.y = visVec.y;
+//         break;
+//     case ANGLE_LEFT:
+//         //tve.x = visVec.x;
+//         tve.y = inSP.y;
+//         break;
+//     case ANGLE_RIGHT:
+//         tve.x = visSize.width + visVec.x;
+//         tve.y = inSP.y;
+//         break;
+//     case ANGLE_UP:
+//         tve.x = inSP.x + visVec.x;
+//         tve.y = visSize.height + visVec.y;
+//         break;
+//     default:
+//         break;
+//     }
+// 
+//     int mindis = -1;
+// 
+//     for (int i = 0; i < m_oBorderMargin.size(); i++)
+//     {
+//         CMargin* maring = m_oBorderMargin[i];
+// 
+//         // log("p1: %f,%f \n  p2:%f,%f  \n p3:%f,%f \n p4:%f, %f", maring->m_oStart.x, maring->m_oStart.y, maring->m_oTaget.x, maring->m_oTaget.y, inSP.x, inSP.y, tve.x, tve.y);
+//         if (liyan998::CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inSP, tve))
+//         {
+//             Vec2 zu = CMath::getFootPoint(maring->m_oStart, maring->m_oTaget, inSP);
+// 
+//             int dis = static_cast<int>(ccpDistance(inSP, zu));
+// 
+//             if (mindis == -1 || dis < mindis)
+//             {
+//                 mindis = dis;
+//             }
+//         }
+//     }
+//     return mindis;
 }
                                       
 
