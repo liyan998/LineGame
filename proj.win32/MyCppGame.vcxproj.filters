@@ -133,7 +133,7 @@
       <Filter>Classes\game\element\property</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\AnimaAxis.cpp">
-      <Filter>Classes\game\core</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -270,7 +270,7 @@
       <Filter>Classes\game\element\property</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\AnimaAxis.h">
-      <Filter>Classes\game\core</Filter>
+      <Filter>Classes\game\element</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
