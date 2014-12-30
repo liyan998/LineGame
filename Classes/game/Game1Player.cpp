@@ -14,7 +14,7 @@ bool CGamePlayer::init()
 {
     Node::init();
 
-    m_iStep             = 2;
+    m_iStep             = 2 * 2;
     m_iCollR            = 20;
     m_bFlow             = false;
     m_pEventAddSpeed    = nullptr;
@@ -31,7 +31,7 @@ bool CGamePlayer::init()
     setCurrentAnimation(ARMATURE_PIPI_STANDER);
     m_pSp->setAnchorPoint(Vec2(0.5f, 0.2f));
     m_pSp->getAnimation()->playByIndex(0);
-    m_pSp->setOpacity(255 * .1);
+   // m_pSp->setOpacity(255 * .1);
                                   
     setState(STATE_STOP); 
 
@@ -60,12 +60,19 @@ const Vec2& CGamePlayer::getPlayerPosition()
 }
 
 
+/************************************************************************/
+/* 
+@brief          设置目标位置
+@param[in]      inpoint 被检测坐标
+@param[out]
+@return         void
+
+*/
+/************************************************************************/
 void CGamePlayer::setTarget(const Vec2& point)
 {  
     m_oCurrentTarget = point; 
-    //m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlsyerPosition(), m_oCurrentTarget)));
     
-    //log("SetTarget: %f, %f", point.x , point.y);
     if (m_State != STATE_RUN)
     {
         setState(STATE_RUN);

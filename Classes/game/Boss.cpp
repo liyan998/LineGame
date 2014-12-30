@@ -110,10 +110,10 @@ void CBoss::print(DrawNode* dn)
         CGameElement::print(dn);
     }
 
-//     Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
-// 
-//   
-//     Vec2 t_oColl = getPosition();
+    Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+
+  
+    Vec2 t_oColl = getPosition();
 //     
 //     for (int i = 0; i < 4; i++)
 //     {
@@ -143,17 +143,17 @@ void CBoss::print(DrawNode* dn)
 //         dn->drawDot(endPoint, 10, Color4F(1, 0, 1,0.3));
 //     }
 
-//     for (int i = 0; i < 4; i++)
-//     {                                                          
-//         int borderdis = m_refSp->getPathDis(t_oColl, CPath::DIRECT[i][0]);
-//         if (borderdis == -1)
-//         {
-//             continue;
-//         }
-//         Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
-//     
-//         dn->drawDot(endPoint, 10, Color4F(0, 1, 1, .5));
-//     }                       
+    for (int i = 0; i < 4; i++)
+    {                                                          
+        int borderdis = m_refSp->getPathDis(t_oColl, CPath::DIRECT[i][0]);
+        if (borderdis == -1)
+        {
+            continue;
+        }
+        Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+    
+        dn->drawDot(endPoint, 10, Color4F(0, 1, 1, .5));
+    }                       
 }      
 
 void CBoss::setState(int state)

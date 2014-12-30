@@ -37,7 +37,7 @@ bool CEnemy::collwithGuide(const Vec2& inPoint,Vec2& outPoint)
         if (borderdis <= m_iStep + CGameElement::getCollwithR())
         {
             outPoint = CMath::getVec2(inPoint, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
-            CUtil::formartGrid(outPoint, m_iStep);
+            //CUtil::formartGrid(outPoint, m_iStep);
             return true;
         }
     }
@@ -45,7 +45,15 @@ bool CEnemy::collwithGuide(const Vec2& inPoint,Vec2& outPoint)
     return false;
 }
 
+/************************************************************************/
+/* 
+@brief          当前精灵与玩家碰撞检测
+@param[in]      inPoint 被检测坐标
+@param[out]
+@return         bool 是否发生碰撞
 
+*/
+/************************************************************************/
 bool CEnemy::collwithPlayer(const Vec2& inPoint)
 {
     int distanc = ccpDistance(inPoint, m_refPlayer->getPlayerPosition());
@@ -86,6 +94,8 @@ void CEnemy::checkWith()
 
         if (collwithGuide(t_oColl, endPoint) || collwithPlayer(t_oColl))
         {                   
+
+
             m_refSp->attiack(getAttack(),this);
             return;
         }
