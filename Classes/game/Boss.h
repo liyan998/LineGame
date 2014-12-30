@@ -51,7 +51,7 @@ public:
 
     virtual void changeDirect(int direct);
 
-    virtual float getkillArea();          //ɱ�˰뾶
+    virtual float getCollwithR();          //ɱ�˰뾶
 
     //----------------------------------------
 

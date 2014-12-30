@@ -15,6 +15,7 @@ bool CGamePlayer::init()
     Node::init();
 
     m_iStep             = 2;
+    m_iCollR            = 20;
     m_bFlow             = false;
     m_pEventAddSpeed    = nullptr;
     m_iEffectAddProtect = EFFECT_NONE;
@@ -30,6 +31,7 @@ bool CGamePlayer::init()
     setCurrentAnimation(ARMATURE_PIPI_STANDER);
     m_pSp->setAnchorPoint(Vec2(0.5f, 0.2f));
     m_pSp->getAnimation()->playByIndex(0);
+    m_pSp->setOpacity(255 * .1);
                                   
     setState(STATE_STOP); 
 
@@ -217,6 +219,8 @@ void CGamePlayer::print(DrawNode* dn)
         dn->drawDot( tPos, 10, Color4F(1, 1, 1, 0.6));
     }
 
+    dn->drawDot(getPlayerPosition(), getCollwithR(), Color4F(1, 0, 1, 1));
+  
 }
 
 void CGamePlayer::setState(int state)

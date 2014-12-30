@@ -43,7 +43,6 @@ public:
         m_iCategory(CATEGORY_ELEMENT),
         m_iCollR(20),
         m_iStep(1)
-
     {};
 
     //------------------------------------
@@ -53,6 +52,8 @@ public:
     virtual void print(DrawNode* dn);
 
     inline int getCategory(){ return m_iCategory; };
+
+    virtual float getCollwithR();                                            //Åö×²°ë¾¶
 
     //-------------------------------------------------
 

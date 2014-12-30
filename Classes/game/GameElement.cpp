@@ -138,3 +138,11 @@ void CGameElement::print(DrawNode* dn)
     dn->drawDot(getPosition(), m_iCollR, Color4F(1, 1, 1, 0.6));
     dn->drawDot(getPosition(), 2, Color4F(1, 0, 0, 1));
 }
+
+
+float CGameElement::getCollwithR()
+{
+    return this->m_iCollR;
+}
+
+

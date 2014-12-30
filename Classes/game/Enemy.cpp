@@ -33,13 +33,28 @@ bool CEnemy::collwithGuide(const Vec2& inPoint,Vec2& outPoint)
         }
         
 
-        log("m_iStep + getkillArea():%d,%f", m_iStep , getkillArea());
-        if (borderdis <= m_iStep + getkillArea())
+        //log("m_iStep + getkillArea():%d,%f", m_iStep , getkillArea());
+        if (borderdis <= m_iStep + CGameElement::getCollwithR())
         {
             outPoint = CMath::getVec2(inPoint, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
             CUtil::formartGrid(outPoint, m_iStep);
             return true;
         }
+    }
+
+    return false;
+}
+
+
+bool CEnemy::collwithPlayer(const Vec2& inPoint)
+{
+    int distanc = ccpDistance(inPoint, m_refPlayer->getPlayerPosition());
+
+
+    int collr = getCollwithR() + m_refPlayer->getCollwithR();
+    if (distanc <= collr)
+    {
+        return true;
     }
 
     return false;
@@ -69,7 +84,7 @@ void CEnemy::checkWith()
     case CMySprite::STATE_DRAW:
     case CMySprite::STATE_CLOSE:
 
-        if (collwithGuide(t_oColl, endPoint))
+        if (collwithGuide(t_oColl, endPoint) || collwithPlayer(t_oColl))
         {                   
             m_refSp->attiack(getAttack(),this);
             return;
@@ -112,16 +127,13 @@ void CEnemy::checkWith()
         }     
 
     }
+
+
+
     this->setPosition(t_oColl);
 }
 
 
-
-
-float CEnemy::getkillArea()
-{
-    return this->m_iCollR;
-}
 
 
 

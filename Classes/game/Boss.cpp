@@ -39,7 +39,7 @@ void CBoss::onEnter()
     //创建随机技能
     createSkillTimer();
 
-    animation_move();
+    //animation_move();
 }
 
 void CBoss::run(float t)
@@ -89,20 +89,20 @@ void CBoss::createSkillTimer()
 }
 
 
-float CBoss::getkillArea()
+float CBoss::getCollwithR()
 {
     if (m_iSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS)
     {
-        return CEnemy::getkillArea() * 5;
+        return CEnemy::getCollwithR() * 5;
     }
-    return CEnemy::getkillArea();
+    return CEnemy::getCollwithR();
 }
 
 void CBoss::print(DrawNode* dn)
 {
     if (m_iSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS)
     {
-        dn->drawDot(getPosition(), getkillArea(), Color4F(1, 1, 0, 0.5));
+        dn->drawDot(getPosition(), getCollwithR(), Color4F(1, 1, 0, 0.5));
         CGameElement::print(dn);
     }
     else 

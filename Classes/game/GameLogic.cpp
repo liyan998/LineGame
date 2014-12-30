@@ -115,6 +115,7 @@ void CGameLogic::createGameElement()
     m_pBoss = CBoss::create();
     m_pBoss->m_refShowArea  = m_refShowArea;
     m_pBoss->m_refSp        = m_refSp;
+    m_pBoss->m_refPlayer    = m_refPlayer;
 
     m_pBoss->randPosition();
 
@@ -131,6 +132,7 @@ void CGameLogic::createGameElement()
         auto npc = CNpc::create();
         npc->m_refShowArea  = m_refShowArea;
         npc->m_refSp        = m_refSp;
+        npc->m_refPlayer    = m_refPlayer;
 
         npc->randPosition();
 

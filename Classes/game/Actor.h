@@ -7,7 +7,6 @@ class CActor : public CGameElement
 {                            
 
 
-    
 public:
 
     CMySprite*          m_refSp;
