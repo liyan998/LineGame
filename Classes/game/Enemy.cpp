@@ -94,8 +94,6 @@ void CEnemy::checkWith()
 
         if (collwithGuide(t_oColl, endPoint) || collwithPlayer(t_oColl))
         {                   
-
-
             m_refSp->attiack(getAttack(),this);
             return;
         }
@@ -112,9 +110,7 @@ void CEnemy::checkWith()
         {                
             CMargin* margin = m_refShowArea->getAreaMargin(index);
             m_iDirect = margin->getCollWidthRandomDirect() + CMath::getRandom(-50, 50);
-            changeDirect(m_iDirect);
-            //return;
-            //t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+            changeDirect(m_iDirect);           
         }
     }
    
@@ -128,12 +124,7 @@ void CEnemy::checkWith()
         {
             //log("2<<<");
             m_iDirect = CUtil::getNextAngle(pMargin->m_Angle, 1) + CMath::getRandom(-80, 80);
-            changeDirect(m_iDirect);
-            //return;
-            //t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
-        
-//             setPosition(t_oColl);
-//return;
+            changeDirect(m_iDirect);    
         }     
 
     }
@@ -142,17 +133,5 @@ void CEnemy::checkWith()
 
     this->setPosition(t_oColl);
 }
-
-
-
-
-
-
-
-// void CEnemy::print(DrawNode* dn)
-// {
-//     dn->drawDot(getPosition(), m_iCollR, Color4F(1, 1, 1, 0.6));
-//     dn->drawDot(getPosition(), 2, Color4F(1, 0, 0, 1)); 
-// }
 
 
