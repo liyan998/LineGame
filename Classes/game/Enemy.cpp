@@ -31,8 +31,10 @@ bool CEnemy::collwithGuide(const Vec2& inPoint,Vec2& outPoint)
         {
             continue;
         }
+        
 
-        if (borderdis <= m_iStep + m_iCollR)
+        log("m_iStep + getkillArea():%d,%f", m_iStep , getkillArea());
+        if (borderdis <= m_iStep + getkillArea())
         {
             outPoint = CMath::getVec2(inPoint, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
             CUtil::formartGrid(outPoint, m_iStep);
@@ -91,14 +93,15 @@ void CEnemy::checkWith()
         }
     }
    
+    
     if (collwithBorder(t_oColl, endPoint))
-    {                             
+    {     
        setPosition(endPoint);
        //log("1>>>"); 
         CMargin* pMargin = m_refShowArea->getBorderMargin(endPoint); 
         if (pMargin != nullptr)
         {
-           // log("2<<<");
+            //log("2<<<");
             m_iDirect = CUtil::getNextAngle(pMargin->m_Angle, 1) + CMath::getRandom(-80, 80);
             changeDirect(m_iDirect);
             //return;
@@ -109,18 +112,20 @@ void CEnemy::checkWith()
         }     
 
     }
-
     this->setPosition(t_oColl);
-
 }
 
 
 
-inline
-int CEnemy::getCollR()
+
+float CEnemy::getkillArea()
 {
     return this->m_iCollR;
 }
+
+
+
+
 
 // void CEnemy::print(DrawNode* dn)
 // {

@@ -84,9 +84,7 @@ void CGameElement::randPosition()
 */
 /************************************************************************/
 bool CGameElement::collwithBorder(const Vec2& inPoint, Vec2& outPoint)
-{
-    if (m_iCategory == CEnemy::CATEGORY_BOSS)
-    log("--------------------------------==============================");
+{   
     for (int i = 0; i < 4; i++)
     {
         int borderdis = m_refShowArea->getBorderDis(inPoint, CPath::DIRECT[i][0]);
@@ -95,15 +93,11 @@ bool CGameElement::collwithBorder(const Vec2& inPoint, Vec2& outPoint)
         {
             continue;
         }
-        if (m_iCategory == CEnemy::CATEGORY_BOSS)
-        
-        log(" %d m_iStep + m_iCollR:%d",borderdis, m_iStep + m_iCollR);
-       
-       
+               
         if (borderdis <= m_iStep + m_iCollR)
         {
             outPoint = CMath::getVec2(inPoint, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
-            CUtil::formartGrid(outPoint);
+           // CUtil::formartGrid(outPoint);
             return true;
         }
     }

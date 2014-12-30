@@ -67,7 +67,7 @@ void CNpc::setState(int state)
     switch (state){
     case STATE_LIVE:
         log("LIVE");
-        //animation_move();
+        animation_move();
         break;
     case STATE_DIE:
         log("DIE");          

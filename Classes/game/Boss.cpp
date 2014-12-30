@@ -7,8 +7,6 @@
 
 using namespace liyan998;
 
-
-
 bool CBoss::init()
 {
     Node::init();
@@ -41,27 +39,18 @@ void CBoss::onEnter()
     //创建随机技能
     createSkillTimer();
 
-    //animation_move();
+    animation_move();
 }
 
 void CBoss::run(float t)
 {                    
     m_fCount += t;
-
     
-    randSkillTimer();
-   
+    randSkillTimer();  
    
    //---------------------------- 
 
-    CEnemy::checkWith();
-
-
-//     int count = m_pArmature->getAnimation()->getMovementCount();
-// 
-//     std::string str = m_pArmature->getAnimation()->getCurrentMovementID();
-//     log("%d  , %s" ,count, str.c_str());
-  
+    CEnemy::checkWith();  
 }
 
 void CBoss::randSkillTimer()
@@ -74,7 +63,7 @@ void CBoss::randSkillTimer()
             //log("m_iSkillTim1er:%d", m_iSkillTimer);
             if (m_iSkillTimer-- <= 0)
             {      
-                log("skill releas!");
+                //log("skill releas!");
                 m_iSkillState = RandSkill_State::RANDSKILL_STATE_RELEAS;
             }    
             m_fCount = 0;
@@ -93,48 +82,54 @@ void CBoss::randSkillTimer()
 
 void CBoss::createSkillTimer()
 {
-    m_iSkillTimer   = CMath::getRandom(15, 35);//
+    m_iSkillTimer   = CMath::getRandom(1, 12);//
     //log("m_iSkillTimer:%d", m_iSkillTimer);
     m_iSkillCd      = 13.8;
     m_iSkillState   = RandSkill_State::RANDSKILL_STATE_WAITE;
-
 }
 
 
-void CBoss::print(DrawNode* dn)
+float CBoss::getkillArea()
 {
-
-
     if (m_iSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS)
     {
+        return CEnemy::getkillArea() * 5;
+    }
+    return CEnemy::getkillArea();
+}
 
-        dn->drawDot(getPosition(), m_iCollR * 6, Color4F(1, 1, 0, 0.5));
+void CBoss::print(DrawNode* dn)
+{
+    if (m_iSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS)
+    {
+        dn->drawDot(getPosition(), getkillArea(), Color4F(1, 1, 0, 0.5));
+        CGameElement::print(dn);
     }
     else 
     {
         CGameElement::print(dn);
     }
 
-    Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
-
-  
-    Vec2 t_oColl = getPosition();
+//     Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+// 
+//   
+//     Vec2 t_oColl = getPosition();
 //     
-    for (int i = 0; i < 4; i++)
-    {
-
-        int borderdis = m_refShowArea->getBorderDis(t_oColl, CPath::DIRECT[i][0]) - m_iCollR;
-
-         if (borderdis == -1)
-         {
-             continue;
-         }
-        
-         Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
-
-        dn->drawSegment(t_oColl, endPoint, 1, Color4F(1, 1, 0, 0.3));
-        dn->drawDot(endPoint, 10, Color4F(1, 0, 1, 0.3));
-    }
+//     for (int i = 0; i < 4; i++)
+//     {
+// 
+//         int borderdis = m_refShowArea->getBorderDis(t_oColl, CPath::DIRECT[i][0]) - m_iCollR;
+// 
+//          if (borderdis == -1)
+//          {
+//              continue;
+//          }
+//         
+//          Vec2 endPoint = CMath::getVec2(t_oColl, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
+// 
+//         dn->drawSegment(t_oColl, endPoint, 1, Color4F(1, 1, 0, 0.3));
+//         dn->drawDot(endPoint, 10, Color4F(1, 0, 1, 0.3));
+//     }
 
 //     for (int i = 0; i < 4; i++)
 //     {                                                          
@@ -173,11 +168,9 @@ void CBoss::released()
 
 void CBoss::animation_move()
 {
-
     CGameElement::setCurrentAnimation(ARMATURE_QINGCAI);
     m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CBoss::movementCallback));
     m_pSp->getAnimation()->playByIndex(0);
-
 }
 
 

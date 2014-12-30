@@ -62,7 +62,7 @@ bool CShowArea::init()
 
    unsigned int PARING = 40;
    Size tBroader;
-   tBroader.width       = GRAD_NUMBER(screen.width - PARING * 2);
+   tBroader.width      = GRAD_NUMBER(screen.width);
    tBroader.height     = GRAD_NUMBER(screen.height - PARING * 2);
    m_oAreaSize.size    = tBroader;
    m_oAreaSize.origin  = Vec2(

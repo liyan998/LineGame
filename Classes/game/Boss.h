@@ -51,6 +51,7 @@ public:
 
     virtual void changeDirect(int direct);
 
+    virtual float getkillArea();          //É±ÉË°ë¾¶
 
     //----------------------------------------
 
@@ -63,6 +64,8 @@ public:
     void randSkillTimer();      //Ëæ»ú¼¼ÄÜ
 
     void createSkillTimer();
+
+    
 
 private:
 

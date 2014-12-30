@@ -125,7 +125,7 @@ void CGameLogic::createGameElement()
 
     //------------------------------------------------
 
-    const int numNpc = 3;
+    const int numNpc = 0;
     for (int i = 0; i < numNpc;i++)
     {
         auto npc = CNpc::create();

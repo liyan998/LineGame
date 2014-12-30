@@ -21,11 +21,11 @@ public:
 
     virtual void changeDirect(int direct) = 0;
 
+    virtual float getkillArea();                                            //É±ÉË°ë¾¶
+
     //---------------------------------------------------------
     
-    inline int getAttack();                                                 //¹¥»÷Á¦
-
-    inline int getCollR();
+    inline int getAttack();                                                 //¹¥»÷Á¦   
 
     //----------------------------------------------
     
@@ -34,6 +34,7 @@ protected:
     bool collwithGuide(const Vec2& inPoint, Vec2& outPoint);                //GuideÅö×²
 
     void checkWith();
+
     
 
 protected:
