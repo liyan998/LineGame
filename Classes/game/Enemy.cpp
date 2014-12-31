@@ -3,12 +3,10 @@
 #include "util/Math.h"
 #include "util/Util.h"
 
-#include "EventSystem.h"
-
 using namespace liyan998;
 
 
-inline
+
 int CEnemy::getAttack()
 {
     return this->m_iAttick;
@@ -31,17 +29,14 @@ bool CEnemy::collwithGuide(const Vec2& inPoint,Vec2& outPoint)
         {
             continue;
         }
-        
 
-        //log("m_iStep + getkillArea():%d,%f", m_iStep , getkillArea());
-        if (borderdis <= m_iStep + CGameElement::getCollwithR())
+        if (borderdis <= m_iStep + getCollwithR())
         {
             outPoint = CMath::getVec2(inPoint, borderdis, CMath::angleToRadian(CPath::DIRECT[i][0]));
-            //CUtil::formartGrid(outPoint, m_iStep);
+            
             return true;
         }
     }
-
     return false;
 }
 
@@ -57,8 +52,6 @@ bool CEnemy::collwithGuide(const Vec2& inPoint,Vec2& outPoint)
 bool CEnemy::collwithPlayer(const Vec2& inPoint)
 {
     int distanc = ccpDistance(inPoint, m_refPlayer->getPlayerPosition());
-
-
     int collr = getCollwithR() + m_refPlayer->getCollwithR();
     if (distanc <= collr)
     {
@@ -79,20 +72,19 @@ bool CEnemy::collwithPlayer(const Vec2& inPoint)
 /************************************************************************/
 void CEnemy::checkWith()
 {
-
     Vec2 t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
-
-    //CUtil::formartGrid(t_oColl, m_iStep);
-
     Vec2 endPoint;
 
+    //---------------------------------------------------
 
     switch (m_refSp->getState())
     {
     case CMySprite::STATE_DRAW:
     case CMySprite::STATE_CLOSE:
 
-        if (collwithGuide(t_oColl, endPoint) || collwithPlayer(t_oColl))
+        if (
+            //collwithPlayer(t_oColl) || 
+            collwithGuide(t_oColl, endPoint) )
         {                   
             m_refSp->attiack(getAttack(),this);
             return;
@@ -102,7 +94,9 @@ void CEnemy::checkWith()
     default:
         break;
     }
-            
+
+    //----------------------------------------------
+
     if (collwithArea(t_oColl, endPoint))
     {            
         int index = m_refShowArea->getNearMargin(endPoint);
@@ -112,24 +106,23 @@ void CEnemy::checkWith()
             m_iDirect = margin->getCollWidthRandomDirect() + CMath::getRandom(-50, 50);
             changeDirect(m_iDirect);           
         }
-    }
-   
-    
+    }   
+
+    //---------------------------------------------------
+
     if (collwithBorder(t_oColl, endPoint))
     {     
        setPosition(endPoint);
-       //log("1>>>"); 
+ 
         CMargin* pMargin = m_refShowArea->getBorderMargin(endPoint); 
         if (pMargin != nullptr)
-        {
-            //log("2<<<");
+        {            
             m_iDirect = CUtil::getNextAngle(pMargin->m_Angle, 1) + CMath::getRandom(-80, 80);
             changeDirect(m_iDirect);    
         }     
-
     }
 
-
+    //---------------------------------------------------
 
     this->setPosition(t_oColl);
 }

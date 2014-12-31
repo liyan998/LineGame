@@ -61,7 +61,7 @@ void CGameArticle::setState(int state)
 
         randPosition();
         setCurrentAnimation(m_pProperty->armtruename);
-        m_pSp->getAnimation()->play(m_pProperty->playlab);
+        m_pArmature->getAnimation()->play(m_pProperty->playlab);
 //         setCurrentAnimation(ARMATURE_PROPERTY);       
 //         m_pSp->getAnimation()->play(PLAYLAB_PROPERTY_ADDHEALTH);
         break;
@@ -80,8 +80,8 @@ void CGameArticle::animation_effe()
 {   
     clearCurrentAnimation();
     setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
-    m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGameArticle::movementCallback));
-    m_pSp->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
+    m_pArmature->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGameArticle::movementCallback));
+    m_pArmature->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
 
 
 }
@@ -250,9 +250,9 @@ int CGameArticle::randProperty()
 {
     int link[] =
     {        
-        T_Property::CATEGORY_ADDHEALTH,
-        T_Property::CATEGORY_ADDTIME ,
-        T_Property::CATEGORY_ADDSPEED,
+        //T_Property::CATEGORY_ADDHEALTH,
+        //T_Property::CATEGORY_ADDTIME ,
+        //T_Property::CATEGORY_ADDSPEED,
         T_Property::CATEGORY_ADDDPROTECT
     };
 

@@ -94,6 +94,8 @@ private:
     int                             m_iTimer;
     float                           m_fCounter;
 
+    Vec2                            m_oBong;//  
+
 public:
 
     CPath*                          m_refPath;

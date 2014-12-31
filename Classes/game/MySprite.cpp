@@ -38,9 +38,9 @@ bool CMySprite::init()
     
     
     setCurrentAnimation(ARMATURE_PIPI_STANDER);
-    m_pSp->setAnchorPoint(Vec2(0.5f, 0.2f));
-    m_pSp->setOpacity(255 * 0.4);
-    m_pSp->getAnimation()->playByIndex(0);
+    m_pArmature->setAnchorPoint(Vec2(0.5f, 0.2f));
+    m_pArmature->setOpacity(255 * 0.4);
+    m_pArmature->getAnimation()->playByIndex(0);
 
 
     //----------------------------------------------------
@@ -280,9 +280,7 @@ void CMySprite::onMove(const Vec2& point)
         break;
     default:
         break;
-    }    
-
-   
+    }       
 }
 
 
@@ -332,38 +330,17 @@ void CMySprite::onReleased(const Vec2& pointer)
 bool CMySprite::hasMoveAction()
 {   
     std::vector<int> abv; 
-                       
-
 
     switch (getState())
     {
-    case STATE_MOVE:
-    {
-                       
+    case STATE_MOVE:                       
        m_refShowArea->getAreaMoveAvable(m_oSpCurrentPos, abv);
-
-//     Vec2 nP = CMath::getVec2(m_oSpCurrentPos, GRAD_CELL, CMath::angleToRadian(m_currentAngle));
-//     CUtil::formartGrid(nP);
-// 
-//     int nPType = m_RefShowArea->getPositionType(nP);
-//     if (nPType == POSITION_BORDER_LINE)
-//     {
-//         log("next P Border_line");
-//     }
-
-    }
-
-
         break;
     case STATE_DRAW:
        m_refPath->getMoveAble(m_currentAngle, m_oSpCurrentPos, abv);
         break;        
     }     
 
-
-
-
-//     
     for (int i = 0; i < abv.size();i++)
     {
         if (m_currentAngle == abv[i])
@@ -372,6 +349,7 @@ bool CMySprite::hasMoveAction()
             return true;
         }
     }                         
+
     return false;
 }
 
@@ -388,15 +366,12 @@ bool CMySprite::hasMoveAction()
 /************************************************************************/
 bool CMySprite::hasInBorder()
 {
-
     int dis = m_refShowArea->getBorderDis(m_oSpStartPos, m_currentAngle); 
     //log("dis = %d, angle:%d",dis,  m_currentAngle);
     if (dis == -1)
     {
         return false;
-    }
-
-                               
+    }                               
 
     int currdis = ccpDistance(m_oSpStartPos, m_oSpCurrentPos);
     //log("border dis:%d  , current Dis:%d", dis, currdis); 
@@ -433,7 +408,6 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
     {
         fixPath(inPoint);
     }
-
     //-------------------------------------
  
 
@@ -445,8 +419,7 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
         //log("over load~~~~~~~~~~~~~~~~~~~~~");
         return;
     }
-
-
+    
     //Area过界判断 
     if (m_refShowArea->hasOverLoad(m_oSpStartPos, m_oSpCurrentPos, m_currentAngle, index))
     {
@@ -473,12 +446,8 @@ void CMySprite::onDrawToClose(const Vec2& inPoint)
             return;
         }
     }
-   
-
-
 
     int postiontype = m_refShowArea->getPositionType(m_oSpCurrentPos);
-
     switch (postiontype)
     {
     case POSITION_AREA_ENDPOINT:       
@@ -606,11 +575,9 @@ void CMySprite::onMoveToDraw()
     
     switch (posType)
     {
-    case POSITION_UNLOCK:
-        //log("POSITION_UNLOCK");                                                                       
+    case POSITION_UNLOCK:                                                                      
         break;
     case POSITION_LOCK:
-       // log("POSITION_LOCK");
         {                           
 
             int startpostype = m_refShowArea->getPositionType(m_oGuideLStart);
@@ -798,6 +765,7 @@ void CMySprite::fixPath(const Vec2& inPoint)
 
     int lastIndex   = m_oTPath.size() - 1;
     Vec2 lasNode    = m_oTPath[lastIndex];
+
     if (m_oSpCurrentPos == lasNode)
     {
         m_oSpStartPos   = m_oSpCurrentPos;
@@ -807,7 +775,7 @@ void CMySprite::fixPath(const Vec2& inPoint)
         
         m_oDirectStart  = inPoint;
 
-        m_currentAngle = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(m_oTPath[lastIndex -1], m_oSpCurrentPos)));
+        m_currentAngle  = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(m_oTPath[lastIndex -1], m_oSpCurrentPos)));
         //m_oSpStartPos = m_oTPath[lastIndex - 1];
         
         //fixPosition(inPoint, m_oSpCurrentPos);
@@ -834,19 +802,12 @@ void CMySprite::fixPath(const Vec2& inPoint)
 /*********************************************************************/
 void CMySprite::playerGoWay()
 {
-
-//     log("m_oTPathMargin:%d", m_oTPathMargin.size());
-// 
-//     for (int i = 0; i < m_oTPathMargin.size();i++)
-//     {
-//         log("start;%f, %f", m_oTPathMargin[i]->m_oStart.x, m_oTPathMargin[i]->m_oStart.y);
-//         log("target;%f, %f", m_oTPathMargin[i]->m_oTaget.x, m_oTPathMargin[i]->m_oTaget.y);
-//     }
     if (m_refPlayer->getPlayerPosition() != m_oSpCurrentPos && m_oTPathMargin.size() > 0)
     {    
 
         Vec2 t_oSp(Vec2::ZERO);
         Vec2 t_oEp(Vec2::ZERO);
+
         if (m_oTPathMargin.size() > 0)
         {
             t_oSp = m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oStart;
@@ -855,16 +816,14 @@ void CMySprite::playerGoWay()
         {
             t_oSp = m_oTRoad[m_oTRoad.size() - 1];
         }
+
         int t_iDis = CUtil::getFixDictance(m_refPlayer->m_iCurrentDirect,t_oSp, m_refPlayer->getPlayerPosition());
-       // log("t_iDis:%d", t_iDis);
+
         t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_refPlayer->m_iCurrentDirect));
 
         CUtil::formartGrid(t_oEp ,m_refPlayer->getStep());
         m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oTaget = t_oEp;
-
-      
         
-
 //         Vec2 tp = m_RefPlayer->getPlsyerPosition(); 
 //         Vec2 tsp = m_oTPathMargin[0]->m_oStart;
 //         
@@ -949,8 +908,7 @@ void CMySprite::checkDirect(const Vec2& inPos)
 /*********************************************************************/
 void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
 {
-	log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);
-	
+	log("Current Angle: %d, fixAngle:%d", m_currentAngle, fixangle);	
 
 	//log("angle :%d , fixangle:%d" , angle, fixangle);
 	//
@@ -958,16 +916,7 @@ void CMySprite::changeDirect(const Vec2& inPos,int fixangle)
     
      if (!hasRevceDircet(m_currentAngle, fixangle)&& getState() == STATE_DRAW)
      {
-	 
-//         Vec2 tVec2 = CMath::getVec2(m_oSpCurrentPos, GRAD_CELL, CMath::angleToRadian(fixangle));
-// 
-//         if (m_RefShowArea->getPositionType(tVec2) == POSITION_LINE)
-//         {
-//             return;
-//         }   
-
         addGuide(m_oSpCurrentPos); 
-//        m_oSpCurrentPos = tVec2;
      }                                
 	
 
@@ -1147,9 +1096,6 @@ void CMySprite::print(DrawNode* dn)
 }
 
 
-
-
-
 /*********************************************************************/
 /**
 * @brief        添加节点给各分支
@@ -1171,38 +1117,20 @@ void CMySprite::addGuide(const Vec2& point)
     }
     //同一条直线上不添加  
 
-
-
-    m_oSpStartPos = point;
-      
-   
-//     if (m_oTPath.size() == 0)
-//     {
-//         CMargin* tpathmargin = new CMargin();
-//         tpathmargin->setTaget(point, point);
-//         m_oTPathMargin.push_back(tpathmargin);
-//     }
-//     else if (m_oTPath.size() > 0)
-//     {
-//         CMargin* tpathmargin = new CMargin();
-//         const Vec2& lastVec2 = m_oTPath[m_oTPath.size() - 1];
-// 
-//         tpathmargin->setTaget(lastVec2, point);
-//         m_oTPathMargin.push_back(tpathmargin);
-// 
-//         m_oTPathMargin[0]->m_oStart = point;
-//     }
-
+    m_oSpStartPos = point;     
     if (m_oTPath.size() == 0)
     {
         addRoad(point);
     } 
               
     //---------------------------
-    log("+++++addGuid:%f ,%f", point.x ,point.y);
+    //log("+++++addGuid:%f ,%f", point.x ,point.y);
+
     m_oTPath.push_back(point);
     m_refPath->addPoint(point);
+
     //----------------------------  
+
     if (m_State == STATE_DRAW)
     {
         m_refPlayer->addFollow(point);
@@ -1327,7 +1255,7 @@ void CMySprite::checkBack()
 
 void CMySprite::run(float tm)
 {
-    m_pSp->setPosition(m_oSpCurrentPos);
+    m_pArmature->setPosition(m_oSpCurrentPos);
     //log("mysprite run");
     switch (m_State)
     {
@@ -1415,74 +1343,11 @@ void CMySprite::runGo()
 /*********************************************************************/
 int CMySprite::getPathDis(const Vec2& inPoint, int direct)
 {         
-   
-   //int mindis = CUtil::getMinWallDis(m_oTPathMargin, inPoint, direct); 
-
-
-
-//    if (m_oTPathMargin.size() > 0)
-//    {
-//         CMargin t_oLast;
-//         Vec2 t_oSp = m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oTaget;
-//         int t_iDis = FTOI(ccpDistance(t_oSp, m_RefPlayer->getPlsyerPosition()));
-//         Vec2 t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect)); 
-//         t_oLast.setTaget(t_oSp, t_oEp);
-// 
-// 
-//         int dis = CUtil::getUDLR_atMarginDis(&t_oLast, inPoint, direct);
-//         
-//         log("dis:%d", dis);
-// 
-//       
-//    }
-
-
-//    Vec2 t_oSp(Vec2::ZERO);
-//    Vec2 t_oEp(Vec2::ZERO);
-// 
-//    if (m_oTPathMargin.size() > 0)
-//    {
-//        t_oSp = m_oTPathMargin[m_oTPathMargin.size() - 1]->m_oTaget;
-//    }
-//    else if (m_oTRoad.size() > 0)
-//    {
-//        t_oSp = m_oTRoad[m_oTRoad.size() - 1];
-//    }  
-// 
-//    int t_iDis = FTOI(ccpDistance(t_oSp, m_RefPlayer->getPlsyerPosition()));
-//    t_oEp = CMath::getVec2(t_oSp, t_iDis, CMath::angleToRadian(m_RefPlayer->m_iCurrentDirect));
-//     
-//     
-//    CMargin t_oLast;
-//    t_oLast.m_oStart = t_oSp;
-//    t_oLast.m_oTaget = t_oEp;
-// 
-//    int dis = CUtil::getUDLR_atMarginDis(&t_oLast, inPoint, direct);
-//    //         
-//    log("dis:%d", dis);
-    
 
     Size visSize = Director::getInstance()->getVisibleSize();
     Vec2 visVec = Director::getInstance()->getVisibleOrigin();
 
-    //log("-------------------------------------------");
-
-    //auto director = Director::getInstance();
-    //Size size;
-    //size = director->getWinSize();
-    //log("***IDONG: Director getWinSize:w=%f,h=%f", size.width, size.height);
-
-    //size = director->getWinSizeInPixels();
-    //log("***IDONG: Director getWinSizeInPixels:w=%f,h=%f", size.width, size.height);
-
-    //size = director->getVisibleSize();
-    //log("***IDONG: Director getVisibleSize:w=%f,h=%f", size.width, size.height);
-
-    //Point point = director->getVisibleOrigin();
-    //     log("***IDONG: Director getVisibleOrigin:x=%f,y=%f", point.x, point.y);
-    // 
-    //     log("VisSize:%f, %f  Visibleorigin::%f, %f", visSize.width, visSize.height, visVec.x ,visVec.y);
-    Vec2 tve(Vec2::ZERO);
+   Vec2 tve(Vec2::ZERO);
     switch (direct)
     {
     case ANGLE_DOWN:
@@ -1511,8 +1376,6 @@ int CMySprite::getPathDis(const Vec2& inPoint, int direct)
     {
         CMargin* maring = m_oTPathMargin[i];
 
-        
-        // log("p1: %f,%f \n  p2:%f,%f  \n p3:%f,%f \n p4:%f, %f", maring->m_oStart.x, maring->m_oStart.y, maring->m_oTaget.x, maring->m_oTaget.y, inSP.x, inSP.y, tve.x, tve.y);
         if (liyan998::CMath::hasLineMutlLine(maring->m_oStart, maring->m_oTaget, inPoint, tve))
         {      
             Vec2 zu = CMath::getFootPoint(maring->m_oStart, maring->m_oTaget, inPoint);
@@ -1554,7 +1417,8 @@ bool CMySprite::attiack(int value, CEnemy* pEnemy)
         {
         case CEnemy::CATEGORY_BOSS:
             log("Boss is attack protect player");
-            setState(CMySprite::STATE_BACK);
+            //setState(CMySprite::STATE_BACK);
+            setCollPlayer();
             break;
         case CEnemy::CATEGORY_NPC:
             log("npc is attack protect player");
@@ -1567,10 +1431,26 @@ bool CMySprite::attiack(int value, CEnemy* pEnemy)
     {
         m_iHealth -= value;
         log("attack! %d", m_iHealth);
-        setState(CMySprite::STATE_BACK);
+        //setState(CMySprite::STATE_BACK);
+        setCollPlayer();
     }
                
+  
 
-    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_HIT, new int((int)pEnemy));
+    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_HIT, new CEnemy*(pEnemy));
     return true;
+}
+
+
+void CMySprite::setCollPlayer()
+{
+    //clearRoad();
+    m_oSpCurrentPos = m_oTPath[0];
+
+    m_refPlayer->setState(CGamePlayer::STATE_STOP);
+    setPlayerPosition(m_oSpCurrentPos);
+
+    clearGuide();  
+
+    setState(STATE_STANDER);
 }

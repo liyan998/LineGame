@@ -12,6 +12,19 @@
 #define __BOSS_H__
 
 
+struct T_RandSkill
+{
+    int         m_iSkillTimer;              //随机技能创建时间
+
+    float       m_iSkillCd;                 //随机技能持续时间
+
+    int         m_iSkillId;                 //技能ID
+};
+
+
+////////////////////////////////////////////////////////////////
+
+
 class CBoss : public CEnemy 
 {
 
@@ -24,6 +37,7 @@ public:
     //随机技能状态
     enum RandSkill_State
     {
+        RANDSKILL_STATE_NONE,
         RANDSKILL_STATE_WAITE,//等到倒计时
         RANDSKILL_STATE_RELEAS//释放
     };
@@ -36,6 +50,8 @@ public:
     };
 
 public:
+
+    CBoss() :m_pRandSkill(nullptr){}
 
     virtual bool init();
 
@@ -68,13 +84,10 @@ public:
     
 
 private:
+    
+    T_RandSkill*    m_pRandSkill;
 
-    int m_iSkillTimer;              //随机技能创建时间
-
-    float m_iSkillCd;               //随机技能持续时间
-
-    int m_iSkillState;              //技能状态
-
+    int             m_iSkillState;              //技能状态
 };
 
 

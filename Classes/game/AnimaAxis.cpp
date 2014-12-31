@@ -3,8 +3,8 @@
 void CAnimationAxis::setCurrentAnimation(const char* arname)
 {
     if (
-        m_pSp != nullptr &&
-        strcmp(arname, m_pSp->getAnimation()->getCurrentMovementID().c_str()) == 0
+        m_pArmature != nullptr &&
+        strcmp(arname, m_pArmature->getAnimation()->getCurrentMovementID().c_str()) == 0
         )
     {
         return;
@@ -12,19 +12,19 @@ void CAnimationAxis::setCurrentAnimation(const char* arname)
 
     clearCurrentAnimation();
 
-    m_pSp = Armature::create(arname);
+    m_pArmature = Armature::create(arname);
     //m_pSp->getAnimation()->setMovementEventCallFunc(this, callback);
-    addChild(m_pSp);
+    addChild(m_pArmature);
 }
 
 
 void CAnimationAxis::clearCurrentAnimation()
 {
-    if (m_pSp != nullptr)
+    if (m_pArmature != nullptr)
     {
-        m_pSp->getAnimation()->setMovementEventCallFunc(this, nullptr);
-        m_pSp->getAnimation()->setFrameEventCallFunc(nullptr);
-        removeChild(m_pSp);
-        m_pSp = nullptr;
+        m_pArmature->getAnimation()->setMovementEventCallFunc(this, nullptr);
+        m_pArmature->getAnimation()->setFrameEventCallFunc(nullptr);
+        removeChild(m_pArmature);
+        m_pArmature = nullptr;
     }
 }

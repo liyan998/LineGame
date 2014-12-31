@@ -11,22 +11,15 @@ bool CBoss::init()
 {
     Node::init();
 
-    m_iCategory = CGameElement::CATEGORY_BOSS;
+    m_iCategory     = CGameElement::CATEGORY_BOSS;
+    m_iSkillState   = RandSkill_State::RANDSKILL_STATE_NONE;
     
-    m_fCount    = 0.f;
-    m_iDirect   = 0;
-    m_iStep     = 2;
-    m_iCollR    = 20;
-    m_iAttick   = 1;
+    m_fCount        = 0.f;
+    m_iDirect       = 0;
+    m_iStep         = 2;
+    m_iCollR        = 20;
+    m_iAttick       = 1;
 
-    m_iSkillTimer   = -1;
-    m_iSkillCd      = 0;
-
-    //--------------------------------------------
-
-//     m_pSp = Sprite::create("CloseNormal.png");
-//     m_pSp->setScale(1.5f); 
-//     addChild(m_pSp); 
     return true;
 }
 
@@ -34,12 +27,11 @@ bool CBoss::init()
 void CBoss::onEnter()
 {
     Node::onEnter();
-
    
     //创建随机技能
     createSkillTimer();
 
-    //animation_move();
+    animation_move();
 }
 
 void CBoss::run(float t)
@@ -49,6 +41,30 @@ void CBoss::run(float t)
     randSkillTimer();  
    
    //---------------------------- 
+
+    if (m_iSkillState == RANDSKILL_STATE_RELEAS 
+        &&
+        m_pRandSkill->m_iSkillId == Skill::SKILL_T_BIGAREA)
+    {
+
+        Vec2 tP;
+        switch (m_refSp->getState())
+        {
+        case CMySprite::STATE_DRAW:
+        case CMySprite::STATE_CLOSE:
+
+            if (collwithPlayer(getPosition()) || collwithGuide(getPosition(), tP))
+            {
+                m_refSp->attiack(getAttack(), this);
+                return;
+            }
+
+            break;
+        default:
+            break;
+        }
+        return;
+    }
 
     CEnemy::checkWith();  
 }
@@ -61,7 +77,7 @@ void CBoss::randSkillTimer()
         if (m_fCount > 1.0f)
         {
             //log("m_iSkillTim1er:%d", m_iSkillTimer);
-            if (m_iSkillTimer-- <= 0)
+            if (m_pRandSkill->m_iSkillTimer-- <= 0)
             {      
                 //log("skill releas!");
                 m_iSkillState = RandSkill_State::RANDSKILL_STATE_RELEAS;
@@ -71,7 +87,7 @@ void CBoss::randSkillTimer()
         break;
     case RANDSKILL_STATE_RELEAS:
         //log("m_iSkillCd:%f", m_fCount);
-        if (m_fCount > m_iSkillCd)
+        if (m_fCount > m_pRandSkill->m_iSkillCd)
         {
             createSkillTimer();
             m_fCount = 0.0f;
@@ -82,10 +98,19 @@ void CBoss::randSkillTimer()
 
 void CBoss::createSkillTimer()
 {
-    m_iSkillTimer   = CMath::getRandom(1, 12);//
-    //log("m_iSkillTimer:%d", m_iSkillTimer);
-    m_iSkillCd      = 13.8;
     m_iSkillState   = RandSkill_State::RANDSKILL_STATE_WAITE;
+
+    if (m_pRandSkill != nullptr)
+    {
+        delete m_pRandSkill;
+        m_pRandSkill = nullptr;
+    }
+
+
+    m_pRandSkill = new T_RandSkill();
+    m_pRandSkill->m_iSkillTimer     = CMath::getRandom(1, 12);// 
+    m_pRandSkill->m_iSkillCd        = 13.8;
+    m_pRandSkill->m_iSkillId        = Skill::SKILL_T_BIGAREA;
 }
 
 
@@ -102,18 +127,16 @@ void CBoss::print(DrawNode* dn)
 {
     if (m_iSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS)
     {
-        dn->drawDot(getPosition(), getCollwithR(), Color4F(1, 1, 0, 0.5));
-        CGameElement::print(dn);
+        dn->drawDot(getPosition(), getCollwithR(), Color4F(1, 1, 0, 0.5));       
     }
-    else 
-    {
-        CGameElement::print(dn);
-    }
+    
+    CGameElement::print(dn);
+    
 
-    Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
-
-  
-    Vec2 t_oColl = getPosition();
+//     Vec2 nps = CMath::getVec2(getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+// 
+//   
+     Vec2 t_oColl = getPosition();
 //     
 //     for (int i = 0; i < 4; i++)
 //     {
@@ -163,14 +186,18 @@ void CBoss::setState(int state)
 
 void CBoss::released()
 {
-
+    if (m_pRandSkill != nullptr)
+    {
+        delete m_pRandSkill;
+        m_pRandSkill = nullptr;
+    }
 }
 
 void CBoss::animation_move()
 {
     CGameElement::setCurrentAnimation(ARMATURE_QINGCAI);
-    m_pSp->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CBoss::movementCallback));
-    m_pSp->getAnimation()->playByIndex(0);
+    m_pArmature->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CBoss::movementCallback));
+    m_pArmature->getAnimation()->playByIndex(0);
 }
 
 

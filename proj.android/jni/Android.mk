@@ -26,6 +26,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/game/MySprite.cpp \
                    ../../Classes/game/Path.cpp \
                    ../../Classes/game/GameArticle.cpp \
+                   ../../Classes/game/AnimaAxis.cpp \
                    ../../Classes/game/GameElement.cpp \
 				   ../../Classes/game/Boss.cpp\
                    ../../Classes/game/Npc.cpp \

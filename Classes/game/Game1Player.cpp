@@ -14,7 +14,7 @@ bool CGamePlayer::init()
 {
     Node::init();
 
-    m_iStep             = 2 * 2;
+    m_iStep             = 2;
     m_iCollR            = 20;
     m_bFlow             = false;
     m_pEventAddSpeed    = nullptr;
@@ -29,8 +29,8 @@ bool CGamePlayer::init()
     //-----------------------------------------------------
 
     setCurrentAnimation(ARMATURE_PIPI_STANDER);
-    m_pSp->setAnchorPoint(Vec2(0.5f, 0.2f));
-    m_pSp->getAnimation()->playByIndex(0);
+    m_pArmature->setAnchorPoint(Vec2(0.5f, 0.2f));
+    m_pArmature->getAnimation()->playByIndex(0);
    // m_pSp->setOpacity(255 * .1);
                                   
     setState(STATE_STOP); 
@@ -50,13 +50,13 @@ void CGamePlayer::setPlayerPosition(const Vec2& pos)
 {                      
     Vec2 tp = pos; 
     CUtil::formartGrid(tp, getStep());
-    m_pSp->setPosition(tp);
+    m_pArmature->setPosition(tp);
 }
 
 
 const Vec2& CGamePlayer::getPlayerPosition()
 {
-    return m_pSp->getPosition();
+    return m_pArmature->getPosition();
 }
 
 
@@ -206,7 +206,7 @@ void CGamePlayer::playerRun(float time)
     CUtil::formartGrid(npos, getStep());
     //CUtil::formartGrid(npos);
 
-    m_pSp->setPosition(npos);
+    m_pArmature->setPosition(npos);
 }
 
 
@@ -226,7 +226,7 @@ void CGamePlayer::print(DrawNode* dn)
         dn->drawDot( tPos, 10, Color4F(1, 1, 1, 0.6));
     }
 
-    dn->drawDot(getPlayerPosition(), getCollwithR(), Color4F(1, 0, 1, 1));
+    dn->drawDot(getPlayerPosition(), getCollwithR(), Color4F(1, 0, 1,0.21));
   
 }
 

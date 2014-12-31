@@ -16,7 +16,7 @@ class CAnimationAxis :public Layer
 
 public:
 
-    CAnimationAxis() :m_pSp(nullptr)
+    CAnimationAxis() :m_pArmature(nullptr)
     {
         ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
             RES_ANIMA_PNG_PIPI,
@@ -31,7 +31,7 @@ public:
     void setCurrentAnimation(const char* arname);
 
 
-    Armature*           m_pSp;
+    Armature*           m_pArmature;
 };
 
 #endif//__ANIMAAXIS_H__

@@ -126,7 +126,7 @@ void CGameLogic::createGameElement()
 
     //------------------------------------------------
 
-    const int numNpc = 0;
+    const int numNpc = 2;
     for (int i = 0; i < numNpc;i++)
     {
         auto npc = CNpc::create();
@@ -223,7 +223,7 @@ void CGameLogic::h_ActionClose(EventParm pData)
         m_refShowArea->setClose(m_pBoss->getPosition());
         m_refSp->clearGuide();
         float area = m_refShowArea->getArea();
-       // log(" Area :%f", area); 
+       
         flushArea(area);
 
         if (area > WINPART)
@@ -320,10 +320,17 @@ void CGameLogic::clearGameObject(CGameArticle* pGameAricle, int mode)
 }
 
 
-void CGameLogic::h_ActionHit(EventParm pDate)
+void CGameLogic::h_ActionHit(EventParm pData)
 {
     
     flushHealth(m_refSp->getHealth());
+
+    CEnemy* pEnemy = (CEnemy*)(*(CEnemy**)pData);
+
+    m_oBong = pEnemy->getPosition();
+
+
+    
     
 }
 
@@ -382,6 +389,11 @@ void CGameLogic::print(DrawNode* dn)
     {
         m_oAllRander[i]->print(dn);
     }
+
+    dn->drawDot(m_oBong, 4, Color4F(0,0,1,1));
+
+
+
 }
 
 
