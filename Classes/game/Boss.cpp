@@ -11,8 +11,8 @@ bool CBoss::init()
 {
     Node::init();
 
-    m_iCategory     = CGameElement::CATEGORY_BOSS;
-    m_iSkillState   = RandSkill_State::RANDSKILL_STATE_NONE;
+    m_iCategory         = CGameElement::CATEGORY_BOSS;
+    m_iRandSkillState   = RandSkill_State::RANDSKILL_STATE_CD;
     
     m_fCount        = 0.f;
     m_iDirect       = 0;
@@ -27,7 +27,37 @@ bool CBoss::init()
 void CBoss::onEnter()
 {
     Node::onEnter();
+
+    T_SkillBigArea* tPBigArea   = new T_SkillBigArea();
+    tPBigArea->m_fArea          = 3.0f; //面积扩展倍数
+    tPBigArea->m_fMaxTime       = 10;   //持续时间
+
+    T_SkillFlush* tPFlush       = new T_SkillFlush();
+    tPFlush->m_iMaxCount        = 3;
+
+    //技能的初始化
+    T_RandSkill allskill[] = 
+    {
+        { 20,0, Skill::SKILL_T_BIGAREA,   RANDSKILL_STATE_CD, static_cast<T_SkillData*>(tPBigArea) },
+        { 15,0,Skill::SKILL_T_FLUSH,     RANDSKILL_STATE_CD, static_cast<T_SkillData*>(tPFlush) }
+    };    
+    
+    for (int i = 0; i < 2;i++)
+    {
+        T_RandSkill* t_pRskill = new T_RandSkill();
+
+        t_pRskill->m_iMaxCD         = allskill[i].m_iMaxCD;
+        t_pRskill->m_iSkillId       = allskill[i].m_iSkillId;
+        t_pRskill->m_iSkillState    = allskill[i].m_iSkillState;
+        t_pRskill->m_pSkill         = allskill[i].m_pSkill;
+        t_pRskill->init();
+
+        m_oAllRandSkill.push_back(t_pRskill);
+    }
    
+    //--------------------------------------------------------------
+
+
     //创建随机技能
     createSkillTimer();
 
@@ -37,95 +67,194 @@ void CBoss::onEnter()
 void CBoss::run(float t)
 {                    
     m_fCount += t;
+    m_fSkillCdCount += t;
+    
+    skillCd();
     
     randSkillTimer();  
    
    //---------------------------- 
 
-    if (m_iSkillState == RANDSKILL_STATE_RELEAS 
-        &&
-        m_pRandSkill->m_iSkillId == Skill::SKILL_T_BIGAREA)
+    if (hasKeepMoveing())
     {
+        CEnemy::checkWith();  
+    }
+}
 
-        Vec2 tP;
-        switch (m_refSp->getState())
+bool CBoss::hasKeepMoveing()
+{
+    if (m_iRandSkillState == RANDSKILL_STATE_RELEAS)       
+    {
+        switch (m_pRandSkill->m_iSkillId)
         {
-        case CMySprite::STATE_DRAW:
-        case CMySprite::STATE_CLOSE:
-
-            if (collwithPlayer(getPosition()) || collwithGuide(getPosition(), tP))
+        case Skill::SKILL_T_BIGAREA:
+        {
+            Vec2 tP;
+            switch (m_refSp->getState())
             {
-                m_refSp->attiack(getAttack(), this);
-                return;
-            }
+            case CMySprite::STATE_DRAW:
+            case CMySprite::STATE_CLOSE:
 
-            break;
-        default:
-            break;
+                if (collwithPlayer(getPosition()) || collwithGuide(getPosition(), tP))
+                {
+                    m_refSp->attiack(getAttack(), this);                
+                }
+
+                break;
+            default:
+                break;
+            }
+            return false;
         }
-        return;
+            break;
+
+        case Skill::SKILL_T_FLUSH:
+            return false;
+        }
     }
 
-    CEnemy::checkWith();  
+    return true;
 }
 
 void CBoss::randSkillTimer()
 {
-    switch (m_iSkillState)
+    switch (m_iRandSkillState)
     {
-    case RANDSKILL_STATE_WAITE:
+    case RANDSKILL_STATE_READY:
         if (m_fCount > 1.0f)
         {
-            //log("m_iSkillTim1er:%d", m_iSkillTimer);
-            if (m_pRandSkill->m_iSkillTimer-- <= 0)
-            {      
-                //log("skill releas!");
-                m_iSkillState = RandSkill_State::RANDSKILL_STATE_RELEAS;
+            log("m_iSkillTim1er:%d", m_iSkillTimer);
+            if (m_iSkillTimer-- <= 1)
+            {                      
+                randSkillCreate();
+                m_iRandSkillState = RandSkill_State::RANDSKILL_STATE_RELEAS;
             }    
             m_fCount = 0;
         }
         break;
     case RANDSKILL_STATE_RELEAS:
-        //log("m_iSkillCd:%f", m_fCount);
-        if (m_fCount > m_pRandSkill->m_iSkillCd)
-        {
-            createSkillTimer();
-            m_fCount = 0.0f;
-        }
+        randSkillRelease();
         break;
     }        
 }
 
 void CBoss::createSkillTimer()
 {
-    m_iSkillState   = RandSkill_State::RANDSKILL_STATE_WAITE;
+    m_iRandSkillState   = RandSkill_State::RANDSKILL_STATE_READY;
+    m_iSkillTimer     = CMath::getRandom(15, 35);// 
+}
 
-    if (m_pRandSkill != nullptr)
+
+void CBoss::randSkillCreate()
+{
+    m_pRandSkill = nullptr;
+
+    std::vector<int> t_oAllIndex;
+
+    for (int i = 0; i < m_oAllRandSkill.size();i++)
     {
-        delete m_pRandSkill;
-        m_pRandSkill = nullptr;
+        if (m_oAllRandSkill[i]->m_iSkillState == RandSkill_State::RANDSKILL_STATE_READY)
+        {
+            t_oAllIndex.push_back(i);
+        }        
     }
 
+    int index = CMath::getRandom(0, t_oAllIndex.size() - 1);
+    m_pRandSkill = m_oAllRandSkill[index];
+    m_pRandSkill->init();
 
-    m_pRandSkill = new T_RandSkill();
-    m_pRandSkill->m_iSkillTimer     = CMath::getRandom(1, 12);// 
-    m_pRandSkill->m_iSkillCd        = 13.8;
-    m_pRandSkill->m_iSkillId        = Skill::SKILL_T_BIGAREA;
+    log("Create Skill:%d", m_pRandSkill->m_iSkillId);
+
+   
+}
+
+void CBoss::randSkillRelease()
+{
+    //log("m_iSkillCd:%f", m_fCount); 
+
+    switch (m_pRandSkill->m_iSkillId)
+    {
+    case Skill::SKILL_T_BIGAREA:
+    {   
+        T_SkillBigArea* tpSkillBigArea = (T_SkillBigArea*)m_pRandSkill->m_pSkill;
+    if (m_fCount >= tpSkillBigArea->m_skillTime)
+    {
+        m_pRandSkill->m_iSkillState = RandSkill_State::RANDSKILL_STATE_CD;
+        tpSkillBigArea->init();
+        createSkillTimer();
+        m_fCount = 0;
+    }
+    }
+        break;
+    case Skill::SKILL_T_FLUSH:
+    {
+        T_SkillFlush* tpSkillFlush = (T_SkillFlush*)m_pRandSkill->m_pSkill;
+
+        if (m_fCount >= 1)
+        {
+            releasFlush();
+
+            tpSkillFlush->count--;
+            if (tpSkillFlush->count == 0)
+            {
+                m_pRandSkill->m_iSkillState = RandSkill_State::RANDSKILL_STATE_CD;
+                tpSkillFlush->init();
+                createSkillTimer();               
+            }
+
+            log("Releas Flush Skill");
+            m_fCount = 0;
+        }
+
+    }
+
+        break;
+    }
+}
+
+void CBoss::releasFlush()
+{
+    randPosition();
+}
+
+
+void CBoss::skillCd()
+{
+    if (m_fSkillCdCount >= 1.f)
+    {
+        log("---------------------");
+        for (int i = 0; i < m_oAllRandSkill.size();i++)
+        {
+            if (m_oAllRandSkill[i]->m_iSkillState == RandSkill_State::RANDSKILL_STATE_CD)
+            {
+                m_oAllRandSkill[i]->m_iSkillCd--;
+                if (m_oAllRandSkill[i]->m_iSkillCd <= 0)
+                {
+                    m_oAllRandSkill[i]->m_iSkillState = RandSkill_State::RANDSKILL_STATE_READY;
+                }
+            }
+            log("%d m_oAllRandSkill[i]->m_iSkillCd:%d", m_oAllRandSkill[i]->m_iSkillState, m_oAllRandSkill[i]->m_iSkillCd);
+        }
+        m_fSkillCdCount = 0.0f;
+    }
 }
 
 
 float CBoss::getCollwithR()
 {
-    if (m_iSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS)
+    if (m_iRandSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS
+        &&
+        m_pRandSkill->m_iSkillId == Skill::SKILL_T_BIGAREA)
     {
-        return CEnemy::getCollwithR() * 5;
+        T_SkillBigArea* pTskill = static_cast<T_SkillBigArea*>(m_pRandSkill->m_pSkill);
+        return CEnemy::getCollwithR() * pTskill->m_fArea;
     }
     return CEnemy::getCollwithR();
 }
 
 void CBoss::print(DrawNode* dn)
 {
-    if (m_iSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS)
+    if (m_iRandSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS)
     {
         dn->drawDot(getPosition(), getCollwithR(), Color4F(1, 1, 0, 0.5));       
     }
@@ -186,11 +315,11 @@ void CBoss::setState(int state)
 
 void CBoss::released()
 {
-    if (m_pRandSkill != nullptr)
-    {
-        delete m_pRandSkill;
-        m_pRandSkill = nullptr;
-    }
+//     if (m_pRandSkill != nullptr)
+//     {
+//         delete m_pRandSkill;
+//         m_pRandSkill = nullptr;
+//     }
 }
 
 void CBoss::animation_move()

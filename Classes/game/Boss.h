@@ -12,14 +12,57 @@
 #define __BOSS_H__
 
 
+
+struct T_SkillData
+{
+    virtual void init() = 0;
+};
+
+struct T_SkillBigArea : T_SkillData
+{
+    float m_fArea;                  //面积
+    float m_skillTime;              //技能持续时间
+
+    float m_fMaxTime;               //持续时间
+
+    virtual void init()
+    {
+        m_skillTime = m_fMaxTime;
+    }
+};
+
+struct T_SkillFlush : T_SkillData
+{
+    int count;                      //闪现次数
+    int m_iMaxCount;                //闪现次数
+
+    virtual void init()
+    {
+        count = m_iMaxCount;
+    }
+};
+
+
+///.................................................................
+
 struct T_RandSkill
 {
-    int         m_iSkillTimer;              //随机技能创建时间
+    int             m_iMaxCD;
 
-    float       m_iSkillCd;                 //随机技能持续时间
+    int             m_iSkillCd;     //随机技能CD
+    int             m_iSkillId;     //技能ID
 
-    int         m_iSkillId;                 //技能ID
+    int             m_iSkillState;  //技能状态
+
+    T_SkillData*    m_pSkill; 
+
+    void init()
+    {
+        m_iSkillCd = m_iMaxCD;
+        m_pSkill->init();
+    }
 };
+
 
 
 ////////////////////////////////////////////////////////////////
@@ -37,9 +80,9 @@ public:
     //随机技能状态
     enum RandSkill_State
     {
-        RANDSKILL_STATE_NONE,
-        RANDSKILL_STATE_WAITE,//等到倒计时
-        RANDSKILL_STATE_RELEAS//释放
+        RANDSKILL_STATE_CD,     //不可释放cd
+        RANDSKILL_STATE_READY,  //可释放
+        RANDSKILL_STATE_RELEAS  //释放
     };
 
     enum Skill
@@ -51,7 +94,10 @@ public:
 
 public:
 
-    CBoss() :m_pRandSkill(nullptr){}
+    CBoss() :
+        m_pRandSkill(nullptr), 
+        m_fSkillCdCount(0.f)
+    {}
 
     virtual bool init();
 
@@ -77,17 +123,29 @@ public:
 
     //-----------------------------------------
 
+    bool hasKeepMoveing();
+
     void randSkillTimer();      //随机技能
 
     void createSkillTimer();
 
+    void randSkillCreate();
+
+    void randSkillRelease();
+
+    void skillCd();             //技能CD
+
+    void releasFlush();         //释放闪击
     
 
 private:
-    
-    T_RandSkill*    m_pRandSkill;
 
-    int             m_iSkillState;              //技能状态
+    int                             m_iSkillTimer;                  //系统创建随机技能时间
+    T_RandSkill*                    m_pRandSkill;
+    std::vector<T_RandSkill*>       m_oAllRandSkill;
+    int                             m_iRandSkillState;              //技能状态
+
+    float                           m_fSkillCdCount;                //技能CD计时器
 };
 
 
