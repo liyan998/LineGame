@@ -59,7 +59,7 @@ void CBoss::onEnter()
 
 
     //创建随机技能
-    createSkillTimer();
+    //createSkillTimer();
 
     animation_move();
 }

@@ -60,6 +60,7 @@ void CGameLogic::onEnter()
     Size size = Director::getInstance()->getWinSize();
     TTFConfig config("fonts/Marker Felt.ttf", 20);
 
+    Vec2 orgin = Director::getInstance()->getVisibleOrigin();
 
     char str[15] = { 0 };
     sprintf(str, CHARSEQUEN_AREA,m_refShowArea->getArea() * 100 );
@@ -67,7 +68,8 @@ void CGameLogic::onEnter()
     auto label1 = Label::createWithTTF(config, str);
     label1->setAnchorPoint(Vec2(0.0f, 1));
     addChild(label1, 0, 200);
-    label1->setPosition(Vec2(size.width - 200, size.height));
+    label1->setPosition(Vec2(size.width - 200 + orgin.x,
+        size.height - orgin.y));
 
 
     //str[15] = { 0 };
@@ -77,7 +79,7 @@ void CGameLogic::onEnter()
     label2->setAnchorPoint(Vec2(0.5f, 1));
     addChild(label2, 0, 100);
 
-    label2->setPosition(Vec2(size.width / 2.0f, size.height));
+    label2->setPosition(Vec2(size.width / 2.0f + orgin.x, size.height - orgin.y));
 
 
     //str[15] = { 0 };
@@ -86,7 +88,7 @@ void CGameLogic::onEnter()
     label3->setAnchorPoint(Vec2(0, 1));
     addChild(label3, 0, 300);
 
-    label3->setPosition(Vec2(0, size.height));
+    label3->setPosition(Vec2(orgin.x, size.height - orgin.y));
 
 
     //-----------------------------------------------------------
