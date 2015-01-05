@@ -74,7 +74,8 @@ public:
     enum CreateType
     {
         SYSTEM, //ÏµÍ³Ë¢ÐÂ
-        PAY     //¹ºÂò
+        PAY,    //¹ºÂò
+        DROP    //µôÂä
     };
 
 

@@ -30,7 +30,7 @@ void CGameArticle::run(float time)
 
         if (m_fCount >= 1)
         {
-            //log("time to up");
+            
             action_create();
             action_Disp();
             m_fCount = 0.0F;
@@ -101,6 +101,7 @@ void CGameArticle::action_create()
         return;
     }
 
+    log("time to up");
     if (m_iTimeCreate++ >= TIME_CREATE_ARTICLE)
     {
         delete m_pProperty;
@@ -183,7 +184,7 @@ void CGameArticle::setProperty(int catetory)
             pProAddsp,
             ARMATURE_PROPERTY,
             PLAYLAB_PROPERTY_ADDSPEED,
-            0
+            7
         },
         { 
             T_Property::CATEGORY_ADDHEALTH, 
@@ -251,7 +252,7 @@ int CGameArticle::randProperty()
     int link[] =
     {        
         //T_Property::CATEGORY_ADDHEALTH,
-        //T_Property::CATEGORY_ADDTIME ,
+        T_Property::CATEGORY_ADDTIME ,
         T_Property::CATEGORY_ADDSPEED,
         //T_Property::CATEGORY_ADDDPROTECT
     };
