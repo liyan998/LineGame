@@ -59,8 +59,7 @@ void CGameArticle::setState(int state)
     switch (state)
     {
     case STATE_ACTIVE:
-
-        randPosition();
+        
         setCurrentAnimation(m_pProperty->armtruename);
         m_pArmature->getAnimation()->play(m_pProperty->playlab);
 //         setCurrentAnimation(ARMATURE_PROPERTY);       
@@ -110,6 +109,10 @@ void CGameArticle::action_create()
 
         int pro = randProperty();
         setProperty(pro);
+
+        Vec2 cp;
+        randPosition(cp);
+        setPosition(cp);
 
         setState(STATE_ACTIVE);
         m_iTimeCreate = 0;
@@ -285,8 +288,13 @@ void CGameArticle::setCreateType(int type)
         setState(STATE_DISP);
         break;
     case CreateType::PAY:
-    case CreateType::DROP:
-        setState(STATE_ACTIVE);
+    { 
+                            Vec2 cp;
+                            randPosition(cp);
+                            setPosition(cp); 
+    }
+    case CreateType::DROP:                             
+        setState(STATE_ACTIVE);    
         break;
     default:
         break;

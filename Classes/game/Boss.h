@@ -115,15 +115,19 @@ public:
 
     virtual float getCollwithR();          //杀伤半径
 
+    virtual bool hasKeepMoveing();
+
+    virtual void randSkillRelease();
+
     //----------------------------------------
 
-    void animation_move();      
+    //void animation_move();
+   
 
     void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
 
     //-----------------------------------------
 
-    bool hasKeepMoveing();
 
     void randSkillTimer();      //随机技能
 
@@ -131,14 +135,13 @@ public:
 
     void randSkillCreate();
 
-    void randSkillRelease();
 
     void skillCd();             //技能CD
 
-    void releasFlush();         //释放闪击
+    //void releasFlush();         //释放闪击
     
 
-private:
+protected:
 
     int                             m_iSkillTimer;                  //系统创建随机技能时间
     T_RandSkill*                    m_pRandSkill;

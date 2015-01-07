@@ -54,7 +54,7 @@ bool CGameLogic::init()
 
 void CGameLogic::onEnter()
 {
-    Node::onEnter();    
+    Node::onEnter();        
     log("Gamelogic onEnter.."); 
 
     Size size = Director::getInstance()->getWinSize();
@@ -114,12 +114,14 @@ void CGameLogic::createGameElement()
 {
     //Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    m_pBoss = CBoss::create();
+    m_pBoss = CButterFly::create();
     m_pBoss->m_refShowArea  = m_refShowArea;
     m_pBoss->m_refSp        = m_refSp;
     m_pBoss->m_refPlayer    = m_refPlayer;
 
-    m_pBoss->randPosition();
+    Vec2 cp;
+    m_pBoss->randPosition(cp);
+    m_pBoss->setPosition(cp);
 
     addChild(m_pBoss);
 
@@ -136,7 +138,9 @@ void CGameLogic::createGameElement()
         npc->m_refSp        = m_refSp;
         npc->m_refPlayer    = m_refPlayer;
 
-        npc->randPosition();
+        Vec2 cp;
+        npc->randPosition(cp);
+        npc->setPosition(cp);
 
         addChild(npc);
 
@@ -278,7 +282,7 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
         if (!hasIn)
         {
             pNpc->setState(CNpc::STATE_DIE);
-            m_iDropCount++;
+            m_oAllDrop.push_back(pNpc->getPosition());
         }
         break;
     case MODEL_OUT:
@@ -286,7 +290,7 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
         if (hasIn)
         {
             pNpc->setState(CNpc::STATE_DIE);
-            m_iDropCount++;
+            m_oAllDrop.push_back(pNpc->getPosition());
         }         
         break;
     }
@@ -365,7 +369,6 @@ void CGameLogic::run(float time)
         m_oAllElement[i]->run(time);
     }
 
-
     if ((m_fCounter += time) > 1)
     {
         flushTime(m_iTimer);
@@ -432,31 +435,37 @@ void CGameLogic::removeGameElement(CGameElement* pElement)
 
 void CGameLogic::dropObject()
 {
-    if (m_iDropCount == 0)
+    if (m_oAllDrop.size() == 0)
     {
         return;
     }
 
-    for (int i = 0; i < m_iDropCount;i++)
+    for (int i = 0; i < m_oAllDrop.size(); i++)
     {
         int randnum = CMath::getRandom(1, 100);
         if (randnum <= 100)
         {
-            log("drop object ~~~~~~~~~~~~~~~~~~");
+            //log("drop object ~~~~~~~~~~~~~~~~~~");
             auto article = CGameArticle::create();
             article->m_refShowArea = m_refShowArea;
 
             article->setProperty(article->randProperty());        
-            article->setCreateType(CGameArticle::CreateType::DROP);     
-
-            log("postion:%f, %f", article->getPosition().x, article->getPosition().y);
+            article->setCreateType(CGameArticle::CreateType::DROP);   
+           
             addChild(article);
+
+            Vec2 cp;
+            article->randPosition(cp);
+            article->setPosition(m_oAllDrop[i]);
+
+            auto moveto = MoveTo::create(0.81, cp);
+            article->runAction(moveto);
 
             m_oAllElement.push_back(article);
             m_oAllRander.push_back(article);
         }
     }
 
-    m_iDropCount = 0;
+    m_oAllDrop.clear();
 
 }

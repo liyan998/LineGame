@@ -59,7 +59,7 @@ bool CGameElement::checkRandPosition(const Vec2& inPoint)
     }
     return true;
 }
-void CGameElement::randPosition()
+void CGameElement::randPosition(Vec2& outPoint)
 {
     Vec2 tp;
 
@@ -69,7 +69,9 @@ void CGameElement::randPosition()
 
     } while (!checkRandPosition(tp));
 
-    setPosition(tp);
+
+    outPoint = tp;
+    //setPosition(tp);
 }
 
 

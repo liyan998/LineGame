@@ -135,6 +135,9 @@
     <ClCompile Include="..\Classes\game\AnimaAxis.cpp">
       <Filter>Classes\game\element</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\game\ButterFly.cpp">
+      <Filter>Classes\game\element\enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\AnimaAxis.h">
       <Filter>Classes\game\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\ButterFly.h">
+      <Filter>Classes\game\element\enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

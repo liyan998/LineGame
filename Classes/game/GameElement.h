@@ -65,7 +65,7 @@ public:
 
     bool checkRandPosition(const Vec2& inPoint);                            //检查坐标是否符合游戏逻辑标准
 
-    void randPosition();
+    void randPosition(Vec2& outPoint);
 
     int getStep();
 
@@ -90,6 +90,7 @@ class CBoss;        //首领
 class CNpc;         //护卫    
 class CGamePlayer;
 
+class CButterFly;
 //class CMySprite;
 
 #include "Actor.h"
@@ -98,6 +99,8 @@ class CGamePlayer;
 #include "Npc.h"
 #include "Game1Player.h"
 #include "GameArticle.h"
+
+#include "ButterFly.h"
 //#include "MySprite.h"
 
 //////////////////////////////////////////////////////

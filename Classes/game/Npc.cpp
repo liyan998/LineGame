@@ -122,7 +122,11 @@ void CNpc::movementCallback(Armature * armature, MovementEventType type,const st
         if (strcmp(name.c_str(), PLAYLAB_GUARD_DIE) == 0)
         {
             CGameElement::clearCurrentAnimation();
-            CEnemy::randPosition();
+
+            Vec2 cp;
+            CEnemy::randPosition(cp);
+            setPosition(cp);
+
             m_fCount = 0.0f;
             setState(STATE_REBACK);        
         }

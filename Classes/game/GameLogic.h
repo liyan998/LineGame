@@ -33,8 +33,9 @@ public:
 
     CGameLogic() : 
         m_iTimer(0), 
-        m_fCounter(0.0f),
-        m_iDropCount(0){}
+        m_fCounter(0.0f)
+        //m_iDropCount(0)
+    {}
 
     virtual bool init();
 
@@ -110,7 +111,9 @@ private:
 
     //--------------------------------------------------
 
-    int                             m_iDropCount;//掉落个数
+    //int                             m_iDropCount;//掉落个数
+
+    std::vector<Vec2>               m_oAllDrop;
 
 };
 #endif
