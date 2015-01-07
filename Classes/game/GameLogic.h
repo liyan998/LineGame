@@ -31,7 +31,10 @@ public:
 
 public:
 
-    CGameLogic() : m_iTimer(0), m_fCounter(0.0f){}
+    CGameLogic() : 
+        m_iTimer(0), 
+        m_fCounter(0.0f),
+        m_iDropCount(0){}
 
     virtual bool init();
 
@@ -79,6 +82,15 @@ public:
 
     void getRandVec2(CEnemy* pEnemy);                       //得到随机坐标
 
+    void dropObject();                                      //掉落
+
+public:
+
+    CPath*                          m_refPath;
+    CMySprite*                      m_refSp;
+    CGamePlayer*                    m_refPlayer;
+    CShowArea*                      m_refShowArea;
+
 private:
 
     CBoss*                          m_pBoss;
@@ -96,11 +108,9 @@ private:
 
     Vec2                            m_oBong;//  
 
-public:
+    //--------------------------------------------------
 
-    CPath*                          m_refPath;
-    CMySprite*                      m_refSp;
-    CGamePlayer*                    m_refPlayer;
-    CShowArea*                      m_refShowArea;
+    int                             m_iDropCount;//掉落个数
+
 };
 #endif

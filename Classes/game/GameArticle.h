@@ -84,8 +84,6 @@ public:
     static CGameArticle* create(CGameArticle* pArea)
     {
         CGameArticle* tp = new CGameArticle();
-
-
         if (tp->init())
         {
 

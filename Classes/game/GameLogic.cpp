@@ -224,8 +224,10 @@ void CGameLogic::h_ActionClose(EventParm pData)
         clearGameElement();
         m_refShowArea->setClose(m_pBoss->getPosition());
         m_refSp->clearGuide();
-        float area = m_refShowArea->getArea();
-       
+
+        dropObject();
+
+        float area = m_refShowArea->getArea();       
         flushArea(area);
 
         if (area > WINPART)
@@ -243,7 +245,6 @@ void CGameLogic::h_ActionClose(EventParm pData)
 
 void CGameLogic::clearGameElement()
 {
-
     int rmode = m_refShowArea->hasIncludeMaster(m_pBoss->getPosition()) ? MODEL_IN: MODEL_OUT;
     
     for (int i = 0; i < m_oAllElement.size();i++)
@@ -263,7 +264,6 @@ void CGameLogic::clearGameElement()
             clearGameObject(tpGameArticle, rmode);
             break;
         }
-
     } 
 }
 
@@ -278,6 +278,7 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
         if (!hasIn)
         {
             pNpc->setState(CNpc::STATE_DIE);
+            m_iDropCount++;
         }
         break;
     case MODEL_OUT:
@@ -285,6 +286,7 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
         if (hasIn)
         {
             pNpc->setState(CNpc::STATE_DIE);
+            m_iDropCount++;
         }         
         break;
     }
@@ -323,17 +325,10 @@ void CGameLogic::clearGameObject(CGameArticle* pGameAricle, int mode)
 
 
 void CGameLogic::h_ActionHit(EventParm pData)
-{
-    
+{    
     flushHealth(m_refSp->getHealth());
-
     CEnemy* pEnemy = (CEnemy*)(*(CEnemy**)pData);
-
-    m_oBong = pEnemy->getPosition();
-
-
-    
-    
+    m_oBong = pEnemy->getPosition();    
 }
 
 
@@ -393,9 +388,6 @@ void CGameLogic::print(DrawNode* dn)
     }
 
     dn->drawDot(m_oBong, 4, Color4F(0,0,1,1));
-
-
-
 }
 
 
@@ -432,7 +424,39 @@ void CGameLogic::removeGameElement(CGameElement* pElement)
             break;
         }
     }
+    pElement->m_refShowArea = nullptr;
     pElement->released();
 
     removeChild(pElement);
+}
+
+void CGameLogic::dropObject()
+{
+    if (m_iDropCount == 0)
+    {
+        return;
+    }
+
+    for (int i = 0; i < m_iDropCount;i++)
+    {
+        int randnum = CMath::getRandom(1, 100);
+        if (randnum <= 100)
+        {
+            log("drop object ~~~~~~~~~~~~~~~~~~");
+            auto article = CGameArticle::create();
+            article->m_refShowArea = m_refShowArea;
+
+            article->setProperty(article->randProperty());        
+            article->setCreateType(CGameArticle::CreateType::DROP);     
+
+            log("postion:%f, %f", article->getPosition().x, article->getPosition().y);
+            addChild(article);
+
+            m_oAllElement.push_back(article);
+            m_oAllRander.push_back(article);
+        }
+    }
+
+    m_iDropCount = 0;
+
 }

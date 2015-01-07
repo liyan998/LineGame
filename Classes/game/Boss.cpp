@@ -123,7 +123,7 @@ void CBoss::randSkillTimer()
     case RANDSKILL_STATE_READY:
         if (m_fCount > 1.0f)
         {
-            log("m_iSkillTim1er:%d", m_iSkillTimer);
+            //log("m_iSkillTim1er:%d", m_iSkillTimer);
             if (m_iSkillTimer-- <= 1)
             {                      
                 randSkillCreate();
@@ -222,7 +222,7 @@ void CBoss::skillCd()
 {
     if (m_fSkillCdCount >= 1.f)
     {
-        log("---------------------");
+        //log("---------------------");
         for (int i = 0; i < m_oAllRandSkill.size();i++)
         {
             if (m_oAllRandSkill[i]->m_iSkillState == RandSkill_State::RANDSKILL_STATE_CD)
@@ -233,7 +233,7 @@ void CBoss::skillCd()
                     m_oAllRandSkill[i]->m_iSkillState = RandSkill_State::RANDSKILL_STATE_READY;
                 }
             }
-            log("%d m_oAllRandSkill[i]->m_iSkillCd:%d", m_oAllRandSkill[i]->m_iSkillState, m_oAllRandSkill[i]->m_iSkillCd);
+            //log("%d m_oAllRandSkill[i]->m_iSkillCd:%d", m_oAllRandSkill[i]->m_iSkillState, m_oAllRandSkill[i]->m_iSkillCd);
         }
         m_fSkillCdCount = 0.0f;
     }

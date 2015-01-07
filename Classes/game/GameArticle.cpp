@@ -24,13 +24,14 @@ bool CGameArticle::init()
 
 void CGameArticle::run(float time)
 {
-    if (m_iCreateType == CreateType::SYSTEM)
+    if (m_iCreateType == CreateType::SYSTEM
+        ||
+        m_iCreateType == CreateType::DROP)
     {
         m_fCount += time;
 
         if (m_fCount >= 1)
-        {
-            
+        {            
             action_create();
             action_Disp();
             m_fCount = 0.0F;
@@ -123,10 +124,18 @@ void CGameArticle::action_Disp()
         return;
     }
   
-
+    //log("time to up %d , %d", m_iTimeDis,m_pProperty->liveTime);
     if (m_iTimeDis++ >= m_pProperty->liveTime)
     {
-        setState(STATE_DISP);
+        if (m_iCreateType == CreateType::DROP)
+        {
+            animation_effe();            
+        }
+        else{
+            setState(STATE_DISP);
+        }
+
+
         m_iTimeDis = 0;
     }
 
@@ -138,22 +147,22 @@ void CGameArticle::movementCallback(Armature * armature, MovementEventType type,
     switch (type)
     {
     case MovementEventType::COMPLETE:
-
     
     if (strcmp(name.c_str(), PLAYLAB_GUARD_REVIVE) == 0)
     {        
         CEventDispatcher::getInstrance()->dispatchEvent(m_pProperty->eventid, m_pProperty->pData );
         
-        if (m_iCreateType == CreateType::PAY)
+        switch (m_iCreateType)
         {
+        case CreateType::PAY:
+        case CreateType::DROP:
             static_cast<CGameLogic*>(this->getParent())->removeGameElement(this);
-        }
-        else
-        {
+            break;
+        case CreateType::SYSTEM:
             setState(STATE_DISP);
-        }
+            break;
+        }     
     }
-
         break;
     }
 }
@@ -270,13 +279,13 @@ void CGameArticle::setCreateType(int type)
 {
     this->m_iCreateType = type;
 
-
     switch (type)
     {
     case CreateType::SYSTEM:
         setState(STATE_DISP);
         break;
     case CreateType::PAY:
+    case CreateType::DROP:
         setState(STATE_ACTIVE);
         break;
     default:
