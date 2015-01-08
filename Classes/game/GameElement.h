@@ -91,6 +91,7 @@ class CNpc;         //ª§Œ¿
 class CGamePlayer;
 
 class CButterFly;
+class CDragon;
 //class CMySprite;
 
 #include "Actor.h"
@@ -101,6 +102,7 @@ class CButterFly;
 #include "GameArticle.h"
 
 #include "ButterFly.h"
+#include "Dragon.h"
 //#include "MySprite.h"
 
 //////////////////////////////////////////////////////

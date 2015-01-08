@@ -71,7 +71,7 @@ void CBoss::run(float t)
     
     skillCd();
     
-    randSkillTimer();  
+    randSkillTimer(t);  
    
    //---------------------------- 
 
@@ -86,7 +86,7 @@ bool CBoss::hasKeepMoveing()
     return true;
 }
 
-void CBoss::randSkillTimer()
+void CBoss::randSkillTimer(float time)
 {
     switch (m_iRandSkillState)
     {
@@ -97,21 +97,28 @@ void CBoss::randSkillTimer()
             if (m_iSkillTimer-- <= 1)
             {                      
                 randSkillCreate();
-                m_iRandSkillState = RandSkill_State::RANDSKILL_STATE_RELEAS;
+
+                if (m_pRandSkill != nullptr)
+                {
+                    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_START,new int(m_pRandSkill->m_iSkillId));
+
+                    m_iRandSkillState = RandSkill_State::RANDSKILL_STATE_RELEAS;
+                }
             }    
             m_fCount = 0;
         }
         break;
     case RANDSKILL_STATE_RELEAS:
-        randSkillRelease();
+        randSkillRelease(time);
         break;
     }        
 }
 
 void CBoss::createSkillTimer()
 {
-    m_iRandSkillState  = RandSkill_State::RANDSKILL_STATE_READY;
-    m_iSkillTimer     = CMath::getRandom(15, 35);// 
+    m_iRandSkillState   = RandSkill_State::RANDSKILL_STATE_READY;
+    m_iSkillTimer       = CMath::getRandom(1, 3);//
+    log("skill %d s after Release", m_iSkillTimer);
 }
 
 
@@ -129,6 +136,11 @@ void CBoss::randSkillCreate()
         }        
     }
 
+    if (t_oAllIndex.size() < 1)
+    {
+        return;
+    }
+
     int index = CMath::getRandom(0, t_oAllIndex.size() - 1);
     m_pRandSkill = m_oAllRandSkill[index];
     m_pRandSkill->init();
@@ -138,7 +150,7 @@ void CBoss::randSkillCreate()
    
 }
 
-void CBoss::randSkillRelease()
+void CBoss::randSkillRelease(float time)
 {
     //log("m_iSkillCd:%f", m_fCount); 
  
@@ -168,17 +180,6 @@ void CBoss::skillCd()
 }
 
 
-float CBoss::getCollwithR()
-{
-    if (m_iRandSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS
-        &&
-        m_pRandSkill->m_iSkillId == Skill::SKILL_T_BIGAREA)
-    {
-        T_SkillBigArea* pTskill = static_cast<T_SkillBigArea*>(m_pRandSkill->m_pSkill);
-        return CEnemy::getCollwithR() * pTskill->m_fArea;
-    }
-    return CEnemy::getCollwithR();
-}
 
 void CBoss::print(DrawNode* dn)
 {

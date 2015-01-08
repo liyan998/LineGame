@@ -18,13 +18,14 @@ public:
 
     CAnimationAxis() :m_pArmature(nullptr)
     {
-        ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-            RES_ANIMA_PNG_PIPI,
-            RES_ANIMA_PLS_PIPI,
-            RES_ANIMA_JSO_PIPI
-            );
+     
     
     }
+
+    CREATE_FUNC(CAnimationAxis)
+
+
+    
 
     void clearCurrentAnimation();
 

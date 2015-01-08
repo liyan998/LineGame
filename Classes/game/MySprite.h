@@ -96,6 +96,8 @@ public:
 
     int getHealth();
 
+    bool hasSkillLightCountTime();
+
 private:
 
     void fixPosition(const Vec2& inPos, Vec2& outPos);  //ÐÞÕýÎ»ÖÃ 

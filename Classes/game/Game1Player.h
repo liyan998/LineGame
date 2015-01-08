@@ -26,6 +26,10 @@ public:
         EFFECT_ADDPROTECTED,//护盾
     };
 
+    enum TagIndex
+    {
+        Anim_Light,         //闪击云
+    };
 public:
 
     CREATE_FUNC( CGamePlayer )
@@ -77,6 +81,18 @@ public:
     void h_actionAddProtect(EventParm pData);
 
 
+    //--------------------------------------------------------
+
+    void h_actionSkillStart(EventParm pData);
+
+    void h_actionSkillEnd(EventParm pData);
+
+    void setLigitPosition(const Vec2& inPos);
+
+    void h_actionSkillAttick(EventParm pData);
+
+    void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
+
 
 private:
 
@@ -113,6 +129,8 @@ private:
     T_EventPropertyAddSpeed*            m_pEventAddSpeed;
 
     int                                 m_iEffectAddProtect;        //防护道具作用
+
+    bool                                m_bHasLight;//是否收到闪电攻击作用
 
 
 

@@ -21,12 +21,34 @@ bool CGamePlayer::init()
     m_iEffectAddProtect = EFFECT_NONE;
     m_iEffectAddSpeed   = EFFECT_NONE;
 
+    m_bHasLight         = false;
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DRAGON_SKILL_YUN,
+        RES_ANIMA_PLS_DRAGON_SKILL_YUN,
+        RES_ANIMA_JSO_DRAGON_SKILL_YUN
+        );
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DRAGON_SKILL_YUNRELEAS,
+        RES_ANIMA_PLS_DRAGON_SKILL_YUNRELEAS,
+        RES_ANIMA_JSO_DRAGON_SKILL_YUNRELEAS
+        );
+
     //-------------------------------------------
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDPROTECT, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_START, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_END, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAK, this);
 
     //-----------------------------------------------------
+
+
+
+   // addChild(animAxis);
+
+    //------------------------------------------------
 
     setCurrentAnimation(ARMATURE_PIPI_STANDER);
     m_pArmature->setAnchorPoint(Vec2(0.5f, 0.2f));
@@ -42,6 +64,9 @@ void CGamePlayer::released()
 {
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDPROTECT, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_START, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_END, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_ATTICAK, this);
 
     this->removeAllChildren();
 }
@@ -51,6 +76,11 @@ void CGamePlayer::setPlayerPosition(const Vec2& pos)
     Vec2 tp = pos; 
     CUtil::formartGrid(tp, getStep());
     m_pArmature->setPosition(tp);
+
+    if (m_bHasLight)
+    {
+        setLigitPosition(pos);
+    }
 }
 
 
@@ -59,6 +89,15 @@ const Vec2& CGamePlayer::getPlayerPosition()
     return m_pArmature->getPosition();
 }
 
+
+void CGamePlayer::setLigitPosition(const Vec2& inPos)
+{
+    CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(TagIndex::Anim_Light);
+
+    Vec2 nInpos(inPos.x , inPos.y + 100);
+
+    pAa->setPosition(nInpos);
+}
 
 /************************************************************************/
 /* 
@@ -118,13 +157,12 @@ void CGamePlayer::backFollow()
 
 int CGamePlayer::getStep()
 {                       
-
     int step = this->m_iStep;
 
     if (m_iEffectAddSpeed == Effect::EFFECT_ADDSPEED)
     {
 //         float tf = m_iStep * m_pEventAddSpeed->addPart;
-        step = GRAD_NUMBER(m_iStep * 3);
+        step = GRAD_NUMBER(m_iStep * 2);
         //log("step : %d %f", step);
         //step = GRAD_NUMBER(step);
     }
@@ -206,7 +244,8 @@ void CGamePlayer::playerRun(float time)
     CUtil::formartGrid(npos, getStep());
     //CUtil::formartGrid(npos);
 
-    m_pArmature->setPosition(npos);
+    setPlayerPosition(npos);
+
 }
 
 
@@ -323,6 +362,15 @@ void CGamePlayer::actionEvent(int eventid, EventParm pData)
     case EVENT_PROPERTY_ADDPROTECT:
         h_actionAddProtect(pData);
         break;
+    case EVENT_BOSSSKILL_END:
+        h_actionSkillEnd(pData);
+        break;
+    case EVENT_BOSSSKILL_START:
+        h_actionSkillStart(pData);
+        break;
+    case EVENT_BOSSSKILL_ATTICAK:
+        h_actionSkillAttick(pData);
+        break;
     default:
         break;
     }
@@ -354,4 +402,56 @@ void CGamePlayer::h_actionAddSpeed(EventParm pData)
 
     m_pEventAddSpeed    = T_EventPropertyAddSpeed::clone(pEffAdd);
     m_iEffectAddSpeed   = Effect::EFFECT_ADDSPEED;
+}
+
+void CGamePlayer::h_actionSkillEnd(EventParm pData)
+{
+    CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(TagIndex::Anim_Light);
+
+    removeChild(pAa);
+
+    m_bHasLight = false;
+}
+
+void CGamePlayer::h_actionSkillStart(EventParm pData)
+{
+    CAnimationAxis* pAa = CAnimationAxis::create();
+    pAa->setTag(TagIndex::Anim_Light);    
+    addChild(pAa);
+
+    setLigitPosition(getPlayerPosition());
+
+    m_bHasLight = true;
+
+    pAa->setCurrentAnimation(ARMATURE_DRAGON_SKILL_YUN);
+    pAa->m_pArmature->getAnimation()->playByIndex(0);    
+}
+
+void CGamePlayer::h_actionSkillAttick(EventParm pData)
+{
+    if (!m_bHasLight)
+    {
+        return;
+    }
+
+
+    CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(TagIndex::Anim_Light);
+    pAa->clearCurrentAnimation();
+
+    pAa->setCurrentAnimation(ARMATURE_DRAGON_SKILL_YUNRELEAS);
+ 
+    pAa->m_pArmature->getAnimation()->setMovementEventCallFunc(pAa, movementEvent_selector(CGamePlayer::movementCallback));
+    pAa->m_pArmature->getAnimation()->playByIndex(0);
+
+}
+
+void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, const std::string& name)
+{   
+    if (type == MovementEventType::COMPLETE)
+    {
+        if (strcmp(name.c_str(), PLAYLAB_DRAGON_SKILL_YUNRELEAS) == 0)
+        {
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_ATTICAKOVER, 0);
+        }
+    }
 }

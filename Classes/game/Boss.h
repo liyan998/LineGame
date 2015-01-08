@@ -18,11 +18,11 @@ struct T_SkillData
     virtual void init() = 0;
 };
 
+//
 struct T_SkillBigArea : T_SkillData
 {
     float m_fArea;                  //面积
     float m_skillTime;              //技能持续时间
-
     float m_fMaxTime;               //持续时间
 
     virtual void init()
@@ -31,6 +31,7 @@ struct T_SkillBigArea : T_SkillData
     }
 };
 
+//
 struct T_SkillFlush : T_SkillData
 {
     int count;                      //闪现次数
@@ -42,6 +43,26 @@ struct T_SkillFlush : T_SkillData
     }
 };
 
+//风魔龙 闪电技能
+struct T_SkillDragonLighing
+{
+    float   m_fMaxTime;   //持续时间
+    float   m_fTime;      //当前使用时间
+
+    float   m_fCount;     //时间计数器  
+    int   buffer;       //能量
+
+    int state;
+
+    virtual void init()
+    {
+        m_fTime = m_fMaxTime;
+        buffer  = 0;
+        m_fCount = 0;
+        state = 0;
+    }
+
+};
 
 ///.................................................................
 
@@ -89,7 +110,8 @@ public:
     {
         SKILL_NONE,
         SKILL_T_BIGAREA,    //炫彩蝶粉
-        SKILL_T_FLUSH       //虚影蝶舞
+        SKILL_T_FLUSH,      //虚影蝶舞
+        SKILL_T_LIGHTING    //风魔龙闪电云
     };
 
 public:
@@ -113,11 +135,11 @@ public:
 
     virtual void changeDirect(int direct);
 
-    virtual float getCollwithR();          //杀伤半径
+    //virtual float getCollwithR();          //杀伤半径
 
     virtual bool hasKeepMoveing();
 
-    virtual void randSkillRelease();
+    virtual void randSkillRelease(float time);
 
     //----------------------------------------
 
@@ -129,7 +151,7 @@ public:
     //-----------------------------------------
 
 
-    void randSkillTimer();      //随机技能
+    void randSkillTimer(float time);      //随机技能
 
     void createSkillTimer();
 
@@ -138,7 +160,6 @@ public:
 
     void skillCd();             //技能CD
 
-    //void releasFlush();         //释放闪击
     
 
 protected:

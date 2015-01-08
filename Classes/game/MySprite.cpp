@@ -35,7 +35,11 @@ bool CMySprite::init()
   
     //----------------------------------------------------- 
 
-    
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_PIPI,
+        RES_ANIMA_PLS_PIPI,
+        RES_ANIMA_JSO_PIPI
+        );
     
     setCurrentAnimation(ARMATURE_PIPI_STANDER);
     m_pArmature->setAnchorPoint(Vec2(0.5f, 0.2f));
@@ -1445,12 +1449,31 @@ bool CMySprite::attiack(int value, CEnemy* pEnemy)
 void CMySprite::setCollPlayer()
 {
     //clearRoad();
-    m_oSpCurrentPos = m_oTPath[0];
+    if (m_oTPath.size() > 0)
+    {
+        m_oSpCurrentPos = m_oTPath[0];
+        setPlayerPosition(m_oSpCurrentPos);
+    }
 
     m_refPlayer->setState(CGamePlayer::STATE_STOP);
-    setPlayerPosition(m_oSpCurrentPos);
 
     clearGuide();  
 
     setState(STATE_STANDER);
+}
+
+
+bool CMySprite::hasSkillLightCountTime()
+{
+    switch (m_State)
+    {
+    case STATE_DRAW:
+    case STATE_CLOSE:
+        return false;
+    case STATE_STANDER:
+    case STATE_MOVE:
+    case STATE_BACK:
+        default:
+        return true;
+    }
 }

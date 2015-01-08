@@ -12,7 +12,24 @@
 #define RES_ANIMA_PLS_QINCAIDIE             "animation/qicaidie/Qicaidie_Walk_PNG/Qicaidie_Walk.plist"
 #define RES_ANIMA_JSO_QINCAIDIE             "animation/qicaidie/Qicaidie_Walk.ExportJson"
 
-#define ARMATURE_QINGCAI    "Qicaidie_Walk"
+#define ARMATURE_QINGCAI                    "Qicaidie_Walk"
+
+//DRAGON------------------------------------------------------
+
+#define RES_ANIMA_JSO_DRAGON_SKILL_YUN      "animation/dragon/FML_Skill_Yun.ExportJson"
+#define RES_ANIMA_PNG_DRAGON_SKILL_YUN      "animation/dragon/FML_Skill_Yun_PNG/FML_Skill_Yun.png"
+#define RES_ANIMA_PLS_DRAGON_SKILL_YUN      "animation/dragon/FML_Skill_Yun_PNG/FML_Skill_Yun.plist"
+
+#define ARMATURE_DRAGON_SKILL_YUN           "FML_Skill_Yun"
+
+//‘∆ Õ∑≈…¡µÁ
+#define RES_ANIMA_JSO_DRAGON_SKILL_YUNRELEAS "animation/dragon/FML_Skill_SDY.ExportJson"
+#define RES_ANIMA_PNG_DRAGON_SKILL_YUNRELEAS "animation/dragon/FML_Skill_SDY_PNG/FML_Skill_SDY.png"
+#define RES_ANIMA_PLS_DRAGON_SKILL_YUNRELEAS "animation/dragon/FML_Skill_SDY_PNG/FML_Skill_SDY.plist"
+
+#define ARMATURE_DRAGON_SKILL_YUNRELEAS      "FML_Skill_SDY"
+#define PLAYLAB_DRAGON_SKILL_YUNRELEAS       "FML_Skill_SDY"
+
 
 //ª§Œ¿#####################################################################
 

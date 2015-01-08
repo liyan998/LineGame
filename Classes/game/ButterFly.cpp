@@ -1,5 +1,6 @@
 #include "GameElement.h"
 
+
 bool CButterFly::init()
 {
     CBoss::init();
@@ -120,7 +121,7 @@ void CButterFly::releasFlush()
     setPosition(cp);
 }
 
-void CButterFly::randSkillRelease()
+void CButterFly::randSkillRelease(float time)
 {
     //log("m_iSkillCd:%f", m_fCount); 
 

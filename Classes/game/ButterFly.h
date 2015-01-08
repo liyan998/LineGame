@@ -24,7 +24,7 @@ public:
 
     virtual bool hasKeepMoveing();
 
-    virtual void randSkillRelease();
+    virtual void randSkillRelease(float time);
 
     //--------------------------------------------------
     

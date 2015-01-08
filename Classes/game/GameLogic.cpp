@@ -114,7 +114,7 @@ void CGameLogic::createGameElement()
 {
     //Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    m_pBoss = CButterFly::create();
+    m_pBoss = CDragon::create();
     m_pBoss->m_refShowArea  = m_refShowArea;
     m_pBoss->m_refSp        = m_refSp;
     m_pBoss->m_refPlayer    = m_refPlayer;

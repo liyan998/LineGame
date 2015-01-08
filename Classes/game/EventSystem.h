@@ -21,6 +21,12 @@
 #define EVENT_PROPERTY_ADDPROTECT       0x10000008      //道具 增加防护
 #define EVENT_PROPERTY_ADDSPEED         0x10000009      //道具 增加速度
 
+#define EVENT_BOSSSKILL_START           0x10000100      //BOSS技能释放开始
+#define EVENT_BOSSSKILL_END             0x10000101      //BOSS技能释放结束
+#define EVENT_BOSSSKILL_ATTICAK         0x10000102      //BOSS技能 伤害
+#define EVENT_BOSSSKILL_ATTICAKOVER     0x10000103      //攻击完成
+
+
 
 //道具增加速度
 struct T_EventPropertyAddSpeed
