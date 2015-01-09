@@ -11,7 +11,7 @@ bool CNpc::init()
     Node::init();
 
     m_iCategory = CGameElement::CATEGORY_NPC;
-    m_pArmature       = nullptr;
+ 
 
     m_iDirect   = liyan998::CMath::getRandom(0, 360);
     m_iStep     = 2;
@@ -92,8 +92,8 @@ inline
 void CNpc::animation_Die()
 {
     CGameElement::setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
-    m_pArmature->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
-    m_pArmature->getAnimation()->play(PLAYLAB_GUARD_DIE);
+    getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
+    getArmature()->getAnimation()->play(PLAYLAB_GUARD_DIE);
 }
 
 
@@ -101,16 +101,16 @@ inline
 void CNpc::animation_move()
 {   
     CGameElement::setCurrentAnimation(ARMATURE_DYB_WALK);
-    m_pArmature->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
-    m_pArmature->getAnimation()->play(PLAYLAB_DYB_FRONT_WALK);
+    getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
+    getArmature()->getAnimation()->play(PLAYLAB_DYB_FRONT_WALK);
 }
 
 inline
 void CNpc::animation_reBack()
 {
     CGameElement::setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
-    m_pArmature->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
-    m_pArmature->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
+    getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
+    getArmature()->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
 }
 
 

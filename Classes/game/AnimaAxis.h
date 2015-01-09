@@ -16,16 +16,17 @@ class CAnimationAxis :public Layer
 
 public:
 
-    CAnimationAxis() :m_pArmature(nullptr)
+    enum ElementIndex
     {
-     
-    
-    }
+        IndexArmature = 0xffffff
+    };
+
+    CAnimationAxis() :m_pArmature(nullptr){}
 
     CREATE_FUNC(CAnimationAxis)
 
 
-    
+    Armature* getArmature();
 
     void clearCurrentAnimation();
 

@@ -65,7 +65,13 @@
 #define RES_ANIMA_PNG_PIPI_DIE              "animation/Pipi/Pipi_Die_PNG/Pipi_Die.png"
 #define RES_ANIMA_PLS_PIPI_DIE              "animation/Pipi/Pipi_Die_PNG/Pipi_Die.plist"
 
+//hit
+#define RES_ANIMA_JSO_PIPI_HIT              "animation/Pipi/pipi_Hit.ExportJson"
+#define RES_ANIMA_PNG_PIPI_HIT              "animation/Pipi/Pipi_Hit_PNG/Pipi_Hit.png"
+#define RES_ANIMA_PLS_PIPI_HIT              "animation/Pipi/Pipi_Hit_PNG/Pipi_Hit.plist"
 
+#define ARMATURE_PIPI_HIT                   "pipi_Hit"
+#define PLAYLAB_PIPI_HIT                    "Pipi_Front_Hit"
 
 //ÌØÐ§#####################################################################
 

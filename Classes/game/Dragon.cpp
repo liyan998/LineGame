@@ -54,7 +54,7 @@ void CDragon::onEnter()
     //======================================
     clearCurrentAnimation();    
     setCurrentAnimation(ARMATURE_QINGCAI);
-    m_pArmature->getAnimation()->playByIndex(0);
+    getArmature()->getAnimation()->playByIndex(0);
 
 }
 
@@ -98,7 +98,7 @@ void CDragon::skillLight(float time)
     //------------------------------------------------
     if (tpSkilllight->state == 1)
     {
-        log("skill attick");
+        //log("skill attick");
         return;
     }
     
@@ -108,7 +108,7 @@ void CDragon::skillLight(float time)
         if (m_refSp->hasSkillLightCountTime())
         {
             tpSkilllight->buffer++;
-            if (tpSkilllight->buffer >= 3)
+            if (tpSkilllight->buffer > 3)
             {
                 //¼õÉË £¬ÊÍ·ÅÉÁµç£¬ÏûÊ§ÔÆ²Ê  
 
@@ -128,12 +128,13 @@ void CDragon::skillLight(float time)
             }
         }
 
+        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_LIGHTCOUNT, new int(tpSkilllight->buffer));
         tpSkilllight->m_fCount = 0;
     }
 
     //----------------------------------------------
 
-    log("%d Skill Time:%f", tpSkilllight->buffer, tpSkilllight->m_fTime);
+    //log("%d Skill Time:%f", tpSkilllight->buffer, tpSkilllight->m_fTime);
 
     if (tpSkilllight->m_fTime < m_fCount)
     {       

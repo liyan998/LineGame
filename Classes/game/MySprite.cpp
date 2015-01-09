@@ -42,9 +42,9 @@ bool CMySprite::init()
         );
     
     setCurrentAnimation(ARMATURE_PIPI_STANDER);
-    m_pArmature->setAnchorPoint(Vec2(0.5f, 0.2f));
-    m_pArmature->setOpacity(255 * 0.4);
-    m_pArmature->getAnimation()->playByIndex(0);
+    getArmature()->setAnchorPoint(Vec2(0.5f, 0.2f));
+    getArmature()->setOpacity(255 * 0.4);
+    getArmature()->getAnimation()->playByIndex(0);
 
 
     //----------------------------------------------------
@@ -1259,7 +1259,7 @@ void CMySprite::checkBack()
 
 void CMySprite::run(float tm)
 {
-    m_pArmature->setPosition(m_oSpCurrentPos);
+    getArmature()->setPosition(m_oSpCurrentPos);
     //log("mysprite run");
     switch (m_State)
     {
@@ -1469,10 +1469,10 @@ bool CMySprite::hasSkillLightCountTime()
     {
     case STATE_DRAW:
     case STATE_CLOSE:
+    case STATE_BACK:
         return false;
     case STATE_STANDER:
     case STATE_MOVE:
-    case STATE_BACK:
         default:
         return true;
     }

@@ -61,7 +61,7 @@ void CGameArticle::setState(int state)
     case STATE_ACTIVE:
         
         setCurrentAnimation(m_pProperty->armtruename);
-        m_pArmature->getAnimation()->play(m_pProperty->playlab);
+        getArmature()->getAnimation()->play(m_pProperty->playlab);
 //         setCurrentAnimation(ARMATURE_PROPERTY);       
 //         m_pSp->getAnimation()->play(PLAYLAB_PROPERTY_ADDHEALTH);
         break;
@@ -80,8 +80,8 @@ void CGameArticle::animation_effe()
 {   
     clearCurrentAnimation();
     setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
-    m_pArmature->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGameArticle::movementCallback));
-    m_pArmature->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
+    getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGameArticle::movementCallback));
+    getArmature()->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
 
 
 }

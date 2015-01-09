@@ -110,8 +110,8 @@ bool CButterFly::hasKeepMoveing()
 void CButterFly::animation_move()
 {
     CGameElement::setCurrentAnimation(ARMATURE_QINGCAI);
-    m_pArmature->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CBoss::movementCallback));
-    m_pArmature->getAnimation()->playByIndex(0);
+    getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CBoss::movementCallback));
+    getArmature()->getAnimation()->playByIndex(0);
 }
 
 void CButterFly::releasFlush()

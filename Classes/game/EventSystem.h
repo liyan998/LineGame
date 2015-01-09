@@ -25,6 +25,7 @@
 #define EVENT_BOSSSKILL_END             0x10000101      //BOSS技能释放结束
 #define EVENT_BOSSSKILL_ATTICAK         0x10000102      //BOSS技能 伤害
 #define EVENT_BOSSSKILL_ATTICAKOVER     0x10000103      //攻击完成
+#define EVENT_BOSSSKILL_LIGHTCOUNT      0X10000104      //闪电计数
 
 
 

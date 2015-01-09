@@ -28,7 +28,9 @@ public:
 
     enum TagIndex
     {
-        Anim_Light,         //闪击云
+        Anim_Light=0x13322,         //闪击云
+        Anim_idle,
+        Anim_attick
     };
 public:
 
@@ -91,6 +93,8 @@ public:
 
     void h_actionSkillAttick(EventParm pData);
 
+    void h_actionSkillLightCount(EventParm pData);
+
     void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
 
 
@@ -123,6 +127,7 @@ public:
 private:   
 
     Vec2                                m_oCurrentTarget;
+    Vec2                                m_oPlayerPosition;
     std::vector<Vec2>                   m_oAllGuide;
 
     int                                 m_iEffectAddSpeed;          //加速道具使用
