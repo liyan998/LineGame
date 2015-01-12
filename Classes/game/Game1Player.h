@@ -98,6 +98,24 @@ public:
     void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
 
 
+    //------------------------------------------------
+    
+    void animation_idle();
+    
+    void animation_attack();  
+
+    CAnimationAxis* findCreateByIndex(int index);
+
+
+    //闪电技能攻击
+    void setLightAttack(bool lightAttack);
+    //闪电技能攻击计数
+    void setLightAttackCount(int count);
+    //闪电技能攻击释放
+    void setLightAttickReleased();
+    //闪电技能攻击完成
+    void destoryLightAttick();
+
 private:
 
     void checkEffect();
@@ -106,11 +124,6 @@ private:
 
     void playerStander(float time);
 
-    //TODO 完成动画
-    void animation_idle();
-
-    //TODO 完成动画
-    void animation_attack();  
 
     //TODO 完成动画
     void animation_die();
@@ -124,6 +137,8 @@ public:
     bool                                m_bFlow;
     int                                 m_iCurrentDirect;    
 
+    bool                                m_bHasLight;//是否收到闪电攻击作用
+
 private:   
 
     Vec2                                m_oCurrentTarget;
@@ -134,8 +149,6 @@ private:
     T_EventPropertyAddSpeed*            m_pEventAddSpeed;
 
     int                                 m_iEffectAddProtect;        //防护道具作用
-
-    bool                                m_bHasLight;//是否收到闪电攻击作用
 
 
 

@@ -77,13 +77,10 @@ void CGameArticle::setState(int state)
 }
 
 void CGameArticle::animation_effe()
-{   
-    clearCurrentAnimation();
+{      
     setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
     getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGameArticle::movementCallback));
     getArmature()->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
-
-
 }
 
 void CGameArticle::released()

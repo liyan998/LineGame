@@ -15,6 +15,8 @@ public:
 
 	void flush();
 
+    void run(float time);
+
 	bool onTouchBegan(Touch* touches, Event *event);
 
 	void onTouchEnded(Touch* touches, Event *event);
@@ -30,6 +32,10 @@ public:
     CShape* shape;
 
     Vec2 currentposition;
+
+    float m_fCount;
+
+    int m_iCount;
 };
 
 

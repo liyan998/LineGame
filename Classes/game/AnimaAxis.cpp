@@ -34,13 +34,13 @@ void CAnimationAxis::clearCurrentAnimation()
         m_pArmature->getAnimation()->setFrameEventCallFunc(nullptr);
        
         m_pArmature->getAnimation()->stop();  //这句有没有都会崩
-        m_pArmature->runAction(
-            Sequence::create(DelayTime::create(.1f), 
-            CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, m_pArmature)),
-            NULL)
-            );
-        //removeChild(m_pArmature);
-        m_pArmature->removeFromParentAndCleanup(true);
+//         m_pArmature->runAction(
+//             Sequence::create(DelayTime::create(.1f), 
+//             CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, m_pArmature)),
+//             NULL)
+//             );
+        removeChild(m_pArmature);
+        //m_pArmature->removeFromParentAndCleanup(true);
         m_pArmature = nullptr;
     }
 }
