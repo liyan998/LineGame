@@ -60,7 +60,7 @@ void CMyGame::Init()
     auto director = Director::getInstance();  
     director->runWithScene(m_pGameScreen);
 
-    m_pGameScreen->SetScene( 13 );
+    m_pGameScreen->SetScene( 31 );
 
     log("MyGame Init finished");
 }
