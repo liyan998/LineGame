@@ -56,10 +56,10 @@ struct T_SkillDragonLighing
 
     virtual void init()
     {
-        m_fTime = m_fMaxTime;
-        buffer  = 0;
-        m_fCount = 0;
-        state = 0;
+        m_fTime     = m_fMaxTime;
+        buffer      = 0;
+        m_fCount    = 0;
+        state       = 0;
     }
 
 };
@@ -140,6 +140,8 @@ public:
     virtual bool hasKeepMoveing();
 
     virtual void randSkillRelease(float time);
+
+    virtual void startRandSkill();
 
     //----------------------------------------
 

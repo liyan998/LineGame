@@ -4,6 +4,12 @@ bool CDragon::init()
 {
     CBoss::init();
 
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DRAGON,
+        RES_ANIMA_PLS_DRAGON,
+        RES_ANIMA_JSO_DRAGON
+        );
+
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAKOVER, this);
 
@@ -50,12 +56,12 @@ void CDragon::onEnter()
 
     createSkillTimer();
     
-
     //======================================
-    clearCurrentAnimation();    
-    setCurrentAnimation(ARMATURE_QINGCAI);
-    getArmature()->getAnimation()->playByIndex(0);
 
+    clearCurrentAnimation();    
+    setCurrentAnimation(ARMATURE_DRAGON);
+    getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CDragon::movementCallback));
+    getArmature()->getAnimation()->play(PLAYLAB_DRAGON_WALK);
 }
 
 
@@ -69,7 +75,9 @@ void CDragon::actionEvent(int eventid, EventParm pData)
     switch (eventid)
     {
     case EVENT_BOSSSKILL_ATTICAKOVER:
+       // m_refPlayer->animation_attack();
         skillLightEnd();
+       
         break;
     default:
         break;
@@ -96,7 +104,7 @@ void CDragon::skillLight(float time)
     T_SkillDragonLighing* tpSkilllight = (T_SkillDragonLighing*)m_pRandSkill->m_pSkill;
     
     //------------------------------------------------
-    if (tpSkilllight->state == 1)
+    if (tpSkilllight->state == 2)
     {
         //log("skill attick");
         return;
@@ -116,7 +124,7 @@ void CDragon::skillLight(float time)
 
                 m_refSp->attiack(getAttack(), this);
                 //skillLightEnd();
-                tpSkilllight->state = 1;
+                tpSkilllight->state = 2;
             }
         }
         else
@@ -144,6 +152,13 @@ void CDragon::skillLight(float time)
 }
 
 
+void CDragon::startRandSkill()
+{
+    log("tpSkilllight->state+++");
+    getArmature()->getAnimation()->play(PLAYLAB_DRAGON_MAGIC_SDY);
+}
+
+
 int CDragon::getAttack()
 {
     if (m_iRandSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS
@@ -160,9 +175,24 @@ void CDragon::skillLightEnd()
 {
     log("Skill destory!");
 
+    m_refPlayer->destoryLightAttick();
+
     CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_END, new int(m_pRandSkill->m_iSkillId));
     m_pRandSkill->m_iSkillState = RANDSKILL_STATE_CD;
     m_pRandSkill->init();
 
     createSkillTimer();
+}
+
+void CDragon::movementCallback(Armature * armature, MovementEventType type, const std::string& name)
+{
+    if (type == MovementEventType::COMPLETE)
+    {
+        if (strcmp(name.c_str(), PLAYLAB_DRAGON_MAGIC_SDY) == 0)
+        {
+            CBoss::startRandSkill();
+            getArmature()->getAnimation()->play(PLAYLAB_DRAGON_WALK);            
+        }
+    }
+
 }

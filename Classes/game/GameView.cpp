@@ -235,6 +235,7 @@ void CGameView::run(float time)
 bool CGameView::onTouchBegan(Touch* touches, Event *event)
 {
 
+    //m_pPlayer->animation_attack();
     if (m_oPointers.size() + 1 > 1)
     {                   
         return false;

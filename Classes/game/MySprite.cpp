@@ -1439,7 +1439,7 @@ bool CMySprite::attiack(int value, CEnemy* pEnemy)
         setCollPlayer();
     }
                
-  
+    m_refPlayer->animation_attack();
 
     CEventDispatcher::getInstrance()->dispatchEvent(EVENT_HIT, new CEnemy*(pEnemy));
     return true;

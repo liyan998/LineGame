@@ -138,7 +138,8 @@ void CTest::flush()
     {
         log("in Ployon");
     }
-    else{
+    else
+    {
         log("out ployon");
     }
     
@@ -207,9 +208,11 @@ void CTest::menuCloseCallback(Ref* pSender)
         player->setLightAttickReleased();
         break;
     case 3:
-        //player->destoryLightAttick();
+        player->destoryLightAttick();
         break;
     }
+
+    //player->animation_attack();
 
 
     m_iCount++;

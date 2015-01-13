@@ -23,6 +23,7 @@ bool CGamePlayer::init()
     m_iEffectAddSpeed   = EFFECT_NONE;
 
     m_bHasLight         = false;
+    m_pCurrentAnim      = nullptr;
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
         RES_ANIMA_PNG_DRAGON_SKILL_YUN,
@@ -45,10 +46,11 @@ bool CGamePlayer::init()
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDPROTECT, this);
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_START, this);
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_END, this);
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAK, this);
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_LIGHTCOUNT, this);
+
+    //CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_START, this);
+    //CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_END, this);
+    //CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAK, this);
+    //CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_LIGHTCOUNT, this);
 
     //-----------------------------------------------------
 
@@ -88,9 +90,12 @@ void CGamePlayer::setPlayerPosition(const Vec2& pos)
     //getArmature()->setPosition(tp);
 
 
-    CAnimationAxis* pAa = findCreateByIndex(Anim_idle);
-
-    pAa->setPosition(m_oPlayerPosition);
+   
+    if (m_pCurrentAnim != nullptr)
+    {
+        m_pCurrentAnim->getArmature()->setAnchorPoint(Vec2(0.5f, 0.2f));
+        m_pCurrentAnim->setPosition(m_oPlayerPosition);
+    }
 
     if (m_bHasLight)
     {
@@ -340,11 +345,20 @@ void CGamePlayer::animation_attack()
 //     getArmature()->getAnimation()->playByIndex(0);
 //     setPlayerPosition(m_oPlayerPosition);
 
-    CAnimationAxis* pCaa = (CAnimationAxis*)getChildByTag(Anim_idle);
-    if (pCaa != nullptr)
+   
+    if (m_pCurrentAnim != nullptr)
     {
-        removeChild(pCaa);
+        removeChild(m_pCurrentAnim);
+        m_pCurrentAnim = nullptr;
     }
+
+    CAnimationAxis* pAa = findCreateByIndex(Anim_attick);
+    pAa->setCurrentAnimation(ARMATURE_PIPI_HIT);
+    pAa->getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGamePlayer::movementCallback));
+    pAa->getArmature()->getAnimation()->playByIndex(0);
+    m_pCurrentAnim = pAa;
+    setPlayerPosition(getPlayerPosition());
+
 }
 
 void CGamePlayer::animation_idle()
@@ -355,11 +369,17 @@ void CGamePlayer::animation_idle()
 // 
 //     setPlayerPosition(m_oPlayerPosition);
 
+    if (m_pCurrentAnim != nullptr)
+    {
+        removeChild(m_pCurrentAnim);
+    }
     
     CAnimationAxis* pAa = findCreateByIndex(Anim_idle);
 
     pAa->setCurrentAnimation(ARMATURE_PIPI_STANDER);
-    pAa->getArmature()->getAnimation()->playByIndex(0);
+    pAa->getArmature()->getAnimation()->playByIndex(0); 
+    m_pCurrentAnim = pAa;
+    setPlayerPosition(getPlayerPosition());
 
     
 
@@ -462,23 +482,22 @@ void CGamePlayer::h_actionAddSpeed(EventParm pData)
 
 void CGamePlayer::h_actionSkillEnd(EventParm pData)
 {
-    CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(TagIndex::Anim_Light);
-    pAa->getArmature()->getAnimation()->stop();
-    removeChild(pAa);
+//     CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(TagIndex::Anim_Light);
+//     pAa->getArmature()->getAnimation()->stop();
+//     removeChild(pAa);
 
     //m_bHasLight = false;
 }
 
 void CGamePlayer::h_actionSkillStart(EventParm pData)
 {
-   
+
+    setLightAttack(true);
 }
 
 void CGamePlayer::h_actionSkillAttick(EventParm pData)
-{
-
-
-
+{    
+    setLightAttickReleased();
 }
 
 void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, const std::string& name)
@@ -489,13 +508,13 @@ void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, 
         {
 
             //destoryLightAttick();
-            animation_attack();
+            //animation_attack();
             
             CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_ATTICAKOVER, 0);
 
         }else if (strcmp(name.c_str(), PLAYLAB_PIPI_HIT) == 0)
         {
-            animation_idle();
+            animation_idle();      
         }
     }
 }
@@ -505,18 +524,16 @@ void CGamePlayer::h_actionSkillLightCount(EventParm pData)
 {
     int count = *((int*)pData);
     
-   
+    setLightAttackCount(count);
 }
 
 
 /////////////////////////////////////////////////////////////////
 //ÉÁµç¹¥»÷
 ////////////////////////////////////////////////////////////////
-
 void CGamePlayer::setLightAttack(bool lightAttack)
 {
     this->m_bHasLight = lightAttack;
-
 
     if (m_bHasLight)
     {
@@ -555,13 +572,12 @@ void CGamePlayer::setLightAttackCount(int count)
 
     CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(TagIndex::Anim_Light);
     log("count :%d", count);
-    Color3B tcolor[] = {
-
+    Color3B tcolor[] = 
+    {
         { 255, 255, 255 },
-        { 255, 0, 0 },
-        { 150, 0, 0 },
-        { 10, 0, 0 }
-
+        { 200, 200, 200 },
+        { 102, 102, 102 },
+        { 50, 50, 50 }
     };
 
     if (count > 3)
@@ -578,7 +594,6 @@ void CGamePlayer::destoryLightAttick()
 {
     if (m_bHasLight)
     {
-
         CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(TagIndex::Anim_Light);
         this->removeChild(pAa);
 

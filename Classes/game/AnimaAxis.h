@@ -21,7 +21,7 @@ public:
         IndexArmature = 0xffffff
     };
 
-    CAnimationAxis() :m_pArmature(nullptr){}
+    CAnimationAxis():m_pArmature(nullptr){}
 
     CREATE_FUNC(CAnimationAxis)
 

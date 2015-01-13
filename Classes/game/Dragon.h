@@ -24,6 +24,7 @@ public:
 
     virtual int getAttack();
 
+    virtual void startRandSkill();
 
 
     virtual void actionEvent(int eventid, EventParm pData);
@@ -32,6 +33,9 @@ public:
     void skillLight(float time);
 
     void skillLightEnd();
+
+
+    void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
 };
 
 

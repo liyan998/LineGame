@@ -24,10 +24,7 @@ bool CNpc::init()
     //m_pSp       = Sprite::create("CloseNormal.png");
     // m_pSp->setScale(1.5f);
     //addChild(m_pSp);
-
-
-
-
+    
     return true;
 }
 

@@ -139,6 +139,8 @@ public:
 
     bool                                m_bHasLight;//是否收到闪电攻击作用
 
+    CAnimationAxis*                     m_pCurrentAnim;
+
 private:   
 
     Vec2                                m_oCurrentTarget;
