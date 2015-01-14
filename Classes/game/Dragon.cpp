@@ -10,6 +10,14 @@ bool CDragon::init()
         RES_ANIMA_JSO_DRAGON
         );
 
+    //-----------------------------------------------------------------
+    
+    m_oAngleTable.insert(std::pair<int, const char*>(ANGLE_DOWN,    PLAYLAB_DRAGON_DOWN_WALK));
+    m_oAngleTable.insert(std::pair<int, const char*>(ANGLE_UP,      PLAYLAB_DRAGON_UP_WALK));
+    m_oAngleTable.insert(std::pair<int, const char*>(ANGLE_LEFT,    PLAYLAB_DRAGON_LEFT_WALK));
+    m_oAngleTable.insert(std::pair<int, const char*>(ANGLE_RIGHT,   PLAYLAB_DRAGON_RIGHT_WALK));
+
+    //--------------------------------------------------------
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAKOVER, this);
 
@@ -19,9 +27,7 @@ bool CDragon::init()
 
 void CDragon::released()
 {
-
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_ATTICAKOVER, this);
-
 }
 
 
@@ -29,10 +35,10 @@ void CDragon::onEnter()
 {
     CBoss::onEnter();
 
-    T_SkillDragonLighing* skilllight = new T_SkillDragonLighing();
-    skilllight->m_fMaxTime = 10;
+    //---------------------------------------------
 
-   
+    T_SkillDragonLighing* skilllight = new T_SkillDragonLighing();
+    skilllight->m_fMaxTime = 10;   
     skilllight->init();
 
     T_RandSkill allRandSkill[] = {
@@ -61,7 +67,13 @@ void CDragon::onEnter()
     clearCurrentAnimation();    
     setCurrentAnimation(ARMATURE_DRAGON);
     getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CDragon::movementCallback));
-    getArmature()->getAnimation()->play(PLAYLAB_DRAGON_WALK);
+    getArmature()->getAnimation()->playByIndex(0);
+
+    //-------------------------------------
+
+    int t_direct = CPath::DIRECT[CMath::getRandom(0, 3)][0];
+    m_iDirect = t_direct + CMath::getRandom(-30, 30);
+    changeDirect(t_direct);
 }
 
 
@@ -82,8 +94,6 @@ void CDragon::actionEvent(int eventid, EventParm pData)
     default:
         break;
     }
-
-
 }
 
 
@@ -135,14 +145,12 @@ void CDragon::skillLight(float time)
                 tpSkilllight->buffer = 0;
             }
         }
-
+        
         CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_LIGHTCOUNT, new int(tpSkilllight->buffer));
         tpSkilllight->m_fCount = 0;
     }
 
     //----------------------------------------------
-
-    //log("%d Skill Time:%f", tpSkilllight->buffer, tpSkilllight->m_fTime);
 
     if (tpSkilllight->m_fTime < m_fCount)
     {       
@@ -155,7 +163,14 @@ void CDragon::skillLight(float time)
 void CDragon::startRandSkill()
 {
     log("tpSkilllight->state+++");
-    getArmature()->getAnimation()->play(PLAYLAB_DRAGON_MAGIC_SDY);
+
+    switch (m_pRandSkill->m_iSkillId)
+    {
+    case Skill::SKILL_T_LIGHTING:
+        getArmature()->getAnimation()->play(PLAYLAB_DRAGON_MAGIC_SDY);
+    break;
+
+    }
 }
 
 
@@ -191,8 +206,21 @@ void CDragon::movementCallback(Armature * armature, MovementEventType type, cons
         if (strcmp(name.c_str(), PLAYLAB_DRAGON_MAGIC_SDY) == 0)
         {
             CBoss::startRandSkill();
-            getArmature()->getAnimation()->play(PLAYLAB_DRAGON_WALK);            
+            getArmature()->getAnimation()->play(PLAYLAB_DRAGON_UP_WALK);            
         }
     }
+}
 
+void CDragon::changeDirect(int direct)
+{
+    std::map<int, const char*>::iterator it = m_oAngleTable.find(direct);
+    if (it != m_oAngleTable.end())
+    {
+        const std::string& t_str = getArmature()->getAnimation()->getCurrentMovementID();
+        if (strcmp(t_str.c_str() , PLAYLAB_DRAGON_MAGIC_SDY) == 0)
+        {
+            return;
+        }
+        getArmature()->getAnimation()->play(it->second);
+    }
 }

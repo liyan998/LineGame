@@ -103,8 +103,10 @@ void CEnemy::checkWith()
         if (index != SELECTID_NULL)
         {                
             CMargin* margin = m_refShowArea->getAreaMargin(index);
-            m_iDirect = margin->getCollWidthRandomDirect() + CMath::getRandom(-50, 50);
-            changeDirect(m_iDirect);           
+            int t_direct    = margin->getCollWidthRandomDirect();
+            m_iDirect       = t_direct + CMath::getRandom(-50, 50);
+
+            changeDirect(t_direct);
         }
     }   
 
@@ -117,8 +119,10 @@ void CEnemy::checkWith()
         CMargin* pMargin = m_refShowArea->getBorderMargin(endPoint); 
         if (pMargin != nullptr)
         {            
-            m_iDirect = CUtil::getNextAngle(pMargin->m_Angle, 1) + CMath::getRandom(-80, 80);
-            changeDirect(m_iDirect);    
+            int t_direct    = CUtil::getNextAngle(pMargin->m_Angle, 1);
+            m_iDirect       = t_direct + CMath::getRandom(-80, 80);
+
+            changeDirect(t_direct);
         }     
     }
 

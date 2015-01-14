@@ -46,7 +46,6 @@ bool CGamePlayer::init()
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDPROTECT, this);
-
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_START, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_END, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAK, this);
@@ -491,8 +490,14 @@ void CGamePlayer::h_actionSkillEnd(EventParm pData)
 
 void CGamePlayer::h_actionSkillStart(EventParm pData)
 {
+    int skillid = *(int*)pData;
 
-    setLightAttack(true);
+    switch (skillid)
+    {
+    case CDragon::Skill::SKILL_T_LIGHTING:
+        setLightAttack(true);
+        break;
+    }
 }
 
 void CGamePlayer::h_actionSkillAttick(EventParm pData)
@@ -506,10 +511,8 @@ void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, 
     {
         if (strcmp(name.c_str(), PLAYLAB_DRAGON_SKILL_YUNRELEAS) == 0)
         {
-
             //destoryLightAttick();
-            //animation_attack();
-            
+            //animation_attack();            
             CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_ATTICAKOVER, 0);
 
         }else if (strcmp(name.c_str(), PLAYLAB_PIPI_HIT) == 0)
@@ -534,9 +537,10 @@ void CGamePlayer::h_actionSkillLightCount(EventParm pData)
 void CGamePlayer::setLightAttack(bool lightAttack)
 {
     this->m_bHasLight = lightAttack;
-
-    if (m_bHasLight)
+    log("setLightAttack:%d", lightAttack);
+    if (this->m_bHasLight)
     {
+        log("light Attick~~~");
         CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(TagIndex::Anim_Light);
         if (pAa == nullptr)
         {
@@ -567,6 +571,7 @@ void CGamePlayer::setLightAttackCount(int count)
 {
     if (!m_bHasLight)
     {
+        log("no light skill");
         return;
     }
 

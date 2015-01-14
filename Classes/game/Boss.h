@@ -137,10 +137,11 @@ public:
 
     //virtual float getCollwithR();          //杀伤半径
 
+    //是否可以移动
     virtual bool hasKeepMoveing();
-
+    //释放随机技能
     virtual void randSkillRelease(float time);
-
+    //开始释放随机技能
     virtual void startRandSkill();
 
     //----------------------------------------
@@ -148,7 +149,7 @@ public:
     //void animation_move();
    
 
-    void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
+    //void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
 
     //-----------------------------------------
 

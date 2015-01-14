@@ -26,6 +26,7 @@ public:
 
     virtual void startRandSkill();
 
+    virtual void changeDirect(int direct);
 
     virtual void actionEvent(int eventid, EventParm pData);
 
@@ -36,6 +37,11 @@ public:
 
 
     void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
+
+private:
+
+    std::map<int, const char*> m_oAngleTable;
+
 };
 
 

@@ -24,7 +24,10 @@
 
 //风魔龙释放闪电云魔法动作
 #define PLAYLAB_DRAGON_MAGIC_SDY                "FML_Magic_SDY"
-#define PLAYLAB_DRAGON_WALK                     "FML_Front_Walk"
+#define PLAYLAB_DRAGON_UP_WALK                  "FML_Back_Walk"
+#define PLAYLAB_DRAGON_DOWN_WALK                "FML_Front_Walk"
+#define PLAYLAB_DRAGON_LEFT_WALK                "FML_Left_Side_Walk"
+#define PLAYLAB_DRAGON_RIGHT_WALK               "FML_Right_Side_Walk"
 
 
 #define RES_ANIMA_JSO_DRAGON_SKILL_YUN          "animation/dragon/FML_Skill_Yun.ExportJson"

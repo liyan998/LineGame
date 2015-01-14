@@ -100,8 +100,8 @@ void CBoss::randSkillTimer(float time)
 
                 if (m_pRandSkill != nullptr)
                 {
-                    m_iRandSkillState = RandSkill_State::RANDSKILL_STATE_RELEAS;
                     startRandSkill();                    
+                    m_iRandSkillState = RandSkill_State::RANDSKILL_STATE_RELEAS;
                 }
             }    
             m_fCount = 0;
@@ -144,9 +144,7 @@ void CBoss::randSkillCreate()
     m_pRandSkill = m_oAllRandSkill[index];
     m_pRandSkill->init();
 
-    log("Create Skill:%d", m_pRandSkill->m_iSkillId);
-
-   
+    log("Create Skill:%d", m_pRandSkill->m_iSkillId);   
 }
 
 
@@ -268,8 +266,8 @@ void CBoss::changeDirect(int direct)
 }
 
 
-void CBoss::movementCallback(Armature * armature, MovementEventType type, const std::string& name)
-{
-
-
-}
+// void CBoss::movementCallback(Armature * armature, MovementEventType type, const std::string& name)
+// {
+// 
+// 
+// }
