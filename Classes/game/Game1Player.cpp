@@ -47,10 +47,10 @@ bool CGamePlayer::init()
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDPROTECT, this);
 
-    //CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_START, this);
-    //CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_END, this);
-    //CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAK, this);
-    //CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_LIGHTCOUNT, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_START, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_END, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAK, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_LIGHTCOUNT, this);
 
     //-----------------------------------------------------
 
