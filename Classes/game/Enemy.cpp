@@ -70,7 +70,7 @@ bool CEnemy::collwithPlayer(const Vec2& inPoint)
 @return         void
 */
 /************************************************************************/
-void CEnemy::checkWith()
+void CEnemy::checkWithAttick()
 {
     Vec2 t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
     Vec2 endPoint;
@@ -116,7 +116,7 @@ void CEnemy::checkWith()
     {     
        setPosition(endPoint);
  
-        CMargin* pMargin = m_refShowArea->getBorderMargin(endPoint); 
+        CMargin* pMargin    = m_refShowArea->getBorderMargin(endPoint); 
         if (pMargin != nullptr)
         {            
             int t_direct    = CUtil::getNextAngle(pMargin->m_Angle, 1);
@@ -132,3 +132,45 @@ void CEnemy::checkWith()
 }
 
 
+void CEnemy::checkWithMove()
+{
+    Vec2 t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
+    Vec2 endPoint;
+   
+    //----------------------------------------------
+
+    if (collwithArea(t_oColl, endPoint))
+    {
+        int index = m_refShowArea->getNearMargin(endPoint);
+        if (index != SELECTID_NULL)
+        {
+            CMargin* margin = m_refShowArea->getAreaMargin(index);
+            int t_direct = margin->getCollWidthRandomDirect();
+            m_iDirect = t_direct + CMath::getRandom(-50, 50);
+
+            changeDirect(t_direct);
+        }
+    }
+
+    //---------------------------------------------------
+
+    if (collwithBorder(t_oColl, endPoint))
+    {
+        setPosition(endPoint);
+
+        CMargin* pMargin = m_refShowArea->getBorderMargin(endPoint);
+        if (pMargin != nullptr)
+        {
+            int t_direct = CUtil::getNextAngle(pMargin->m_Angle, 1);
+            m_iDirect = t_direct + CMath::getRandom(-80, 80);
+
+            changeDirect(t_direct);
+        }
+    }
+
+    //---------------------------------------------------
+
+    this->setPosition(t_oColl);
+
+
+}

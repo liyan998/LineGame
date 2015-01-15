@@ -141,6 +141,9 @@
     <ClCompile Include="..\Classes\game\Dragon.cpp">
       <Filter>Classes\game\element\enemy</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\game\Tornado.cpp">
+      <Filter>Classes\game\element\enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -282,6 +285,9 @@
       <Filter>Classes\game\element\enemy</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Dragon.h">
+      <Filter>Classes\game\element\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\Tornado.h">
       <Filter>Classes\game\element\enemy</Filter>
     </ClInclude>
   </ItemGroup>

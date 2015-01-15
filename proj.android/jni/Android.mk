@@ -30,6 +30,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/game/GameElement.cpp \
 				   ../../Classes/game/ButterFly.cpp \
 				   ../../Classes/game/Boss.cpp\
+				   ../../Classes/game/Tornado.cpp\
 				   ../../Classes/game/Dragon.cpp\
                    ../../Classes/game/Npc.cpp \
                    ../../Classes/game/Enemy.cpp \

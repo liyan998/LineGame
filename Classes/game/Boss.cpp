@@ -77,7 +77,7 @@ void CBoss::run(float t)
 
     if (hasKeepMoveing())
     {
-        CEnemy::checkWith();  
+        CEnemy::checkWithAttick();  
     }
 }
 // 

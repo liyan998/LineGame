@@ -40,7 +40,7 @@ void CNpc::run(float time)
     switch (m_State)
     {
     case STATE_LIVE:
-        CEnemy::checkWith();
+        CEnemy::checkWithAttick();
         break;
     case STATE_REBACK://
         //            

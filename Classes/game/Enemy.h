@@ -31,9 +31,11 @@ protected:
 
     bool collwithGuide(const Vec2& inPoint, Vec2& outPoint);                //Guide碰撞
 
-    void checkWith();
+    void checkWithAttick();
 
     bool collwithPlayer(const Vec2& inPoint);                               //是否与玩家角色碰撞
+    
+    void checkWithMove();
     
 public:
 

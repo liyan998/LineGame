@@ -25,11 +25,8 @@ Armature* CAnimationAxis::getArmature()
 
 void CAnimationAxis::clearCurrentAnimation()
 {
-   
-
     if (m_pArmature != nullptr)
-    {
-      
+    {      
         m_pArmature->getAnimation()->setMovementEventCallFunc(this, nullptr);
         m_pArmature->getAnimation()->setFrameEventCallFunc(nullptr);
        

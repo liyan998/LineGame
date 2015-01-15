@@ -12,65 +12,32 @@
 #define __BOSS_H__
 
 
-
+//技能数据
 struct T_SkillData
 {
     virtual void init() = 0;
 };
 
-//
-struct T_SkillBigArea : T_SkillData
-{
-    float m_fArea;                  //面积
-    float m_skillTime;              //技能持续时间
-    float m_fMaxTime;               //持续时间
-
-    virtual void init()
-    {
-        m_skillTime = m_fMaxTime;
-    }
-};
-
-//
-struct T_SkillFlush : T_SkillData
-{
-    int count;                      //闪现次数
-    int m_iMaxCount;                //闪现次数
-
-    virtual void init()
-    {
-        count = m_iMaxCount;
-    }
-};
-
-//风魔龙 闪电技能
-struct T_SkillDragonLighing
+//技能数据 + 持续时间
+struct T_SkillDataTime : T_SkillData
 {
     float   m_fMaxTime;   //持续时间
-    float   m_fTime;      //当前使用时间
-
-    float   m_fCount;     //时间计数器  
-    int   buffer;       //能量
-
-    int state;
+    float   m_fTime;      //当前使用时间 
 
     virtual void init()
     {
-        m_fTime     = m_fMaxTime;
-        buffer      = 0;
-        m_fCount    = 0;
-        state       = 0;
+        m_fTime = m_fMaxTime;
     }
-
 };
 
-///.................................................................
 
+///.................................................................
+//随机技能
 struct T_RandSkill
 {
-    int             m_iMaxCD;
+    int             m_iMaxCD;       //技能CD
 
-    int             m_iSkillCd;     //随机技能CD
+    int             m_iSkillCd;     //随技能CD
     int             m_iSkillId;     //技能ID
 
     int             m_iSkillState;  //技能状态
@@ -109,9 +76,12 @@ public:
     enum Skill
     {
         SKILL_NONE,
+
         SKILL_T_BIGAREA,    //炫彩蝶粉
         SKILL_T_FLUSH,      //虚影蝶舞
-        SKILL_T_LIGHTING    //风魔龙闪电云
+
+        SKILL_T_LIGHTING,   //风魔龙闪电云
+        SKILL_T_TORNADO,    //龙卷风
     };
 
 public:
@@ -134,8 +104,6 @@ public:
     virtual void print(DrawNode* dn);
 
     virtual void changeDirect(int direct);
-
-    //virtual float getCollwithR();          //杀伤半径
 
     //是否可以移动
     virtual bool hasKeepMoveing();

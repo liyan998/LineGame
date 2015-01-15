@@ -24,6 +24,7 @@
 
 //风魔龙释放闪电云魔法动作
 #define PLAYLAB_DRAGON_MAGIC_SDY                "FML_Magic_SDY"
+#define PLAYLAB_DRAGON_MAGIC_TORNADO            "FML_Magic_LJF"
 #define PLAYLAB_DRAGON_UP_WALK                  "FML_Back_Walk"
 #define PLAYLAB_DRAGON_DOWN_WALK                "FML_Front_Walk"
 #define PLAYLAB_DRAGON_LEFT_WALK                "FML_Left_Side_Walk"
@@ -45,13 +46,17 @@
 #define PLAYLAB_DRAGON_SKILL_YUNRELEAS          "FML_Skill_SDY"
 
 
+//闪电云技能龙卷风
+#define RES_ANIMA_JSO_DRAGON_SKILL_TORNADO      "animation/dragon/FML_Skill_LJF.ExportJson"
+#define RES_ANIMA_PNG_DRAGON_SKILL_TORNADO      "animation/dragon/FML_Skill_LJF_PNG/FML_Skill_LJF.png"
+#define RES_ANIMA_PLS_DRAGON_SKILL_TORNADO      "animation/dragon/FML_Skill_LJF_PNG/FML_Skill_LJF.plist"
 
+#define ARMATURE_DRAGON_SKILL_TORNADO           "FML_Skill_LJF"
 
-
+#define PLAYLAB_DRAGON_SKILL_TORNADO_WHITE      "FML_Skill_LJF_White"
+#define PLAYLAB_DRAGON_SKILL_TORNADO_BLACK      "FML_Skill_LJF_Black"
 
 //护卫#####################################################################
-
-
 
 //独眼布
 #define RES_ANIMA_PNG_DYB                   "animation/DYB/DYB_Walk_PNG/DYB_Walk.png"
@@ -76,7 +81,6 @@
 #define RES_ANIMA_JSO_PIPI                  "animation/Pipi/pipi_Stand.ExportJson"
 
 #define ARMATURE_PIPI_STANDER               "pipi_Stand"
-
 
 //die
 #define RES_ANIMA_JSO_PIPI_DIE              "animation/Pipi/pipi_Die.ExportJson"
@@ -110,9 +114,5 @@
 #define PLAYLAB_PROPERTY_ADDSPEED           "jiasu"     //加速
 #define PLAYLAB_PROPERTY_ADDHEALTH          "huifu"     //恢复
 #define PLAYLAB_PROPERTY_ADDPROTECT         "hudun"     //护盾
-
-
-
-
 
 #endif//__GAMERESMACROS_H__

@@ -61,6 +61,10 @@ public:
 
     void h_ActionAddHealth(EventParm pData);
 
+    void h_ActionBossSkill(EventParm pData);
+
+    void h_ActionBossSkillEnd(EventParm pData);
+
 
     void clearGameElement();
 

@@ -36,13 +36,20 @@ void CDragon::onEnter()
     CBoss::onEnter();
 
     //---------------------------------------------
-
+    //风魔龙闪电云技能
     T_SkillDragonLighing* skilllight = new T_SkillDragonLighing();
-    skilllight->m_fMaxTime = 10;   
+    skilllight->m_fMaxTime = 10; //   
     skilllight->init();
 
+    T_SkillDrogTornado* pSkillTornado = new T_SkillDrogTornado();
+    skilllight->m_fMaxTime = 10;
+    pSkillTornado->init();
+
+    //风魔龙 龙卷风技能
     T_RandSkill allRandSkill[] = {
-        { 3, 0, Skill::SKILL_T_LIGHTING, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight }
+        { 3, 0, Skill::SKILL_T_LIGHTING, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight },
+        //{ 3, 0, Skill::SKILL_T_TORNADO, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight }
+    
     };
     
     int size = sizeof(allRandSkill) / sizeof(allRandSkill[0]);
@@ -71,8 +78,8 @@ void CDragon::onEnter()
 
     //-------------------------------------
 
-    int t_direct = CPath::DIRECT[CMath::getRandom(0, 3)][0];
-    m_iDirect = t_direct + CMath::getRandom(-30, 30);
+    int t_direct    = CPath::DIRECT[CMath::getRandom(0, 3)][0];
+    m_iDirect       = t_direct + CMath::getRandom(-30, 30);
     changeDirect(t_direct);
 }
 
@@ -88,12 +95,59 @@ void CDragon::actionEvent(int eventid, EventParm pData)
     {
     case EVENT_BOSSSKILL_ATTICAKOVER:
        // m_refPlayer->animation_attack();
-        skillLightEnd();
-       
+        skillLightEnd();       
         break;
     default:
         break;
     }
+}
+
+
+void CDragon::movementCallback(Armature * armature, MovementEventType type, const std::string& name)
+{
+    if (type == MovementEventType::COMPLETE)
+    {
+        if (strcmp(name.c_str(), PLAYLAB_DRAGON_MAGIC_SDY) == 0)
+        {
+            CBoss::startRandSkill();
+            getArmature()->getAnimation()->play(PLAYLAB_DRAGON_UP_WALK);
+        }else if (strcmp(name.c_str(), PLAYLAB_DRAGON_MAGIC_TORNADO) == 0)
+        {
+            //释放技能
+            CBoss::startRandSkill();
+            getArmature()->getAnimation()->play(PLAYLAB_DRAGON_UP_WALK);
+        }
+    }
+}
+
+void CDragon::changeDirect(int direct)
+{
+    std::map<int, const char*>::iterator it = m_oAngleTable.find(direct);
+    if (it != m_oAngleTable.end())
+    {
+        const std::string& t_str = getArmature()->getAnimation()->getCurrentMovementID();
+        if (strcmp(t_str.c_str(), PLAYLAB_DRAGON_MAGIC_SDY) == 0 
+            || 
+            strcmp(t_str.c_str(), PLAYLAB_DRAGON_MAGIC_TORNADO) == 0)
+        {
+            return;
+        }
+        getArmature()->getAnimation()->play(it->second);
+    }
+}
+
+
+
+int CDragon::getAttack()
+{
+    if (m_iRandSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS
+        &&
+        m_pRandSkill->m_iSkillId == Skill::SKILL_T_LIGHTING)
+    {
+        return CBoss::getAttack() * 1.5f;
+    }
+
+    return CBoss::getAttack();
 }
 
 
@@ -105,10 +159,15 @@ void CDragon::randSkillRelease(float time)
     case Skill::SKILL_T_LIGHTING:
         skillLight(time);
         break;
+    case Skill::SKILL_T_TORNADO:
+        skillTornado(time);
+        break;
     }
 }
 
-
+//////////////////////////////////////////////////////////////////////////////
+//风魔龙技能 闪电云
+//////////////////////////////////////////////////////////////////////////////
 void CDragon::skillLight(float time)
 {
     T_SkillDragonLighing* tpSkilllight = (T_SkillDragonLighing*)m_pRandSkill->m_pSkill;
@@ -169,21 +228,11 @@ void CDragon::startRandSkill()
     case Skill::SKILL_T_LIGHTING:
         getArmature()->getAnimation()->play(PLAYLAB_DRAGON_MAGIC_SDY);
     break;
+    case Skill::SKILL_T_TORNADO:
+        getArmature()->getAnimation()->play(PLAYLAB_DRAGON_MAGIC_TORNADO);
+    break;
 
     }
-}
-
-
-int CDragon::getAttack()
-{
-    if (m_iRandSkillState == RandSkill_State::RANDSKILL_STATE_RELEAS
-        && 
-        m_pRandSkill->m_iSkillId == Skill::SKILL_T_LIGHTING)
-    {
-        return CBoss::getAttack() * 1.5f;
-    }
-
-    return CBoss::getAttack();
 }
 
 void CDragon::skillLightEnd()
@@ -199,28 +248,29 @@ void CDragon::skillLightEnd()
     createSkillTimer();
 }
 
-void CDragon::movementCallback(Armature * armature, MovementEventType type, const std::string& name)
-{
-    if (type == MovementEventType::COMPLETE)
-    {
-        if (strcmp(name.c_str(), PLAYLAB_DRAGON_MAGIC_SDY) == 0)
-        {
-            CBoss::startRandSkill();
-            getArmature()->getAnimation()->play(PLAYLAB_DRAGON_UP_WALK);            
-        }
-    }
-}
 
-void CDragon::changeDirect(int direct)
+////////////////////////////////////////////////////////////
+//风魔龙技能 龙卷风
+////////////////////////////////////////////////////////////
+void CDragon::skillTornado(float time)
 {
-    std::map<int, const char*>::iterator it = m_oAngleTable.find(direct);
-    if (it != m_oAngleTable.end())
+    T_SkillDrogTornado* tpSkillTornado = (T_SkillDrogTornado*)m_pRandSkill->m_pSkill;
+
+
+    //持续时间结束
+    if (m_fCount > 1)
     {
-        const std::string& t_str = getArmature()->getAnimation()->getCurrentMovementID();
-        if (strcmp(t_str.c_str() , PLAYLAB_DRAGON_MAGIC_SDY) == 0)
+        tpSkillTornado->m_fTime--;
+
+        if (tpSkillTornado->m_fTime <= 0)
         {
-            return;
-        }
-        getArmature()->getAnimation()->play(it->second);
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_END, new int(m_pRandSkill->m_iSkillId));
+            m_pRandSkill->m_iSkillState = RANDSKILL_STATE_CD;
+            m_pRandSkill->init();
+
+            createSkillTimer();
+        }       
+
+        m_fCount = 0;    
     }
 }

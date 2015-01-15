@@ -33,7 +33,9 @@ public:
         CATEGORY_ELEMENT,
         CATEGORY_PROERTY = 0x100,   //道具
         CATEGORY_BOSS    = 0x200,   //首领
-        CATEGORY_NPC     = 0x300    //护卫
+        CATEGORY_NPC     = 0x300,   //护卫
+        CATEGORY_TORNADO = 0x400,
+
     };
 
 public:
@@ -85,6 +87,7 @@ public:
 
 class CActor;
 class CGameArticle; //静态物品
+class CTornado;     //龙卷风
 class CEnemy;       //
 class CBoss;        //首领
 class CNpc;         //护卫    
@@ -95,14 +98,20 @@ class CDragon;
 //class CMySprite;
 
 #include "Actor.h"
+
 #include "Enemy.h"
 #include "Boss.h"
-#include "Npc.h"
-#include "Game1Player.h"
-#include "GameArticle.h"
 
 #include "ButterFly.h"
 #include "Dragon.h"
+
+#include "Npc.h"
+#include "Tornado.h"
+
+#include "Game1Player.h"
+
+#include "GameArticle.h"
+
 //#include "MySprite.h"
 
 //////////////////////////////////////////////////////
