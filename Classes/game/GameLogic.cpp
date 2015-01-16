@@ -10,13 +10,16 @@ bool CGameLogic::init()
     Node::init();
     log("Gamelogic init..."); 
 
-
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CLOSE, this); 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_HIT, this);
+
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDTIME, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDHEALTH, this);
+
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_START, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_END, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
+
     //-------------------------------------------------------------------------
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
@@ -79,7 +82,6 @@ void CGameLogic::onEnter()
     auto label2 = Label::createWithTTF(config, str);
     label2->setAnchorPoint(Vec2(0.5f, 1));
     addChild(label2, 0, 100);
-
     label2->setPosition(Vec2(size.width / 2.0f + orgin.x, size.height - orgin.y));
 
 
@@ -88,9 +90,7 @@ void CGameLogic::onEnter()
     auto label3 = Label::createWithTTF(config, str);
     label3->setAnchorPoint(Vec2(0, 1));
     addChild(label3, 0, 300);
-
     label3->setPosition(Vec2(orgin.x, size.height - orgin.y));
-
 
     //-----------------------------------------------------------
 
@@ -103,12 +103,13 @@ void CGameLogic::onExit()
 
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_CLOSE, this);    
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_HIT, this);
+
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDTIME, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDHEALTH, this);
 
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_START, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_END, this);
-
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
 }
 
 
@@ -178,7 +179,21 @@ void CGameLogic::createGameElement()
 
     //----------------------------
 
-    
+    auto tornado = CTornado::create();
+    tornado->setTag(1000);
+    tornado->setState(CTornado::STATE_DISAPPEAR);
+
+    tornado->m_refPlayer = m_refPlayer;
+    tornado->m_refShowArea = m_refShowArea;
+
+    Vec2 tp;
+    tornado->randPosition(tp);
+    tornado->setPosition(tp);
+
+    //m_oAllRander.push_back(tornado);
+    m_oAllElement.push_back(tornado);
+
+    addChild(tornado);
 }
 
 
@@ -204,10 +219,27 @@ void CGameLogic::actionEvent(int evenid, EventParm pData)
     case EVENT_BOSSSKILL_END:
         h_ActionBossSkillEnd(pData);
         break;
+    case EVENT_BOSSSKILL_TORNADO_CHANAGE:
+        h_ActionBossSkillTornadChange(pData);
+        break;
     default:
         break;
     }
 }
+
+
+void CGameLogic::h_ActionBossSkillTornadChange(EventParm pData)
+{
+    int color = (*(int*)pData);
+
+    CTornado* pTornado = (CTornado*)getChildByTag(1000);
+    if (pTornado != nullptr)
+    {
+        pTornado->setStyle(color);
+    }
+}
+
+
 
 
 void CGameLogic::h_ActionBossSkillEnd(EventParm pData)
@@ -216,38 +248,34 @@ void CGameLogic::h_ActionBossSkillEnd(EventParm pData)
 
     if (skillid == CBoss::Skill::SKILL_T_TORNADO)
     {
-        log("a");
         CTornado* pTornado = (CTornado*)getChildByTag(1000);
-
-        removeGameElement(pTornado);
+        if (pTornado != nullptr)
+        {
+            pTornado->setState(CTornado::STATE_DISAPPEAR);
+        }
     }
 }
 
 void CGameLogic::h_ActionBossSkill(EventParm pData)
 {
-    int skillid = *((int*)pData);
+    T_RandSkill* tPRandskill = (*(T_RandSkill**)pData);
+    int skillid = tPRandskill->m_iSkillId;
 
     if (skillid == CBoss::Skill::SKILL_T_TORNADO)
     {
+        T_SkillDrogTornado* tPTornado = static_cast<T_SkillDrogTornado*>(tPRandskill->m_pSkill);
+        CTornado* pTornado = (CTornado*)getChildByTag(1000);  
+        
+        if (pTornado != nullptr)
+        {
+            Vec2 tp;
+            pTornado->randPosition(tp);
+            pTornado->setPosition(tp);
 
-
-        auto tornado = CTornado::create();
-        tornado->setTag(1000);
-
-        tornado->m_refPlayer = m_refPlayer;
-        tornado->m_refShowArea = m_refShowArea;
-
-        Vec2 tp;
-        tornado->randPosition(tp);
-        tornado->setPosition(tp);
-
-        m_oAllRander.push_back(tornado);
-        m_oAllElement.push_back(tornado);
-
-        addChild(tornado);
-
+            pTornado->setStyle(tPTornado->currentColor);
+            pTornado->setState(CTornado::STATE_LIVE);
+        }
     }
-
 }
 
 void CGameLogic::h_ActionAddHealth(EventParm pData)
@@ -296,11 +324,19 @@ void CGameLogic::h_ActionClose(EventParm pData)
         break;
     default:
         m_refSp->clearGuide();
-        return;
-        
+        return;        
     }     
 }
 
+
+/************************************************************************/
+/*
+@brief          被玩家圈住后清理游戏对象
+@param[in]
+@param[out]
+@return         void
+*/
+/************************************************************************/
 void CGameLogic::clearGameElement()
 {
     int rmode = m_refShowArea->hasIncludeMaster(m_pBoss->getPosition()) ? MODEL_IN: MODEL_OUT;
@@ -315,14 +351,45 @@ void CGameLogic::clearGameElement()
         {
             CNpc* tpNpc = static_cast<CNpc*>(t_pEelment);
             clearNpc(tpNpc, rmode);
-        }
+        }   
             break;
-        case CGameElement::CATEGORY_PROERTY:           
-            CGameArticle* tpGameArticle = static_cast<CGameArticle*>(t_pEelment);           
+        case CGameElement::CATEGORY_PROERTY:
+        {
+            CGameArticle* tpGameArticle = static_cast<CGameArticle*>(t_pEelment);
             clearGameObject(tpGameArticle, rmode);
+        }           
+            break;
+        case CGameElement::CATEGORY_TORNADO:
+        {
+            CTornado* tPTornado = static_cast<CTornado*>(t_pEelment);
+            clearTornado(tPTornado, rmode);
+        }           
             break;
         }
     } 
+}
+
+void CGameLogic::clearTornado(CTornado* pTornado, int mode)
+{
+    bool hasIn = m_refShowArea->hasIncludeMaster(pTornado->getPosition());
+
+    switch (mode)
+    {
+    case MODEL_IN:
+        if (!hasIn)
+        {          
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_TORNADO_SURROUND, 0);                       
+        }
+        break;
+    case MODEL_OUT:
+        if (hasIn)
+        {
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_TORNADO_SURROUND, 0);            
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 void CGameLogic::clearNpc(CNpc* pNpc, int mode)
@@ -331,7 +398,6 @@ void CGameLogic::clearNpc(CNpc* pNpc, int mode)
     switch (mode)
     {
     case MODEL_IN:      
-        //
         //log("MODEL_IN");
         if (!hasIn)
         {
@@ -460,7 +526,14 @@ void CGameLogic::released()
     this->removeAllChildren();
 }
 
-
+/************************************************************************/
+/*
+@brief          移除游戏对象
+@param[in]      CGameElement 游戏元素
+@param[out]
+@return         void
+*/
+/************************************************************************/
 void CGameLogic::removeGameElement(CGameElement* pElement)
 {
     for (int i = 0; i < m_oAllRander.size();i++)
@@ -486,6 +559,14 @@ void CGameLogic::removeGameElement(CGameElement* pElement)
     removeChild(pElement);
 }
 
+/************************************************************************/
+/* 
+@brief          掉落
+@param[in]      
+@param[out]
+@return         void
+*/
+/************************************************************************/
 void CGameLogic::dropObject()
 {
     if (m_oAllDrop.size() == 0)

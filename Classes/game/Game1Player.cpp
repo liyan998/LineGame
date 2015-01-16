@@ -25,6 +25,9 @@ bool CGamePlayer::init()
     m_bHasLight         = false;
     m_pCurrentAnim      = nullptr;
 
+    m_iTornadoColor     = TornadoColor::COLOR_NONE;
+
+
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
         RES_ANIMA_PNG_DRAGON_SKILL_YUN,
         RES_ANIMA_PLS_DRAGON_SKILL_YUN,
@@ -48,8 +51,11 @@ bool CGamePlayer::init()
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDPROTECT, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_START, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_END, this);
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAK, this);
+
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_LIIGHTATTICAK, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_LIGHTCOUNT, this);
+
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
 
     //-----------------------------------------------------
 
@@ -71,10 +77,14 @@ void CGamePlayer::released()
 {
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PROPERTY_ADDPROTECT, this);
+
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_START, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_END, this);
-    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_ATTICAK, this);
+
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_LIIGHTATTICAK, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_LIGHTCOUNT, this);
+
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
 
     this->removeAllChildren();
 }
@@ -179,6 +189,23 @@ void CGamePlayer::backFollow()
 int CGamePlayer::getStep()
 {                       
     int step = this->m_iStep;
+
+    if (m_iTornadoColor != TornadoColor::COLOR_NONE)
+    {
+        switch (m_iTornadoColor)
+        {
+        case TornadoColor::COLOR_BLACK:
+            step = 1;
+            break;
+        case TornadoColor::COLOR_WHITE:
+            step = GRAD_NUMBER(m_iStep * 2);
+            break;
+        default:
+            break;
+        }
+    }
+
+    log("PLayer step:%d", step);
 
     if (m_iEffectAddSpeed == Effect::EFFECT_ADDSPEED)
     {
@@ -440,15 +467,24 @@ void CGamePlayer::actionEvent(int eventid, EventParm pData)
     case EVENT_BOSSSKILL_START:
         h_actionSkillStart(pData);
         break;
-    case EVENT_BOSSSKILL_ATTICAK:
+    case EVENT_BOSSSKILL_LIIGHTATTICAK:
         h_actionSkillAttick(pData);
         break;
     case EVENT_BOSSSKILL_LIGHTCOUNT:
         h_actionSkillLightCount(pData);
         break;
+    case EVENT_BOSSSKILL_TORNADO_CHANAGE:
+        h_actionSkillTornadoColor(pData);
+        break;
     default:
         break;
     }
+}
+
+
+void CGamePlayer::h_actionSkillTornadoColor(EventParm pData)
+{
+    m_iTornadoColor = *(int*)pData;    
 }
 
 void CGamePlayer::h_actionAddProtect(EventParm pData)
@@ -486,16 +522,33 @@ void CGamePlayer::h_actionSkillEnd(EventParm pData)
 //     removeChild(pAa);
 
     //m_bHasLight = false;
+    int skillid = *(int*)pData;
+
+    switch (skillid)
+    {
+    case CBoss::Skill::SKILL_T_TORNADO:
+        m_iTornadoColor = TornadoColor::COLOR_NONE;
+        break;
+    default:
+        break;
+    }
+
+    
 }
 
 void CGamePlayer::h_actionSkillStart(EventParm pData)
 {
-    int skillid = *(int*)pData;
+    T_RandSkill* tpRand = (*(T_RandSkill**)pData);
+    int skillid = tpRand->m_iSkillId;
 
     switch (skillid)
     {
     case CDragon::Skill::SKILL_T_LIGHTING:
         setLightAttack(true);
+        break;
+    case CBoss::Skill::SKILL_T_TORNADO:
+        T_SkillDrogTornado* tpSDT = (T_SkillDrogTornado*)tpRand->m_pSkill;
+        m_iTornadoColor = tpSDT->currentColor;
         break;
     }
 }
@@ -513,7 +566,7 @@ void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, 
         {
             //destoryLightAttick();
             //animation_attack();            
-            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_ATTICAKOVER, 0);
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_LIGHTATTICAKOVER, 0);
 
         }else if (strcmp(name.c_str(), PLAYLAB_PIPI_HIT) == 0)
         {

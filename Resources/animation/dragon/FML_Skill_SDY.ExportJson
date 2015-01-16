@@ -9,7 +9,7 @@
         {
           "name": "Layer1",
           "parent": "",
-          "dI": 33,
+          "dI": 32,
           "x": 0.0,
           "y": 0.0,
           "z": 1,
@@ -483,20 +483,6 @@
                   "kY": 0.0
                 }
               ]
-            },
-            {
-              "name": "ANI_FML_Skill_SDY_34.png",
-              "displayType": 0,
-              "skin_data": [
-                {
-                  "x": 0.0,
-                  "y": 0.0,
-                  "cX": 1.0,
-                  "cY": 1.0,
-                  "kX": 0.0,
-                  "kY": 0.0
-                }
-              ]
             }
           ]
         }
@@ -509,7 +495,7 @@
       "mov_data": [
         {
           "name": "FML_Skill_SDY",
-          "dr": 38,
+          "dr": 46,
           "lp": false,
           "to": 0,
           "drTW": 0,
@@ -949,7 +935,7 @@
                   "cY": 1.0,
                   "kX": 0.0,
                   "kY": 0.0,
-                  "fi": 28,
+                  "fi": 29,
                   "twE": 0,
                   "tweenFrame": true,
                   "bd_src": 1,
@@ -964,7 +950,7 @@
                   "cY": 1.0,
                   "kX": 0.0,
                   "kY": 0.0,
-                  "fi": 29,
+                  "fi": 31,
                   "twE": 0,
                   "tweenFrame": true,
                   "bd_src": 1,
@@ -979,7 +965,7 @@
                   "cY": 1.0,
                   "kX": 0.0,
                   "kY": 0.0,
-                  "fi": 30,
+                  "fi": 33,
                   "twE": 0,
                   "tweenFrame": true,
                   "bd_src": 1,
@@ -994,7 +980,7 @@
                   "cY": 1.0,
                   "kX": 0.0,
                   "kY": 0.0,
-                  "fi": 31,
+                  "fi": 35,
                   "twE": 0,
                   "tweenFrame": true,
                   "bd_src": 1,
@@ -1009,14 +995,14 @@
                   "cY": 1.0,
                   "kX": 0.0,
                   "kY": 0.0,
-                  "fi": 32,
+                  "fi": 36,
                   "twE": 0,
                   "tweenFrame": true,
                   "bd_src": 1,
                   "bd_dst": 771
                 },
                 {
-                  "dI": 33,
+                  "dI": 32,
                   "x": 0.0,
                   "y": 0.0,
                   "z": 0,
@@ -1024,22 +1010,7 @@
                   "cY": 1.0,
                   "kX": 0.0,
                   "kY": 0.0,
-                  "fi": 33,
-                  "twE": 0,
-                  "tweenFrame": true,
-                  "bd_src": 1,
-                  "bd_dst": 771
-                },
-                {
-                  "dI": 33,
-                  "x": 0.0,
-                  "y": 0.0,
-                  "z": 0,
-                  "cX": 1.0,
-                  "cY": 1.0,
-                  "kX": 0.0,
-                  "kY": 0.0,
-                  "fi": 37,
+                  "fi": 45,
                   "twE": 0,
                   "tweenFrame": true,
                   "color": {
@@ -1061,8 +1032,8 @@
   "texture_data": [
     {
       "name": "ANI_FML_Skill_SDY_1",
-      "width": 50.0,
-      "height": 20.0,
+      "width": 81.0,
+      "height": 33.0,
       "pX": 0.5,
       "pY": 0.5,
       "plistFile": "FML_Skill_SDY_PNG/FML_Skill_SDY.plist"
@@ -1309,24 +1280,16 @@
     },
     {
       "name": "ANI_FML_Skill_SDY_32",
-      "width": 0.0,
-      "height": 0.0,
+      "width": 81.0,
+      "height": 141.0,
       "pX": 0.5,
       "pY": 0.5,
       "plistFile": "FML_Skill_SDY_PNG/FML_Skill_SDY.plist"
     },
     {
       "name": "ANI_FML_Skill_SDY_33",
-      "width": 50.0,
-      "height": 88.0,
-      "pX": 0.5,
-      "pY": 0.5,
-      "plistFile": "FML_Skill_SDY_PNG/FML_Skill_SDY.plist"
-    },
-    {
-      "name": "ANI_FML_Skill_SDY_34",
-      "width": 50.0,
-      "height": 20.0,
+      "width": 81.0,
+      "height": 33.0,
       "pX": 0.5,
       "pY": 0.5,
       "plistFile": "FML_Skill_SDY_PNG/FML_Skill_SDY.plist"

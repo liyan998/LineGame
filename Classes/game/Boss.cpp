@@ -151,7 +151,9 @@ void CBoss::randSkillCreate()
 
 void CBoss::startRandSkill()
 {
-    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_START, new int(m_pRandSkill->m_iSkillId));
+
+
+    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_START, new T_RandSkill*(m_pRandSkill));
     
 }
 

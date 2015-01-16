@@ -2,11 +2,21 @@
 #define __TORNADO_H__
 
 
+
+
 class CTornado : public CEnemy
 {
 public:
 
     CREATE_FUNC( CTornado )
+
+public:
+
+    enum State
+    {
+        STATE_LIVE,    //»î¶¯
+        STATE_DISAPPEAR//ÏûÊ§
+    };
 
 public:
 
@@ -21,6 +31,10 @@ public:
     virtual void changeDirect(int direct);
 
     virtual void setState(int state);
+
+    //-------------------------------
+
+    void setStyle(int color);
 
 
 };

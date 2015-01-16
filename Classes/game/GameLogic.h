@@ -65,13 +65,19 @@ public:
 
     void h_ActionBossSkillEnd(EventParm pData);
 
+    void h_ActionBossSkillTornadChange(EventParm pData);
+
+    //圈中后对游戏对象的处理-------------------------------------------------------
 
     void clearGameElement();
 
     void clearNpc(CNpc* pNpc, int mode);
 
-    void clearGameObject(CGameArticle* pGameArticle, int mode);       //道具清理
+    void clearGameObject(CGameArticle* pGameArticle, int mode);         //道具清理
 
+    void clearTornado(CTornado* pTornado, int mode);                    //龙卷风清理
+
+    //-----------------------------------------------------------
     
     void flushArea(float area);
 

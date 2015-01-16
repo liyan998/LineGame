@@ -19,7 +19,8 @@ bool CDragon::init()
 
     //--------------------------------------------------------
 
-    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_ATTICAKOVER, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_LIGHTATTICAKOVER, this);
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_TORNADO_SURROUND, this);
 
     return true;
 }
@@ -27,7 +28,8 @@ bool CDragon::init()
 
 void CDragon::released()
 {
-    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_ATTICAKOVER, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_TORNADO_SURROUND, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_LIGHTATTICAKOVER, this);
 }
 
 
@@ -36,19 +38,25 @@ void CDragon::onEnter()
     CBoss::onEnter();
 
     //---------------------------------------------
+
     //风魔龙闪电云技能
-    T_SkillDragonLighing* skilllight = new T_SkillDragonLighing();
+    T_SkillDragonLighing* skilllight    = new T_SkillDragonLighing();
     skilllight->m_fMaxTime = 10; //   
     skilllight->init();
 
-    T_SkillDrogTornado* pSkillTornado = new T_SkillDrogTornado();
-    skilllight->m_fMaxTime = 10;
+    //风魔龙 龙卷风技能
+    T_SkillDrogTornado* pSkillTornado   = new T_SkillDrogTornado();
+    pSkillTornado->m_fMaxTime = 120;
+    pSkillTornado->m_fMAXWhiteTime = 3;
+    pSkillTornado->m_fMAXBlackTime = 4;
+
     pSkillTornado->init();
 
     //风魔龙 龙卷风技能
-    T_RandSkill allRandSkill[] = {
-        { 3, 0, Skill::SKILL_T_LIGHTING, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight },
-        //{ 3, 0, Skill::SKILL_T_TORNADO, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight }
+    T_RandSkill allRandSkill[] = 
+    {
+        //{ 3, 0, Skill::SKILL_T_LIGHTING, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight },
+        { 3, 0, Skill::SKILL_T_TORNADO, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)pSkillTornado }
     
     };
     
@@ -62,6 +70,7 @@ void CDragon::onEnter()
         randskill->m_iSkillId       = allRandSkill[i].m_iSkillId;
         randskill->m_iSkillState    = allRandSkill[i].m_iSkillState;
         randskill->m_pSkill         = allRandSkill[i].m_pSkill;
+
         randskill->init();
 
         m_oAllRandSkill.push_back(randskill);
@@ -93,9 +102,12 @@ void CDragon::actionEvent(int eventid, EventParm pData)
 {
     switch (eventid)
     {
-    case EVENT_BOSSSKILL_ATTICAKOVER:
+    case EVENT_BOSSSKILL_LIGHTATTICAKOVER:
        // m_refPlayer->animation_attack();
         skillLightEnd();       
+        break;
+    case EVENT_BOSSSKILL_TORNADO_SURROUND:
+        skillTornadoEnd();
         break;
     default:
         break;
@@ -113,8 +125,9 @@ void CDragon::movementCallback(Armature * armature, MovementEventType type, cons
             getArmature()->getAnimation()->play(PLAYLAB_DRAGON_UP_WALK);
         }else if (strcmp(name.c_str(), PLAYLAB_DRAGON_MAGIC_TORNADO) == 0)
         {
-            //释放技能
+            //释放龙卷风技能
             CBoss::startRandSkill();
+           
             getArmature()->getAnimation()->play(PLAYLAB_DRAGON_UP_WALK);
         }
     }
@@ -189,7 +202,7 @@ void CDragon::skillLight(float time)
             {
                 //减伤 ，释放闪电，消失云彩  
 
-                CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_ATTICAK, 0);
+                CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_LIIGHTATTICAK, 0);
 
                 m_refSp->attiack(getAttack(), this);
                 //skillLightEnd();
@@ -237,7 +250,7 @@ void CDragon::startRandSkill()
 
 void CDragon::skillLightEnd()
 {
-    log("Skill destory!");
+    log("skillLightEnd destory!");
 
     m_refPlayer->destoryLightAttick();
 
@@ -256,21 +269,62 @@ void CDragon::skillTornado(float time)
 {
     T_SkillDrogTornado* tpSkillTornado = (T_SkillDrogTornado*)m_pRandSkill->m_pSkill;
 
+    switch (tpSkillTornado->currentColor)
+    {
+    case T_SkillDrogTornado::TORNADO_COLOR_BLACK:
+        skillTornadoBlack(tpSkillTornado, time);
+        break;
+    case T_SkillDrogTornado::TORNADO_COLOR_WHITE:
+        skillTornadoWhite(tpSkillTornado, time);
+        break;
+    default:
+        break;
+    }
 
     //持续时间结束
     if (m_fCount > 1)
     {
         tpSkillTornado->m_fTime--;
-
         if (tpSkillTornado->m_fTime <= 0)
         {
-            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_END, new int(m_pRandSkill->m_iSkillId));
-            m_pRandSkill->m_iSkillState = RANDSKILL_STATE_CD;
-            m_pRandSkill->init();
-
-            createSkillTimer();
+            skillTornadoEnd();
         }       
-
         m_fCount = 0;    
+    }
+}
+
+void CDragon::skillTornadoEnd()
+{
+    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_END, new int(m_pRandSkill->m_iSkillId));
+    m_pRandSkill->m_iSkillState = RANDSKILL_STATE_CD;
+    m_pRandSkill->init();
+
+    createSkillTimer();
+}
+
+
+void CDragon::skillTornadoBlack(T_SkillDrogTornado* pDr, float time)
+{
+    pDr->m_fBlackTime += time;
+
+    if (pDr->m_fBlackTime >= pDr->m_fMAXBlackTime)
+    {
+        pDr->currentColor = T_SkillDrogTornado::TORNADO_COLOR_WHITE;
+
+        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, new int(pDr->currentColor));
+        pDr->m_fBlackTime = 0;
+    }
+}
+
+void CDragon::skillTornadoWhite(T_SkillDrogTornado* pDr, float time)
+{
+    pDr->m_fWhiteTime += time;
+
+    if (pDr->m_fWhiteTime >= pDr->m_fMAXWhiteTime)
+    {
+        pDr->currentColor = T_SkillDrogTornado::TORNADO_COLOR_BLACK;
+
+        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, new int(pDr->currentColor));
+        pDr->m_fWhiteTime = 0;
     }
 }

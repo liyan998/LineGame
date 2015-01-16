@@ -32,6 +32,14 @@ public:
         Anim_idle,
         Anim_attick
     };
+
+    enum TornadoColor
+    {
+        COLOR_NONE,
+        COLOR_BLACK = T_SkillDrogTornado::Color::TORNADO_COLOR_BLACK,
+        COLOR_WHITE = T_SkillDrogTornado::Color::TORNADO_COLOR_WHITE
+    };
+
 public:
 
     CREATE_FUNC( CGamePlayer )
@@ -89,13 +97,19 @@ public:
 
     void h_actionSkillEnd(EventParm pData);
 
-    void setLigitPosition(const Vec2& inPos);
 
     void h_actionSkillAttick(EventParm pData);
 
     void h_actionSkillLightCount(EventParm pData);
 
+    
+    void h_actionSkillTornadoColor(EventParm pData);
+
+
+    void setLigitPosition(const Vec2& inPos);
+
     void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
+
 
 
     //------------------------------------------------
@@ -151,6 +165,9 @@ private:
     T_EventPropertyAddSpeed*            m_pEventAddSpeed;
 
     int                                 m_iEffectAddProtect;        //防护道具作用
+
+
+    int                                 m_iTornadoColor;            //风魔龙技能 龙卷风
 
 
 

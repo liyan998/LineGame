@@ -43,6 +43,9 @@
     <Filter Include="Classes\game\element\role">
       <UniqueIdentifier>{e5fbef46-2a78-4af3-98a5-c9c3671f57eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\game\element\enemy\boss">
+      <UniqueIdentifier>{4ad90f27-e18e-491a-8ee9-c05cba2bf9eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -136,13 +139,13 @@
       <Filter>Classes\game\element</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\ButterFly.cpp">
-      <Filter>Classes\game\element\enemy</Filter>
+      <Filter>Classes\game\element\enemy\boss</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\Dragon.cpp">
-      <Filter>Classes\game\element\enemy</Filter>
+      <Filter>Classes\game\element\enemy\boss</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\game\Tornado.cpp">
-      <Filter>Classes\game\element\enemy</Filter>
+      <Filter>Classes\game\element\enemy\boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -282,13 +285,13 @@
       <Filter>Classes\game\element</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\ButterFly.h">
-      <Filter>Classes\game\element\enemy</Filter>
+      <Filter>Classes\game\element\enemy\boss</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Dragon.h">
-      <Filter>Classes\game\element\enemy</Filter>
+      <Filter>Classes\game\element\enemy\boss</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\game\Tornado.h">
-      <Filter>Classes\game\element\enemy</Filter>
+      <Filter>Classes\game\element\enemy\boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
