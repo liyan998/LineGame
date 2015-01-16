@@ -7,7 +7,7 @@
             <key>ANI_FML_Skill_SDY_Black_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{114,11},{10,7}}</string>
+                <string>{{14,54},{10,7}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -20,24 +20,24 @@
             <key>ANI_FML_Skill_SDY_Black_2.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{36,2},{60,32}}</string>
+                <string>{{31,2},{50,27}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{60,32}}</string>
+                <string>{{0,0},{50,27}}</string>
                 <key>sourceSize</key>
-                <string>{60,32}</string>
+                <string>{50,27}</string>
             </dict>
             <key>ANI_FML_Skill_SDY_Black_3.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{92,2},{20,11}}</string>
+                <string>{{60,24},{20,11}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,1},{20,11}}</string>
                 <key>sourceSize</key>
@@ -46,7 +46,7 @@
             <key>ANI_FML_Skill_SDY_White_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{114,2},{10,7}}</string>
+                <string>{{2,54},{10,7}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -59,24 +59,24 @@
             <key>ANI_FML_Skill_SDY_White_2.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{60,32}}</string>
+                <string>{{2,2},{50,27}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{60,32}}</string>
+                <string>{{0,0},{50,27}}</string>
                 <key>sourceSize</key>
-                <string>{60,32}</string>
+                <string>{50,27}</string>
             </dict>
             <key>ANI_FML_Skill_SDY_White_3.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{70,2},{20,11}}</string>
+                <string>{{60,2},{20,11}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,1},{20,11}}</string>
                 <key>sourceSize</key>
@@ -92,7 +92,7 @@
             <key>size</key>
             <string>{128,64}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:443ed5ff5edb9fd4addd0000af4c45ad$</string>
+            <string>$TexturePacker:SmartUpdate:944c616313e067a69777ee917e230578$</string>
             <key>textureFileName</key>
             <string>FML_Skill_Yun.png</string>
         </dict>

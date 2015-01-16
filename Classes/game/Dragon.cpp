@@ -55,8 +55,8 @@ void CDragon::onEnter()
     //风魔龙 龙卷风技能
     T_RandSkill allRandSkill[] = 
     {
-        //{ 3, 0, Skill::SKILL_T_LIGHTING, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight },
-        { 3, 0, Skill::SKILL_T_TORNADO, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)pSkillTornado }
+        { 3, 0, Skill::SKILL_T_LIGHTING, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight },
+        //{ 3, 0, Skill::SKILL_T_TORNADO, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)pSkillTornado }
     
     };
     

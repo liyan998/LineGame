@@ -205,7 +205,7 @@ int CGamePlayer::getStep()
         }
     }
 
-    log("PLayer step:%d", step);
+    //log("PLayer step:%d", step);
 
     if (m_iEffectAddSpeed == Effect::EFFECT_ADDSPEED)
     {
