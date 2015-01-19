@@ -22,7 +22,7 @@ bool CNpc::init()
 
 
     //m_pSp       = Sprite::create("CloseNormal.png");
-    // m_pSp->setScale(1.5f);
+    //m_pSp->setScale(1.5f);
     //addChild(m_pSp);
     
     return true;
@@ -37,6 +37,12 @@ void CNpc::onEnter()
 void CNpc::run(float time)
 {
     //log("%d  m_fCount:%f", m_State, m_fCount);
+  
+}
+
+
+void CNpc::changeLiveDie(float time)
+{
     switch (m_State)
     {
     case STATE_LIVE:
@@ -55,7 +61,6 @@ void CNpc::run(float time)
         break;
     }
 }
-
 
 void CNpc::setState(int state)
 {

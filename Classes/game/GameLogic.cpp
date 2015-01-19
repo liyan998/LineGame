@@ -137,7 +137,7 @@ void CGameLogic::createGameElement()
     const int numNpc = 2;
     for (int i = 0; i < numNpc;i++)
     {
-        auto npc = CNpc::create();
+        auto npc = CCat::create();
         npc->m_refShowArea  = m_refShowArea;
         npc->m_refSp        = m_refSp;
         npc->m_refPlayer    = m_refPlayer;
@@ -238,9 +238,6 @@ void CGameLogic::h_ActionBossSkillTornadChange(EventParm pData)
         pTornado->setStyle(color);
     }
 }
-
-
-
 
 void CGameLogic::h_ActionBossSkillEnd(EventParm pData)
 {
@@ -362,6 +359,7 @@ void CGameLogic::clearGameElement()
         case CGameElement::CATEGORY_TORNADO:
         {
             CTornado* tPTornado = static_cast<CTornado*>(t_pEelment);
+            
             clearTornado(tPTornado, rmode);
         }           
             break;
@@ -371,6 +369,11 @@ void CGameLogic::clearGameElement()
 
 void CGameLogic::clearTornado(CTornado* pTornado, int mode)
 {
+    if (pTornado->getState() == CTornado::STATE_DISAPPEAR)
+    {
+        return;
+    }
+
     bool hasIn = m_refShowArea->hasIncludeMaster(pTornado->getPosition());
 
     switch (mode)

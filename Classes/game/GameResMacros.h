@@ -95,6 +95,34 @@
 #define ARMATURE_PIPI_HIT                   "pipi_Hit"
 #define PLAYLAB_PIPI_HIT                    "Pipi_Front_Hit"
 
+
+
+//冷面女王----------------------------------------------
+//
+#define RES_ANIMA_PNG_COOLKING_HIT          "animation/coolking/Did_Hit_PNG/Did_Hit.png"
+#define RES_ANIMA_PLS_COOLKING_HIT          "animation/coolking/Did_Hit_PNG/Did_Hit.plist"
+
+#define RES_ANIMA_PNG_COOLKING              "animation/coolking/Nvwang_Action_PNG/Nvwang_Action.png"
+#define RES_ANIMA_PLS_COOLKING              "animation/coolking/Nvwang_Action_PNG/Nvwang_Action.plist"
+
+#define RES_ANIMA_JSO_COOLKING              "animation/coolking/Nvwang_Action.ExportJson"
+
+#define ARMATURE_COOLKING                   "Nvwang_Action"
+
+#define PLAYLAB_COOLKING_WALK_FRONT         "NW_Front_Walk"
+#define PLAYLAB_COOLKING_WALK_LEFT          "NW_Left_Side_Walk"
+#define PLAYLAB_COOLKING_WALK_RIGHT         "NW_Left_Right_Walk"
+#define PLAYLAB_COOLKING_WALK_BACK          "NW_Back_Walk"
+
+#define PLAYLAB_COOLKING_HIT                "NW_Front_Hit"
+
+#define PLAYLAB_COOLKING_STANDER_FRONT      "NW_Front_Stand"
+#define PLAYLAB_COOLKING_STANDER_LEFT       "NW_Left_Side_Stand"
+#define PLAYLAB_COOLKING_STANDER_RIGHT      "NW_Right_Side_Stand"
+#define PLAYLAB_COOLKING_STANDER_BACK       "NW_Back_Stand"
+
+#define PLAYLAB_COOLKING_DIE                "NW_Front_Did"
+
 //特效#####################################################################
 
 //护卫复活、死亡

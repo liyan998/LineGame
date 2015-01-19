@@ -129,11 +129,11 @@ void CGameView::actionEvent(int eventid, EventParm data)
         break;
     case EVENT_PLAYERDIE:
     {
-                            setState(STATE_LOSE);
-                            gameFinal();
-                            auto gameover = HelloWorld::create();
-                            gameover->setString("Player is died you lose!");
-                            addChild(gameover);
+        setState(STATE_LOSE);
+        gameFinal();
+        auto gameover = HelloWorld::create();
+        gameover->setString("Player is died you lose!");
+        addChild(gameover);
     }   
         break;
     default:

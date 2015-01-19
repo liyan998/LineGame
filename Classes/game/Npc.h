@@ -52,6 +52,8 @@ public:
 
     inline void animation_move();               //ÒÆ¶¯
 
+    void changeLiveDie(float time);
+
 private:
 
     

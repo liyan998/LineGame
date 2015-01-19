@@ -64,6 +64,8 @@ public:
 
     const Vec2& getPlayerPosition();
 
+    void changeDirect(int angle);
+
 
     void setPlayerPosition(const Vec2& pos);   
 
@@ -166,9 +168,10 @@ private:
 
     int                                 m_iEffectAddProtect;        //防护道具作用
 
-
     int                                 m_iTornadoColor;            //风魔龙技能 龙卷风
 
+    std::map<int, const char*>          m_oDirectTab;               //
+    int                                 m_iAnimDirect;              //动画方向
 
 
 };

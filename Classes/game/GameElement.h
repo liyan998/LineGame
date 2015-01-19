@@ -88,6 +88,7 @@ public:
 class CActor;
 class CGameArticle; //静态物品
 class CTornado;     //龙卷风
+
 class CEnemy;       //
 class CBoss;        //首领
 class CNpc;         //护卫    
@@ -95,18 +96,22 @@ class CGamePlayer;
 
 class CButterFly;
 class CDragon;
+
+class CCat;         //史来喵
 //class CMySprite;
 
 #include "Actor.h"
+
 
 #include "Enemy.h"
 #include "Boss.h"
 
 #include "ButterFly.h"
 #include "Dragon.h"
+#include "Tornado.h"
 
 #include "Npc.h"
-#include "Tornado.h"
+#include "Cat.h"
 
 #include "Game1Player.h"
 

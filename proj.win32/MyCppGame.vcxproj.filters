@@ -46,6 +46,9 @@
     <Filter Include="Classes\game\element\enemy\boss">
       <UniqueIdentifier>{4ad90f27-e18e-491a-8ee9-c05cba2bf9eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\game\element\enemy\npc">
+      <UniqueIdentifier>{e8ff5e81-489d-45f8-897a-e75c91417191}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -146,6 +149,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\game\Tornado.cpp">
       <Filter>Classes\game\element\enemy\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\Cat.cpp">
+      <Filter>Classes\game\element\enemy\npc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +298,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\Tornado.h">
       <Filter>Classes\game\element\enemy\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\Cat.h">
+      <Filter>Classes\game\element\enemy\npc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -30,7 +30,7 @@ bool CMySprite::init()
     m_iCountRecord      = 0;
     m_curMarginIndex    = SELECTID_NULL; 
 
-    m_iMaxHealth        = 30;
+    m_iMaxHealth        = 2;
     m_iHealth           = m_iMaxHealth;
   
     //----------------------------------------------------- 
@@ -1411,7 +1411,8 @@ bool CMySprite::attiack(int value, CEnemy* pEnemy)
 {
     if (m_iHealth - value <= 0)
     {
-        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERDIE, PARM_NULL);
+        m_refPlayer->setState(CGamePlayer::STATE_DIE);
+        //CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERDIE, PARM_NULL);
         return false;
     }    
  

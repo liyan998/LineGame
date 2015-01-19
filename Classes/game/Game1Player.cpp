@@ -45,6 +45,21 @@ bool CGamePlayer::init()
         RES_ANIMA_JSO_PIPI_HIT
         );
 
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_COOLKING,
+        RES_ANIMA_PLS_COOLKING,
+        RES_ANIMA_JSO_COOLKING
+        );
+
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_COOLKING_HIT,
+        RES_ANIMA_PLS_COOLKING_HIT,
+        RES_ANIMA_JSO_COOLKING
+        );
+
+
+
     //-------------------------------------------
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
@@ -68,6 +83,12 @@ bool CGamePlayer::init()
     animation_idle();
                                   
     setState(STATE_STOP); 
+
+    
+    m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_DOWN,     PLAYLAB_COOLKING_WALK_FRONT));
+    m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_UP,       PLAYLAB_COOLKING_WALK_BACK));
+    m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_LEFT,     PLAYLAB_COOLKING_WALK_LEFT));
+    m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_RIGHT,    PLAYLAB_COOLKING_WALK_RIGHT));
 
     return true;
 }
@@ -287,7 +308,11 @@ void CGamePlayer::playerRun(float time)
         return;
     }
 
-    m_iCurrentDirect = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlayerPosition(), m_oCurrentTarget)));
+    int t_direct = CMath::radianToAngle(RADINA_TOGAME(CMath::getRadian(getPlayerPosition(), m_oCurrentTarget)));
+    changeDirect(t_direct);
+
+    m_iCurrentDirect = t_direct;
+
     Vec2 npos = CMath::getVec2(getPlayerPosition(), getStep(), CMath::angleToRadian(m_iCurrentDirect));
     CUtil::formartGrid(npos, getStep());
     //CUtil::formartGrid(npos);
@@ -296,7 +321,20 @@ void CGamePlayer::playerRun(float time)
 }
 
 
+void CGamePlayer::changeDirect(int angle)
+{
+    if (angle != m_iAnimDirect)
+    {         
+         m_iAnimDirect = angle;
+         log("current Direct:%d", m_iAnimDirect);
+        std::map<int, const char*>::iterator it = m_oDirectTab.find(angle);
 
+        if (it != m_oDirectTab.end())
+        {
+            m_pCurrentAnim->getArmature()->getAnimation()->play(it->second);
+        }
+    }
+}
 
 void CGamePlayer::print(DrawNode* dn)
 {    
@@ -323,14 +361,22 @@ void CGamePlayer::setState(int state)
     {
     case STATE_RUN:
         log("Player is MoveSTATE!");
+        animation_move();
         break;
     case STATE_STANDER:
         //m_oAllGuide.clear();
-        log("Player is Stander");       
+        m_iAnimDirect = ANGLE_NONE;
+        log("Player is Stander");  
+        animation_idle();
         break;
     case STATE_STOP:   
+        m_iAnimDirect = ANGLE_NONE;
         m_oAllGuide.clear();
         log("Player is Stop");
+        animation_idle();
+        break;
+    case STATE_DIE:
+        animation_die();
         break;
     default:
         break;
@@ -372,18 +418,24 @@ void CGamePlayer::animation_attack()
 //     setPlayerPosition(m_oPlayerPosition);
 
    
-    if (m_pCurrentAnim != nullptr)
-    {
-        removeChild(m_pCurrentAnim);
-        m_pCurrentAnim = nullptr;
-    }
+//     if (m_pCurrentAnim != nullptr)
+//     {
+//         removeChild(m_pCurrentAnim);
+//         m_pCurrentAnim = nullptr;
+//     }
 
-    CAnimationAxis* pAa = findCreateByIndex(Anim_attick);
-    pAa->setCurrentAnimation(ARMATURE_PIPI_HIT);
-    pAa->getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGamePlayer::movementCallback));
-    pAa->getArmature()->getAnimation()->playByIndex(0);
-    m_pCurrentAnim = pAa;
-    setPlayerPosition(getPlayerPosition());
+//     CAnimationAxis* pAa = findCreateByIndex(Anim_attick);
+//     pAa->setCurrentAnimation(ARMATURE_PIPI_HIT);
+//     pAa->getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGamePlayer::movementCallback));
+//     pAa->getArmature()->getAnimation()->playByIndex(0);
+//     m_pCurrentAnim = pAa;
+//    setPlayerPosition(getPlayerPosition());
+
+
+    CAnimationAxis* pAa = findCreateByIndex(Anim_idle);
+    pAa->getArmature()->getAnimation()->play(PLAYLAB_COOLKING_HIT);
+
+    //setPlayerPosition(getPlayerPosition());
 
 }
 
@@ -395,32 +447,36 @@ void CGamePlayer::animation_idle()
 // 
 //     setPlayerPosition(m_oPlayerPosition);
 
-    if (m_pCurrentAnim != nullptr)
-    {
-        removeChild(m_pCurrentAnim);
-    }
-    
+//     if (m_pCurrentAnim != nullptr)
+//     {
+//         removeChild(m_pCurrentAnim);
+//     }
+
     CAnimationAxis* pAa = findCreateByIndex(Anim_idle);
 
-    pAa->setCurrentAnimation(ARMATURE_PIPI_STANDER);
-    pAa->getArmature()->getAnimation()->playByIndex(0); 
-    m_pCurrentAnim = pAa;
-    setPlayerPosition(getPlayerPosition());
+    if (m_pCurrentAnim == nullptr)
+    {
+        pAa->setCurrentAnimation(ARMATURE_COOLKING);
+        pAa->getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGamePlayer::movementCallback));
+        m_pCurrentAnim = pAa;
+        setPlayerPosition(getPlayerPosition());
+    }
 
-    
-
+    pAa->getArmature()->getAnimation()->play(PLAYLAB_COOLKING_STANDER_FRONT);
 }
 
 
 //TODO 完成动画
 void CGamePlayer::animation_die()
 {
-
+    m_pCurrentAnim->getArmature()->getAnimation()->play(PLAYLAB_COOLKING_DIE);
 }
 
 //TODO 完成动画
 void CGamePlayer::animation_move()
 {
+    CAnimationAxis* pAa = findCreateByIndex(Anim_idle);
+    pAa->getArmature()->getAnimation()->play(PLAYLAB_COOLKING_WALK_FRONT);
 
 }
 
@@ -529,6 +585,9 @@ void CGamePlayer::h_actionSkillEnd(EventParm pData)
     case CBoss::Skill::SKILL_T_TORNADO:
         m_iTornadoColor = TornadoColor::COLOR_NONE;
         break;
+    case CBoss::Skill::SKILL_T_LIGHTING:
+       // animation_attack();
+        break;
     default:
         break;
     }
@@ -568,9 +627,17 @@ void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, 
             //animation_attack();            
             CEventDispatcher::getInstrance()->dispatchEvent(EVENT_BOSSSKILL_LIGHTATTICAKOVER, 0);
 
-        }else if (strcmp(name.c_str(), PLAYLAB_PIPI_HIT) == 0)
+        }
+//         else if (strcmp(name.c_str(), PLAYLAB_PIPI_HIT) == 0)
+//         {
+//             animation_idle();      
+//         }
+        else if (strcmp(name.c_str(), PLAYLAB_COOLKING_HIT) == 0)
         {
-            animation_idle();      
+            animation_idle();
+        }else if (strcmp(name.c_str(), PLAYLAB_COOLKING_DIE) == 0)
+        {
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERDIE, PARM_NULL);
         }
     }
 }
