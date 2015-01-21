@@ -72,12 +72,12 @@ void CGameLogic::uiLoadcomplete()
     //-------------------------------------------------------------------------------
 
     cocos2d::Size winsize = cocos2d::Director::getInstance()->getVisibleSize();
-   
+    Vec2 orgin = Director::getInstance()->getVisibleOrigin();
 
     ui::Widget* m_BtmMenu = cocostudio::GUIReader::getInstance()->widgetFromJsonFile("UI/YXJM_dibu.json");
     m_BtmMenu->ignoreAnchorPointForPosition(false);
     m_BtmMenu->setAnchorPoint(cocos2d::Vec2(0.5, 0.0));
-    m_BtmMenu->setPosition(cocos2d::Vec2(winsize.width / 2, 0));
+    m_BtmMenu->setPosition(cocos2d::Vec2(winsize.width / 2 + orgin.x, orgin.y));
     m_BtmMenu->setScale(0.48);
 
     ui::Button* button = dynamic_cast<ui::Button*>(ui::Helper::seekWidgetByName(m_BtmMenu, "Button_jineng"));

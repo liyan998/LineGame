@@ -492,6 +492,16 @@ void CGamePlayer::animation_die()
 //TODO Íê³É¶¯»­
 void CGamePlayer::animation_move()
 {
+//     switch (m_iSkillConfuseState)
+//     {
+//     case SkillConfuseState::SKILLSTATE_ANIMA:
+//         return;
+//     default:
+        //break;
+//    
+//     }
+
+
     CAnimationAxis* pAa = findCreateByIndex(Anim_idle);
     pAa->getArmature()->getAnimation()->play(PLAYLAB_COOLKING_WALK_FRONT);
 
@@ -759,6 +769,16 @@ bool CGamePlayer::releasSkill(int skillid)
 
 bool CGamePlayer::releasSkillConfuse()
 {
+
+    switch (m_State)
+    {    
+    case State::STATE_RUN:
+    case State::STATE_DIE:
+  
+        return false;
+    }
+
+
     if (m_iSkillConfuseState == SkillConfuseState::SKILLSTATE_ANIMA 
         || 
         m_iSkillConfuseState == SkillConfuseState::SKILLSTATE_ONAIR
