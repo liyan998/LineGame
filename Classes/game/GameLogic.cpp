@@ -1,8 +1,12 @@
 #include "GameLogic.h"
 
+#include "extensions/cocos-ext.h"
+#include "ui/CocosGUI.h"
+#include "cocostudio/CocoStudio.h"
+
 #include "ShowArea.h"
 #include "GameResMacros.h"
-
+#include "Skill.h"
 
 
 bool CGameLogic::init()
@@ -20,6 +24,7 @@ bool CGameLogic::init()
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_END, this);
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
 
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PLAYERSKILL_CONFUSE, this);
     //-------------------------------------------------------------------------
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
@@ -52,9 +57,51 @@ bool CGameLogic::init()
         RES_ANIMA_PLS_PROPERTY,
         RES_ANIMA_JSO_PROPERTY
         );
+   
     
     return true;
 }   
+
+void CGameLogic::uiLoadcomplete()
+{
+    cocos2d::SpriteFrameCache* scache = cocos2d::SpriteFrameCache::getInstance();
+    cocos2d::TextureCache* tcache = cocos2d::Director::getInstance()->getTextureCache();   
+    cocos2d::Texture2D* texture = tcache->getTextureForKey("UI/YXJM_PNG/YXJM.png");
+    scache->addSpriteFramesWithFile("UI/YXJM_PNG/YXJM.plist", texture);
+
+    //-------------------------------------------------------------------------------
+
+    cocos2d::Size winsize = cocos2d::Director::getInstance()->getVisibleSize();
+   
+
+    ui::Widget* m_BtmMenu = cocostudio::GUIReader::getInstance()->widgetFromJsonFile("UI/YXJM_dibu.json");
+    m_BtmMenu->ignoreAnchorPointForPosition(false);
+    m_BtmMenu->setAnchorPoint(cocos2d::Vec2(0.5, 0.0));
+    m_BtmMenu->setPosition(cocos2d::Vec2(winsize.width / 2, 0));
+    m_BtmMenu->setScale(0.48);
+
+    ui::Button* button = dynamic_cast<ui::Button*>(ui::Helper::seekWidgetByName(m_BtmMenu, "Button_jineng"));
+    button->addTouchEventListener(CC_CALLBACK_2(CGameLogic::releasSkill, this));
+
+    addChild(m_BtmMenu);
+
+}
+
+
+void CGameLogic::releasSkill(cocos2d::Ref* sender, ui::Widget::TouchEventType type)
+{
+    if (type == ui::Widget::TouchEventType::ENDED)
+    {
+        if (m_refPlayer->releasSkill(CGamePlayer::SkillId::SKILL_CONFUSE))
+        {
+            log("releasSkill");
+
+            
+
+        }        
+    }
+}
+
 
 void CGameLogic::onEnter()
 {
@@ -95,6 +142,11 @@ void CGameLogic::onEnter()
     //-----------------------------------------------------------
 
     createGameElement();    
+
+    cocos2d::TextureCache* tcache = cocos2d::Director::getInstance()->getTextureCache();
+    tcache->addImageAsync("UI/YXJM_PNG/YXJM.png", CC_CALLBACK_0(CGameLogic::uiLoadcomplete, this));
+
+
 }
 
 void CGameLogic::onExit()
@@ -110,6 +162,8 @@ void CGameLogic::onExit()
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_START, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_END, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
+
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PLAYERSKILL_CONFUSE, this);
 }
 
 
@@ -222,6 +276,9 @@ void CGameLogic::actionEvent(int evenid, EventParm pData)
     case EVENT_BOSSSKILL_TORNADO_CHANAGE:
         h_ActionBossSkillTornadChange(pData);
         break;
+    case EVENT_PLAYERSKILL_CONFUSE:
+        h_actionSkillConfuse(pData);
+        break;
     default:
         break;
     }
@@ -323,6 +380,36 @@ void CGameLogic::h_ActionClose(EventParm pData)
         m_refSp->clearGuide();
         return;        
     }     
+}
+
+
+void CGameLogic::h_actionSkillConfuse(EventParm pData)
+{
+
+    int skillState = *(int*)pData;
+
+
+    if (skillState == SkillConfuseState::SKILLSTATE_NONE)
+    {
+
+        for (int i = 0; i < m_oAllElement.size();i++)
+        {
+            if (m_oAllElement[i]->getCategory() == CGameElement::Category::CATEGORY_CAT)
+            {
+                CNpc* pNpc = (CNpc*)m_oAllElement[i];
+
+                pNpc->setPlayerSkillConfuse(SkillConfuseState::SKILLSTATE_NONE);
+            }
+            
+        }
+    }else if (skillState == SkillConfuseState::SKILLSTATE_ONAIR)
+    {
+        CNpc* pNpc = findSkillTarget();
+
+        pNpc->setPlayerSkillConfuse(SkillConfuseState::SKILLSTATE_ONAIR);
+    }
+
+
 }
 
 
@@ -605,4 +692,28 @@ void CGameLogic::dropObject()
 
     m_oAllDrop.clear();
 
+}
+
+// 
+// void CGameLogic::scrollViewDidBegin(cocos2d::extension::ScrollView* view, cocos2d::Point& point)
+// {
+// 
+// }
+// 
+// void CGameLogic::scrollViewDidScroll(cocos2d::extension::ScrollView* view)
+// {
+// 
+// }
+
+
+CNpc* CGameLogic::findSkillTarget()
+{
+    for (int i = 0; i < m_oAllElement.size();i++)
+    {
+        if (m_oAllElement[i]->getCategory() == CGameElement::CATEGORY_CAT)
+        {
+            return dynamic_cast<CNpc*>(m_oAllElement[i]);
+        }
+    }
+    return nullptr;
 }

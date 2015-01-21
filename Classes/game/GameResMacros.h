@@ -58,6 +58,18 @@
 
 //护卫#####################################################################
 
+//史来喵
+#define RES_ANIMA_JSO_CAT                   "animation/cat/SLM_Walk.ExportJson"
+#define RES_ANIMA_PNG_CAT                   "animation/cat/SLM_Walk_PNG/SLM_Walk.png"
+#define RES_ANIMA_PLS_CAT                   "animation/cat/SLM_Walk_PNG/SLM_Walk.plist"
+
+#define ARMATURE_CAT                        "SLM_Walk"
+
+#define PLAYLAB_CAT_WALK_FRONT              "Shilaimiao_Front_Walk"
+#define PLAYLAB_CAT_WALK_LEFT               "Shilaimiao_Front45_Walk"
+#define PLAYLAB_CAT_WALK_RIGHT              "Shilaimiao_Front123_Walk"
+#define PLAYLAB_CAT_WALK_Back               "Shilaimiao_Back_Walk"
+
 //独眼布
 #define RES_ANIMA_PNG_DYB                   "animation/DYB/DYB_Walk_PNG/DYB_Walk.png"
 #define RES_ANIMA_PLS_DYB                   "animation/DYB/DYB_Walk_PNG/DYB_Walk.plist"
@@ -65,6 +77,8 @@
 
 #define ARMATURE_DYB_WALK                   "DYB_Walk"
 #define PLAYLAB_DYB_FRONT_WALK              "DYB_Front_Walk"
+
+
 
 //死亡、复活
 #define ARMATURE_GUARD_DIE_REVIVE           "Guard_Die_Revive" 
@@ -122,6 +136,23 @@
 #define PLAYLAB_COOLKING_STANDER_BACK       "NW_Back_Stand"
 
 #define PLAYLAB_COOLKING_DIE                "NW_Front_Did"
+
+//施法动作
+#define RES_ANIMA_PLS_COOLKING_MAGIC        "animation/coolking/Nvwang_Magic_PNG/Nvwang_Magic.plist"
+#define RES_ANIMA_PNG_COOLKING_MAGIC        "animation/coolking/Nvwang_Magic_PNG/Nvwang_Magic.png"
+#define RES_ANIMA_JSO_COOLKING_MAGIC        "animation/coolking/Nvwang_Magic.ExportJson"
+
+#define ARMATURE_COOKING_MAGIC              "Nvwang_Magic"
+#define PLAYLAB_COOLKING_MACICACTION        "Nvwang_Magic"
+
+//魅惑技能作用效果
+#define RES_ANIMA_PLS_COOLKING_MAGIC_EFFIE  "animation/coolking/Nvwang_Skill_PNG/Nvwang_Skill.plist"
+#define RES_ANIMA_PNG_COOLKING_MAGIC_EFFIE  "animation/coolking/Nvwang_Skill_PNG/Nvwang_Skill.png"
+#define RES_ANIMA_JSO_COOLKING_MAGIC_EFFIE  "animation/coolking/Nvwang_Skill.ExportJson"
+
+#define ARMATURE_COOKING_MAGIC_EFFIE        "Nvwang_Skill"
+#define PLAYLAB_COOLKING_MAGIC_EFFIE        "Nvwang_Skill"
+
 
 //特效#####################################################################
 

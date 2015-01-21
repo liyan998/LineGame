@@ -33,6 +33,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
 				   ../../Classes/game/Tornado.cpp\
 				   ../../Classes/game/Dragon.cpp\
                    ../../Classes/game/Npc.cpp \
+                   ../../Classes/game/Cat.cpp \
                    ../../Classes/game/Enemy.cpp \
                    ../../Classes/game/Game1Player.cpp \
 				   ../../Classes/game/GameLogic.cpp \

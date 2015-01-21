@@ -302,6 +302,9 @@
     <ClInclude Include="..\Classes\game\Cat.h">
       <Filter>Classes\game\element\enemy\npc</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\game\Skill.h">
+      <Filter>Classes\game\element</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

@@ -20,6 +20,11 @@ public:
         STATE_REBACK        //复活
     };
 
+
+    enum IndexTag
+    {
+        INDEX_NPCINDEX_CONFUES = 0X112,  //技能特效
+    };
 public:
 
     CREATE_FUNC(CNpc)
@@ -40,6 +45,8 @@ public:
 
     virtual void changeDirect(int direct);
 
+
+
     //--------------------------------------
 
     void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
@@ -50,9 +57,22 @@ public:
 
     inline void animation_Die();                //死亡
 
-    inline void animation_move();               //移动
+    virtual void animation_move();              //移动
+
+    void animation_confuse();
 
     void changeLiveDie(float time);
+
+    //-------------------------------------
+
+    void setPlayerSkillConfuse(int state);               //玩家技能魅惑
+
+   
+
+
+public:
+
+    int m_iSkillConfuseState;                   //魅惑技能
 
 private:
 

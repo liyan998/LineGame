@@ -4,7 +4,7 @@
 #include "util/Math.h"
 
 #include "GameResMacros.h"
-
+#include "Skill.h"
 
 bool CNpc::init()
 {
@@ -19,6 +19,15 @@ bool CNpc::init()
     m_fCount    = 0.0f;
     m_iReLive   = 3;
     m_iAttick   = 1;
+
+    m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_NONE;
+
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_COOLKING_MAGIC_EFFIE,
+        RES_ANIMA_PLS_COOLKING_MAGIC_EFFIE,
+        RES_ANIMA_JSO_COOLKING_MAGIC_EFFIE
+        );
 
 
     //m_pSp       = Sprite::create("CloseNormal.png");
@@ -39,6 +48,8 @@ void CNpc::run(float time)
     //log("%d  m_fCount:%f", m_State, m_fCount);
   
 }
+
+
 
 
 void CNpc::changeLiveDie(float time)
@@ -81,13 +92,21 @@ void CNpc::setState(int state)
 
 void CNpc::released()
 {
-
+   
 }
 
 void CNpc::print(DrawNode* dn)
 {
     CEnemy::print(dn);
     
+
+    if (m_iSkillConfuseState == SkillConfuseState::SKILLSTATE_ONAIR)
+    {
+        Vec2 tp = getPosition();
+        tp.x = tp.x + 10;
+        tp.y = tp.y + 10;
+        dn->drawDot(tp, 4, Color4F(1,0,0.4,1));
+    }
 }
 
 inline
@@ -99,12 +118,12 @@ void CNpc::animation_Die()
 }
 
 
-inline
+
 void CNpc::animation_move()
 {   
-    CGameElement::setCurrentAnimation(ARMATURE_DYB_WALK);
-    getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
-    getArmature()->getAnimation()->play(PLAYLAB_DYB_FRONT_WALK);
+//     CGameElement::setCurrentAnimation(ARMATURE_DYB_WALK);
+//     getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
+//     getArmature()->getAnimation()->play(PLAYLAB_DYB_FRONT_WALK);
 }
 
 inline
@@ -113,6 +132,18 @@ void CNpc::animation_reBack()
     CGameElement::setCurrentAnimation(ARMATURE_GUARD_DIE_REVIVE);
     getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
     getArmature()->getAnimation()->play(PLAYLAB_GUARD_REVIVE);
+}
+
+
+
+//÷È»ó¼¼ÄÜ
+void CNpc::animation_confuse()
+{
+    CAnimationAxis* aa = findCreateByIndex(INDEX_NPCINDEX_CONFUES);
+
+    aa->setCurrentAnimation(ARMATURE_COOKING_MAGIC_EFFIE);
+    aa->getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
+    aa->getArmature()->getAnimation()->play(PLAYLAB_COOLKING_MAGIC_EFFIE);
 }
 
 
@@ -145,4 +176,21 @@ void CNpc::changeDirect(int direct)
 
 
 
+}
+
+void CNpc::setPlayerSkillConfuse(int state)
+{    
+    m_iSkillConfuseState = state;
+
+    switch (m_iSkillConfuseState)
+    {
+    case SkillConfuseState::SKILLSTATE_ONAIR:
+        animation_confuse();
+        break;
+    case SkillConfuseState::SKILLSTATE_NONE:
+        CAnimationAxis* aa = findCreateByIndex(INDEX_NPCINDEX_CONFUES);
+        aa->clearCurrentAnimation();
+        removeChild(aa);
+        break;
+    }
 }

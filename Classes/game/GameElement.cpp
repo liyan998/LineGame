@@ -137,7 +137,7 @@ bool CGameElement::collwithArea(const Vec2& inPoint, Vec2& outPoint)
 
 void CGameElement::print(DrawNode* dn)
 {
-    dn->drawDot(getPosition(), m_iCollR, Color4F(1, 1, 1, 0.6));
+    dn->drawDot(getPosition(), m_iCollR, Color4F(1, 1, 1, 0.3));
     dn->drawDot(getPosition(), 2, Color4F(1, 0, 0, 1));
 }
 
@@ -148,3 +148,14 @@ float CGameElement::getCollwithR()
 }
 
 
+CAnimationAxis* CGameElement::findCreateByIndex(int index)
+{
+    CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(index);
+    if (pAa == nullptr)
+    {
+        pAa = CAnimationAxis::create();
+        pAa->setTag(index);
+        addChild(pAa);
+    }
+    return pAa;
+}

@@ -36,12 +36,12 @@ bool CMySprite::init()
     //----------------------------------------------------- 
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_PIPI,
-        RES_ANIMA_PLS_PIPI,
-        RES_ANIMA_JSO_PIPI
+        RES_ANIMA_PNG_COOLKING,
+        RES_ANIMA_PLS_COOLKING,
+        RES_ANIMA_JSO_COOLKING
         );
     
-    setCurrentAnimation(ARMATURE_PIPI_STANDER);
+    setCurrentAnimation(ARMATURE_COOLKING);
     getArmature()->setAnchorPoint(Vec2(0.5f, 0.2f));
     getArmature()->setOpacity(255 * 0.4);
     getArmature()->getAnimation()->playByIndex(0);
@@ -1409,8 +1409,15 @@ void CMySprite::released()
 
 bool CMySprite::attiack(int value, CEnemy* pEnemy)
 {
+    if (m_refPlayer->getState() == CGamePlayer::STATE_DIE)
+    {
+        return false;
+    }
+
+
     if (m_iHealth - value <= 0)
     {
+        m_iHealth = 0;
         m_refPlayer->setState(CGamePlayer::STATE_DIE);
         //CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERDIE, PARM_NULL);
         return false;

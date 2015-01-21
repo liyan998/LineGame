@@ -40,6 +40,15 @@ public:
         COLOR_WHITE = T_SkillDrogTornado::Color::TORNADO_COLOR_WHITE
     };
 
+    enum SkillId
+    {
+        SKILL_CONFUSE = 0X110100,  //魅惑技能
+    };
+
+
+
+
+
 public:
 
     CREATE_FUNC( CGamePlayer )
@@ -120,7 +129,9 @@ public:
     
     void animation_attack();  
 
-    CAnimationAxis* findCreateByIndex(int index);
+    void animation_magic();
+
+    
 
 
     //闪电技能攻击
@@ -131,6 +142,14 @@ public:
     void setLightAttickReleased();
     //闪电技能攻击完成
     void destoryLightAttick();
+
+    //------------------------------------
+    //释放技能
+    bool releasSkill(int skillid);
+
+    bool releasSkillConfuse();                  //魅惑技能
+
+    void checkSkillConnfuse();
 
 private:
 
@@ -173,6 +192,10 @@ private:
     std::map<int, const char*>          m_oDirectTab;               //
     int                                 m_iAnimDirect;              //动画方向
 
+
+    int                                 m_iSkillConfuseState;       //魅惑技能状态
+    int                                 m_iSkillConfuseCount;       //魅惑技能个数
+    int                                 m_iSkillTimeCount;
 
 };
 

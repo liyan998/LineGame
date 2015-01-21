@@ -18,7 +18,6 @@ void CUIFrom::onEnter()
     m_pButton->addTouchEventListener(this, toucheventselector(CUIFrom::onButtonClose));
    // addChild(m_pButton);
     addChild(m_pUi);
-
 }
 
 

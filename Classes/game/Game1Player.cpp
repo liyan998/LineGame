@@ -6,6 +6,7 @@
 
 // #include "MySprite.h"
 #include "GameResMacros.h"
+#include "Skill.h"
 
 using namespace liyan998;
 using namespace cocostudio;
@@ -14,18 +15,22 @@ bool CGamePlayer::init()
 {
     Node::init();
 
-    m_iStep             = 2;
-    m_iCollR            = 20;
-    m_bFlow             = false;
-    m_oPlayerPosition   = Vec2::ZERO;
-    m_pEventAddSpeed    = nullptr;
-    m_iEffectAddProtect = EFFECT_NONE;
-    m_iEffectAddSpeed   = EFFECT_NONE;
+    m_iStep                 = 2;
+    m_iCollR                = 20;
+    m_bFlow                 = false;
+    m_oPlayerPosition       = Vec2::ZERO;
+    m_pEventAddSpeed        = nullptr;
+    m_iEffectAddProtect     = EFFECT_NONE;
+    m_iEffectAddSpeed       = EFFECT_NONE;
 
-    m_bHasLight         = false;
-    m_pCurrentAnim      = nullptr;
+    m_bHasLight             = false;
+    m_pCurrentAnim          = nullptr;
 
-    m_iTornadoColor     = TornadoColor::COLOR_NONE;
+    m_iTornadoColor         = TornadoColor::COLOR_NONE;
+
+    m_iSkillConfuseState    = SKILLSTATE_NONE;
+    m_iSkillConfuseCount    = 2;
+    m_iSkillTimeCount       = 0;
 
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
@@ -33,6 +38,7 @@ bool CGamePlayer::init()
         RES_ANIMA_PLS_DRAGON_SKILL_YUN,
         RES_ANIMA_JSO_DRAGON_SKILL_YUN
         );
+
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
         RES_ANIMA_PNG_DRAGON_SKILL_YUNRELEAS,
         RES_ANIMA_PLS_DRAGON_SKILL_YUNRELEAS,
@@ -46,20 +52,15 @@ bool CGamePlayer::init()
         );
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_COOLKING,
-        RES_ANIMA_PLS_COOLKING,
-        RES_ANIMA_JSO_COOLKING
-        );
-
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
         RES_ANIMA_PNG_COOLKING_HIT,
         RES_ANIMA_PLS_COOLKING_HIT,
         RES_ANIMA_JSO_COOLKING
         );
-
-
-
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_COOLKING_MAGIC,
+        RES_ANIMA_PLS_COOLKING_MAGIC,
+        RES_ANIMA_JSO_COOLKING_MAGIC
+        );
     //-------------------------------------------
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
@@ -73,18 +74,13 @@ bool CGamePlayer::init()
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
 
     //-----------------------------------------------------
-
-
-
-   // addChild(animAxis);
-
-    //------------------------------------------------
-
+    
     animation_idle();
                                   
+    //------------------------------------------------
+
     setState(STATE_STOP); 
 
-    
     m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_DOWN,     PLAYLAB_COOLKING_WALK_FRONT));
     m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_UP,       PLAYLAB_COOLKING_WALK_BACK));
     m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_LEFT,     PLAYLAB_COOLKING_WALK_LEFT));
@@ -263,6 +259,7 @@ void CGamePlayer::run(float time)
     m_fCount += time;
     if (m_fCount >= 1)
     {
+        checkSkillConnfuse();
         checkEffect();
         m_fCount = 0;
     }
@@ -376,6 +373,7 @@ void CGamePlayer::setState(int state)
         animation_idle();
         break;
     case STATE_DIE:
+        m_oAllGuide.clear();
         animation_die();
         break;
     default:
@@ -454,15 +452,34 @@ void CGamePlayer::animation_idle()
 
     CAnimationAxis* pAa = findCreateByIndex(Anim_idle);
 
-    if (m_pCurrentAnim == nullptr)
+    if (m_pCurrentAnim == nullptr 
+        || 
+        strcmp(pAa->getArmature()->getAnimation()->getCurrentMovementID().c_str(), PLAYLAB_COOLKING_STANDER_FRONT) != 0)
     {
         pAa->setCurrentAnimation(ARMATURE_COOLKING);
         pAa->getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGamePlayer::movementCallback));
         m_pCurrentAnim = pAa;
         setPlayerPosition(getPlayerPosition());
+
     }
 
     pAa->getArmature()->getAnimation()->play(PLAYLAB_COOLKING_STANDER_FRONT);
+}
+
+void CGamePlayer::animation_magic()
+{
+    CAnimationAxis* pAa = findCreateByIndex(Anim_idle);
+
+    if (pAa != nullptr 
+        &&         
+        strcmp(pAa->getArmature()->getAnimation()->getCurrentMovementID().c_str(), ARMATURE_COOKING_MAGIC) != 0
+        )
+    {
+        pAa->setCurrentAnimation(ARMATURE_COOKING_MAGIC);
+        pAa->getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGamePlayer::movementCallback));
+        pAa->getArmature()->getAnimation()->playByIndex(0);
+    }
+
 }
 
 
@@ -495,17 +512,6 @@ void CGamePlayer::checkEffect()
     }
 }
 
-CAnimationAxis* CGamePlayer::findCreateByIndex(int index)
-{
-    CAnimationAxis* pAa = (CAnimationAxis*)getChildByTag(index);
-    if (pAa == nullptr)
-    {
-        pAa = CAnimationAxis::create();
-        pAa->setTag(index);
-        addChild(pAa);
-    }
-    return pAa;
-}
 
 void CGamePlayer::actionEvent(int eventid, EventParm pData)
 {
@@ -639,6 +645,13 @@ void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, 
         {
             CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERDIE, PARM_NULL);
         }
+        else if (strcmp(name.c_str(), PLAYLAB_COOLKING_MACICACTION) == 0)
+        {
+            m_iSkillConfuseCount--;
+            m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_ONAIR;
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERSKILL_CONFUSE, new int(m_iSkillConfuseState));
+            animation_idle();
+        }
     }
 }
 
@@ -651,8 +664,9 @@ void CGamePlayer::h_actionSkillLightCount(EventParm pData)
 }
 
 
+
 /////////////////////////////////////////////////////////////////
-//ÉÁµç¹¥»÷
+//ÔâÓöÉÁµç¹¥»÷
 ////////////////////////////////////////////////////////////////
 void CGamePlayer::setLightAttack(bool lightAttack)
 {
@@ -724,4 +738,64 @@ void CGamePlayer::destoryLightAttick()
 
         m_bHasLight = false;
     }
+}
+
+//////////////////////////////////////////////////////////////////
+//ÊÍ·Å÷È»ó¼¼ÄÜ
+//////////////////////////////////////////////////////////////////
+bool CGamePlayer::releasSkill(int skillid)
+{
+    switch (skillid)
+    {
+    case SKILL_CONFUSE:
+       return releasSkillConfuse();       
+    default:
+        break;
+    }
+
+    return true;
+}
+
+
+bool CGamePlayer::releasSkillConfuse()
+{
+    if (m_iSkillConfuseState == SkillConfuseState::SKILLSTATE_ANIMA 
+        || 
+        m_iSkillConfuseState == SkillConfuseState::SKILLSTATE_ONAIR
+        )
+    {
+        return false;
+    }
+
+    if (m_iSkillConfuseCount <= 0)
+    {
+        return false;
+    }
+
+
+    m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_ANIMA;
+    log("play magic animation!");
+    animation_magic();
+    
+    return true;
+}
+
+
+void CGamePlayer::checkSkillConnfuse()
+{
+    if (m_iSkillConfuseState == SkillConfuseState::SKILLSTATE_NONE)
+    {
+        return;
+    }
+
+    if (m_iSkillTimeCount >= 10)
+    {
+        m_iSkillTimeCount = 0;
+        m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_NONE;
+
+        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERSKILL_CONFUSE, new int(m_iSkillConfuseState));
+        return;
+    }
+
+    m_iSkillTimeCount++;
 }

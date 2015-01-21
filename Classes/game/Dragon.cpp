@@ -41,22 +41,21 @@ void CDragon::onEnter()
 
     //风魔龙闪电云技能
     T_SkillDragonLighing* skilllight    = new T_SkillDragonLighing();
-    skilllight->m_fMaxTime = 10; //   
+    skilllight->m_fMaxTime              = 10; //   
     skilllight->init();
 
     //风魔龙 龙卷风技能
     T_SkillDrogTornado* pSkillTornado   = new T_SkillDrogTornado();
-    pSkillTornado->m_fMaxTime = 120;
-    pSkillTornado->m_fMAXWhiteTime = 3;
-    pSkillTornado->m_fMAXBlackTime = 4;
-
+    pSkillTornado->m_fMaxTime           = 120;
+    pSkillTornado->m_fMAXWhiteTime      = 3;
+    pSkillTornado->m_fMAXBlackTime      = 4;
     pSkillTornado->init();
 
     //风魔龙 龙卷风技能
     T_RandSkill allRandSkill[] = 
     {
-        { 3, 0, Skill::SKILL_T_LIGHTING, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight },
-        //{ 3, 0, Skill::SKILL_T_TORNADO, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)pSkillTornado }
+        //{ 3, 0, Skill::SKILL_T_LIGHTING, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)skilllight },
+        { 3, 0, Skill::SKILL_T_TORNADO, RandSkill_State::RANDSKILL_STATE_CD, (T_SkillData*)pSkillTornado }
     
     };
     
@@ -123,11 +122,11 @@ void CDragon::movementCallback(Armature * armature, MovementEventType type, cons
         {
             CBoss::startRandSkill();
             getArmature()->getAnimation()->play(PLAYLAB_DRAGON_UP_WALK);
-        }else if (strcmp(name.c_str(), PLAYLAB_DRAGON_MAGIC_TORNADO) == 0)
+        }
+        else if (strcmp(name.c_str(), PLAYLAB_DRAGON_MAGIC_TORNADO) == 0)
         {
             //释放龙卷风技能
-            CBoss::startRandSkill();
-           
+            CBoss::startRandSkill();           
             getArmature()->getAnimation()->play(PLAYLAB_DRAGON_UP_WALK);
         }
     }

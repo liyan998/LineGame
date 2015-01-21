@@ -8,6 +8,13 @@
 /************************************************************************/
 class CCat : public CNpc
 {
+public:
+
+    enum TagIndex
+    {
+        INDEX_CAT = 0x233,      //¶¯»­
+        
+    };
 
 public:
 
@@ -20,6 +27,11 @@ public:
     virtual bool init();
 
     virtual void run(float time);
+
+    virtual void animation_move();
+
+
+    
 
     //
 

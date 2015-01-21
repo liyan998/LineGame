@@ -31,6 +31,8 @@
 #define EVENT_BOSSSKILL_TORNADO_SURROUND    0x10000105      //风魔龙技能龙卷风圈住
 #define EVENT_BOSSSKILL_TORNADO_CHANAGE     0x10000106      //龙卷风技能改变颜色
 
+#define EVENT_PLAYERSKILL_CONFUSE           0x10000201      //玩家魅惑技能
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////
