@@ -92,12 +92,13 @@ void CGameLogic::releasSkill(cocos2d::Ref* sender, ui::Widget::TouchEventType ty
 {
     if (type == ui::Widget::TouchEventType::ENDED)
     {
-        if (m_refPlayer->releasSkill(CGamePlayer::SkillId::SKILL_CONFUSE))
+        std::vector<CNpc*> allNpc;
+        getLiveNpc(allNpc , SkillConfuseState::SKILLSTATE_NONE);
+
+        if (allNpc.size() > 0)
         {
             log("releasSkill");
-
-            
-
+            m_refPlayer->releasSkill(CGamePlayer::SkillId::SKILL_CONFUSE);
         }        
     }
 }
@@ -237,8 +238,9 @@ void CGameLogic::createGameElement()
     tornado->setTag(1000);
     tornado->setState(CTornado::STATE_DISAPPEAR);
 
-    tornado->m_refPlayer = m_refPlayer;
-    tornado->m_refShowArea = m_refShowArea;
+    tornado->m_refSp        = m_refSp;
+    tornado->m_refPlayer    = m_refPlayer;
+    tornado->m_refShowArea  = m_refShowArea;
 
     Vec2 tp;
     tornado->randPosition(tp);
@@ -385,31 +387,17 @@ void CGameLogic::h_ActionClose(EventParm pData)
 
 void CGameLogic::h_actionSkillConfuse(EventParm pData)
 {
-
     int skillState = *(int*)pData;
 
-
-    if (skillState == SkillConfuseState::SKILLSTATE_NONE)
+    if (skillState == SkillConfuseState::SKILLSTATE_ONAIR)
     {
+        std::vector<CNpc*> tnpc;
+        getLiveNpc(tnpc, SkillConfuseState::SKILLSTATE_NONE);
 
-        for (int i = 0; i < m_oAllElement.size();i++)
-        {
-            if (m_oAllElement[i]->getCategory() == CGameElement::Category::CATEGORY_CAT)
-            {
-                CNpc* pNpc = (CNpc*)m_oAllElement[i];
-
-                pNpc->setPlayerSkillConfuse(SkillConfuseState::SKILLSTATE_NONE);
-            }
-            
-        }
-    }else if (skillState == SkillConfuseState::SKILLSTATE_ONAIR)
-    {
-        CNpc* pNpc = findSkillTarget();
-
+        CNpc* pNpc = tnpc[0];
+        m_pSkillTarget = pNpc;
         pNpc->setPlayerSkillConfuse(SkillConfuseState::SKILLSTATE_ONAIR);
     }
-
-
 }
 
 
@@ -429,7 +417,7 @@ void CGameLogic::clearGameElement()
     {
         CGameElement* t_pEelment = m_oAllElement[i];
         int category = t_pEelment->getCategory();
-        switch (category)
+        switch (category & 0xff00)
         {
         case CGameElement::CATEGORY_NPC:
         {
@@ -589,6 +577,8 @@ void CGameLogic::run(float time)
         }
         m_fCounter = 0.0f;
     }
+
+    checkSkillConfuse();
 }
 
 void CGameLogic::print(DrawNode* dn)
@@ -669,7 +659,7 @@ void CGameLogic::dropObject()
         int randnum = CMath::getRandom(1, 100);
         if (randnum <= 100)
         {
-            //log("drop object ~~~~~~~~~~~~~~~~~~");
+            log("drop object ~~~~~~~~~~~~~~~~~~");
             auto article = CGameArticle::create();
             article->m_refShowArea = m_refShowArea;
 
@@ -708,12 +698,114 @@ void CGameLogic::dropObject()
 
 CNpc* CGameLogic::findSkillTarget()
 {
-    for (int i = 0; i < m_oAllElement.size();i++)
+  
+
+
+
+    return nullptr;
+}
+
+void CGameLogic::checkSkillConfuse()
+{
+    for (int j = 0; j < m_oAllElement.size(); j++)
     {
-        if (m_oAllElement[i]->getCategory() == CGameElement::CATEGORY_CAT)
+
+        if ((m_oAllElement[j]->getCategory() & CGameElement::Category::CATEGORY_NPC) != CGameElement::Category::CATEGORY_NPC)
         {
-            return dynamic_cast<CNpc*>(m_oAllElement[i]);
+            continue;
+        }
+
+        CNpc* pNcp = dynamic_cast<CNpc*>(m_oAllElement[j]);
+
+        if (pNcp->getState() == CNpc::STATE_DIE || pNcp->m_iSkillConfuseState != SkillConfuseState::SKILLSTATE_ONAIR)
+        {
+            continue;
+        }
+
+        for (int i = 0; i < m_oAllElement.size();i++)
+        {
+            if (pNcp == m_oAllElement[i])
+            {
+                continue;
+            }
+            switch(m_oAllElement[i]->getCategory())
+            {
+            case CGameElement::Category::CATEGORY_BOSS: 
+                skillConfuseCollWithBoss(pNcp, dynamic_cast<CBoss*>(m_oAllElement[i]));
+                break;
+            case CGameElement::Category::CATEGORY_CAT:
+                skillConfuseCollWithNpc(pNcp ,dynamic_cast<CNpc*>(m_oAllElement[i]));
+                break;
+            }
         }
     }
-    return nullptr;
+}
+
+void CGameLogic::skillConfuseCollWithBoss(CNpc* pNpc, CBoss* boss)
+{
+//     m_pSkillTarget->setState(CNpc::STATE_DIE);
+//     m_oAllDrop.push_back(pNpc->getPosition());
+
+    if (pNpc->getState() == CNpc::STATE_DIE)
+    {
+        return;
+    }
+
+    int dis = ccpDistance(pNpc->getPosition(), boss->getPosition());
+    if (dis <= pNpc->getCollwithR() + boss->getCollwithR())
+    {   
+        m_oAllDrop.push_back(pNpc->getPosition());
+        dropObject();
+
+     
+        pNpc->setState(CNpc::STATE_DIE);
+    }
+}
+
+
+void CGameLogic::skillConfuseCollWithNpc(CNpc* pNpc, CNpc* pNpc2)
+{
+    if (pNpc2 == pNpc ||
+        pNpc2->getState() == CNpc::STATE_DIE ||
+        pNpc->getState() == CNpc::STATE_DIE)
+    {
+        return;
+    }
+
+    int dis = ccpDistance(pNpc->getPosition(), pNpc2->getPosition());
+    if (dis <= pNpc->getCollwithR() + pNpc2->getCollwithR())
+     {
+      
+        m_oAllDrop.push_back(pNpc->getPosition());
+        dropObject();
+ 
+       
+        pNpc->setState(CNpc::STATE_DIE);
+//  
+      
+        pNpc2->setState(CNpc::STATE_DIE);
+
+     }
+
+}
+
+void CGameLogic::getLiveNpc(std::vector<CNpc*>& rallNpc, int state)
+{
+
+    for (int i = 0; i < m_oAllElement.size();i++)
+    {
+
+        int result = (m_oAllElement[i]->getCategory() & CGameElement::CATEGORY_NPC);
+
+
+        if (result == CGameElement::CATEGORY_NPC )
+        {
+            CNpc* pNpc = dynamic_cast<CNpc*>(m_oAllElement[i]);
+            if (pNpc->m_iSkillConfuseState == state)
+            {
+                rallNpc.push_back(pNpc);
+            }           
+        }
+        
+    }
 }

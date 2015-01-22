@@ -21,7 +21,7 @@ bool CNpc::init()
     m_iAttick   = 1;
 
     m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_NONE;
-
+    m_iSkillConfuseCount = 0;
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
         RES_ANIMA_PNG_COOLKING_MAGIC_EFFIE,
@@ -46,7 +46,31 @@ void CNpc::onEnter()
 void CNpc::run(float time)
 {
     //log("%d  m_fCount:%f", m_State, m_fCount);
+    //log("onAri!!!!!!!!!!!!!!!");
+    checkSkillConfuse(time);
   
+}
+
+void CNpc::checkSkillConfuse(float time)
+{
+    if (m_iSkillConfuseState != SkillConfuseState::SKILLSTATE_ONAIR)
+    {
+        return;
+    }
+    
+    m_fCount += time;
+    if (m_fCount >= 1)
+    {
+        if (m_iSkillConfuseCount >= 100)
+        {
+            m_iSkillConfuseCount = 0;
+            setPlayerSkillConfuse(SkillConfuseState::SKILLSTATE_NONE);
+            return;
+        }
+
+        m_iSkillConfuseCount++;
+        m_fCount = 0;
+    }
 }
 
 
@@ -84,11 +108,28 @@ void CNpc::setState(int state)
         break;
     case STATE_DIE:
         log("DIE");          
+        setPlayerSkillConfuse(SkillConfuseState::SKILLSTATE_NONE);
         animation_Die();
+        
         break;
     }
 }
 
+bool CNpc::hasCollWithPlayer()
+{
+    switch (m_iSkillConfuseState)
+    {
+    //case SkillConfuseState::SKILLSTATE_NONE:
+    case SkillConfuseState::SKILLSTATE_ANIMA:
+    case SkillConfuseState::SKILLSTATE_ONAIR:
+        return false;
+
+    default:
+        break;
+    }
+
+    return true;
+}
 
 void CNpc::released()
 {

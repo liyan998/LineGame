@@ -45,7 +45,7 @@ public:
 
     virtual void changeDirect(int direct);
 
-
+    virtual bool hasCollWithPlayer();
 
     //--------------------------------------
 
@@ -67,7 +67,7 @@ public:
 
     void setPlayerSkillConfuse(int state);               //玩家技能魅惑
 
-   
+    void checkSkillConfuse(float time);
 
 
 public:
@@ -76,7 +76,9 @@ public:
 
 private:
 
-    
+    int m_iSkillConfuseCount;                   //时间
+
+
     int m_iReLive;         //复活时间
 };
 #endif//__NPC_H__

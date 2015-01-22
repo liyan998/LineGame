@@ -35,8 +35,14 @@ void CTornado::run(float time)
 {
     if (m_State == State::STATE_LIVE)
     {
-        CEnemy::checkWithMove();
+        //CEnemy::checkWithMove();
+        CEnemy::checkWithAttick();
     }
+}
+
+bool CTornado::hasCollWithPlayer()
+{
+    return false;
 }
 
 

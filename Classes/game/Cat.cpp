@@ -28,6 +28,7 @@ void CCat::onEnter()
 
 void CCat::run(float time)
 {
+    CNpc::run(time);
     CNpc::changeLiveDie(time);
 
 

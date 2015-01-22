@@ -28,7 +28,7 @@ bool CGamePlayer::init()
 
     m_iTornadoColor         = TornadoColor::COLOR_NONE;
 
-    m_iSkillConfuseState    = SKILLSTATE_NONE;
+    m_iSkillConfuseState    = SKILLSTATE_CD;
     m_iSkillConfuseCount    = 2;
     m_iSkillTimeCount       = 0;
 
@@ -333,6 +333,19 @@ void CGamePlayer::changeDirect(int angle)
     }
 }
 
+bool CGamePlayer::hasMoveSprite()
+{
+
+    switch (m_iSkillConfuseState)
+    {
+    case SkillConfuseState::SKILLSTATE_ANIMA:
+        return false;
+    default:
+        break;
+    }
+    return true;
+}
+
 void CGamePlayer::print(DrawNode* dn)
 {    
     if (m_iEffectAddSpeed == EFFECT_ADDSPEED)
@@ -503,6 +516,10 @@ void CGamePlayer::animation_move()
 
 
     CAnimationAxis* pAa = findCreateByIndex(Anim_idle);
+
+    //std::string str = pAa->getArmature()->getArmatureData()->name;
+
+
     pAa->getArmature()->getAnimation()->play(PLAYLAB_COOLKING_WALK_FRONT);
 
 }
@@ -658,8 +675,9 @@ void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, 
         else if (strcmp(name.c_str(), PLAYLAB_COOLKING_MACICACTION) == 0)
         {
             m_iSkillConfuseCount--;
-            m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_ONAIR;
-            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERSKILL_CONFUSE, new int(m_iSkillConfuseState));
+
+            m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_CD;
+            CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERSKILL_CONFUSE, new int(SkillConfuseState::SKILLSTATE_ONAIR));
             animation_idle();
         }
     }
@@ -769,21 +787,17 @@ bool CGamePlayer::releasSkill(int skillid)
 
 bool CGamePlayer::releasSkillConfuse()
 {
+ 
 
     switch (m_State)
     {    
     case State::STATE_RUN:
-    case State::STATE_DIE:
-  
+    case State::STATE_DIE:  
         return false;
     }
 
-
-    if (m_iSkillConfuseState == SkillConfuseState::SKILLSTATE_ANIMA 
-        || 
-        m_iSkillConfuseState == SkillConfuseState::SKILLSTATE_ONAIR
-        )
-    {
+    if (m_iSkillConfuseState != SkillConfuseState::SKILLSTATE_READY)
+    {       
         return false;
     }
 
@@ -803,19 +817,24 @@ bool CGamePlayer::releasSkillConfuse()
 
 void CGamePlayer::checkSkillConnfuse()
 {
-    if (m_iSkillConfuseState == SkillConfuseState::SKILLSTATE_NONE)
+    if (m_iSkillConfuseState != SkillConfuseState::SKILLSTATE_CD)
     {
         return;
     }
 
-    if (m_iSkillTimeCount >= 10)
+    if (m_iSkillTimeCount >= 2)
     {
         m_iSkillTimeCount = 0;
-        m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_NONE;
-
-        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERSKILL_CONFUSE, new int(m_iSkillConfuseState));
+        m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_READY;
+        log("Ready to confuse!");
+        //CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERSKILL_CONFUSE, new int(m_iSkillConfuseState));
         return;
     }
 
     m_iSkillTimeCount++;
+}
+
+int CGamePlayer::getSkillConfuseState()
+{
+    return this->m_iSkillConfuseState;
 }

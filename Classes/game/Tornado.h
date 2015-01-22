@@ -32,6 +32,8 @@ public:
 
     virtual void setState(int state);
 
+    virtual bool hasCollWithPlayer();
+
     //-------------------------------
 
     void setStyle(int color);

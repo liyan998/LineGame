@@ -333,6 +333,11 @@ void CMySprite::onReleased(const Vec2& pointer)
 /*********************************************************************/
 bool CMySprite::hasMoveAction()
 {   
+    if (!m_refPlayer->hasMoveSprite())
+    {
+        return false;
+    }
+
     std::vector<int> abv; 
 
     switch (getState())

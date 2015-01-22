@@ -121,6 +121,15 @@ public:
 
     void h_actionSkillConfuse(EventParm pData);
 
+    void checkSkillConfuse();
+
+    void skillConfuseCollWithBoss(CNpc* pNpc, CBoss* boss);
+
+    void skillConfuseCollWithNpc(CNpc* pNpc, CNpc* boss);
+
+    void getLiveNpc(std::vector<CNpc*>& rallNpc, int state);
+
+
 public:
 
     CPath*                          m_refPath;
@@ -150,6 +159,8 @@ private:
     //int                             m_iDropCount;//µôÂä¸öÊý
 
     std::vector<Vec2>               m_oAllDrop;
+
+    CNpc*                           m_pSkillTarget;
 
 };
 #endif

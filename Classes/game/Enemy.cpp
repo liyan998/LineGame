@@ -82,7 +82,7 @@ void CEnemy::checkWithAttick()
     case CMySprite::STATE_DRAW:
     case CMySprite::STATE_CLOSE:
 
-        if (
+        if (hasCollWithPlayer()&&
             //collwithPlayer(t_oColl) || 
             collwithGuide(t_oColl, endPoint) )
         {                   
@@ -131,7 +131,12 @@ void CEnemy::checkWithAttick()
     this->setPosition(t_oColl);
 }
 
+bool CEnemy::hasCollWithPlayer()
+{
+    return  true;
+}
 
+/*
 void CEnemy::checkWithMove()
 {
     Vec2 t_oColl = CMath::getVec2(this->getPosition(), m_iStep, CMath::angleToRadian(m_iDirect));
@@ -173,4 +178,4 @@ void CEnemy::checkWithMove()
     this->setPosition(t_oColl);
 
 
-}
+    }*/

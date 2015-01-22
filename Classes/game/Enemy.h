@@ -20,7 +20,7 @@ public:
 
     virtual void changeDirect(int direct) = 0;
 
-    
+    virtual bool hasCollWithPlayer();
     //---------------------------------------------------------
     
     int getAttack();                                                 //攻击力   
@@ -35,7 +35,9 @@ protected:
 
     bool collwithPlayer(const Vec2& inPoint);                               //是否与玩家角色碰撞
     
-    void checkWithMove();
+    //void checkWithMove();
+
+   
     
 public:
 

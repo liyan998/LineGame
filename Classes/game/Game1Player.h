@@ -68,6 +68,9 @@ public:
     virtual int getStep();
 
     //-----------------------------------------------------
+
+
+    bool hasMoveSprite();
     
     int getStrackSize();
 
@@ -150,6 +153,9 @@ public:
     bool releasSkillConfuse();                  //÷È»ó¼¼ÄÜ
 
     void checkSkillConnfuse();
+
+    int getSkillConfuseState();
+
 
 private:
 
