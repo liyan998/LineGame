@@ -8,6 +8,8 @@
 
 #include "GameElement.h"
 
+#include "cocostudio/CCSGUIReader.h"
+
 using namespace cocostudio;
 using namespace liyan998;
 
@@ -18,47 +20,30 @@ bool CTest::init()
     m_fCount = 0;
     m_iCount = 0;
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_PIPI,
-        RES_ANIMA_PLS_PIPI,
-        RES_ANIMA_JSO_PIPI
-        );
+    cocos2d::SpriteFrameCache* scache = cocos2d::SpriteFrameCache::getInstance();
+    cocos2d::TextureCache* tcache = cocos2d::Director::getInstance()->getTextureCache();
+
+    scache->addSpriteFramesWithFile("UI/YXJM_PNG/YXJM.plist", tcache->getTextureForKey("UI/YXJM_PNG/YXJM.png"));
+    scache->addSpriteFramesWithFile("UI/Props_Icon_PNG/Props_Icon.plist", tcache->getTextureForKey("UI/Props_Icon_PNG/Props_Icon.png"));
 
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_PIPI_HIT,
-        RES_ANIMA_PLS_PIPI_HIT,
-        RES_ANIMA_JSO_PIPI_HIT
-        );
+    Vec2 startPosition(100, 100);
+    for (int i = 0; i < 2; i++)
+    {
+        ui::Widget* layer = cocostudio::GUIReader::getInstance()->widgetFromJsonFile("UI/YXJM_daoju_Freezing.json");
+        //ui::Button* button = dynamic_cast<ui::Button*>(ui::Helper::seekWidgetByName(layer,"Button_daoju"));
+        //layer->setScale(0.5);
+        layer->setPosition(Vec2(startPosition.x + i * (layer->getSize().width + 10), startPosition.y
+            ));
+        addChild(layer);
+    }
+
+
 
 
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-
-//     CAnimationAxis* player = CAnimationAxis::create();
-//     player->setCurrentAnimation(ARMATURE_PIPI_STANDER);
-//     player->getArmature()->getAnimation()->playByIndex(0);
-//     player->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-//     player->setTag(10000);
-//     addChild(player);
-
-
-//     CAnimationAxis* player1 = CAnimationAxis::create();
-//     player1->setCurrentAnimation(ARMATURE_PIPI_HIT);
-//     player1->getArmature()->getAnimation()->playByIndex(0);
-//     player1->setPosition(Vec2(visibleSize.width / 2 + 70, visibleSize.height / 2));
-//     player1->setTag(20000);
-//     addChild(player1);
-
-    CGamePlayer* gameplayer = CGamePlayer::create();
-    gameplayer->setTag(10000);
-    gameplayer->setPlayerPosition(Vec2(visibleSize.width / 2 , visibleSize.height / 2));
-    addChild(gameplayer);
-
-
-    //m_Dn = DrawNode::create();
-    //addChild(m_Dn);
 
     auto lisnter = EventListenerTouchOneByOne::create();
 
@@ -191,31 +176,12 @@ void CTest::menuCloseCallback(Ref* pSender)
    // CAnimationAxis *player = (CAnimationAxis*)getChildByTag(10000);
     
    // CAnimationAxis *player1 = (CAnimationAxis*)getChildByTag(20000);
-    log("m_i %d", m_iCount);
 
-    CGamePlayer* player = (CGamePlayer*)getChildByTag(10000);
-    switch (m_iCount)
-    {
-    case 0:
-        player->setLightAttack(true);
-        break;
-    case 1:
-        //removeChild(player);
-        player->setLightAttackCount(2);
-        break;
-    case 2:
-        //removeChild(player1);
-        player->setLightAttickReleased();
-        break;
-    case 3:
-        player->destoryLightAttick();
-        break;
-    }
-
+    
     //player->animation_attack();
 
 
-    m_iCount++;
+
     //player->animation_attack();
     //player->getArmature()->getAnimation()->playByIndex(0);
 //     Size size = Director::getInstance()->getVisibleSize();

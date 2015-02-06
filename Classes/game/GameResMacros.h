@@ -30,14 +30,14 @@
 #define PLAYLAB_DRAGON_LEFT_WALK                "FML_Left_Side_Walk"
 #define PLAYLAB_DRAGON_RIGHT_WALK               "FML_Right_Side_Walk"
 
-
+//风魔龙技能释放闪电云 云
 #define RES_ANIMA_JSO_DRAGON_SKILL_YUN          "animation/dragon/FML_Skill_Yun.ExportJson"
 #define RES_ANIMA_PNG_DRAGON_SKILL_YUN          "animation/dragon/FML_Skill_Yun_PNG/FML_Skill_Yun.png"
 #define RES_ANIMA_PLS_DRAGON_SKILL_YUN          "animation/dragon/FML_Skill_Yun_PNG/FML_Skill_Yun.plist"
 
 #define ARMATURE_DRAGON_SKILL_YUN               "FML_Skill_Yun"
 
-//风魔龙技能释放闪电云
+//风魔龙技能释放闪电云 释放
 #define RES_ANIMA_JSO_DRAGON_SKILL_YUNRELEAS    "animation/dragon/FML_Skill_SDY.ExportJson"
 #define RES_ANIMA_PNG_DRAGON_SKILL_YUNRELEAS    "animation/dragon/FML_Skill_SDY_PNG/FML_Skill_SDY.png"
 #define RES_ANIMA_PLS_DRAGON_SKILL_YUNRELEAS    "animation/dragon/FML_Skill_SDY_PNG/FML_Skill_SDY.plist"
@@ -69,6 +69,17 @@
 #define PLAYLAB_CAT_WALK_LEFT               "Shilaimiao_Front45_Walk"
 #define PLAYLAB_CAT_WALK_RIGHT              "Shilaimiao_Front123_Walk"
 #define PLAYLAB_CAT_WALK_Back               "Shilaimiao_Back_Walk"
+
+//
+
+#define RES_ANIMA_JSO_CAT_SEAL              "animation/cat/Huwei_Skill.ExportJson"
+#define RES_ANIMA_PNG_CAT_SEAL              "animation/cat/Huwei_Skill_PNG/Huwei_Skill.png"
+#define RES_ANIMA_PLS_CAT_SEAL              "animation/cat/Huwei_Skill_PNG/Huwei_Skill.plist"
+
+#define ARMATURE_CAT_SEALL                  "Huwei_Skill"
+#define PLAYLAB_CAT_SEALL                   "SLM_Front_Skill"
+//"YLT_Front_Skill"
+
 
 //独眼布
 #define RES_ANIMA_PNG_DYB                   "animation/DYB/DYB_Walk_PNG/DYB_Walk.png"
@@ -169,9 +180,10 @@
 #define RES_ANIMA_PLS_PROPERTY              "animation/Daoju_tubiao/Props_Icon_PNG/Props_Icon.plist"
 
 #define ARMATURE_PROPERTY                   "Daoju_tubiao"
-#define PLAYLAB_PROPERTY_ADDTIME            "bushi"     //补时
-#define PLAYLAB_PROPERTY_ADDSPEED           "jiasu"     //加速
-#define PLAYLAB_PROPERTY_ADDHEALTH          "huifu"     //恢复
-#define PLAYLAB_PROPERTY_ADDPROTECT         "hudun"     //护盾
+
+#define PLAYLAB_PROPERTY_ADDTIME            "bushi"         //补时
+#define PLAYLAB_PROPERTY_ADDSPEED           "jiasu"         //加速
+#define PLAYLAB_PROPERTY_ADDHEALTH          "huifu"         //恢复
+#define PLAYLAB_PROPERTY_ADDPROTECT         "hudun"         //护盾
 
 #endif//__GAMERESMACROS_H__

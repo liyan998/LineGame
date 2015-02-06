@@ -47,6 +47,8 @@ public:
     CREATE_FUNC( CGameView )
 
 public:
+
+    virtual bool init();
     
     virtual void onEnter() override;
 

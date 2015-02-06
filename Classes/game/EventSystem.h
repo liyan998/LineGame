@@ -32,6 +32,9 @@
 #define EVENT_BOSSSKILL_TORNADO_CHANAGE     0x10000106      //龙卷风技能改变颜色
 
 #define EVENT_PLAYERSKILL_CONFUSE           0x10000201      //玩家魅惑技能
+#define EVENT_PLAYERSKILL_RELEASE           0x10000202      //玩家从道具栏释放道具
+
+#define EVENT_CAT_SEAL                      0x10000301      //屎来猫封印
 
 
 

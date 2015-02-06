@@ -16,6 +16,9 @@ public:
         
     };
 
+
+
+
 public:
 
     CREATE_FUNC( CCat )
@@ -30,8 +33,11 @@ public:
 
     virtual void animation_move();
 
+    virtual void collwithPlayerCallBack();
 
-    
+    virtual void animation_stop();
+
+    //------------------------------------------
 
     //
 

@@ -35,11 +35,6 @@ bool CMySprite::init()
   
     //----------------------------------------------------- 
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_COOLKING,
-        RES_ANIMA_PLS_COOLKING,
-        RES_ANIMA_JSO_COOLKING
-        );
     
     setCurrentAnimation(ARMATURE_COOLKING);
     getArmature()->setAnchorPoint(Vec2(0.5f, 0.2f));

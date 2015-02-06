@@ -14,12 +14,16 @@
 #include "GameState.h"
 #include "EventSystem.h"
 
+#include "BarButtom.h"
+
 
 #define TIMEOUT                 160             //计时周期
 
 #define CHARSEQUEN_HEALTH       "player:%00d"
 #define CHARSEQUEN_TIME         "Time:%ds"
 #define CHARSEQUEN_AREA         "AREA:%3.0f%%"
+
+
 
 class CGameLogic :
     public Node,
@@ -33,6 +37,12 @@ class CGameLogic :
 public:
 
     CREATE_FUNC(CGameLogic)
+
+
+    enum Index
+    {
+        INDEX_BUTTOMBAR = 0X10002,
+    };
 
 public:
 
@@ -91,7 +101,7 @@ public:
     void flushHealth(int health);
 
 
-    void uiLoadcomplete();
+    void uiLoadcomplete(bool hasin);
 
     void releasSkill(cocos2d::Ref* sender, ui::Widget::TouchEventType type);
 
@@ -129,6 +139,12 @@ public:
 
     void getLiveNpc(std::vector<CNpc*>& rallNpc, int state);
 
+    //----------------------------------------
+
+    void h_actionSkillSeal(EventParm pData);
+
+    void test(int id);
+
 
 public:
 
@@ -161,6 +177,10 @@ private:
     std::vector<Vec2>               m_oAllDrop;
 
     CNpc*                           m_pSkillTarget;
+
+    //---------------------------------------------------
+
+    CButtomBar*                     m_pButtomBar;
 
 };
 #endif

@@ -31,10 +31,12 @@ public:
     enum Category
     {
         CATEGORY_ELEMENT,
+
         CATEGORY_PROERTY = 0x100,   //道具
         CATEGORY_BOSS    = 0x200,   //首领
-
         CATEGORY_NPC     = 0x300,   //护卫
+
+
         CATEGORY_CAT     = 0X301,   //史来猫
 
         CATEGORY_TORNADO = 0x400,   //风魔龙龙卷风
@@ -106,7 +108,6 @@ class CCat;         //史来喵
 //class CMySprite;
 
 #include "Actor.h"
-
 
 #include "Enemy.h"
 #include "Boss.h"

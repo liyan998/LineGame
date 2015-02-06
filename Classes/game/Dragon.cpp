@@ -4,12 +4,6 @@ bool CDragon::init()
 {
     CBoss::init();
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_DRAGON,
-        RES_ANIMA_PLS_DRAGON,
-        RES_ANIMA_JSO_DRAGON
-        );
-
     //-----------------------------------------------------------------
     
     m_oAngleTable.insert(std::pair<int, const char*>(ANGLE_DOWN,    PLAYLAB_DRAGON_DOWN_WALK));

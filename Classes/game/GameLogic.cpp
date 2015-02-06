@@ -25,67 +25,14 @@ bool CGameLogic::init()
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PLAYERSKILL_CONFUSE, this);
-    //-------------------------------------------------------------------------
+    //·âÓ¡
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CAT_SEAL, this);
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_QINCAIDIE,
-        RES_ANIMA_PLS_QINCAIDIE,
-        RES_ANIMA_JSO_QINCAIDIE
-        );
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_DYB,
-        RES_ANIMA_PLS_DYB,
-        RES_ANIMA_JSO_DYB
-        );
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_PIPI_DIE,
-        RES_ANIMA_PLS_PIPI_DIE,
-        RES_ANIMA_JSO_PIPI_DIE
-        );
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_EFFE_DIEREBACK,
-        RES_ANIMA_PLS_EFFE_DIEREBACK,
-        RES_ANIMA_JSO_EFFE_DIEREBACK
-        );
-
-  
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_PROPERTY,
-        RES_ANIMA_PLS_PROPERTY,
-        RES_ANIMA_JSO_PROPERTY
-        );
-   
+    //-------------------------------------------------------------------------  
     
     return true;
 }   
 
-void CGameLogic::uiLoadcomplete()
-{
-    cocos2d::SpriteFrameCache* scache = cocos2d::SpriteFrameCache::getInstance();
-    cocos2d::TextureCache* tcache = cocos2d::Director::getInstance()->getTextureCache();   
-    cocos2d::Texture2D* texture = tcache->getTextureForKey("UI/YXJM_PNG/YXJM.png");
-    scache->addSpriteFramesWithFile("UI/YXJM_PNG/YXJM.plist", texture);
-
-    //-------------------------------------------------------------------------------
-
-    cocos2d::Size winsize = cocos2d::Director::getInstance()->getVisibleSize();
-    Vec2 orgin = Director::getInstance()->getVisibleOrigin();
-
-    ui::Widget* m_BtmMenu = cocostudio::GUIReader::getInstance()->widgetFromJsonFile("UI/YXJM_dibu.json");
-    m_BtmMenu->ignoreAnchorPointForPosition(false);
-    m_BtmMenu->setAnchorPoint(cocos2d::Vec2(0.5, 0.0));
-    m_BtmMenu->setPosition(cocos2d::Vec2(winsize.width / 2 + orgin.x, orgin.y));
-    m_BtmMenu->setScale(0.48);
-
-    ui::Button* button = dynamic_cast<ui::Button*>(ui::Helper::seekWidgetByName(m_BtmMenu, "Button_jineng"));
-    button->addTouchEventListener(CC_CALLBACK_2(CGameLogic::releasSkill, this));
-
-    addChild(m_BtmMenu);
-
-}
 
 
 void CGameLogic::releasSkill(cocos2d::Ref* sender, ui::Widget::TouchEventType type)
@@ -144,9 +91,32 @@ void CGameLogic::onEnter()
 
     createGameElement();    
 
-    cocos2d::TextureCache* tcache = cocos2d::Director::getInstance()->getTextureCache();
-    tcache->addImageAsync("UI/YXJM_PNG/YXJM.png", CC_CALLBACK_0(CGameLogic::uiLoadcomplete, this));
 
+    const std::string inforpath[] = {
+        "UI/YXJM_PNG/YXJM.png",
+        "UI/Props_Icon_PNG/Props_Icon.png"
+    };
+
+    cocos2d::TextureCache* tcache = cocos2d::Director::getInstance()->getTextureCache();
+    int tsize = 2;
+    for (int i = 0; i < tsize; i++)
+    {
+        tcache->addImageAsync(inforpath[i], CC_CALLBACK_0(CGameLogic::uiLoadcomplete, this, (i == (tsize - 1))));
+    }
+   
+}
+
+
+void CGameLogic::uiLoadcomplete(bool hasin)
+{
+    if (hasin)
+    {
+        m_pButtomBar = CButtomBar::create();
+        m_pButtomBar->setSkillCallBack(CC_CALLBACK_2(CGameLogic::releasSkill, this));
+        m_pButtomBar->setProertyCallBack(std::bind(&CGameLogic::test, this, std::placeholders::_1));
+        m_pButtomBar->setTag(INDEX_BUTTOMBAR);
+        addChild(m_pButtomBar);
+    }
 
 }
 
@@ -165,6 +135,8 @@ void CGameLogic::onExit()
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
 
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PLAYERSKILL_CONFUSE, this);
+
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_CAT_SEAL, this);
 }
 
 
@@ -213,7 +185,8 @@ void CGameLogic::createGameElement()
     for (int i = 0; i < numArticle; i++)
     {
         auto article = CGameArticle::create();
-        article->m_refShowArea = m_refShowArea;          
+        article->m_refShowArea  = m_refShowArea;
+        article->m_refPlayer    = m_refPlayer;
 
         article->setProperty(article->randProperty());
 
@@ -280,6 +253,9 @@ void CGameLogic::actionEvent(int evenid, EventParm pData)
         break;
     case EVENT_PLAYERSKILL_CONFUSE:
         h_actionSkillConfuse(pData);
+        break;
+    case EVENT_CAT_SEAL:
+        h_actionSkillSeal(pData);
         break;
     default:
         break;
@@ -501,6 +477,9 @@ void CGameLogic::clearGameObject(CGameArticle* pGameAricle, int mode)
     {
         return;
     }    
+
+
+
 
     bool hasIn = m_refShowArea->hasIncludeMaster(pGameAricle->getPosition());
     switch (mode)
@@ -791,12 +770,9 @@ void CGameLogic::skillConfuseCollWithNpc(CNpc* pNpc, CNpc* pNpc2)
 
 void CGameLogic::getLiveNpc(std::vector<CNpc*>& rallNpc, int state)
 {
-
     for (int i = 0; i < m_oAllElement.size();i++)
     {
-
         int result = (m_oAllElement[i]->getCategory() & CGameElement::CATEGORY_NPC);
-
 
         if (result == CGameElement::CATEGORY_NPC )
         {
@@ -805,7 +781,38 @@ void CGameLogic::getLiveNpc(std::vector<CNpc*>& rallNpc, int state)
             {
                 rallNpc.push_back(pNpc);
             }           
-        }
-        
+        }        
+    }
+}
+
+
+void CGameLogic::test(int id)
+{
+    if (m_refPlayer->getSealState() == CGamePlayer::SealState::SEALSTATE_ONAIR)
+    {
+        return;
+    }
+    //------------------------------------------
+
+    log("property releas~~~~~~~%d",id);
+
+    CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERSKILL_RELEASE, new int(id));
+}
+
+void CGameLogic::h_actionSkillSeal(EventParm pData)
+{
+    int skillstate = *(int*)pData;
+
+    CButtomBar* pBb = static_cast< CButtomBar* >(getChildByTag(INDEX_BUTTOMBAR));
+    switch (skillstate)
+    {
+    case CGamePlayer::SealState::SEALSTATE_ONAIR:
+        pBb->setAllSkillButtonState(CButtomBar::SkillButtonState::STATE_DISABLE);
+        break;
+    case CGamePlayer::SealState::SEALSTATE_NONE:
+        pBb->setAllSkillButtonState(CButtomBar::SkillButtonState::STATE_AVLABLE);
+        break;
+    default:
+        break;
     }
 }

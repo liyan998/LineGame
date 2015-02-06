@@ -7,11 +7,7 @@ bool CTornado::init()
 
     m_iCategory = Category::CATEGORY_TORNADO;
     
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_DRAGON_SKILL_TORNADO,
-        RES_ANIMA_PLS_DRAGON_SKILL_TORNADO,
-        RES_ANIMA_JSO_DRAGON_SKILL_TORNADO
-        );
+   
     
     return true;
 }

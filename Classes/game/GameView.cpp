@@ -12,7 +12,114 @@
 #include "Game1Player.h"
 #include "HelloWorldScene.h"
 
+bool CGameView::init()
+{
+    Layer::init();
 
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DRAGON_SKILL_YUN,
+        RES_ANIMA_PLS_DRAGON_SKILL_YUN,
+        RES_ANIMA_JSO_DRAGON_SKILL_YUN
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DRAGON_SKILL_YUNRELEAS,
+        RES_ANIMA_PLS_DRAGON_SKILL_YUNRELEAS,
+        RES_ANIMA_JSO_DRAGON_SKILL_YUNRELEAS
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_PIPI_HIT,
+        RES_ANIMA_PLS_PIPI_HIT,
+        RES_ANIMA_JSO_PIPI_HIT
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_COOLKING_HIT,
+        RES_ANIMA_PLS_COOLKING_HIT,
+        RES_ANIMA_JSO_COOLKING
+        );
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_COOLKING_MAGIC,
+        RES_ANIMA_PLS_COOLKING_MAGIC,
+        RES_ANIMA_JSO_COOLKING_MAGIC
+        );
+
+    //--------------------------------------------------------------------------
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_CAT,
+        RES_ANIMA_PLS_CAT,
+        RES_ANIMA_JSO_CAT
+        );
+
+    //------------------------------------------------------
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_QINCAIDIE,
+        RES_ANIMA_PLS_QINCAIDIE,
+        RES_ANIMA_JSO_QINCAIDIE
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DYB,
+        RES_ANIMA_PLS_DYB,
+        RES_ANIMA_JSO_DYB
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_PIPI_DIE,
+        RES_ANIMA_PLS_PIPI_DIE,
+        RES_ANIMA_JSO_PIPI_DIE
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_EFFE_DIEREBACK,
+        RES_ANIMA_PLS_EFFE_DIEREBACK,
+        RES_ANIMA_JSO_EFFE_DIEREBACK
+        );
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_PROPERTY,
+        RES_ANIMA_PLS_PROPERTY,
+        RES_ANIMA_JSO_PROPERTY
+        );
+
+    //--------------------------------------------
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DRAGON,
+        RES_ANIMA_PLS_DRAGON,
+        RES_ANIMA_JSO_DRAGON
+        );
+
+    //-------------------------------------------
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_DRAGON_SKILL_TORNADO,
+        RES_ANIMA_PLS_DRAGON_SKILL_TORNADO,
+        RES_ANIMA_JSO_DRAGON_SKILL_TORNADO
+        );
+
+    //---------------------------------------------
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_COOLKING,
+        RES_ANIMA_PLS_COOLKING,
+        RES_ANIMA_JSO_COOLKING
+        );
+
+    //---------------------------------------------------
+
+    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
+        RES_ANIMA_PNG_CAT_SEAL,
+        RES_ANIMA_PLS_CAT_SEAL,
+        RES_ANIMA_JSO_CAT_SEAL
+        );
+
+
+    return true;
+}
 void CGameView::onEnter()
 {
     Layer::onEnter();
@@ -97,8 +204,7 @@ void CGameView::onEnter()
     //----------------------------------------  
 
     m_oAllRunner.push_back(m_pSp);
-    m_oAllRunner.push_back(m_pPlayer);
-   
+    m_oAllRunner.push_back(m_pPlayer);   
 	
     //------------------------------------------ 
 
@@ -205,6 +311,8 @@ void CGameView::initGame(float)
 {
     //log("random rect Size");
     //TODO random rect Size
+
+    
 
 
 }
@@ -356,7 +464,9 @@ void CGameView::onExit()
     delete m_pPath;
     m_pPath = nullptr;
 
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_TIMEOUT, this);
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_PLAYERDIE, this);
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_WIN, this);
-    CEventDispatcher::getInstrance()->released();
 
+    CEventDispatcher::getInstrance()->released();
 }

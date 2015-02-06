@@ -8,7 +8,7 @@ class CActor : public CGameElement
 
 
 public:
-
+    CGamePlayer*        m_refPlayer;
     CMySprite*          m_refSp;
 
 protected:

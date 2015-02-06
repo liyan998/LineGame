@@ -86,6 +86,7 @@ void CEnemy::checkWithAttick()
             //collwithPlayer(t_oColl) || 
             collwithGuide(t_oColl, endPoint) )
         {                   
+            collwithPlayerCallBack();
             m_refSp->attiack(getAttack(),this);
             return;
         }
@@ -134,6 +135,11 @@ void CEnemy::checkWithAttick()
 bool CEnemy::hasCollWithPlayer()
 {
     return  true;
+}
+
+void CEnemy::collwithPlayerCallBack()
+{
+
 }
 
 /*

@@ -4,10 +4,36 @@
     <dict>
         <key>frames</key>
         <dict>
+            <key>BNT_Game_Close_01.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{152,286},{54,58}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{54,58}}</string>
+                <key>sourceSize</key>
+                <string>{54,58}</string>
+            </dict>
+            <key>BNT_Game_Close_02.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{126,346},{54,58}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{54,58}}</string>
+                <key>sourceSize</key>
+                <string>{54,58}</string>
+            </dict>
             <key>BNT_Game_Daoju_01.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{872,170},{80,80}}</string>
+                <string>{{430,84},{80,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -20,7 +46,176 @@
             <key>BNT_Game_Daoju_02.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{872,88},{80,80}}</string>
+                <string>{{430,2},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_03.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{348,84},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Clear_01.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{348,2},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Clear_02.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{266,84},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Clear_03.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{266,2},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Freezing_01.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{184,84},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Freezing_02.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{184,2},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Freezing_03.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{102,84},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Silence_01.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{102,2},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Silence_02.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{726,368},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Silence_03.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{690,286},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Taunt_01.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{608,286},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Taunt_02.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{526,286},{80,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{80,80}}</string>
+                <key>sourceSize</key>
+                <string>{80,80}</string>
+            </dict>
+            <key>BNT_Game_Daoju_Taunt_03.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,430},{80,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -33,7 +228,7 @@
             <key>BNT_Game_Jineng_01.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{892,2},{84,84}}</string>
+                <string>{{440,312},{84,84}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -46,7 +241,7 @@
             <key>BNT_Game_Jineng_02.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{806,2},{84,84}}</string>
+                <string>{{354,328},{84,84}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -59,7 +254,7 @@
             <key>BNT_Game_Top_Stop_01.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{298,196},{54,58}}</string>
+                <string>{{96,286},{54,58}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -72,7 +267,7 @@
             <key>BNT_Game_Top_Stop_02.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{242,196},{54,58}}</string>
+                <string>{{70,360},{54,58}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -85,7 +280,7 @@
             <key>BNT_Yellow_Goumai_S01.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{70,2},{212,66}}</string>
+                <string>{{2,216},{212,66}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -111,7 +306,7 @@
             <key>IMG_Game_BG_Channer_Up.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{230,104},{640,90}}</string>
+                <string>{{84,420},{640,90}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -124,11 +319,11 @@
             <key>IMG_Game_BG_Top_Heart_01.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,216},{180,30}}</string>
+                <string>{{70,2},{180,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{180,30}}</string>
                 <key>sourceSize</key>
@@ -137,7 +332,7 @@
             <key>IMG_Game_BG_Top_Heart_02.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{138,2},{174,24}}</string>
+                <string>{{70,184},{174,24}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -150,11 +345,11 @@
             <key>IMG_Game_BG_Top_Star_01.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{138,178},{90,30}}</string>
+                <string>{{322,328},{90,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{90,30}}</string>
                 <key>sourceSize</key>
@@ -163,7 +358,7 @@
             <key>IMG_Game_BG_Top_Star_02.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{600,228},{84,24}}</string>
+                <string>{{390,286},{84,24}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -176,11 +371,11 @@
             <key>IMG_Game_BG_Top_Time.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{600,196},{76,30}}</string>
+                <string>{{290,340},{76,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{76,30}}</string>
                 <key>sourceSize</key>
@@ -189,7 +384,7 @@
             <key>IMG_Game_BG_hanner_Down.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{164,2},{640,100}}</string>
+                <string>{{96,184},{640,100}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -202,7 +397,7 @@
             <key>IMG_Game_BT_Blue_Yuan_Add.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{558,196},{40,40}}</string>
+                <string>{{348,286},{40,40}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -215,7 +410,7 @@
             <key>IMG_Game_BT_Red_Yuan_MB.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{516,196},{40,40}}</string>
+                <string>{{306,286},{40,40}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -228,11 +423,11 @@
             <key>IMG_Game_Down_JN.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{184,210},{42,56}}</string>
+                <string>{{208,286},{42,56}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{42,56}}</string>
                 <key>sourceSize</key>
@@ -241,7 +436,7 @@
             <key>IMG_Game_ICON_Top_Heart.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{412,196},{54,48}}</string>
+                <string>{{240,344},{54,48}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -254,7 +449,7 @@
             <key>IMG_Game_ICON_Top_Star.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{462,196},{52,52}}</string>
+                <string>{{252,286},{52,52}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -267,7 +462,7 @@
             <key>IMG_Game_ICON_Top_Time.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{354,196},{56,56}}</string>
+                <string>{{182,346},{56,56}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -285,9 +480,9 @@
             <key>realTextureFileName</key>
             <string>YXJM.png</string>
             <key>size</key>
-            <string>{1024,256}</string>
+            <string>{1024,512}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:ba3529674d93cca5c791d780e3e83258$</string>
+            <string>$TexturePacker:SmartUpdate:3945dce4898e3491a15870997ff74064$</string>
             <key>textureFileName</key>
             <string>YXJM.png</string>
         </dict>

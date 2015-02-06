@@ -40,6 +40,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/game/Shape.cpp \
                    ../../Classes/game/ShowArea.cpp \
                    ../../Classes/game/Test.cpp \
+                   ../../Classes/game/BarButtom.cpp \
                    ../../Classes/game/util/DateTime.cpp \
                    ../../Classes/game/util/Math.cpp \
                    ../../Classes/game/util/triangulate.cpp \

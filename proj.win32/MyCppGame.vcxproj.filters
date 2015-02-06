@@ -49,6 +49,9 @@
     <Filter Include="Classes\game\element\enemy\npc">
       <UniqueIdentifier>{e8ff5e81-489d-45f8-897a-e75c91417191}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\game\ui">
+      <UniqueIdentifier>{0f55082c-df2d-4221-852e-943f58ebce42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -152,6 +155,12 @@
     </ClCompile>
     <ClCompile Include="..\Classes\game\Cat.cpp">
       <Filter>Classes\game\element\enemy\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\ButtonSkill.cpp">
+      <Filter>Classes\game\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\game\BarButtom.cpp">
+      <Filter>Classes\game\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -304,6 +313,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\game\Skill.h">
       <Filter>Classes\game\element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\ButtonSkill.h">
+      <Filter>Classes\game\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\game\BarButtom.h">
+      <Filter>Classes\game\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

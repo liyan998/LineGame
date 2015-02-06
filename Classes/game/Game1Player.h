@@ -30,7 +30,8 @@ public:
     {
         Anim_Light=0x13322,         //闪击云
         Anim_idle,
-        Anim_attick
+        Anim_attick,
+        Anim_seal
     };
 
     enum TornadoColor
@@ -45,7 +46,11 @@ public:
         SKILL_CONFUSE = 0X110100,  //魅惑技能
     };
 
-
+    enum SealState
+    {
+        SEALSTATE_NONE,
+        SEALSTATE_ONAIR
+    };
 
 
 
@@ -119,6 +124,8 @@ public:
     
     void h_actionSkillTornadoColor(EventParm pData);
 
+    void h_actionCatSeal(EventParm pData);
+
 
     void setLigitPosition(const Vec2& inPos);
 
@@ -133,6 +140,8 @@ public:
     void animation_attack();  
 
     void animation_magic();
+
+    void animation_seal();
 
     
 
@@ -150,11 +159,20 @@ public:
     //释放技能
     bool releasSkill(int skillid);
 
-    bool releasSkillConfuse();                  //魅惑技能
+    bool releasSkillConfuse();                      //魅惑技能
 
     void checkSkillConnfuse();
 
     int getSkillConfuseState();
+
+    //---------------------------------------
+
+    void setSealState(int state);                    //封印
+
+    int getSealState();
+
+    void actionSeal(float time);
+
 
 
 private:
@@ -184,6 +202,13 @@ public:
 
 private:   
 
+
+
+
+    int                                 m_iSealState;
+    float                               m_fSealTime;
+
+
     Vec2                                m_oCurrentTarget;
     Vec2                                m_oPlayerPosition;
     std::vector<Vec2>                   m_oAllGuide;
@@ -200,7 +225,7 @@ private:
 
 
     int                                 m_iSkillConfuseState;       //魅惑技能状态
-    int                                 m_iSkillConfuseCount;       //魅惑技能个数
+    unsigned int                        m_iSkillConfuseScore;       //魅惑技能个数
     int                                 m_iSkillTimeCount;
 
 };

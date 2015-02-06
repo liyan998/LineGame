@@ -4,13 +4,8 @@ bool CCat::init()
 {
     CNpc::init();
 
-    m_iCategory = Category::CATEGORY_CAT;
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_CAT,
-        RES_ANIMA_PLS_CAT,
-        RES_ANIMA_JSO_CAT
-        );
+    m_iCategory     = Category::CATEGORY_CAT;
+    
 
 
     return true;
@@ -30,8 +25,7 @@ void CCat::run(float time)
 {
     CNpc::run(time);
     CNpc::changeLiveDie(time);
-
-
+   
 }
 
 void CCat::animation_move()
@@ -48,4 +42,18 @@ void CCat::animation_move()
 
 }
 
+void CCat::animation_stop()
+{
+    CAnimationAxis* aa = findCreateByIndex(INDEX_CAT);
+    aa->getArmature()->getAnimation()->pause();
+}
 
+
+
+void CCat::collwithPlayerCallBack()
+{
+    if (m_refPlayer->getSealState() == CGamePlayer::SealState::SEALSTATE_NONE)
+    {
+        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_CAT_SEAL, new int(CGamePlayer::SealState::SEALSTATE_ONAIR));
+    }    
+}

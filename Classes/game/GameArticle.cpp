@@ -15,6 +15,7 @@
 bool CGameArticle::init()
 {
     Node::init();
+    m_refPlayer = nullptr;
 
     m_iCategory = CGameElement::CATEGORY_PROERTY;
     m_iCollR    = 20;
@@ -43,6 +44,7 @@ void CGameArticle::run(float time)
 void CGameArticle::print(DrawNode* dn)
 {
     switch (m_State)
+
     {
     case STATE_ACTIVE:
     CGameElement::print(dn);
@@ -150,8 +152,11 @@ void CGameArticle::movementCallback(Armature * armature, MovementEventType type,
     
     if (strcmp(name.c_str(), PLAYLAB_GUARD_REVIVE) == 0)
     {        
-        CEventDispatcher::getInstrance()->dispatchEvent(m_pProperty->eventid, m_pProperty->pData );
-        
+        if (m_refPlayer != nullptr && m_refPlayer->getSealState() == CGamePlayer::SealState::SEALSTATE_NONE)
+        {
+            CEventDispatcher::getInstrance()->dispatchEvent(m_pProperty->eventid, m_pProperty->pData );
+        }
+                
         switch (m_iCreateType)
         {
         case CreateType::PAY:

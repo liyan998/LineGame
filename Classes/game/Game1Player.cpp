@@ -29,38 +29,12 @@ bool CGamePlayer::init()
     m_iTornadoColor         = TornadoColor::COLOR_NONE;
 
     m_iSkillConfuseState    = SKILLSTATE_CD;
-    m_iSkillConfuseCount    = 2;
+    m_iSkillConfuseScore    = 2;
     m_iSkillTimeCount       = 0;
 
+    m_iSealState            = SealState::SEALSTATE_NONE;
+    m_fSealTime             = 0.f;
 
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_DRAGON_SKILL_YUN,
-        RES_ANIMA_PLS_DRAGON_SKILL_YUN,
-        RES_ANIMA_JSO_DRAGON_SKILL_YUN
-        );
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_DRAGON_SKILL_YUNRELEAS,
-        RES_ANIMA_PLS_DRAGON_SKILL_YUNRELEAS,
-        RES_ANIMA_JSO_DRAGON_SKILL_YUNRELEAS
-        );
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_PIPI_HIT,
-        RES_ANIMA_PLS_PIPI_HIT,
-        RES_ANIMA_JSO_PIPI_HIT
-        );
-
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_COOLKING_HIT,
-        RES_ANIMA_PLS_COOLKING_HIT,
-        RES_ANIMA_JSO_COOLKING
-        );
-    ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
-        RES_ANIMA_PNG_COOLKING_MAGIC,
-        RES_ANIMA_PLS_COOLKING_MAGIC,
-        RES_ANIMA_JSO_COOLKING_MAGIC
-        );
     //-------------------------------------------
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PROPERTY_ADDSPEED, this);
@@ -73,6 +47,8 @@ bool CGamePlayer::init()
 
     CEventDispatcher::getInstrance()->regsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
 
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_CAT_SEAL, this);
+
     //-----------------------------------------------------
     
     animation_idle();
@@ -81,11 +57,13 @@ bool CGamePlayer::init()
 
     setState(STATE_STOP); 
 
+    //------------------------------
+
     m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_DOWN,     PLAYLAB_COOLKING_WALK_FRONT));
     m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_UP,       PLAYLAB_COOLKING_WALK_BACK));
     m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_LEFT,     PLAYLAB_COOLKING_WALK_LEFT));
     m_oDirectTab.insert(std::pair<int, const char*>(ANGLE_RIGHT,    PLAYLAB_COOLKING_WALK_RIGHT));
-
+    
     return true;
 }
 
@@ -102,6 +80,8 @@ void CGamePlayer::released()
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_LIGHTCOUNT, this);
 
     CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_BOSSSKILL_TORNADO_CHANAGE, this);
+
+    CEventDispatcher::getInstrance()->unRegsiterEvent(EVENT_CAT_SEAL, this);
 
     this->removeAllChildren();
 }
@@ -126,6 +106,16 @@ void CGamePlayer::setPlayerPosition(const Vec2& pos)
     if (m_bHasLight)
     {
         setLigitPosition(tp);
+    }
+
+    if (m_iSealState == SealState::SEALSTATE_ONAIR)
+    {
+        CAnimationAxis* pAa = findCreateByIndex(Anim_seal);
+        if (pAa != nullptr)
+        {
+            pAa->getArmature()->setAnchorPoint(Vec2(0.5f, -1));
+            pAa->setPosition(m_oPlayerPosition);
+        }
     }
 
 }
@@ -264,6 +254,8 @@ void CGamePlayer::run(float time)
         m_fCount = 0;
     }
 
+    actionSeal(time);
+
 }
 
 void CGamePlayer::playerStander(float time)
@@ -335,7 +327,6 @@ void CGamePlayer::changeDirect(int angle)
 
 bool CGamePlayer::hasMoveSprite()
 {
-
     switch (m_iSkillConfuseState)
     {
     case SkillConfuseState::SKILLSTATE_ANIMA:
@@ -386,9 +377,10 @@ void CGamePlayer::setState(int state)
         animation_idle();
         break;
     case STATE_DIE:
+        setSealState(SealState::SEALSTATE_NONE);
         m_oAllGuide.clear();
         animation_die();
-        break;
+        break;    
     default:
         break;
     }
@@ -492,7 +484,6 @@ void CGamePlayer::animation_magic()
         pAa->getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CGamePlayer::movementCallback));
         pAa->getArmature()->getAnimation()->playByIndex(0);
     }
-
 }
 
 
@@ -564,6 +555,9 @@ void CGamePlayer::actionEvent(int eventid, EventParm pData)
         break;
     case EVENT_BOSSSKILL_TORNADO_CHANAGE:
         h_actionSkillTornadoColor(pData);
+        break;
+    case EVENT_CAT_SEAL:
+        h_actionCatSeal(pData);
         break;
     default:
         break;
@@ -650,6 +644,19 @@ void CGamePlayer::h_actionSkillAttick(EventParm pData)
     setLightAttickReleased();
 }
 
+
+void CGamePlayer::h_actionCatSeal(EventParm pData)
+{
+    int pState = *(int*)pData;
+    if (pState == SealState::SEALSTATE_ONAIR)
+    {
+        setSealState(SealState::SEALSTATE_ONAIR);
+    }
+    
+}
+
+
+
 void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, const std::string& name)
 {   
     if (type == MovementEventType::COMPLETE)
@@ -673,9 +680,7 @@ void CGamePlayer::movementCallback(Armature * armature, MovementEventType type, 
             CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERDIE, PARM_NULL);
         }
         else if (strcmp(name.c_str(), PLAYLAB_COOLKING_MACICACTION) == 0)
-        {
-            m_iSkillConfuseCount--;
-
+        {          
             m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_CD;
             CEventDispatcher::getInstrance()->dispatchEvent(EVENT_PLAYERSKILL_CONFUSE, new int(SkillConfuseState::SKILLSTATE_ONAIR));
             animation_idle();
@@ -787,8 +792,6 @@ bool CGamePlayer::releasSkill(int skillid)
 
 bool CGamePlayer::releasSkillConfuse()
 {
- 
-
     switch (m_State)
     {    
     case State::STATE_RUN:
@@ -801,14 +804,19 @@ bool CGamePlayer::releasSkillConfuse()
         return false;
     }
 
-    if (m_iSkillConfuseCount <= 0)
+    if (m_iSkillConfuseScore <= 0)
     {
         return false;
     }
 
+    if (m_iSealState == SealState::SEALSTATE_ONAIR)
+    {
+        return false;
+    }
 
+    m_iSkillConfuseScore--;
     m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_ANIMA;
-    log("play magic animation!");
+    log("play magic animation!%d", m_iSkillConfuseScore);
     animation_magic();
     
     return true;
@@ -838,3 +846,54 @@ int CGamePlayer::getSkillConfuseState()
 {
     return this->m_iSkillConfuseState;
 }
+
+
+//////////////////////////////////////////////////////////////
+//·âÓ¡
+//////////////////////////////////////////////////////////////
+void CGamePlayer::setSealState(int state)
+{
+    this->m_iSealState = state;    
+
+    switch (state)
+    {
+    case SealState::SEALSTATE_ONAIR:
+        animation_seal();
+        break;
+    case SealState::SEALSTATE_NONE:
+        CAnimationAxis* paa = findCreateByIndex(Anim_seal);
+        paa->clearCurrentAnimation();
+        removeChild(paa);
+        break;
+    }
+}
+
+
+int CGamePlayer::getSealState()
+{
+    return m_iSealState;
+}
+
+void CGamePlayer::actionSeal(float time)
+{
+    if (m_iSealState == SealState::SEALSTATE_NONE)
+    {
+        return;
+    }
+
+    m_fSealTime += time;
+    if (m_fSealTime > 10)
+    {
+        setSealState(SealState::SEALSTATE_NONE);
+        CEventDispatcher::getInstrance()->dispatchEvent(EVENT_CAT_SEAL, new int(SealState::SEALSTATE_NONE));
+        m_fSealTime = 0.f;
+    }
+}
+
+void CGamePlayer::animation_seal()
+{
+    CAnimationAxis* paa = findCreateByIndex(Anim_seal);
+    paa->setCurrentAnimation(ARMATURE_CAT_SEALL);
+    paa->getArmature()->getAnimation()->play(PLAYLAB_CAT_SEALL);
+}
+

@@ -21,6 +21,8 @@ public:
     virtual void changeDirect(int direct) = 0;
 
     virtual bool hasCollWithPlayer();
+
+    virtual void collwithPlayerCallBack();
     //---------------------------------------------------------
     
     int getAttack();                                                 //¹¥»÷Á¦   
@@ -41,7 +43,7 @@ protected:
     
 public:
 
-    CGamePlayer*    m_refPlayer;
+   
  
 protected:
 

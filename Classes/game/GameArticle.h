@@ -67,7 +67,7 @@ struct T_Property
 
 
 
-class CGameArticle : public CGameElement
+class CGameArticle : public CActor
 {
 public:
 

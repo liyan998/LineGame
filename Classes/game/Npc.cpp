@@ -17,11 +17,13 @@ bool CNpc::init()
     m_iStep     = 2;
     m_iCollR    = 20;
     m_fCount    = 0.0f;
-    m_iReLive   = 3;
+    m_iReLive   = 10;
     m_iAttick   = 1;
 
     m_iSkillConfuseState = SkillConfuseState::SKILLSTATE_NONE;
     m_iSkillConfuseCount = 0;
+
+    m_fFreezeTime = 0.0;
 
     ArmatureDataManager::sharedArmatureDataManager()->addArmatureFileInfo(
         RES_ANIMA_PNG_COOLKING_MAGIC_EFFIE,
@@ -29,10 +31,11 @@ bool CNpc::init()
         RES_ANIMA_JSO_COOLKING_MAGIC_EFFIE
         );
 
-
+    CEventDispatcher::getInstrance()->regsiterEvent(EVENT_PLAYERSKILL_RELEASE, this);
     //m_pSp       = Sprite::create("CloseNormal.png");
     //m_pSp->setScale(1.5f);
     //addChild(m_pSp);
+
     
     return true;
 }
@@ -48,11 +51,84 @@ void CNpc::run(float time)
     //log("%d  m_fCount:%f", m_State, m_fCount);
     //log("onAri!!!!!!!!!!!!!!!");
     checkSkillConfuse(time);
+    checkFreeze(time);
   
+}
+
+void CNpc::actionEvent(int eventid, EventParm pData)
+{
+    switch (eventid)
+    {
+    case EVENT_PLAYERSKILL_RELEASE:
+        h_actionPlayerReleaseProperty(pData);
+        break;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+//±ù¶³
+//////////////////////////////////////////////////////////////////////////
+void CNpc::h_actionPlayerReleaseProperty(EventParm pData)
+{
+    int proptyId = *(int*)pData;
+
+    switch (proptyId)
+    {
+    case PlayerSkillID::ID_FREEZE:
+        if (getState() == STATE_LIVE)
+        {
+            setState(STATE_FREEZE);
+        }        
+        break;
+    default:
+        break;
+    }
+}
+
+void CNpc::checkFreeze(float time)
+{
+    if (m_State != STATE_FREEZE)
+    {
+        return;
+    }
+
+    //----------------------------------------
+    Vec2 endPoint;
+    switch (m_refSp->getState())
+    {
+    case CMySprite::STATE_DRAW:
+    case CMySprite::STATE_CLOSE:
+
+        if (hasCollWithPlayer() &&      
+            collwithGuide(getPosition(), endPoint))
+        {
+            collwithPlayerCallBack();
+            m_refSp->attiack(getAttack(), this);           
+        }
+
+        break;
+    default:
+        break;
+    }
+    //-------------------------------------------
+
+    m_fFreezeTime += time;
+    if (m_fFreezeTime >= 10)
+    {
+
+        setState(STATE_LIVE);
+        m_fFreezeTime = 0;
+    }
+
 }
 
 void CNpc::checkSkillConfuse(float time)
 {
+    if (m_State == STATE_FREEZE)
+    {
+        return;
+    }
+
     if (m_iSkillConfuseState != SkillConfuseState::SKILLSTATE_ONAIR)
     {
         return;
@@ -112,6 +188,9 @@ void CNpc::setState(int state)
         animation_Die();
         
         break;
+    case STATE_FREEZE:
+        animation_stop();
+        break;
     }
 }
 
@@ -159,13 +238,6 @@ void CNpc::animation_Die()
 }
 
 
-
-void CNpc::animation_move()
-{   
-//     CGameElement::setCurrentAnimation(ARMATURE_DYB_WALK);
-//     getArmature()->getAnimation()->setMovementEventCallFunc(this, movementEvent_selector(CNpc::movementCallback));
-//     getArmature()->getAnimation()->play(PLAYLAB_DYB_FRONT_WALK);
-}
 
 inline
 void CNpc::animation_reBack()

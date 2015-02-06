@@ -8,7 +8,7 @@
 @auther     严黎刚    
 */
 /************************************************************************/
-class CNpc : public CEnemy
+class CNpc : public CEnemy, public CEventHandler
 {
 
 public:
@@ -17,7 +17,8 @@ public:
     {      
         STATE_LIVE,         //活动
         STATE_DIE,          //死亡
-        STATE_REBACK        //复活
+        STATE_REBACK,       //复活
+        STATE_FREEZE        //冰冻
     };
 
 
@@ -25,9 +26,9 @@ public:
     {
         INDEX_NPCINDEX_CONFUES = 0X112,  //技能特效
     };
-public:
-
-    CREATE_FUNC(CNpc)
+// public:
+// 
+//     CREATE_FUNC(CNpc)
 
 public:
 
@@ -47,6 +48,10 @@ public:
 
     virtual bool hasCollWithPlayer();
 
+    virtual void actionEvent(int eventid, EventParm pData);
+
+  
+
     //--------------------------------------
 
     void movementCallback(Armature * armature, MovementEventType type, const std::string& name);
@@ -57,7 +62,9 @@ public:
 
     inline void animation_Die();                //死亡
 
-    virtual void animation_move();              //移动
+    virtual void animation_move() = 0;              //移动
+
+    virtual void animation_stop() = 0;
 
     void animation_confuse();
 
@@ -69,16 +76,23 @@ public:
 
     void checkSkillConfuse(float time);
 
+    //-------------------------------------------
+
+    void h_actionPlayerReleaseProperty(EventParm pData);
+
+    void checkFreeze(float time);
 
 public:
 
     int m_iSkillConfuseState;                   //魅惑技能
+
+    float m_fFreezeTime;                          //冰冻时间
 
 private:
 
     int m_iSkillConfuseCount;                   //时间
 
 
-    int m_iReLive;         //复活时间
+    int m_iReLive;                              //复活时间
 };
 #endif//__NPC_H__
