@@ -86,7 +86,7 @@ public:
 
     int m_iSkillConfuseState;                   //魅惑技能
 
-    float m_fFreezeTime;                          //冰冻时间
+    float m_fFreezeTime;                        //冰冻时间
 
 private:
 

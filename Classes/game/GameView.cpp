@@ -238,7 +238,7 @@ void CGameView::actionEvent(int eventid, EventParm data)
         setState(STATE_LOSE);
         gameFinal();
         auto gameover = HelloWorld::create();
-        gameover->setString("Player is died you lose!");
+        gameover->setString("GAME OVER!");
         addChild(gameover);
     }   
         break;
